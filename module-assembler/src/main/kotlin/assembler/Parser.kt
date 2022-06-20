@@ -1,0 +1,62 @@
+package assembler
+
+class Parser(private val tokens: List<Token>) {
+
+
+	private var pos = 0
+
+	private val nodes = ArrayList<AstNode>()
+
+
+
+	fun parse(): List<AstNode> {
+		while(pos < tokens.size) {
+			when(val token = tokens[pos++]) {
+				Symbol.NEWLINE -> continue
+				is MnemonicToken -> nodes.add(parseInstruction(token.value))
+				else -> error("Invalid token: $token")
+			}
+		}
+		return nodes
+	}
+
+
+
+	private fun parseOperand(): OperandNode {
+		if(pos >= tokens.size) error("Expecting operand")
+
+		return when(val token = tokens[pos++]) {
+			is RegisterToken -> RegisterNode(token.value)
+			is IntLiteral -> ImmediateNode(token.value)
+			else -> error("Expecting operand")
+		}
+	}
+
+
+
+	private fun parseInstruction(mnemonic: Mnemonic): InstructionNode {
+		if(pos >= tokens.size || tokens[pos] == Symbol.NEWLINE) {
+			pos++
+			return InstructionNode(mnemonic, null, null, null, null)
+		}
+
+		val operand1 = parseOperand()
+		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
+			return InstructionNode(mnemonic, operand1, null, null, null)
+		pos++
+		val operand2 = parseOperand()
+		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
+			return InstructionNode(mnemonic, operand1, operand2, null, null)
+		pos++
+		val operand3 = parseOperand()
+		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
+			return InstructionNode(mnemonic, operand1, operand2, operand3, null)
+		val operand4 = parseOperand()
+		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
+			return InstructionNode(mnemonic, operand1, operand2, operand3, operand4)
+		pos++
+		error("Too many operands")
+	}
+
+
+}
