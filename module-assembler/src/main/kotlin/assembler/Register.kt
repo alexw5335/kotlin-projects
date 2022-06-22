@@ -73,6 +73,9 @@ enum class Register {
 	R12,
 	R13,
 	R14,
-	R15,
+	R15;
+
+	val isGP get() = ordinal in AX.ordinal.. R15.ordinal
+	val isGP8 get() = ordinal in AH.ordinal.. R15B.ordinal
 
 }

@@ -1,23 +1,5 @@
 package assembler
 
-
-enum class OperandType {
-
-	A,
-	AL,
-
-	R,
-	R8,
-
-	RM,
-	RM8;
-
-	val value = 1 shl ordinal
-
-}
-
-
-
 enum class OperandsEncoding {
 
 	AL_IMM8,

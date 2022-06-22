@@ -34,7 +34,7 @@ object Instructions {
 
 
 
-	val unordered = listOf(
+	val all = listOf(
 		ADD.single(0x04, AL_IMM8),
 		ADD.single(0x05, A_IMM),
 		ADD.single(0x80, RM8_IMM8, 0),
@@ -63,7 +63,7 @@ object Instructions {
 
 
 	init {
-		for(encoding in unordered)
+		for(encoding in all)
 			mnemonicMap
 				.getOrPut(encoding.mnemonic, ::ArrayList)
 				.add(encoding)

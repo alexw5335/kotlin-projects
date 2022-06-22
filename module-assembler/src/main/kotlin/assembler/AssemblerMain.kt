@@ -1,10 +1,21 @@
 package assembler
 
+
+
 fun main() {
 	val input = "add eax, 1"
 	val tokens = Lexer(input.toCharArray()).lex()
 	val nodes = Parser(tokens).parse()
 	for(n in nodes) println(n.printableString)
+}
+
+
+
+fun calculate(node: AstNode): Long = when(node) {
+	is IntNode -> node.value
+	is UnaryOpNode -> node.op.calculate(calculate(node.node))
+	is BinaryOpNode -> node.op.calculate(calculate(node.left), calculate(node.right))
+	else -> error("Invalid node: $node")
 }
 
 

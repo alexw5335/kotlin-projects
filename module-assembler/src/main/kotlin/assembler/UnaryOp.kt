@@ -6,4 +6,10 @@ enum class UnaryOp {
 	NEG,
 	NOT;
 
+	fun calculate(value: Long) = when(this) {
+		POS -> value
+		NEG -> -value
+		NOT -> value.inv()
+	}
+
 }
