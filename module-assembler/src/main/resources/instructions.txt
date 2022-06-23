@@ -88,3 +88,20 @@
 
 # ADCX
 66 0F 38 F6    R RM
+
+# CLC - Clear carry flag
+F8
+
+# CLD - Clear direction flag
+FC
+
+# CLDEMOTE - Cache line demote
+0F 1C /0 M8
+
+
+# CALL
+E8     REL32
+FF/2   RM64     ; Near, absolute, indirect
+;FF/3  M16_16  ; Far, absolute, indirect
+;FF/3  M16_32
+;FF/3  m16_64

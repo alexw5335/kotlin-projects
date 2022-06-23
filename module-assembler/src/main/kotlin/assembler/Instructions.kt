@@ -115,6 +115,10 @@ object Instructions {
 
 
 
+	fun getEncodings(mnemonic: Mnemonic) = mnemonicMap[mnemonic]
+
+
+
 	init {
 		for(encoding in all)
 			mnemonicMap
