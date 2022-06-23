@@ -85,3 +85,6 @@
 39   RM  R
 3A   R8  RM8
 3B   R   RM
+
+# ADCX
+66 0F 38 F6    R RM

@@ -2,6 +2,7 @@ package assembler
 
 enum class Mnemonic {
 
+	NONE,
 	ADD,
 	OR,
 	ADC,
@@ -9,6 +10,8 @@ enum class Mnemonic {
 	AND,
 	SUB,
 	XOR,
-	CMP;
+	CMP,
+	ADCX,
+	ADOX;
 
 }

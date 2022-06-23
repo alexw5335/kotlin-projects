@@ -1,6 +1,6 @@
 package assembler
 
-enum class Optype {
+enum class OpType {
 
 	SINGLE,
 	DOUBLE,

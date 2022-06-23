@@ -3,10 +3,18 @@ package assembler
 
 
 fun main() {
-	val input = "add eax, 1"
-	val tokens = Lexer(input.toCharArray()).lex()
-	val nodes = Parser(tokens).parse()
-	for(n in nodes) println(n.printableString)
+	EncodingReader::class.java
+		.getResourceAsStream("/instructions.txt")!!
+		.bufferedReader()
+		.readText()
+		.toCharArray()
+		.let(::EncodingReader)
+		.read()
+
+	//val input = "add eax, 1"
+	//val tokens = Lexer(input.toCharArray()).lex()
+	//val nodes = Parser(tokens).parse()
+	//for(n in nodes) println(n.printableString)
 }
 
 

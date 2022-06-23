@@ -1,9 +1,8 @@
 default rel
 
-%include "fileio.asm"
+%include "stdio.asm"
 %include "sorting.asm"
 %include "macros.asm"
-;%include "stdio.asm"
 
 global main
 extern printf
@@ -104,19 +103,31 @@ read_mnemonics:
 
 
 
+sort_mnemonics:
+	sub rsp, 40
+	lea rcx, [mnemonics]
+	mov edx, [mnemonicCount]
+	call bubble_sort_u64
+	add rsp, 40
+	ret
+
+
+
 print_mnemonics:
 	push rbx
 	sub rsp, 32
-	mov rbx, 600
+	mov rbx, 0 ; print in sections of 200, too many calls to WriteFile causes freezes?
 .loop:
-	mov rcx, "dq "
+	mov rcx, "    dq "
 	call print_ascii8
 	mov rcx, 34
 	call print_ascii8
 	mov rcx, [mnemonics + rbx * 8]
+	call print_ascii8
+	mov rcx, 34
 	call println_ascii8
 	add rbx, 1
-	cmp rbx, 90
+	cmp rbx, 200
 	jb .loop
 	add rsp, 32
 	pop rbx
@@ -129,10 +140,8 @@ main:
 
 	call init
 	call read_mnemonics
+	call sort_mnemonics
 	call print_mnemonics
-	;lea rcx, [mnemonics]
-	;mov edx, [mnemonicCount]
-	;call bubble_sort_u64
 
 	printFinished
 	call ExitProcess
