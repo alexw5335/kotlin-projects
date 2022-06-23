@@ -1,15 +1,23 @@
 package assembler
 
-enum class OperandEncoding {
+enum class OperandEncoding(val matcher: (OperandNode) -> Boolean = { false }) {
 
-	A,
-	AL,
-	IMM,
+	AL( { it is RegisterNode && it.register == Register.AL }),
+	AX( { it is RegisterNode && it.register == Register.AX }),
+	EAX( { it is RegisterNode && it.register == Register.EAX }),
+	RAX( { it is RegisterNode && it.register == Register.RAX }),
 	IMM8,
-	R,
+	IMM16,
+	IMM32,
+	IMM64,
 	R8,
-	RM,
-	RM8;
+	R16,
+	R32,
+	R64,
+	RM8,
+	RM16,
+	RM32,
+	RM64;
 
 }
 
