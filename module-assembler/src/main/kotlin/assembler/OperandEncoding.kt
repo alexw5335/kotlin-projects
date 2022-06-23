@@ -12,3 +12,20 @@ enum class OperandEncoding {
 	RM8;
 
 }
+
+
+/*
+R8
+R16
+R32
+R64
+RM8
+RM16
+RM32
+RM64
+IMM8
+IMM16
+IMM32
+IMM64
+
+ */
