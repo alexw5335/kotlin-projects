@@ -1,93 +1,96 @@
 # ADD
-04   AL  IMM8
-05   A   IMM
-80/0 RM8 IMM8
-81/0 RM  IMM
-83/0 RM  IMM8
-00   RM8 R8
-01   RM  R
-02   R8  RM8
-03   R   RM
+04    AL  IMM8
+05    A   IMM
+80/0  RM8 IMM8
+81/0  RM  IMM
+83/0  RM  IMM8
+00    RM8 R8
+01    RM  R
+02    R8  RM8
+03    R   RM
 
 # OR
-0C   AL  IMM8
-0D   A   IMM
-80/1 RM8 IMM8
-81/1 RM  IMM
-83/1 RM  IMM8
-08   RM8 R8
-09   RM  R
-0A   R8  RM8
-0B   R   RM
+0C    AL  IMM8
+0D    A   IMM
+80/1  RM8 IMM8
+81/1  RM  IMM
+83/1  RM  IMM8
+08    RM8 R8
+09    RM  R
+0A    R8  RM8
+0B    R   RM
 
 # ADC
-14   AL  IMM8
-15   A   IMM
-80/2 RM8 IMM8
-81/2 RM  IMM
-83/2 RM  IMM8
-10   RM8 R8
-11   RM  R
-12   R8  RM8
-13   R   RM
+14    AL  IMM8
+15    A   IMM
+80/2  RM8 IMM8
+81/2  RM  IMM
+83/2  RM  IMM8
+10    RM8 R8
+11    RM  R
+12    R8  RM8
+13    R   RM
 
 # SBB
-1C   AL  IMM8
-1D   A   IMM
-80/3 RM8 IMM8
-81/3 RM  IMM
-83/3 RM  IMM8
-18   RM8 R8
-19   RM  R
-1A   R8  RM8
-1B   R   RM
+1C    AL  IMM8
+1D    A   IMM
+80/3  RM8 IMM8
+81/3  RM  IMM
+83/3  RM  IMM8
+18    RM8 R8
+19    RM  R
+1A    R8  RM8
+1B    R   RM
 
 # AND
-24   AL  IMM8
-25   A   IMM
-80/4 RM8 IMM8
-81/4 RM  IMM
-83/4 RM  IMM8
-20   RM8 R8
-21   RM  R
-22   R8  RM8
-23   R   RM
+24    AL  IMM8
+25    A   IMM
+80/4  RM8 IMM8
+81/4  RM  IMM
+83/4  RM  IMM8
+20    RM8 R8
+21    RM  R
+22    R8  RM8
+23    R   RM
 
 # SUB
-2C   AL  IMM8
-2D   A   IMM
-80/5 RM8 IMM8
-81/5 RM  IMM
-83/5 RM  IMM8
-28   RM8 R8
-29   RM  R
-2A   R8  RM8
-2B   R   RM
+2C    AL  IMM8
+2D    A   IMM
+80/5  RM8 IMM8
+81/5  RM  IMM
+83/5  RM  IMM8
+28    RM8 R8
+29    RM  R
+2A    R8  RM8
+2B    R   RM
 
 # XOR
-34   AL  IMM8
-35   A   IMM
-80/6 RM8 IMM8
-81/6 RM  IMM
-83/6 RM  IMM8
-30   RM8 R8
-31   RM  R
-32   R8  RM8
-33   R   RM
+34    AL  IMM8
+35    A   IMM
+80/6  RM8 IMM8
+81/6  RM  IMM
+83/6  RM  IMM8
+30    RM8 R8
+31    RM  R
+32    R8  RM8
+33    R   RM
 
 # CMP
-3C   AL  IMM8
-3D   A   IMM
-80/7 RM8 IMM8
-81/7 RM  IMM
-83/7 RM  IMM8
-38   RM8 R8
-39   RM  R
-3A   R8  RM8
-3B   R   RM
+3C    AL  IMM8
+3D    A   IMM
+80/7  RM8 IMM8
+81/7  RM  IMM
+83/7  RM  IMM8
+38    RM8 R8
+39    RM  R
+3A    R8  RM8
+3B    R   RM
 
 # ADCX
-66 0F 38 F6    R RM
+66 0F 38 F6  R RM
+
+# BNDCL - Check lower bound
+;F3 0F 1A    BND RM    (exclusive)
 
 # CLC - Clear carry flag
 F8
@@ -96,12 +99,11 @@ F8
 FC
 
 # CLDEMOTE - Cache line demote
-0F 1C /0 M8
-
+;0F 1C/0 M8
 
 # CALL
-E8     REL32
-FF/2   RM64     ; Near, absolute, indirect
+;E8     REL32
+;FF/2   RM64    ; Near, absolute, indirect
 ;FF/3  M16_16  ; Far, absolute, indirect
 ;FF/3  M16_32
 ;FF/3  m16_64

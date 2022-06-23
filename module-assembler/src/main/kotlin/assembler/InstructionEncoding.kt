@@ -1,5 +1,7 @@
 package assembler
 
+import core.hex8
+
 data class InstructionEncoding(
 	val mnemonic        : Mnemonic,
 	val opcode          : Int,
@@ -10,4 +12,31 @@ data class InstructionEncoding(
 	val operand4        : OperandEncoding?,
 	val extension       : Int,
 	val mandatoryPrefix : Int
-)
+) {
+
+	override fun toString() = buildString {
+		if(mandatoryPrefix > 0)
+			append("${mandatoryPrefix.hex8} ")
+
+		when(optype) {
+			OpType.SINGLE -> Unit
+			OpType.DOUBLE -> append("0F ")
+			OpType.TRIP38 -> append("0F 38 ")
+			OpType.TRIP3A -> append("0F 3A ")
+		}
+
+		append(opcode.hex8)
+
+		if(extension > 0)
+			append("/$extension ")
+		else
+			append(' ')
+
+		append(" $mnemonic")
+
+		if(operand1 != null) append(" $operand1")
+		if(operand2 != null) append(" $operand2")
+		if(operand3 != null) append(" $operand3")
+		if(operand4 != null) append(" $operand4")
+	}
+}

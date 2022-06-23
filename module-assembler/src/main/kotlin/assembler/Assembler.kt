@@ -14,8 +14,10 @@ class Assembler(private val nodes: List<AstNode>) {
 	fun assemble(): ByteArray {
 		for(node in nodes) {
 			if(node is InstructionNode) {
-				val encodings = Instructions.getEncodings(node.mnemonic)
+				val encodings = Instructions.getEncodings(node.mnemonic) ?: error("Invalid mnemonic: $node")
+				for(encoding in encodings) {
 
+				}
 			}
 		}
 

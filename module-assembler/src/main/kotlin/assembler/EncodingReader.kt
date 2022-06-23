@@ -39,7 +39,13 @@ class EncodingReader(private val chars: CharArray) {
 			pos++
 	}
 
-	fun skipSpaces() = skipWhile { it.isWhitespace() }
+	private inline fun skipTo(block: (Char) -> Boolean) {
+		while(pos < chars.size && !block(chars[pos++])) Unit
+	}
+
+	fun skipWhitespace() = skipWhile { it.isWhitespace() }
+
+	fun skipLine() = skipTo { it == '\n' }
 
 
 
@@ -52,11 +58,17 @@ class EncodingReader(private val chars: CharArray) {
 				continue
 			}
 
+			if(char == ';') {
+				skipLine()
+				continue
+			}
+
 			if(char == '#') {
 				pos++
-				skipWhile { it.isWhitespace() }
+				skipWhitespace()
 				currentMnemonic = readUntil { it.isWhitespace() }
 				mnemonics.add(currentMnemonic)
+				skipLine()
 				continue
 			}
 
@@ -69,9 +81,10 @@ class EncodingReader(private val chars: CharArray) {
 
 
 	private fun readOperandEncoding(): OperandEncoding? {
-		skipWhile { it.isWhitespace() && it != '\n' }
-		if(pos >= chars.size || chars[pos] == '\n') return null
-		val string = readUntil { it.isWhitespace() }
+		skipWhile { it.isWhitespace() && it != '\n' && it != ';' }
+		if(pos >= chars.size || chars[pos] == '\n' || chars[pos] == ';')
+			return null
+		val string = readUntil { it.isWhitespace() || it == ';' }
 		return operandEncodingMap[string]
 			?: error("Unrecognised operand encoding: $string")
 	}
@@ -85,7 +98,7 @@ class EncodingReader(private val chars: CharArray) {
 
 		if(hex == 0x66 || hex == 0xF2 || hex == 0xF3) {
 			mandatoryPrefix = hex
-			skipSpaces()
+			skipWhitespace()
 			hex = read(2).toInt(16)
 		}
 
@@ -93,26 +106,28 @@ class EncodingReader(private val chars: CharArray) {
 		var optype = OpType.SINGLE
 
 		if(hex == 0x0F) {
-			skipSpaces()
+			skipWhitespace()
 			opcode = read(2).toInt(16)
 			optype = OpType.DOUBLE
 			if(opcode == 0x38) {
-				skipSpaces()
+				skipWhitespace()
 				opcode = read(2).toInt(16)
 				optype = OpType.TRIP38
 			} else if(opcode == 0x3A) {
-				skipSpaces()
+				skipWhitespace()
 				opcode = read(2).toInt(16)
 				optype = OpType.TRIP3A
 			}
 		}
 
-		skipSpaces()
+		skipWhile { it.isWhitespace() && it != '\n' }
 
 		val extension = if(chars[pos] == '/') {
 			pos++
 			chars[pos++] - '0'
 		} else -1
+
+		skipWhile { it.isWhitespace() && it != '\n' }
 
 		val operand1 = readOperandEncoding()
 		val operand2 = if(operand1 != null) readOperandEncoding() else null
