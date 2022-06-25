@@ -1,101 +1,108 @@
-# ADD
-04    AL  IMM8
-05    A   IMM
-80/0  RM8 IMM8
-81/0  RM  IMM
-83/0  RM  IMM8
-00    RM8 R8
-01    RM  R
-02    R8  RM8
-03    R   RM
+04    ADD  AL  IMM8
+05    ADD  A   IMM
+80/0  ADD  RM8 IMM8
+81/0  ADD  RM  IMM
+83/0  ADD  RM  IMM8
+00    ADD  RM8 R8
+01    ADD  RM  R
+02    ADD  R8  RM8
+03    ADD  R   RM
 
-# OR
-0C    AL  IMM8
-0D    A   IMM
-80/1  RM8 IMM8
-81/1  RM  IMM
-83/1  RM  IMM8
-08    RM8 R8
-09    RM  R
-0A    R8  RM8
-0B    R   RM
+0C    OR   AL  IMM8
+0D    OR   A   IMM
+80/1  OR   RM8 IMM8
+81/1  OR   RM  IMM
+83/1  OR   RM  IMM8
+08    OR   RM8 R8
+09    OR   RM  R
+0A    OR   R8  RM8
+0B    OR   R   RM
 
-# ADC
-14    AL  IMM8
-15    A   IMM
-80/2  RM8 IMM8
-81/2  RM  IMM
-83/2  RM  IMM8
-10    RM8 R8
-11    RM  R
-12    R8  RM8
-13    R   RM
+14    ADC  AL  IMM8
+15    ADC  A   IMM
+80/2  ADC  RM8 IMM8
+81/2  ADC  RM  IMM
+83/2  ADC  RM  IMM8
+10    ADC  RM8 R8
+11    ADC  RM  R
+12    ADC  R8  RM8
+13    ADC  R   RM
 
-# SBB
-1C    AL  IMM8
-1D    A   IMM
-80/3  RM8 IMM8
-81/3  RM  IMM
-83/3  RM  IMM8
-18    RM8 R8
-19    RM  R
-1A    R8  RM8
-1B    R   RM
+1C    SBB  AL  IMM8
+1D    SBB  A   IMM
+80/3  SBB  RM8 IMM8
+81/3  SBB  RM  IMM
+83/3  SBB  RM  IMM8
+18    SBB  RM8 R8
+19    SBB  RM  R
+1A    SBB  R8  RM8
+1B    SBB  R   RM
 
-# AND
-24    AL  IMM8
-25    A   IMM
-80/4  RM8 IMM8
-81/4  RM  IMM
-83/4  RM  IMM8
-20    RM8 R8
-21    RM  R
-22    R8  RM8
-23    R   RM
+24    AND  AL  IMM8
+25    AND  A   IMM
+80/4  AND  RM8 IMM8
+81/4  AND  RM  IMM
+83/4  AND  RM  IMM8
+20    AND  RM8 R8
+21    AND  RM  R
+22    AND  R8  RM8
+23    AND  R   RM
 
-# SUB
-2C    AL  IMM8
-2D    A   IMM
-80/5  RM8 IMM8
-81/5  RM  IMM
-83/5  RM  IMM8
-28    RM8 R8
-29    RM  R
-2A    R8  RM8
-2B    R   RM
+2C    SUB  AL  IMM8
+2D    SUB  A   IMM
+80/5  SUB  RM8 IMM8
+81/5  SUB  RM  IMM
+83/5  SUB  RM  IMM8
+28    SUB  RM8 R8
+29    SUB  RM  R
+2A    SUB  R8  RM8
+2B    SUB  R   RM
 
-# XOR
-34    AL  IMM8
-35    A   IMM
-80/6  RM8 IMM8
-81/6  RM  IMM
-83/6  RM  IMM8
-30    RM8 R8
-31    RM  R
-32    R8  RM8
-33    R   RM
+34    XOR  AL  IMM8
+35    XOR  A   IMM
+80/6  XOR  RM8 IMM8
+81/6  XOR  RM  IMM
+83/6  XOR  RM  IMM8
+30    XOR  RM8 R8
+31    XOR  RM  R
+32    XOR  R8  RM8
+33    XOR  R   RM
 
-# CMP
-3C    AL  IMM8
-3D    A   IMM
-80/7  RM8 IMM8
-81/7  RM  IMM
-83/7  RM  IMM8
-38    RM8 R8
-39    RM  R
-3A    R8  RM8
-3B    R   RM
+3C    CMP  AL  IMM8
+3D    CMP  A   IMM
+80/7  CMP  RM8 IMM8
+81/7  CMP  RM  IMM
+83/7  CMP  RM  IMM8
+38    CMP  RM8 R8
+39    CMP  RM  R
+3A    CMP  R8  RM8
+3B    CMP  R   RM
 
-# LEA
-8D    R RM
+8D  LEA  R RM
 
-# BSF
-0F BC    R RM
+0F BC  BSF  R RM
 
-# BSR
-0F BD    R RM
+0F BD  BSR  R RM
 
-# BSWAP
-0F C8    R (no 16)
+0F C8  BSWAP  R  (noGP16)
 
+0F A3     BT  RM R
+0F BA /4  BT  RM IMM8
 
+0F BB     BTC  RM R
+0F BA /7  BTC  RM IMM8
+
+0F B3     BTR  RM R
+0F BA /6  BTR  RM IMM8
+
+0F AB     BTS  RM R
+0F BA /5  BTS  RM IMM8
+
+E8     CALL  REL32
+FF /2  CALL  RM64
+#FF /3  CALL  M16:16/32/64
+
+# How to encode these?
+# OSO 98    CBW   # AX := sign-extend of AL
+# 98        CWDE  # EAX := sign-extend of ax
+# REX.W 98  CDQE  # RAX := sign-extend of eax

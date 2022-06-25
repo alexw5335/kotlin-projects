@@ -5,9 +5,7 @@ import core.LexerBase
 class InstructionReader(chars: CharArray) : LexerBase(chars) {
 
 
-	private var currentMnemonic = ""
-
-	private val mnemonics = ArrayList<String>()
+	private val mnemonics = HashSet<String>()
 
 	private val operandMap = Operand.values().associateBy(Operand::name)
 
@@ -24,16 +22,7 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 				continue
 			}
 
-			if(char == ';') {
-				skipLine()
-				continue
-			}
-
 			if(char == '#') {
-				pos++
-				skipWhitespace()
-				currentMnemonic = readWhile { it.isLetterOrDigit() }
-				mnemonics.add(currentMnemonic)
 				skipLine()
 				continue
 			}
@@ -47,10 +36,10 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 
 
 	private fun readOperandEncoding(): Operand? {
-		skipWhile { it.isWhitespace() && it != '\n' && it != ';' }
-		if(pos >= chars.size || chars[pos] == '\n' || chars[pos] == ';')
+		skipWhile { it.isWhitespace() && it != '\n' && it != '#' }
+		if(pos >= chars.size || chars[pos] == '\n' || chars[pos] == '#' || chars[pos] == '(')
 			return null
-		val string = readUntil { it.isWhitespace() || it == ';' }
+		val string = readUntil { it.isWhitespace() || it == '#' }
 		return operandMap[string] ?: error("Unrecognised operand: $string")
 	}
 
@@ -92,13 +81,31 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 
 		skipSpaces()
 
+		val mnemonic = readUntil { it.isWhitespace() }
+
+		skipSpaces()
+
 		val operand1 = readOperandEncoding()
 		val operand2 = if(operand1 != null) readOperandEncoding() else null
 		val operand3 = if(operand2 != null) readOperandEncoding() else null
 		val operand4 = if(operand3 != null) readOperandEncoding() else null
 
+
+		var noGP16 = false
+		var default64 = false
+		while(pos < chars.size && chars[pos] == '(') {
+			pos++
+			when(readWhile { it.isLetterOrDigit() }) {
+				"noGP16" -> noGP16 = true
+				"default64" -> default64 = true
+			}
+			skipSpaces()
+			if(chars[pos++] != ')') error("Expecting '(")
+			skipSpaces()
+		}
+
 		return Instruction(
-			currentMnemonic,
+			mnemonic,
 			opcode,
 			optype,
 			operand1,
@@ -106,7 +113,9 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 			operand3,
 			operand4,
 			extension,
-			mandatoryPrefix
+			mandatoryPrefix,
+			noGP16,
+			default64
 		)
 	}
 

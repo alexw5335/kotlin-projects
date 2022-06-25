@@ -11,7 +11,9 @@ data class Instruction(
 	val operand3        : Operand?,
 	val operand4        : Operand?,
 	val extension       : Int,
-	val mandatoryPrefix : Int
+	val mandatoryPrefix : Int,
+	val noGP16          : Boolean,
+	val default64       : Boolean
 ) {
 
 	override fun toString() = buildString {
@@ -38,6 +40,9 @@ data class Instruction(
 		if(operand2 != null) append(" $operand2")
 		if(operand3 != null) append(" $operand3")
 		if(operand4 != null) append(" $operand4")
+
+		if(noGP16) append(" (noGP16)")
+		if(default64) append(" (default64)")
 	}
 
 }
