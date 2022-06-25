@@ -1,5 +1,7 @@
 package core.process
 
+import kotlin.system.exitProcess
+
 object Processes {
 
 
@@ -20,6 +22,12 @@ object Processes {
 			print(outputText)
 
 		return true
+	}
+
+
+
+	fun runOrExit(command: String) {
+		if(!run(command)) exitProcess(1)
 	}
 
 

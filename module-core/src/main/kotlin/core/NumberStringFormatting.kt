@@ -13,3 +13,5 @@ val Int.hex8 get() = String(charArrayOf(
 	(this shr 4).hexChar,
 	(this and 15).hexChar
 ))
+
+val Byte.hex8 get() = toUByte().toInt().hex8
