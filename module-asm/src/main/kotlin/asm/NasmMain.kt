@@ -9,7 +9,7 @@ import kotlin.io.path.writeText
 
 
 const val input = """
-	bswap ax
+	crc32 rax, al
 """
 
 

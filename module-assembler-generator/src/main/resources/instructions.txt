@@ -68,6 +68,61 @@
 32    XOR  R8  RM8
 33    XOR  R   RM
 
+8D        LEA     R RM
+0F BC     BSF     R RM
+0F BD     BSR     R RM
+0F C8     BSWAP   R       (noGp16)
+0F A3     BT      RM R
+0F BA /4  BT      RM IMM8
+0F BB     BTC     RM R
+0F BA /7  BTC     RM IMM8
+0F B3     BTR     RM R
+0F BA /6  BTR     RM IMM8
+0F AB     BTS     RM R
+0F BA /5  BTS     RM IMM8
+E8        CALL    REL32
+FF /2     CALL    RM      (noGp16) (noGp32)
+FF /3     CALL    M16_
+98        CBW
+98        CWDE
+98        CDQE
+F8        CLC
+FC        CLD
+FA        CLI
+0F 06     CLTS
+F5        CMC
+
+0F 47  CMOVA    R RM
+0F 43  CMOVAE   R RM
+0F 42  CMOVB    R RM
+0F 46  CMOVBE   R RM
+0F 42  CMOVC    R RM
+0F 44  CMOVE    R RM
+0F 4F  CMOVG    R RM
+0F 4D  CMOVGE   R RM
+0F 4C  CMOVL    R RM
+0F 4E  CMOVLE   R RM
+0F 46  CMOVNA   R RM
+0F 42  CMOVNAE  R RM
+0F 43  CMOVNB   R RM
+0F 47  CMOVNBE  R RM
+0F 43  CMOVNC   R RM
+0F 45  CMOVNE   R RM
+0F 4E  CMOVNG   R RM
+0F 4C  CMOVNGE  R RM
+0F 4D  CMOVNL   R RM
+0F 4F  CMOVNLE  R RM
+0F 41  CMOVNO   R RM
+0F 4B  CMOVNP   R RM
+0F 49  CMOVNS   R RM
+0F 45  CMOVNZ   R RM
+0F 40  CMOVO    R RM
+0F 4A  CMOVP    R RM
+0F 4A  CMOVPE   R RM
+0F 4B  CMOVPO   R RM
+0F 48  CMOVS    R RM
+0F 44  CMOVZ    R RM
+
 3C    CMP  AL  IMM8
 3D    CMP  A   IMM
 80/7  CMP  RM8 IMM8
@@ -78,31 +133,24 @@
 3A    CMP  R8  RM8
 3B    CMP  R   RM
 
-8D  LEA  R RM
+A6  CMPS   M8
+A7  CMPS   M
+A6  CMPSB
+A7  CMPSW
+A7  CMPSD
+A7  CMPSQ
 
-0F BC  BSF  R RM
+0F B0     CMPXCHG     RM   R
+#0F C7 /1  CMPXCHG8B   M64     # Doesn't use REX.W
+#REX.W 0F C7 /1  CMPXCHG16B  M128    # Uses REX.W
 
-0F BD  BSR  R RM
+0F A2  CPUID
 
-0F C8  BSWAP  R  (noGP16)
-
-0F A3     BT  RM R
-0F BA /4  BT  RM IMM8
-
-0F BB     BTC  RM R
-0F BA /7  BTC  RM IMM8
-
-0F B3     BTR  RM R
-0F BA /6  BTR  RM IMM8
-
-0F AB     BTS  RM R
-0F BA /5  BTS  RM IMM8
-
-E8     CALL  REL32
-FF /2  CALL  RM64
-#FF /3  CALL  M16:16/32/64
-
-# How to encode these?
-# OSO 98    CBW   # AX := sign-extend of AL
-# 98        CWDE  # EAX := sign-extend of ax
-# REX.W 98  CDQE  # RAX := sign-extend of eax
+# crc32 rax, al
+# Can have different register sizes
+#
+# F2 0F 38 F0 CRC32 R32 RM8
+# OSO F2 0F 38 F1 CRC32 R32 RM16
+# F2 0F 38 F1 CRC32 R32 RM32
+# F2 0F 38 F0 CRC32 R64 RM8    # Uses REX.W
+# F2 0F 38 F1 CRC32 R64 RM64   # Uses REX.W

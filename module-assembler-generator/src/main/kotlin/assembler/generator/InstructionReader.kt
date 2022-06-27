@@ -5,9 +5,13 @@ import core.LexerBase
 class InstructionReader(chars: CharArray) : LexerBase(chars) {
 
 
-	private val mnemonics = HashSet<String>()
+	companion object {
+		private val operandMap = Operand.values().associateBy(Operand::name)
+	}
 
-	private val operandMap = Operand.values().associateBy(Operand::name)
+
+
+	private val mnemonics = HashSet<String>()
 
 	private val instructions = ArrayList<Instruction>()
 
@@ -91,12 +95,17 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 		val operand4 = if(operand3 != null) readOperandEncoding() else null
 
 
-		var noGP16 = false
+		var noGp16 = false
+		var noGp32 = false
+		var noGp64 = false
 		var default64 = false
+
 		while(pos < chars.size && chars[pos] == '(') {
 			pos++
 			when(readWhile { it.isLetterOrDigit() }) {
-				"noGP16" -> noGP16 = true
+				"noGp16"    -> noGp16 = true
+				"noGp32"    -> noGp32 = true
+				"noGp64"    -> noGp64 = true
 				"default64" -> default64 = true
 			}
 			skipSpaces()
@@ -105,17 +114,10 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 		}
 
 		return Instruction(
-			mnemonic,
-			opcode,
-			optype,
-			operand1,
-			operand2,
-			operand3,
-			operand4,
-			extension,
-			mandatoryPrefix,
-			noGP16,
-			default64
+			mnemonic, opcode, optype,
+			operand1, operand2, operand3, operand4,
+			extension, mandatoryPrefix,
+			noGp16, noGp32, noGp64, default64
 		)
 	}
 
