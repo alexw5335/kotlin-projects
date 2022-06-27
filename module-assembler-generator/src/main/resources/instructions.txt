@@ -1,3 +1,6 @@
+# Two bytes per operand
+# instructions that use A, AL, C, CL, etc. can AND with the second byte
+
 04    ADD  AL  IMM8
 05    ADD  A   IMM
 80/0  ADD  RM8 IMM8

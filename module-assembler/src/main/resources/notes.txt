@@ -14,3 +14,25 @@ Simple instruction encoding
 	- e.g. ADD AL, IMM8 comes before ADD RM8 IMM8
 - Any instruction that doesn't fit this scheme would instead use a custom predicate
 	- These instructions will be used very rarely
+
+
+
+struct InstructionEncoding2 {
+	u8 operands
+	InstructionEncoding* encoding
+}
+
+
+
+struct InstructionEncoding {
+	u8 mandatoryPrefix
+	u8 sizePrefix
+	u8 opType
+	u8 opcode
+	u8 extension // Also contains information about ModRM/Mod extension
+	u8 operand1
+	u8 operand2
+	u8 operand3
+	u8 operand4
+	u8[7] reserved
+}

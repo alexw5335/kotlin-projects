@@ -2,23 +2,37 @@ package assembler.generator
 
 enum class Operands {
 
-	AL_IMM8,
-	A_IMM,
-	RM8_IMM8,
-	RM_IMM,
-	RM_IMM8,
-	RM8_R8,
-	RM_R,
-	R8_RM8,
-	R_RM,
-	R32_OR_64,
-	REL32,
-	M16_,
-	RM,
-	M8,
-	M,
-	// rex.w for 128
-	M64_OR_128,
-	R32_RM8,
-	R32_RM,
+	R8_MEM,
+	R16_MEM,
+	R32_MEM,
+	R64_MEM,
+
+	MEM_R64,
+	MEM_R32,
+	MEM_R16,
+	MEM_R8,
+
+	R8_R8,
+	R16_R16,
+	R32_R32,
+	R64_R64,
+
+	MEM,
+
+	R8,
+	R16,
+	R32,
+	R64,
+
+	MEM_IMM8,
+	MEM_IMM16,
+	MEM_IMM32,
+
+	R8_IMM8,
+	R16_IMM16,
+	R32_IMM32,
+	R64_IMM32,
+	R64_IMM64;
+
+
 }

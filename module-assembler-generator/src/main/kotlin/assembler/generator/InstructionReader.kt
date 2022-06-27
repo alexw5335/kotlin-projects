@@ -50,6 +50,14 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 
 
 	private fun readInstruction(): Instruction {
+		var rexw = false
+
+		if(chars[pos] == 'R') {
+			val string = readUntil { it.isWhitespace() }
+			if(string == "REX.W") rexw = true
+			else error("Unexpected string: $string")
+		}
+
 		var hex = readHex2()
 		var mandatoryPrefix = -1
 
@@ -57,6 +65,12 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 			mandatoryPrefix = hex
 			skipWhitespace()
 			hex = readHex2()
+		}
+
+		if(chars[pos] == 'R') {
+			val string = readUntil { it.isWhitespace() }
+			if(string == "REX.W") rexw = true
+			else error("Unexpected string: $string")
 		}
 
 		var opcode = hex
@@ -94,30 +108,17 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 		val operand3 = if(operand2 != null) readOperandEncoding() else null
 		val operand4 = if(operand3 != null) readOperandEncoding() else null
 
-
-		var noGp16 = false
-		var noGp32 = false
-		var noGp64 = false
-		var default64 = false
-
-		while(pos < chars.size && chars[pos] == '(') {
-			pos++
-			when(readWhile { it.isLetterOrDigit() }) {
-				"noGp16"    -> noGp16 = true
-				"noGp32"    -> noGp32 = true
-				"noGp64"    -> noGp64 = true
-				"default64" -> default64 = true
-			}
-			skipSpaces()
-			if(chars[pos++] != ')') error("Expecting '(")
-			skipSpaces()
-		}
-
 		return Instruction(
-			mnemonic, opcode, optype,
-			operand1, operand2, operand3, operand4,
-			extension, mandatoryPrefix,
-			noGp16, noGp32, noGp64, default64
+			mnemonic,
+			opcode,
+			optype,
+			operand1,
+			operand2,
+			operand3,
+			operand4,
+			extension,
+			mandatoryPrefix,
+			rexw
 		)
 	}
 
