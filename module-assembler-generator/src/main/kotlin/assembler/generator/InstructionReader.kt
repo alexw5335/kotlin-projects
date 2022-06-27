@@ -1,8 +1,8 @@
 package assembler.generator
 
-import core.LexerBase
+import core.ReaderBase
 
-class InstructionReader(chars: CharArray) : LexerBase(chars) {
+class InstructionReader(chars: CharArray) : ReaderBase(chars) {
 
 
 	companion object {
@@ -31,7 +31,7 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 				continue
 			}
 
-			instructions.add(readInstruction().also(::println))
+			readInstruction()
 		}
 
 		return instructions
@@ -49,15 +49,7 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 
 
 
-	private fun readInstruction(): Instruction {
-		var rexw = false
-
-		if(chars[pos] == 'R') {
-			val string = readUntil { it.isWhitespace() }
-			if(string == "REX.W") rexw = true
-			else error("Unexpected string: $string")
-		}
-
+	private fun readInstruction() {
 		var hex = readHex2()
 		var mandatoryPrefix = -1
 
@@ -67,14 +59,8 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 			hex = readHex2()
 		}
 
-		if(chars[pos] == 'R') {
-			val string = readUntil { it.isWhitespace() }
-			if(string == "REX.W") rexw = true
-			else error("Unexpected string: $string")
-		}
-
 		var opcode = hex
-		var optype = OpType.SINGLE
+		var opType = OpType.SINGLE
 
 		if(hex == 0x0F) {
 			skipSpaces()
@@ -82,11 +68,11 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 			if(opcode == 0x38) {
 				skipSpaces()
 				opcode = readHex2()
-				optype = OpType.TRIP38
+				opType = OpType.TRIP38
 			} else if(opcode == 0x3A) {
 				skipSpaces()
 				opcode = readHex2()
-				optype = OpType.TRIP3A
+				opType = OpType.TRIP3A
 			}
 		}
 
@@ -103,23 +89,41 @@ class InstructionReader(chars: CharArray) : LexerBase(chars) {
 
 		skipSpaces()
 
-		val operand1 = readOperandEncoding()
-		val operand2 = if(operand1 != null) readOperandEncoding() else null
-		val operand3 = if(operand2 != null) readOperandEncoding() else null
-		val operand4 = if(operand3 != null) readOperandEncoding() else null
+		//val operand1 = readOperandEncoding()
+		//val operand2 = if(operand1 != null) readOperandEncoding() else null
+		//val operand3 = if(operand2 != null) readOperandEncoding() else null
+		//val operand4 = if(operand3 != null) readOperandEncoding() else null
 
-		return Instruction(
-			mnemonic,
-			opcode,
-			optype,
-			operand1,
-			operand2,
-			operand3,
-			operand4,
-			extension,
+		val operands = ArrayList<String>()
+
+		while(pos < chars.size && chars[pos] != '(' && !chars[pos].isWhitespace()) {
+			val string = readUntil { it.isWhitespace() }
+		}
+
+		var rexw = false
+		var oso = false
+
+		while(pos < chars.size && chars[pos] == '(') {
+			pos++
+			when(readWhile { it.isLetterOrDigit() }) {
+				"OSO"    -> oso = true
+				"REX.W"  -> rexw = true
+			}
+			skipSpaces()
+			if(chars[pos++] != ')') error("Expecting '(")
+			skipSpaces()
+		}
+
+		/*return Instruction(
 			mandatoryPrefix,
+			opType,
+			opcode,
+			extension,
+			mnemonic,
+			Operands.MEM,
+			oso,
 			rexw
-		)
+		)*/
 	}
 
 

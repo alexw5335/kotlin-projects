@@ -1,7 +1,11 @@
 package assembler.generator
 
+import core.Core
+
 fun main() {
-	val instructions = InstructionReader::class.java
+	val tokens = Lexer(Core.readResourceText("/instructions.txt")).lex()
+	Parser(tokens).parse()
+/*	val instructions = InstructionReader::class.java
 		.getResourceAsStream("/instructions.txt")!!
 		.reader()
 		.readText()
@@ -10,4 +14,5 @@ fun main() {
 		.readInstructions()
 
 	instructions.forEach(::println)
+*/
 }

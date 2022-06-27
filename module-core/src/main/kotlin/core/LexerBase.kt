@@ -1,129 +1,76 @@
 package core
 
-/**
- * Not intended as a general-purpose lexer superclass. Contains convenience methods for simple lexers/parsers.
- */
-abstract class LexerBase(val chars: CharArray) {
+abstract class LexerBase<T>(chars: CharArray) : ReaderBase(chars) {
 
 
-	var pos = 0
+	private val tokens = ArrayList<T>()
 
 
 
-	/*
-	Skipping
-	 */
-
-
-
-	inline fun skipUntil(block: (Char) -> Boolean) {
-		while(pos < chars.size && !block(chars[pos]))
-			pos++
-	}
-
-	inline fun skipWhile(block: (Char) -> Boolean) {
-		while(pos < chars.size && block(chars[pos]))
-			pos++
-	}
-
-	inline fun skipTo(block: (Char) -> Boolean) {
-		while(pos < chars.size && !block(chars[pos++])) Unit
-	}
-
-	fun skipWhitespace() = skipWhile { it.isWhitespace() }
-
-	fun skipLine() = skipTo { it == '\n' }
-
-	fun skipSpaces() = skipWhile { it.isWhitespace() && it != '\n' }
-
-
-
-	/*
-	String reading
-	 */
-
-
-
-	fun read(length: Int) = String(CharArray(length) { chars[pos++ ]})
-
-	inline fun readUntil(block: (Char) -> Boolean) = buildString {
-		while(pos < chars.size && !block(chars[pos]))
-			append(chars[pos++])
-	}
-
-	inline fun readWhile(block: (Char) -> Boolean) = buildString {
-		while(pos < chars.size && block(chars[pos]))
-			append(chars[pos++])
-	}
-
-
-
-	/*
-	Number reading
-	 */
-
-
-
-	fun readNumber(char: Char) = when {
-		pos == chars.size - 1 -> readDecimal()
-		char != '0'           -> readDecimal()
-		chars[pos + 1] == 'b' -> { pos += 2; readBinary() }
-		chars[pos + 1] == 'x' -> { pos += 2; readHex() }
-		else                  -> readDecimal()
-	}
-
-
-
-	fun readDecimal(): Long {
-		if(chars[pos] < '0' || chars[pos] > '9') error("Invalid decimal literal")
-		var value = 0L
+	fun lex(): List<T> {
 		while(pos < chars.size) {
 			val char = chars[pos++]
-			if(char == '_') continue
-			if(char < '0' || char > '9') { pos--; break }
-			val digit = char - '0'
-			value = value * 10 + digit
-		}
-		return value
-	}
 
+			if(char.isSkippableWhitespace) continue
 
-
-	fun readBinary(): Long {
-		if(chars[pos] < '0' || chars[pos] > '1') error("Invalid binary literal")
-		var value = 0L
-		while(pos < chars.size) {
-			val char = chars[pos++]
-			if(char == '_') continue
-			if(char < '0' || char > '1') { pos--; break }
-			val digit = char - '0'
-			value = (value shl 1) or digit.toLong()
-		}
-		return value
-	}
-
-
-
-	fun readHex(): Long {
-		val first = chars[pos]
-		if(first !in '0'..'9' && first !in 'a'..'f' && first !in 'A'..'F') error("Invalid hex literal")
-		var value = 0L
-		while(pos < chars.size) {
-			val digit = when(val char = chars[pos++]) {
-				in '0'..'9' -> char - '0'
-				in 'a'..'f' -> char - 'a' + 10
-				in 'A'..'F' -> char - 'A' + 10
-				'_'         -> continue
-				else        -> { pos--; break }
+			if(atCommentStart(char)) {
+				skipTo { it == '\n' }
+				continue
 			}
-			value = (value shl 4) or digit.toLong()
+
+			val symbol = resolveSymbol(char)
+			if(symbol != null) {
+				tokens.add(symbol)
+				continue
+			}
+
+			pos--
+
+			if(shouldReadIntegers && char.isDigit()) {
+				tokens.add(resolveInteger(readNumber(char))!!)
+				continue
+			}
+
+			if(!char.isIdStartChar)
+				error("Unexpected character '$char' at pos $pos")
+
+			val string = readIdString()
+
+			val keyword = resolveKeyword(string)
+			if(keyword != null) {
+				tokens.add(keyword)
+				continue
+			}
+
+			tokens.add(resolveIdentifier(string))
 		}
-		return value
+
+		return tokens
 	}
 
 
 
-	fun readHex2() = read(2).toInt(16)
+	protected open val shouldReadIntegers = true
+
+	protected open fun atCommentStart(char: Char) = false
+
+	protected open val Char.isIdStartChar get() = isLetter() || this == '_'
+
+	protected open val Char.isIdChar get() = isLetterOrDigit() || this == '_'
+
+	protected open fun readIdString() = readWhile { it.isIdChar }
+
+
+
+	protected abstract val Char.isSkippableWhitespace: Boolean
+
+	protected abstract fun resolveSymbol(char: Char): T?
+
+	protected abstract fun resolveKeyword(string: String): T?
+
+	protected abstract fun resolveIdentifier(string: String): T
+
+	protected abstract fun resolveInteger(value: Long): T?
 
 
 }

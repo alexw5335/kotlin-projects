@@ -1,7 +1,7 @@
 package asm
 
 import core.hex8
-import core.process.Processes
+import core.Processes
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.writeText
@@ -9,7 +9,7 @@ import kotlin.io.path.writeText
 
 
 const val input = """
-	add r15b, 1
+	cmpsb
 """
 
 

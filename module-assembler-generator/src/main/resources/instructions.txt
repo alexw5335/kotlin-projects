@@ -71,29 +71,36 @@
 32    XOR  R8  RM8
 33    XOR  R   RM
 
-8D        LEA     R RM
-0F BC     BSF     R RM
-0F BD     BSR     R RM
-0F C8     BSWAP   R       (noGp16)
-0F A3     BT      RM R
-0F BA /4  BT      RM IMM8
-0F BB     BTC     RM R
-0F BA /7  BTC     RM IMM8
-0F B3     BTR     RM R
-0F BA /6  BTR     RM IMM8
-0F AB     BTS     RM R
-0F BA /5  BTS     RM IMM8
-E8        CALL    REL32
-FF /2     CALL    RM      (noGp16) (noGp32)
-FF /3     CALL    M16_
-98        CBW
-98        CWDE
-98        CDQE
-F8        CLC
-FC        CLD
-FA        CLI
-0F 06     CLTS
-F5        CMC
+8D     LEA  R RM
+0F BC  BSF  R RM
+0F BD  BSR  R RM
+
+0F C8  BSWAP  R32
+0F C8  BSWAP  R64  (REXW)
+
+0F A3     BT   RM R
+0F BA /4  BT   RM IMM8
+0F BB     BTC  RM R
+0F BA /7  BTC  RM IMM8
+0F B3     BTR  RM R
+0F BA /6  BTR  RM IMM8
+0F AB     BTS  RM R
+0F BA /5  BTS  RM IMM8
+
+E8     CALL  REL32
+FF /2  CALL  RM64
+FF /3  CALL  M16_16  (OSO)
+FF /3  CALL  M16_32
+FF /3  CALL  M16_64  (REXW)
+
+98     CBW
+98     CWDE
+98     CDQE
+F8     CLC
+FC     CLD
+FA     CLI
+0F 06  CLTS
+F5     CMC
 
 0F 47  CMOVA    R RM
 0F 43  CMOVAE   R RM
@@ -136,24 +143,19 @@ F5        CMC
 3A    CMP  R8  RM8
 3B    CMP  R   RM
 
-A6  CMPS   M8
-A7  CMPS   M
 A6  CMPSB
 A7  CMPSW
 A7  CMPSD
 A7  CMPSQ
 
-0F B0     CMPXCHG     RM   R
-#0F C7 /1  CMPXCHG8B   M64     # Doesn't use REX.W
-#REX.W 0F C7 /1  CMPXCHG16B  M128    # Uses REX.W
+0F B0     CMPXCHG     RM    R
+0F C7 /1  CMPXCHG8B   M64
+0F C7 /1  CMPXCHG16B  M128  (REXW)
 
 0F A2  CPUID
 
-# crc32 rax, al
-# Can have different register sizes
-#
-# F2 0F 38 F0 CRC32 R32 RM8
-# OSO F2 0F 38 F1 CRC32 R32 RM16
-# F2 0F 38 F1 CRC32 R32 RM32
-# F2 0F 38 F0 CRC32 R64 RM8    # Uses REX.W
-# F2 0F 38 F1 CRC32 R64 RM64   # Uses REX.W
+F2 0F 38 F0  CRC32  R32  RM8
+F2 0F 38 F0  CRC32  R64  RM8   (REXW)
+F2 0F 38 F1  CRC32  R32  RM16  (OSO)
+F2 0F 38 F1  CRC32  R32  RM32
+F2 0F 38 F1  CRC32  R64  RM64  (REXW)

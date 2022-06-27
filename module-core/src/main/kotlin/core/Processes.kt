@@ -1,9 +1,15 @@
-package core.process
+package core
 
 import kotlin.system.exitProcess
 
 object Processes {
 
+
+	fun readResourceText(path: String) = this::class.java
+			.getResourceAsStream(path)!!
+			.reader()
+			.readText()
+			.toCharArray()
 
 	fun run(command: String): Boolean {
 		val process = Runtime.getRuntime().exec(command)

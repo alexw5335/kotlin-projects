@@ -1,6 +1,6 @@
 package asm
 
-import core.process.Processes
+import core.Processes
 
 
 
