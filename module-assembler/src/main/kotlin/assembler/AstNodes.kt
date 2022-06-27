@@ -24,3 +24,4 @@ class RegisterNode(val register: Register) : OperandNode
 
 class ImmediateNode(val value: Long) : OperandNode
 
+class AddressNode(val value: Long) : OperandNode

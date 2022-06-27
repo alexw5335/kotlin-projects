@@ -9,7 +9,7 @@ import kotlin.io.path.writeText
 
 
 const val input = """
-	crc32 rax, al
+	add r15b, 1
 """
 
 

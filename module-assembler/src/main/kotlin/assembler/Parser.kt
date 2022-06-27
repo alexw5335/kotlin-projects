@@ -22,6 +22,43 @@ class Parser(private val tokens: List<Token>) {
 
 
 
+	private fun readAtom(): AstNode = when(val token = tokens[pos++]) {
+		Symbol.LEFT_PAREN -> {
+			val expression = readExpression(0)
+			if(pos >= tokens.size || tokens[pos++] != Symbol.RIGHT_PAREN)
+				error("Expected ')'")
+			expression
+		}
+
+		is Symbol -> {
+			val unaryOp = token.unaryOp ?: error("Unexpected symbol: $token")
+			UnaryOpNode(unaryOp, readAtom())
+		}
+
+		is IntLiteral -> IntNode(token.value)
+
+		else -> error("Invalid expression operand token: $token")
+	}
+
+
+
+	private fun readExpression(precedence: Int = 0): AstNode {
+		var result = readAtom()
+
+		while(pos < tokens.size) {
+			val symbol = tokens[pos] as? Symbol ?: error("Expected symbol, found: ${tokens[pos]}")
+			val op = symbol.binaryOp ?: break
+			if(op.precedence < precedence) break
+			pos++
+			val right = readExpression(op.precedence + 1)
+			result = BinaryOpNode(op, result, right)
+		}
+
+		return result
+	}
+
+
+
 	private fun parseOperand(): OperandNode {
 		if(pos >= tokens.size) error("Expecting operand")
 

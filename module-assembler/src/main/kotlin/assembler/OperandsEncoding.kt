@@ -1,6 +1,6 @@
 package assembler
 
-enum class OperandsEncoding {
+enum class OperandsEncoding(val matcher: (InstructionNode) -> Boolean) {
 
 	AL_IMM8,
 	A_IMM,
