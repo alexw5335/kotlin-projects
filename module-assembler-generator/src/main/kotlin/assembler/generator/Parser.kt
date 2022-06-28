@@ -36,6 +36,19 @@ class Parser(private val tokens: List<Token>) {
 
 
 
+	/*
+	if(op1 is Register)
+		if(op2 is Register)
+		if(op2 is Mem)
+		if(op2 is Imm)
+			if(op1 is A)
+			else
+	if(op1 is Mem)
+		if(op2 is Register)
+		if(op2 is Imm)
+	 */
+
+
 	private fun parseInstruction() {
 		var value = hex2()
 		var prefix = -1
