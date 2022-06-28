@@ -11,6 +11,7 @@ class Assembler(private val nodes: List<AstNode>) {
 	private val writer = BinaryWriter()
 
 
+
 	fun assemble(): ByteArray {
 		for(node in nodes)
 			if(node is InstructionNode)
@@ -19,7 +20,9 @@ class Assembler(private val nodes: List<AstNode>) {
 		return writer.trimmedBytes()
 	}
 
-	val OperandNode?.flags get() = when(this) {
+
+
+	private val OperandNode?.flags get() = when(this) {
 		null             -> OperandFlags.NONE
 		is AddressNode   -> OperandFlags.MEM
 		is ImmediateNode -> OperandFlags.compose { IMM + IMM8 }
@@ -33,7 +36,9 @@ class Assembler(private val nodes: List<AstNode>) {
 		}
 	}
 
-	val Operand.flags get() = when(this) {
+
+
+	private val Operand.flags get() = when(this) {
 		Operand.NONE -> OperandFlags.NONE
 		Operand.A    -> OperandFlags.compose { A }
 		Operand.AL   -> OperandFlags.compose { AL }
@@ -44,6 +49,8 @@ class Assembler(private val nodes: List<AstNode>) {
 		Operand.IMM8 -> OperandFlags.compose { IMM8 }
 		Operand.IMM  -> OperandFlags.compose { IMM8 + IMM }
 	}
+
+
 
 	private fun InstructionNode.assemble() {
 		val encodings = Instructions.map[mnemonic] ?: error("Unsupported mnemonic: $mnemonic")

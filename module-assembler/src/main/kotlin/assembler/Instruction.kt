@@ -8,7 +8,7 @@ class Instruction(
 	val operand2  : Operand,
 	val operand3  : Operand,
 	val operand4  : Operand,
-	val encoding  : Operands,
+	val custom    : Boolean,
 	val oso       : Boolean,
 	val rexw      : Boolean
 )

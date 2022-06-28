@@ -20,6 +20,7 @@ object Instructions {
 		operand2,
 		Operand.NONE,
 		Operand.NONE,
+		custom = false,
 		oso = false,
 		rexw = false
 	)
