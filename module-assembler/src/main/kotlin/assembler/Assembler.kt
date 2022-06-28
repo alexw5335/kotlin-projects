@@ -22,32 +22,25 @@ class Assembler(private val nodes: List<AstNode>) {
 
 
 
+	/*
+	Instruction precedence?
+
+	add rax, 10 should use RM IMM8
+	add rax, 1000 should use A IMM
+	 */
+
 	private val OperandNode?.flags get() = when(this) {
 		null             -> OperandFlags.NONE
 		is AddressNode   -> OperandFlags.MEM
-		is ImmediateNode -> OperandFlags.compose { IMM + IMM8 }
+		is ImmediateNode -> if(value in -128..127) OperandFlags.IMM8 else OperandFlags.IMM
 		is RegisterNode  -> when (register) {
-			GP8Register.AL    -> OperandFlags.compose { AL + R8 }
+			GP8Register.AL    -> OperandFlags { AL }
 			GP16Register.AX,
 			GP32Register.EAX,
-			GP64Register.RAX  -> OperandFlags.compose { A + R }
-			is GP8Register    -> OperandFlags.compose { R8 }
-			else              -> OperandFlags.compose { R }
+			GP64Register.RAX  -> OperandFlags { A }
+			is GP8Register    -> OperandFlags { REG8 }
+			else              -> OperandFlags { REG }
 		}
-	}
-
-
-
-	private val Operand.flags get() = when(this) {
-		Operand.NONE -> OperandFlags.NONE
-		Operand.A    -> OperandFlags.compose { A }
-		Operand.AL   -> OperandFlags.compose { AL }
-		Operand.R    -> OperandFlags.compose { A + R }
-		Operand.R8   -> OperandFlags.compose { AL + R8 }
-		Operand.RM   -> OperandFlags.compose { A + R + MEM }
-		Operand.RM8	 -> OperandFlags.compose { AL + R8 + MEM }
-		Operand.IMM8 -> OperandFlags.compose { IMM8 }
-		Operand.IMM  -> OperandFlags.compose { IMM8 + IMM }
 	}
 
 
@@ -62,14 +55,20 @@ class Assembler(private val nodes: List<AstNode>) {
 			(operand4.flags shl 24)
 
 		for(e in encodings) {
-			val instructionFlags =
-				(e.operand1.flags shl 0)  or
-				(e.operand2.flags shl 8)  or
-				(e.operand3.flags shl 16) or
-				(e.operand4.flags shl 24)
+			if(flags in e.operands.flags) {
+				println("encoding found: ${e.opcode.hex8} $mnemonic ${e.operands}")
 
-			if(instructionFlags in flags) {
-				println("encoding found: ${e.opcode.hex8} $mnemonic ${e.operand1} ${e.operand2}")
+				if(e.operands == Operands.AL_IMM8) {
+					println(e.opcode.hex8)
+					println((operand2 as ImmediateNode).value.toInt().hex8)
+				} else if(e.operands == Operands.A_IMM) {
+					when((operand1 as RegisterNode).register) {
+						is GP16Register -> println("66")
+						is GP64Register -> println("48")
+					}
+					println(e.opcode.hex8)
+					println((operand2 as ImmediateNode).value.toInt().hex8)
+				}
 			}
 		}
 	}

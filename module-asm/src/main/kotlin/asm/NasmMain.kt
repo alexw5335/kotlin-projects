@@ -9,7 +9,7 @@ import kotlin.io.path.writeText
 
 
 const val input = """
-	pop qword fs
+	add rax, 1000
 """
 
 

@@ -5,7 +5,7 @@ import assembler.*
 
 
 fun main() {
-	val input = "add al, 1"
+	val input = "add rax, 10"
 	val tokens = Lexer(input.toCharArray()).lex()
 	val nodes = Parser(tokens).parse()
 	for(n in nodes) println(n.printableString)
@@ -44,9 +44,9 @@ val AstNode.printableString: String get() = when(this) {
 
 fun printToken(token: Token) {
 	when(token) {
-		is Symbol -> println("SYMBOL    ${token.string}")
-		is Identifier -> println("ID        ${token.value}")
-		is IntLiteral -> println("INT       ${token.value}")
+		is Symbol        -> println("SYMBOL    ${token.string}")
+		is Identifier    -> println("ID        ${token.value}")
+		is IntLiteral    -> println("INT       ${token.value}")
 		is MnemonicToken -> println("MNEMONIC  ${token.value.name.lowercase()}")
 		is RegisterToken -> println("REGISTER  ${token.value.toString().lowercase()}")
 	}
