@@ -18,7 +18,7 @@ class InstructionNode(
 	val operand4: OperandNode?
 ) : AstNode
 
-interface OperandNode : AstNode
+sealed interface OperandNode : AstNode
 
 class RegisterNode(val register: Register) : OperandNode
 

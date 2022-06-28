@@ -150,8 +150,14 @@ class Lexer(private val chars: CharArray) {
 		private val keywordMap = HashMap<String, Token>()
 
 		init {
-			//for(r in Register.values())
-			//	keywordMap[r.name.lowercase()] = RegisterToken(r)
+			for(r in GP8Register.values())
+				keywordMap[r.name.lowercase()] = RegisterToken(r)
+			for(r in GP16Register.values())
+				keywordMap[r.name.lowercase()] = RegisterToken(r)
+			for(r in GP32Register.values())
+				keywordMap[r.name.lowercase()] = RegisterToken(r)
+			for(r in GP64Register.values())
+				keywordMap[r.name.lowercase()] = RegisterToken(r)
 			for(m in Mnemonic.values())
 				keywordMap[m.name.lowercase()] = MnemonicToken(m)
 		}

@@ -20,29 +20,27 @@ class Assembler(private val nodes: List<AstNode>) {
 	}
 
 
+	val OperandNode.type get() = when(this) {
+		is AddressNode -> Operand.MEM
+		is ImmediateNode -> Operand.IMM
+		is RegisterNode -> if(register is GP8Register) Operand.R8 else Operand.R
+	}
 
 	private fun InstructionNode.assemble() {
-		when(mnemonic) {
+		val encodings = Instructions.map[mnemonic] ?: error("Unsupported mnemonic: $mnemonic")
+
+		for(e in encodings) {
+			println(e.operands)
+		}
+/*		when(mnemonic) {
 			Mnemonic.ADD -> {
 				if(operand1 == null || operand2 == null || operand3 != null || operand4 != null)
 					error("Invalid instruction")
 			}
 
 			else -> error("Unsupported mnemonic: $mnemonic")
- 		}
+ 		}*/
 	}
-
-	/*
-		04    ADD  AL  IMM8
-		05    ADD  A   IMM
-		80/0  ADD  RM8 IMM8
-		81/0  ADD  RM  IMM
-		83/0  ADD  RM  IMM8
-		00    ADD  RM8 R8
-		01    ADD  RM  R
-		02    ADD  R8  RM8
-		03    ADD  R   RM
-	 */
 
 
 }

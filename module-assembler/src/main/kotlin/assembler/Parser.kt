@@ -64,8 +64,8 @@ class Parser(private val tokens: List<Token>) {
 
 		return when(val token = tokens[pos++]) {
 			is RegisterToken -> RegisterNode(token.value)
-			is IntLiteral -> ImmediateNode(token.value)
-			else -> error("Expecting operand")
+			is IntLiteral    -> ImmediateNode(token.value)
+			else             -> error("Expecting operand, found ${tokens[pos-1]}")
 		}
 	}
 

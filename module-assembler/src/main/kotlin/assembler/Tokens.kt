@@ -6,13 +6,13 @@ sealed interface Token
 
 
 
-class IntLiteral(val value: Long) : Token
+data class IntLiteral(val value: Long) : Token
 
-class Identifier(val value: String) : Token
+data class Identifier(val value: String) : Token
 
-class RegisterToken(val value: Register) : Token
+data class RegisterToken(val value: Register) : Token
 
-class MnemonicToken(val value: Mnemonic) : Token
+data class MnemonicToken(val value: Mnemonic) : Token
 
 
 
