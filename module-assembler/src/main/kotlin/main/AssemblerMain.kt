@@ -5,7 +5,7 @@ import assembler.*
 
 
 fun main() {
-	val input = "add eax, 1"
+	val input = "add al, 1"
 	val tokens = Lexer(input.toCharArray()).lex()
 	val nodes = Parser(tokens).parse()
 	for(n in nodes) println(n.printableString)

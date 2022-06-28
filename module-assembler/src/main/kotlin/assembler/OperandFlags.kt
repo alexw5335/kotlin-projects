@@ -3,15 +3,27 @@ package assembler
 @JvmInline
 value class OperandFlags(val value: Int) {
 
+	operator fun plus(flags: OperandFlags) = OperandFlags(value or flags.value)
 
-	val isR    get() = value and (1 shl 0) != 0
-	val isMEM  get() = value and (1 shl 1) != 0
-	val isR8   get() = value and (1 shl 2) != 0
-	val isIMM  get() = value and (1 shl 3) != 0
-	val isIMM8 get() = value and (1 shl 4) != 0
-	val isAL   get() = value and (1 shl 5) != 0
-	val isA    get() = value and (1 shl 6) != 0
-	val isCL   get() = value and (1 shl 7) != 0
+	operator fun contains(flags: OperandFlags) = value and flags.value == flags.value
 
+	infix fun or(flags: OperandFlags) = OperandFlags(value or flags.value)
+
+	infix fun shl(count: Int) = OperandFlags(value shl count)
+
+	companion object {
+
+		val NONE = OperandFlags(0)
+		val R8   = OperandFlags(1 shl 0)
+		val R    = OperandFlags(1 shl 1)
+		val MEM  = OperandFlags(1 shl 2)
+		val IMM  = OperandFlags(1 shl 3)
+		val IMM8 = OperandFlags(1 shl 4)
+		val A    = OperandFlags(1 shl 5)
+		val AL   = OperandFlags(1 shl 6)
+
+		inline fun compose(block: Companion.() -> OperandFlags) = this.block()
+
+	}
 
 }

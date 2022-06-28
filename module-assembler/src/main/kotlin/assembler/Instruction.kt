@@ -1,11 +1,13 @@
 package assembler
 
 class Instruction(
-	val prefix    : Int,
 	val opType    : OpType,
 	val opcode    : Int,
 	val extension : Int,
-	val operands  : Operands,
+	val operand1  : Operand,
+	val operand2  : Operand,
+	val operand3  : Operand,
+	val operand4  : Operand,
 	val oso       : Boolean,
 	val rexw      : Boolean
 )

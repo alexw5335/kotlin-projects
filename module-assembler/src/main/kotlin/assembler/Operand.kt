@@ -7,7 +7,8 @@ enum class Operand {
 	AL,
 	R,
 	R8,
-	MEM,
+	RM,
+	RM8,
 	IMM8,
 	IMM;
 
