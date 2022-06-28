@@ -2,6 +2,24 @@ package assembler.generator
 
 enum class Operands {
 
+	NONE,
+	IMM8,
+	IMM,
+	R_IMM8,
+	MEM_IMM8,
+	R_IMM,
+	MEM_IMM,
+	R_R,
+	MEM_R,
+	R_MEM;
+
+}
+
+
+
+/*
+enum class Operands {
+
 	MEM,
 
 	R8,
@@ -36,4 +54,4 @@ enum class Operands {
 	R64_IMM64;
 
 
-}
+}*/

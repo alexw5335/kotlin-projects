@@ -11,6 +11,8 @@
 02    ADD  R8  RM8
 03    ADD  R   RM
 
+/*
+
 0C    OR   AL  IMM8
 0D    OR   A   IMM
 80/1  OR   RM8 IMM8

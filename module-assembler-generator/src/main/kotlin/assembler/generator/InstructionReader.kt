@@ -1,9 +1,13 @@
 package assembler.generator
 
 import core.ReaderBase
+import core.LineSpacingFormatter
+import core.hex8
 
 class InstructionReader(chars: CharArray) : ReaderBase(chars) {
 
+
+	private val operandMap = Operand.values().associateBy { it.name }
 
 	private val instructions = ArrayList<Instruction>()
 
@@ -23,20 +27,35 @@ class InstructionReader(chars: CharArray) : ReaderBase(chars) {
 				continue
 			}
 
+			if(pos < chars.size - 1 && char == '/' && chars[pos + 1] == '*') {
+				while(pos < chars.size - 1)
+					if(chars[pos++] == '*' && chars[pos] == '/')
+						break
+				pos++
+				continue
+			}
+
 			readInstruction()
 		}
+
+		LineSpacingFormatter(lines, 2).format().forEach(::println)
 
 		return instructions
 	}
 
 
 
-	private fun readOperandEncoding(): String? {
+	private fun readOperandEncoding(): Operand {
 		skipSpaces()
 		if(pos >= chars.size || chars[pos] == '\n' || chars[pos] == '#' || chars[pos] == '(')
-			return null
-		return readWhile { it.isLetterOrDigit() || it == '_' }
+			return Operand.NONE
+		val string = readWhile { it.isLetterOrDigit() || it == '_' }
+		return operandMap[string] ?: error("Unrecognised operand: $string")
 	}
+
+
+
+	private val lines = ArrayList<List<String>>()
 
 
 
@@ -76,10 +95,14 @@ class InstructionReader(chars: CharArray) : ReaderBase(chars) {
 
 		skipSpaces()
 
-		val operand1 = readOperandEncoding()
-		val operand2 = if(operand1 != null) readOperandEncoding() else null
-		val operand3 = if(operand2 != null) readOperandEncoding() else null
-		val operand4 = if(operand3 != null) readOperandEncoding() else null
+		val op1 = readOperandEncoding()
+		val op2 = if(!op1.isNone) readOperandEncoding() else Operand.NONE
+		val op3 = if(!op2.isNone) readOperandEncoding() else Operand.NONE
+		val op4 = if(!op3.isNone) readOperandEncoding() else Operand.NONE
+
+		accumulateOperands(op1, op2, op3, op4)
+
+		lines.add(listOf(opcode.hex8, mnemonic, op1.toString(), op2.toString(), " -> ", operands.joinToString()))
 
 		skipSpaces()
 
@@ -98,5 +121,37 @@ class InstructionReader(chars: CharArray) : ReaderBase(chars) {
 		}
 	}
 
+
+
+	private val operands = ArrayList<Operands>()
+
+
+
+	fun accumulateOperands(op1: Operand, op2: Operand, op3: Operand, op4: Operand) {
+		fun add(vararg operands: Operands) = this.operands.addAll(operands)
+		operands.clear()
+
+		when {
+			op1.isNone -> add(Operands.NONE)
+
+			op2.isNone -> error("Unsupported operand encoding: $op1")
+
+			op3.isNone -> when {
+				op1 == Operand.AL  && op2 == Operand.IMM8 -> add(Operands.IMM8)
+				op1 == Operand.A   && op2 == Operand.IMM  -> add(Operands.IMM)
+				op1 == Operand.RM8 && op2 == Operand.IMM8 -> add(Operands.R_IMM, Operands.MEM_IMM)
+				op1 == Operand.RM  && op2 == Operand.IMM  -> add(Operands.R_IMM, Operands.MEM_IMM)
+				op1 == Operand.RM  && op2 == Operand.IMM8 -> add(Operands.R_IMM8, Operands.MEM_IMM8)
+				op1 == Operand.RM8 && op2 == Operand.R8   -> add(Operands.R_R, Operands.MEM_R)
+				op1 == Operand.RM  && op2 == Operand.R    -> add(Operands.R_R, Operands.MEM_R)
+				op1 == Operand.R8  && op2 == Operand.RM8  -> add(Operands.R_R, Operands.R_MEM)
+				op1 == Operand.R   && op2 == Operand.RM   -> add(Operands.R_R, Operands.R_MEM)
+				else -> error("Unsupported operand encoding: $op1 $op2")
+			}
+
+			else -> error("Unsupported operand encoding: $op1 $op2 $op3 $op4")
+		}
+
+	}
 
 }

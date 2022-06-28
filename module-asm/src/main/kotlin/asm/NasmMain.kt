@@ -9,7 +9,8 @@ import kotlin.io.path.writeText
 
 
 const val input = """
-	cmpsb
+	mem db 0
+	call far [mem]
 """
 
 
