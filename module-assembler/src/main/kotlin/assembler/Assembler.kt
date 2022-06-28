@@ -11,7 +11,6 @@ class Assembler(private val nodes: List<AstNode>) {
 	private val writer = BinaryWriter()
 
 
-
 	fun assemble(): ByteArray {
 		for(node in nodes)
 			if(node is InstructionNode)

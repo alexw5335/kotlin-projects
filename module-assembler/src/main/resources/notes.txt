@@ -36,3 +36,51 @@ struct InstructionEncoding {
 	u8 operand4
 	u8[7] reserved
 }
+
+Instructions that use opcode registers:
+- push r16/64 (64-bit default)
+- pop r16/64  (64-bit default)
+- xchg
+- mov r8, imm8
+- mov r/16/32/64, imm/16/32/64
+- bswap r/16/32/64
+
+Instructions with 3 or 4 operands
+- IMUL
+- SHLD
+- SHRD
+- Many SIMD instructions
+
+- An instruction must specify the operand types that can be used
+- An instruction must also specify how those operands are encoded
+	- For most of the same combinations of operands, these encodings are the same
+		- e.g. almost all R, RM instructions are encoded the same way
+	- Sometimes, different encodings are used, such as the opcode register
+- For simplicity, all instructions are assumed to follow the main encoding principles
+- Instructions that do not follow these principles are encoded separately by hand
+- E.g. opcode register variations of PUSH and POP are encoded separately.
+	- However, the variations of PUSH and POP that do follow the standard encoded are encoded normally
+- Flag bits are still used to choose the specific instruction encoding for a mnemonic
+	- An instruction must specify whether it uses custom encoding
+
+
+Operand types:
+- r/m8
+- r/m16/32/64
+- r8
+- r16/32/64
+- al
+- ax/eax/rax
+- imm8
+- imm16/32
+- opcode r64/r16 (push/pop)
+- r32/r64 (movsxd)
+- m8, m16, m32 (explicit operand, INS/OUTS/MOVS, etc.)
+- dx (explicit operand, OUTS)
+- rel8
+- Sreg (mov)
+- dx/edx/rdx (cwd/cdq/cqo)
+- support explicit operands? Probably not. Nasm doesn't seem to.
+- moffs8
+- moffs16/32/64 (mov)
+- imm16
