@@ -29,6 +29,8 @@ class Assembler(private val nodes: List<AstNode>) {
 	add rax, 1000 should use A IMM
 	 */
 
+
+
 	private val OperandNode?.flags get() = when(this) {
 		null             -> OperandFlags.NONE
 		is AddressNode   -> OperandFlags.MEM

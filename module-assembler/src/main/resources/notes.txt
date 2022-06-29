@@ -84,3 +84,36 @@ Operand types:
 - moffs8
 - moffs16/32/64 (mov)
 - imm16
+
+struct Instruction {
+
+}
+
+// 8 bytes in size
+union AstNode {
+	RegisterNode  register
+	ImmediateNode immediate
+	AddressNode   address
+}
+
+struct RegisterNode {
+	u8 registerType
+	u8 register
+}
+
+struct ImmediateNode {
+	s64 immediate
+}
+
+struct AddressNode2 {
+	u8 modrm   // will be combined with other operands
+	u8 sib     // if needed
+	u32 offset // if needed
+}
+
+struct AddressNode {
+	u8 width  // 32 or 64-bit general-purpose (64-bit by default)
+	u8 base   // A 32 or 64-bit gp register
+	u8 index  // A 32 or 64-bit gp register
+	u32 offset
+}
