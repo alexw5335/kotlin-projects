@@ -1,12 +1,10 @@
 package assembler
 
 import core.binary.BinaryWriter
-import core.hex8
+import assembler.Mnemonic.*
 
 class Assembler(private val nodes: List<AstNode>) {
 
-
-	private var pos = 0
 
 	private val writer = BinaryWriter()
 
@@ -22,56 +20,71 @@ class Assembler(private val nodes: List<AstNode>) {
 
 
 
-	/*
-	Instruction precedence?
-
-	add rax, 10 should use RM IMM8
-	add rax, 1000 should use A IMM
-	 */
-
-
-
-	private val OperandNode?.flags get() = when(this) {
-		null             -> OperandFlags.NONE
-		is AddressNode   -> OperandFlags.MEM
-		is ImmediateNode -> if(value in -128..127) OperandFlags.IMM8 else OperandFlags.IMM
-		is RegisterNode  -> when (register) {
-			GP8Register.AL    -> OperandFlags { AL }
-			GP16Register.AX,
-			GP32Register.EAX,
-			GP64Register.RAX  -> OperandFlags { A }
-			is GP8Register    -> OperandFlags { REG8 }
-			else              -> OperandFlags { REG }
+	private fun InstructionNode.assemble() {
+		when(mnemonic) {
+			ADD  -> encode1(0x00, 0)
+			OR   -> encode1(0x08, 1)
+			ADC  -> encode1(0x10, 2)
+			SBB  -> encode1(0x18, 3)
+			AND  -> encode1(0x20, 4)
+			SUB  -> encode1(0x28, 5)
+			XOR  -> encode1(0x30, 6)
+			CMP  -> encode1(0x38, 7)
+			else -> error("Unsupported operand")
 		}
 	}
 
 
 
-	private fun InstructionNode.assemble() {
-		val encodings = Instructions.map[mnemonic] ?: error("Unsupported mnemonic: $mnemonic")
+	private fun InstructionNode.encode1(startOpcode: Int, extension: Int) {
+		fun error() : Nothing =
+			error("Invalid encoding for instruction $mnemonic $operand1, $operand2, $operand3, $operand4")
 
-		val flags =
-			(operand1.flags shl 0)  or
-			(operand2.flags shl 8)  or
-			(operand3.flags shl 16) or
-			(operand4.flags shl 24)
+		if(operand1 == null || operand2 == null || operand3 != null)
+			error()
 
-		for(e in encodings) {
-			if(flags in e.operands.flags) {
-				println("encoding found: ${e.opcode.hex8} $mnemonic ${e.operands}")
+		when(operand1) {
+			is RegisterNode -> {
+				val r = (operand1.register as? GPRegister) ?: error()
 
-				if(e.operands == Operands.AL_IMM8) {
-					println(e.opcode.hex8)
-					println((operand2 as ImmediateNode).value.toInt().hex8)
-				} else if(e.operands == Operands.A_IMM) {
-					when((operand1 as RegisterNode).register) {
-						is GP16Register -> println("66")
-						is GP64Register -> println("48")
+				if(r.value == 0) {
+					val imm = (operand2 as? ImmediateNode)?.value ?: error()
+
+					when(r) {
+						is GP8Register -> {
+							writer.u8(startOpcode + 4)
+							writer.s8(imm.toInt())
+						}
+
+						is GP16Register -> {
+							writer.u8(0x66)
+							writer.u8(startOpcode + 5)
+							writer.s16(imm.toInt())
+						}
+
+						is GP32Register -> {
+							writer.u8(startOpcode + 5)
+							writer.s32(imm.toInt())
+						}
+
+						is GP64Register -> {
+							writer.u8(0x48)
+							writer.u8(startOpcode + 5)
+							writer.s32(imm.toInt())
+						}
 					}
-					println(e.opcode.hex8)
-					println((operand2 as ImmediateNode).value.toInt().hex8)
+				} else {
+					when(operand2) {
+
+					}
 				}
 			}
+
+			is AddressNode -> {
+
+			}
+
+			else -> error()
 		}
 	}
 

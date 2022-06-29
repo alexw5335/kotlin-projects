@@ -10,18 +10,24 @@ extern ExitProcess
 
 
 
+%define CONVERT_TO_LOWERCASE
+
+
+
 section .bss
 	fileHandle resb 8
 	fileSize resb 8
-	fileData resb 1 << 14
-	mnemonics resb 1 << 14
-	mnemonicCount resb 8
+	fileData resb 1 << 16
+	strings resb 1 << 16
+	stringCount resb 8
+	output resb 1 << 16
+	outputLength resb 8
 
 
 
 section .data
-	fileName db "module-assembler/src/main/resources/mnemonics.txt", 0
-	mnemonicFormat db "dq ", 0x22, "%.8s", 0x22, 0xa, 0
+	fileName db "module-asm/src/main/resources/mnemonics.txt", 0
+	outputFileName db "module-asm/src/main/resources/output.txt", 0
 
 
 
@@ -53,14 +59,25 @@ init:
 
 
 
-read_mnemonics:
-	push rdi ; mnemonic string
-	push rsi ; fileData
-	push rbp ; mnemonics buffer
+make_lowercase:
+	cmp cl, 'A'
+	jb .end
+	cmp cl, 'Z'
+	ja .end
+	add cl, 'a' - 'A'
+.end:
+	ret
+
+
+
+read_strings:
+	push rdi ; u64   string
+	push rsi ; void* fileData
+	push rbp ; u64*  buffer
 	sub rsp, 40
 
-	mov qword [mnemonicCount], 0
-	lea rbp, [mnemonics]
+	mov qword [stringCount], 0
+	lea rbp, [strings]
 	lea rsi, [fileData]
 	xor ecx, ecx
 	xor edi, edi
@@ -75,9 +92,18 @@ read_mnemonics:
 	cmp al, 0xd
 	je .carriage
 
+%ifdef CONVERT_TO_LOWERCASE
+	cmp al, 'A'
+    jb .case_convert_end
+    cmp al, 'Z'
+    ja .case_convert_end
+    add al, 'a' - 'A'
+.case_convert_end:
+%endif
+
 	shl ecx, 3
 	shl rax, cl
-	xor rdi, rax
+	or rdi, rax
 	shr ecx, 3
 	add ecx, 1
 
@@ -87,7 +113,7 @@ read_mnemonics:
 .newline:
 	cmp ecx, 8
 	ja .continue
-	add dword [mnemonicCount], 1
+	add dword [stringCount], 1
 	mov [rbp], rdi
 	add rbp, 8
 .continue:
@@ -103,32 +129,70 @@ read_mnemonics:
 
 
 
-sort_mnemonics:
+sort_strings:
 	sub rsp, 40
-	lea rcx, [mnemonics]
-	mov edx, [mnemonicCount]
+	lea rcx, [strings]
+	mov edx, [stringCount]
 	call bubble_sort_u64
 	add rsp, 40
 	ret
 
 
 
-print_mnemonics:
+gen_output:
+	push rbx    ; loop index
+	push rdi    ; void* buffer
+	sub rsp, 40
+	mov rbx, 0
+	lea rdi, [output]
+
+.loop:
+	mov dword [rdi], "    "
+	add rdi, 4
+	mov dword [rdi], "dq "
+	add rdi, 3
+	mov byte [rdi], 34
+	add rdi, 1
+	mov rdx, [strings + rbx * 8]
+	mov rcx, rdx
+	call nt_length8
+	mov qword [rdi], rdx
+	add rdi, rax
+	mov byte [rdi], 34
+	add rdi, 1
+	mov byte [rdi], 10
+	add rdi, 1
+	add rbx, 1
+	cmp rbx, [stringCount]
+	jb .loop
+
+	lea rcx, [output]
+	sub rdi, rcx
+	mov qword [outputLength], rdi
+
+	add rsp, 40
+	pop rdi
+	pop rbx
+	ret
+
+
+
+print_output:
 	push rbx
 	sub rsp, 32
-	mov rbx, 0 ; print in sections of 200, too many calls to WriteFile causes freezes?
-.loop:
-	mov rcx, "    dq "
-	call print_ascii8
-	mov rcx, 34
-	call print_ascii8
-	mov rcx, [mnemonics + rbx * 8]
-	call print_ascii8
-	mov rcx, 34
-	call println_ascii8
-	add rbx, 1
-	cmp rbx, 200
-	jb .loop
+
+	lea rcx, [outputFileName]
+	call create_file_for_writing
+	mov rbx, rax
+
+	mov rcx, rbx
+	lea rdx, [output]
+	mov r8, [outputLength]
+	call write_file
+
+	mov rcx, rbx
+	call close_file
+
 	add rsp, 32
 	pop rbx
 	ret
@@ -139,9 +203,10 @@ main:
 	sub rsp, 56
 
 	call init
-	call read_mnemonics
-	call sort_mnemonics
-	call print_mnemonics
+	call read_strings
+	call sort_strings
+	call gen_output
+	call print_output
 
 	printFinished
 	call ExitProcess

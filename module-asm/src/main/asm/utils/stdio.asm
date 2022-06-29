@@ -60,6 +60,23 @@ section .text
 
 
 
+; rcx: u64 string
+; rax: null-terminated length of rcx or 8 if no null-terminator exists
+; registers: rax, rcx
+nt_length8:
+	xor eax, eax
+.loop:
+	cmp cl, 0
+	je .end
+	add eax, 1
+	shr rcx, 8
+	cmp eax, 8
+	jne .loop
+.end:
+	ret
+
+
+
 ; rcx: char* error message
 stdio_error:
 	sub rsp, 40
@@ -78,6 +95,7 @@ stdio_error:
 
 ; rcx: void* buffer
 ; rdx: u64 length (0 for null-terminated buffer)
+; note: Program freezes if too many characters are printed in quick succession?
 print:
 	sub rsp, 56
 	mov r8, rdx

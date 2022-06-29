@@ -4,7 +4,7 @@ import core.Processes
 
 
 
-private const val fileName = "mnemonic_generator"
+private const val fileName = "search_table_gen"
 
 private const val directory = "module-asm/src/main/asm"
 
