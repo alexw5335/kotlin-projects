@@ -117,3 +117,18 @@ struct AddressNode {
 	u8 index  // A 32 or 64-bit gp register
 	u32 offset
 }
+
+- R RM expands to:
+	- REG16 MEM
+	- REG16 REG16
+	- REG32 MEM
+	- REG32 REG32
+	- REG64 MEM
+	- REG64 REG64
+- Or perhaps:
+	- REG MEM
+	- REG REG
+- For the second version, the width can be extracted from REG
+- Or, it could simply be left as R RM and flag bits can be used instead
+- 16-bit flag bits
+	-

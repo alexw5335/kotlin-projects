@@ -113,6 +113,8 @@ read_strings:
 .newline:
 	cmp ecx, 8
 	ja .continue
+	cmp ecx, 0
+	je .continue
 	add dword [stringCount], 1
 	mov [rbp], rdi
 	add rbp, 8

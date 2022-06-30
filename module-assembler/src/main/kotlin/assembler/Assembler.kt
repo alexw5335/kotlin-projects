@@ -34,58 +34,77 @@ class Assembler(private val nodes: List<AstNode>) {
 		}
 	}
 
+	/*
+	Instruction precedence?
+
+	add rax, 10 should use RM IMM8
+	add rax, 1000 should use A IMM
+
+	How to handle opcode extensions?
+	Cannot just let the Operands encode everything.
+	 */
 
 
-	private fun InstructionNode.encode1(startOpcode: Int, extension: Int) {
+
+	private val OperandNode?.flags get() = when(this) {
+		null -> OperandFlags.NONE
+		is AddressNode -> OperandFlags.MEM
+		is ImmediateNode -> OperandFlags { IMM }
+		is RegisterNode -> register.flags
+	}
+
+
+
+
+	private fun InstructionNode.encode(encoding: InstructionEncoding) {
+		when(encoding.operands) {
+			Operands.AL_IMM8  -> {
+				writer.u8(encoding.opcode)
+				writer.s8((operand2 as ImmediateNode).value.toInt())
+			}
+			Operands.A_IMM    -> {
+				val reg = (operand1 as RegisterNode).register.flags
+				val imm = (operand2 as ImmediateNode).value.toInt()
+
+				when {
+					reg.isREG16 -> {
+						writer.u8(0x66)
+						writer.u8(encoding.opcode)
+						// Extension?
+						writer.s16(imm)
+					}
+					reg.isREG32 -> writer.s32(imm)
+					reg.isREG64 -> writer.s64(imm.toLong())
+				}
+			}
+			Operands.RM8_IMM8 -> TODO()
+			Operands.RM_IMM   -> TODO()
+			Operands.RM_IMM8  -> TODO()
+			Operands.RM8_R8   -> TODO()
+			Operands.RM_R     -> TODO()
+			Operands.R8_RM8   -> TODO()
+			Operands.R_RM     -> TODO()
+		}
+	}
+
+
+
+	private fun InstructionNode.encode1(firstOpcode: Int, extension: Int) {
 		fun error() : Nothing =
 			error("Invalid encoding for instruction $mnemonic $operand1, $operand2, $operand3, $operand4")
 
-		if(operand1 == null || operand2 == null || operand3 != null)
-			error()
+		val flags =
+			(operand1.flags.value.toLong() shl 0) or
+			(operand2.flags.value.toLong() shl 16) or
+			(operand3.flags.value.toLong() shl 32) or
+			(operand4.flags.value.toLong() shl 48)
 
-		when(operand1) {
-			is RegisterNode -> {
-				val r = (operand1.register as? GPRegister) ?: error()
+		fun matches(operands: Operands) = flags and operands.flags == flags
 
-				if(r.value == 0) {
-					val imm = (operand2 as? ImmediateNode)?.value ?: error()
+		Instructions.ADD
+			.filter { matches(it.operands) }
+			.forEach(::println)
 
-					when(r) {
-						is GP8Register -> {
-							writer.u8(startOpcode + 4)
-							writer.s8(imm.toInt())
-						}
-
-						is GP16Register -> {
-							writer.u8(0x66)
-							writer.u8(startOpcode + 5)
-							writer.s16(imm.toInt())
-						}
-
-						is GP32Register -> {
-							writer.u8(startOpcode + 5)
-							writer.s32(imm.toInt())
-						}
-
-						is GP64Register -> {
-							writer.u8(0x48)
-							writer.u8(startOpcode + 5)
-							writer.s32(imm.toInt())
-						}
-					}
-				} else {
-					when(operand2) {
-
-					}
-				}
-			}
-
-			is AddressNode -> {
-
-			}
-
-			else -> error()
-		}
 	}
 
 
