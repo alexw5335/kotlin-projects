@@ -131,4 +131,3 @@ struct AddressNode {
 - For the second version, the width can be extracted from REG
 - Or, it could simply be left as R RM and flag bits can be used instead
 - 16-bit flag bits
-	-

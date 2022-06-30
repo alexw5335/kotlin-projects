@@ -9,7 +9,7 @@ import kotlin.io.path.writeText
 
 
 const val input = """
-	ADDPD xmm15, xmm15
+	IN
 """
 
 
