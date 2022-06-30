@@ -170,21 +170,40 @@ struct AddressNode {
 			M64BCST
 			MEM
 
-	classValue =
-		op1.flags.value << 0 or
-		op2.flags.value << 8 or
-		op3.flags.value << 16 or
-		op4.flags.value << 24
+	val classValue =
+		((op1.value and 0xFF) shl 0) or
+		((op2.value and 0xFF) shl 8) or
+		((op3.value and 0xFF) shl 16) or
+		((op4.value and 0xFF) shl 24)
 
-	typeValue =
-		op1.flags.value >> 8 or
-		op2.flags.value >> 0 or
-		op3.flags.value << 8 or
-		op3.flags.value << 16
+	val typeValue =
+		((op4.value and 0xFF00) shl 16) or
+		((op3.value and 0xFF00) shl 8) or
+		((op2.value and 0xFF00) shl 0) or
+		((op1.value and 0xFF00) shr 8)
 
 
 	for each encoding, check:
 		classValue == encoding.classValue
 		encoding.typeValue and typeValue == encoding.typeValue
+
+
+	- This does not work
+	- MEM will not be shared between classes with AND
+	- Nothing but a true flag bits will work.
+	- 16-bit Flag Bits:
+		MEM
+		R
+		R8
+		A
+		AL
+		CL
+		DX
+		IMM8
+		IMM
+		XMM
+		YMM
+		ZMM
+	- Flag bits may need to be extended to 32 bits?
 
 	 */

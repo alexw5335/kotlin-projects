@@ -46,9 +46,9 @@ class Assembler(private val nodes: List<AstNode>) {
 
 
 
-	private val OperandNode?.type get() = when(this) {
-		null             -> OperandType.NONE
-		is AddressNode   -> OperandType.MEM
+	private val OperandNode?.flags get() = when(this) {
+		null             -> OperandFlags.NONE
+		is AddressNode   -> OperandFlags.M
 		is ImmediateNode -> OperandType.IMM
 		is RegisterNode  -> register.type
 	}
