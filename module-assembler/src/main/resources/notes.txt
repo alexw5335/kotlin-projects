@@ -131,3 +131,60 @@ struct AddressNode {
 - For the second version, the width can be extracted from REG
 - Or, it could simply be left as R RM and flag bits can be used instead
 - 16-bit flag bits
+
+	/*
+
+	16-bit operand type
+		8-bit class
+		7-bit flags
+		1-bit mem for all classes
+
+	classes:
+		REG
+			REG16
+			REG32
+			REG64
+			AX
+			EAX
+			RAX
+			DX
+			MEM
+		REG8
+			AL
+			CL
+			MEM
+		IMM
+			IMM8
+			IMM16
+			IMM32
+			IMM64
+		XMM
+			XMM0
+			MEM
+		YMM
+			YMM0
+			MEM
+		ZMM
+			ZMM0
+			M32BCST
+			M64BCST
+			MEM
+
+	classValue =
+		op1.flags.value << 0 or
+		op2.flags.value << 8 or
+		op3.flags.value << 16 or
+		op4.flags.value << 24
+
+	typeValue =
+		op1.flags.value >> 8 or
+		op2.flags.value >> 0 or
+		op3.flags.value << 8 or
+		op3.flags.value << 16
+
+
+	for each encoding, check:
+		classValue == encoding.classValue
+		encoding.typeValue and typeValue == encoding.typeValue
+
+	 */

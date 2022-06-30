@@ -3,13 +3,14 @@ package assembler
 enum class Register(
 	val value: Int,
 	val width: Int,
-	val type: OperandType
+	val type: OperandType,
+	val isA: Boolean = false
 ) {
 
 	// 64-bit general-purpose
-	RAX(0, 4, OperandType.A),
-	RCX(1, 4, OperandType.C),
-	RDX(2, 4, OperandType.D),
+	RAX(0, 4, OperandType.R, isA = true),
+	RCX(1, 4, OperandType.R),
+	RDX(2, 4, OperandType.R),
 	RBX(3, 4, OperandType.R),
 	RSP(4, 4, OperandType.R),
 	RBP(5, 4, OperandType.R),
@@ -25,9 +26,9 @@ enum class Register(
 	R15(15, 4, OperandType.R),
 
 	// 32-bit general-purpose
-	EAX(0, 3, OperandType.A),
-	ECX(1, 3, OperandType.C),
-	EDX(2, 3, OperandType.D),
+	EAX(0, 3, OperandType.R, isA = true),
+	ECX(1, 3, OperandType.R),
+	EDX(2, 3, OperandType.R),
 	EBX(3, 3, OperandType.R),
 	ESP(4, 3, OperandType.R),
 	EBP(5, 3, OperandType.R),
@@ -43,9 +44,9 @@ enum class Register(
 	R15D(15, 3, OperandType.R),
 
 	// 16-bit general-purpose
-	AX(0, 2, OperandType.A),
-	CX(1, 2, OperandType.C),
-	DX(2, 2, OperandType.D),
+	AX(0, 2, OperandType.R, isA = true),
+	CX(1, 2, OperandType.R),
+	DX(2, 2, OperandType.R),
 	BX(3, 2, OperandType.R),
 	SP(4, 2, OperandType.R),
 	BP(5, 2, OperandType.R),
@@ -61,9 +62,9 @@ enum class Register(
 	R15W(15, 2, OperandType.R),
 
 	// 8-bit general-purpose
-	AL(0, 1, OperandType.AL),
-	CL(1, 1, OperandType.CL),
-	DL(2, 1, OperandType.DL),
+	AL(0, 1, OperandType.R8),
+	CL(1, 1, OperandType.R8),
+	DL(2, 1, OperandType.R8),
 	BL(3, 1, OperandType.R8),
 	AH(4, 1, OperandType.R8),
 	CH(5, 1, OperandType.R8),

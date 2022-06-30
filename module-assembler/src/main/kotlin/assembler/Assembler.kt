@@ -49,10 +49,9 @@ class Assembler(private val nodes: List<AstNode>) {
 	private val OperandNode?.type get() = when(this) {
 		null             -> OperandType.NONE
 		is AddressNode   -> OperandType.MEM
-		is ImmediateNode -> if(value in -128.. 127) OperandType.IMM8 else OperandType.IMM
+		is ImmediateNode -> OperandType.IMM
 		is RegisterNode  -> register.type
 	}
-
 
 
 
@@ -66,18 +65,15 @@ class Assembler(private val nodes: List<AstNode>) {
 		fun error() : Nothing =
 			error("Invalid encoding for instruction $mnemonic $operand1, $operand2, $operand3, $operand4")
 
-		val value = (operand1.type)
-			(operand1.flags.value.toLong() shl 0) or
-			(operand2.flags.value.toLong() shl 16) or
-			(operand3.flags.value.toLong() shl 32) or
-			(operand4.flags.value.toLong() shl 48)
+		val value =
+			(operand1.type.value shl 0) or
+			(operand2.type.value shl 8) or
+			(operand3.type.value shl 16) or
+			(operand4.type.value shl 24)
 
-		fun matches(operands: Operands) = operands.flags and flags == operands.flags
-
-		Instructions.ADD
-			.filter { matches(it.operands) }
-			.forEach(::println)
-
+		for(operands in Operands.values())
+			if(value == operands.value)
+				println(operands)
 	}
 
 
