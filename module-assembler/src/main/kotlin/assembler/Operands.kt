@@ -1,10 +1,10 @@
 package assembler
 
 enum class Operands(
-	val op1: OperandFlags = OperandFlags.NONE,
-	val op2: OperandFlags = OperandFlags.NONE,
-	val op3: OperandFlags = OperandFlags.NONE,
-	val op4: OperandFlags = OperandFlags.NONE
+	op1: OperandFlags = OperandFlags.NONE,
+	op2: OperandFlags = OperandFlags.NONE,
+	op3: OperandFlags = OperandFlags.NONE,
+	op4: OperandFlags = OperandFlags.NONE
 ) {
 
 

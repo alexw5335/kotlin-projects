@@ -58,25 +58,8 @@ class Assembler(private val nodes: List<AstNode>) {
 
 	private fun InstructionNode.encode(encoding: InstructionEncoding) {
 		when(encoding.operands) {
-			Operands.AL_IMM8  -> {
-				writer.u8(encoding.opcode)
-				writer.s8((operand2 as ImmediateNode).value.toInt())
-			}
-			Operands.A_IMM    -> {
-				val reg = (operand1 as RegisterNode).register.flags
-				val imm = (operand2 as ImmediateNode).value.toInt()
-
-				when {
-					reg.isREG16 -> {
-						writer.u8(0x66)
-						writer.u8(encoding.opcode)
-						// Extension?
-						writer.s16(imm)
-					}
-					reg.isREG32 -> writer.s32(imm)
-					reg.isREG64 -> writer.s64(imm.toLong())
-				}
-			}
+			Operands.AL_IMM8  -> TODO()
+			Operands.A_IMM    -> TODO()
 			Operands.RM8_IMM8 -> TODO()
 			Operands.RM_IMM   -> TODO()
 			Operands.RM_IMM8  -> TODO()
@@ -99,7 +82,7 @@ class Assembler(private val nodes: List<AstNode>) {
 			(operand3.flags.value.toLong() shl 32) or
 			(operand4.flags.value.toLong() shl 48)
 
-		fun matches(operands: Operands) = flags and operands.flags == flags
+		fun matches(operands: Operands) = operands.flags and flags == operands.flags
 
 		Instructions.ADD
 			.filter { matches(it.operands) }

@@ -3,7 +3,7 @@ package assembler
 
 
 fun main() {
-	val input = "add rax, 100"
+	val input = "add rax, 10"
 	val tokens = Lexer(input.toCharArray()).lex()
 	val nodes = Parser(tokens).parse()
 	for(n in nodes) println(n.printableString)
