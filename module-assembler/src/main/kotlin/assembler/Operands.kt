@@ -13,21 +13,11 @@ enum class Operands(
 	RM8_IMM8(OperandFlags.RM8, OperandFlags.IMM8),
 	RM_IMM(OperandFlags.RM, OperandFlags.IMM),
 	RM_IMM8(OperandFlags.RM, OperandFlags.IMM8),
-	RM8_R8(OperandFlags.RM8, OperandFlags.R8),
+	RM8_R8(OperandFlags.RM8, OperandFlags.REG8),
 	RM_R(OperandFlags.RM, OperandFlags.R),
-	R8_RM8(OperandFlags.R8, OperandFlags.RM8),
+	R8_RM8(OperandFlags.REG8, OperandFlags.RM8),
 	R_RM(OperandFlags.R, OperandFlags.RM);
 
-	val classValue =
-		((op1.value and 0xFF) shl 0) or
-		((op2.value and 0xFF) shl 8) or
-		((op3.value and 0xFF) shl 16) or
-		((op4.value and 0xFF) shl 24)
-
-	val typeValue =
-		((op4.value and 0xFF00) shl 16) or
-		((op3.value and 0xFF00) shl 8) or
-		((op2.value and 0xFF00) shl 0) or
-		((op1.value and 0xFF00) shr 8)
+	val flags = (op1 shl 0) + (op2 shl 16) + (op3 shl 32) + (op4 shl 48)
 
 }
