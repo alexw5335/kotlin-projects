@@ -90,7 +90,6 @@ class Assembler(private val nodes: List<AstNode>) {
 			Operands.R8_RM8   -> 1
 			Operands.R_RM     -> op1!!.width
 		}
-
 	}
 
 

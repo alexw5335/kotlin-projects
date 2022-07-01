@@ -16,9 +16,10 @@ extern WriteFile
 
 
 section .data
-	newlinePrintFormat db 10, 0
-	stringFinished db "Finished", 0
-	string_Finished db "Finished", 0
+	newlinePrintFormat  db 10, 0
+	stringFinished      db "Finished", 0
+	string_Finished     db "Finished", 0
+	stringHere          db "here", 0
 
 	intPrintFormat1     db "%d", 10, 0
 	longPrintFormat1    db "%lld", 10, 0
@@ -175,6 +176,13 @@ section .data
 
 %macro printFinished 0
 	printString stringFinished
+%endmacro
+
+
+
+%macro printHere 0
+	lea rcx, [stringHere]
+	call printf
 %endmacro
 
 

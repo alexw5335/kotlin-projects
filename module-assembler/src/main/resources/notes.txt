@@ -205,5 +205,18 @@ struct AddressNode {
 		YMM
 		ZMM
 	- Flag bits may need to be extended to 32 bits?
+	*/
 
-	 */
+Register representation
+- First byte: register type
+- Second byte: register value
+- types:
+	0 R8
+	1 R16
+	2 R32
+	3 R64
+	4 ST
+	5 MMX
+	6 XMM
+	7 YMM
+	8 ZMM

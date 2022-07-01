@@ -13,8 +13,6 @@ extern malloc
 
 
 
-
-
 section .bss
 	strings resb 8192
 

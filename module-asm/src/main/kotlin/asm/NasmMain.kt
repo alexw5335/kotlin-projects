@@ -1,7 +1,7 @@
 package asm
 
+import core.Core
 import core.hex8
-import core.Processes
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.writeText
@@ -9,7 +9,7 @@ import kotlin.io.path.writeText
 
 
 const val input = """
-	add dword [rax], 10
+	FADD ST0, ST8
 """
 
 
@@ -17,7 +17,7 @@ const val input = """
 fun main() {
 	val temp = Files.createFile(Paths.get("nasmTemp.asm"))
 	temp.writeText(input)
-	val succeeded = Processes.run("nasm -fwin64 nasmTemp.asm -o nasmTemp.obj")
+	val succeeded = Core.run("nasm -fwin64 nasmTemp.asm -o nasmTemp.obj")
 	Files.delete(temp)
 	if(!succeeded) return
 	val path = Paths.get("nasmTemp.obj")

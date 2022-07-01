@@ -26,7 +26,7 @@ section .bss
 
 
 section .data
-	fileName db "module-asm/src/main/resources/mnemonics.txt", 0
+	fileName db "module-asm/src/main/resources/registers.txt", 0
 	outputFileName db "module-asm/src/main/resources/output.txt", 0
 
 
