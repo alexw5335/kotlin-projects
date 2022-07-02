@@ -1,5 +1,11 @@
 package core
 
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlin.io.path.createDirectory
+import kotlin.io.path.exists
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.writeText
 import kotlin.system.exitProcess
 
 object Core {
@@ -50,6 +56,35 @@ object Core {
 	fun nasmRun(src: String, out: String, vararg args: String) {
 		nasmBuild(src, out, *args)
 		runOrExit("./$out.exe")
+	}
+
+
+
+	fun nasmRun(directory: String, fileName: String) {
+		val outDir = Paths.get("$directory/out")
+		if(!outDir.exists()) outDir.createDirectory()
+		nasmRun("$directory/$fileName", "$directory/out/$fileName", "-i module-core/asm/core")
+	}
+
+
+
+	fun nasmAssemble(code: String) {
+		fun ByteArray.int32(pos: Int) =
+			this[pos].toInt() or
+			(this[pos + 1].toInt() shl 8) or
+			(this[pos + 2].toInt() shl 16) or
+			(this[pos + 3].toInt() shl 24)
+
+		val temp = Files.createFile(Paths.get("nasmTemp.asm"))
+		temp.writeText(code)
+		val succeeded = run("nasm -fwin64 nasmTemp.asm -o nasmTemp.obj")
+		Files.delete(temp)
+		if(!succeeded) return
+		val path = Paths.get("nasmTemp.obj")
+		val bytes = Files.readAllBytes(path)
+		val data = bytes.copyOfRange(bytes.int32(40), bytes.int32(40) + bytes.int32(36))
+		data.forEach { println(it.hex8) }
+		Files.delete(path)
 	}
 
 
