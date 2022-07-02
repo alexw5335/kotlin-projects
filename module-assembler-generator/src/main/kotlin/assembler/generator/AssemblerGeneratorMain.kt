@@ -1,7 +1,7 @@
 package assembler.generator
 
-import core.Core
-
 fun main() {
-	InstructionReader(Core.readResourceText("/instructions.txt")).readInstructions()
+	//MnemonicGenerator().print()
+	RegisterGenerator().print()
+	//InstructionReader(Core.readResourceText("/instructions.txt")).readInstructions()
 }
