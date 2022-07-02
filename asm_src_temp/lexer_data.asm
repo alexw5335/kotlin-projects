@@ -6,26 +6,77 @@ errorInvalidChar db "Invalid char: %d", 10, 0
 
 
 
+tokenFormats:
+	formatTokenNone       db "Invalid token", 10, 0
+	formatTokenIdShort    db "Identifier:  %.8s", 10, 0
+	formatTokenIdLong     db "Identifier:  %s", 10, 0
+	formatTokenSymbol     db "Symbol:      %s", 10, 0
+	formatTokenInt        db "Literal:     %llu", 10, 0
+	formatTokenChar       db "Literal:     '%c'", 10, 0
+	formatTokenString     db "Literal:     ", 0x22, "%s", 0x22, 10, 0
+
+
+
+; 0-9, A-Z, a-z
 idCharMap:
 	db 0b00000000 ; 00
 	db 0b00000000 ; 08
 	db 0b00000000 ; 10
 	db 0b00000000 ; 18
-
 	db 0b00000000 ; 20
 	db 0b00000000 ; 28
 	db 0b11111111 ; 30
 	db 0b00000011 ; 38
-
 	db 0b11111110 ; 40
 	db 0b11111111 ; 48
 	db 0b11111111 ; 50
 	db 0b00000111 ; 58
-
 	db 0b11111110 ; 60
 	db 0b11111111 ; 68
 	db 0b11111111 ; 70
 	db 0b00000111 ; 78
+
+
+
+;;;;;;;;;;;
+; SYMBOLS ;
+;;;;;;;;;;;
+
+
+
+; enum Symbol (1 byte)
+%define SYMBOL_EXCLAMATION 0
+%define SYMBOL_AT 1
+%define SYMBOL_HASH 2
+%define SYMBOL_DOLLAR 3
+%define SYMBOL_PERCENT 4
+%define SYMBOL_CARET 5
+%define SYMBOL_AMPERSAND 6
+%define SYMBOL_ASTERISK 7
+%define SYMBOL_LEFT_PAREN 8
+%define SYMBOL_RIGHT_PAREN 9
+%define SYMBOL_DASH 10
+%define SYMBOL_EQUALS 11
+%define SYMBOL_PLUS 12
+%define SYMBOL_LEFT_BRACKET 13
+%define SYMBOL_LEFT_BRACE 14
+%define SYMBOL_RIGHT_BRACKET 15
+%define SYMBOL_RIGHT_BRACE 16
+%define SYMBOL_BACKSLASH 17
+%define SYMBOL_VERT_SLASH 18
+%define SYMBOL_SEMICOLON 19
+%define SYMBOL_COLON 20
+%define SYMBOL_APOSTROPHE 21
+%define SYMBOL_QUOTES 22
+%define SYMBOL_COMMA 23
+%define SYMBOL_LEFT_ANGLE 24
+%define SYMBOL_PERIOD 25
+%define SYMBOL_RIGHT_ANGLE 26
+%define SYMBOL_SLASH 27
+%define SYMBOL_QUESTION 28
+%define SYMBOL_BACKTICK 39
+%define SYMBOL_TILDE 30
+%define SYMBOL_NEWLINE 31
 
 
 
@@ -79,17 +130,6 @@ symbolStrings:
 
 
 
-tokenFormats:
-	formatTokenNone       db "Invalid token", 10, 0
-	formatTokenIdShort    db "Identifier:  %.8s", 10, 0
-	formatTokenIdLong     db "Identifier:  %s", 10, 0
-	formatTokenSymbol     db "Symbol:      %s", 10, 0
-	formatTokenInt        db "Literal:     %llu", 10, 0
-	formatTokenChar       db "Literal:     '%c'", 10, 0
-	formatTokenString     db "Literal:     ", 0x22, "%s", 0x22, 10, 0
-
-
-
 ;;;;;;;;;;;;;
 ; REGISTERS ;
 ;;;;;;;;;;;;;
@@ -105,6 +145,7 @@ tokenFormats:
 
 
 ;enum Register (2 bytes)
+%define NUM_REGISTERS 64
 %define REGISTER_RAX 768
 %define REGISTER_RCX 769
 %define REGISTER_RDX 770
@@ -240,7 +281,7 @@ registerSearchTable:
 
 
 
-registerValueMap:
+registerValueTable:
 	dw 776
 	dw 777
 	dw 4
@@ -308,7 +349,7 @@ registerValueMap:
 
 
 
-registerReverseIndexMap:
+registerReverseIndexTable:
 	align 32
 	db 9
 	db 11

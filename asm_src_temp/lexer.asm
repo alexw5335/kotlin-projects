@@ -21,42 +21,8 @@ global main
 %define TOKEN_INT        3 ; u8 type, i64 value
 %define TOKEN_CHAR       4 ; u8 type, u32 value
 %define TOKEN_STRING     5 ; u8 type, u32 length, if(length <= 8) char[8] string else char* string (nt)
-%define TOKEN_REGISTER   6 ; u8 type, u8 regType, u8 register
+%define TOKEN_REGISTER   6 ; u8 type, u8 registerValue, u8 registerType
 %define TOKEN_MNEMONIC   7 ; u8 type, u16 mnemonicOrdinal
-
-; enum Symbol (1 byte)
-%define SYMBOL_EXCLAMATION 0
-%define SYMBOL_AT 1
-%define SYMBOL_HASH 2
-%define SYMBOL_DOLLAR 3
-%define SYMBOL_PERCENT 4
-%define SYMBOL_CARET 5
-%define SYMBOL_AMPERSAND 6
-%define SYMBOL_ASTERISK 7
-%define SYMBOL_LEFT_PAREN 8
-%define SYMBOL_RIGHT_PAREN 9
-%define SYMBOL_DASH 10
-%define SYMBOL_EQUALS 11
-%define SYMBOL_PLUS 12
-%define SYMBOL_LEFT_BRACKET 13
-%define SYMBOL_LEFT_BRACE 14
-%define SYMBOL_RIGHT_BRACKET 15
-%define SYMBOL_RIGHT_BRACE 16
-%define SYMBOL_BACKSLASH 17
-%define SYMBOL_VERT_SLASH 18
-%define SYMBOL_SEMICOLON 19
-%define SYMBOL_COLON 20
-%define SYMBOL_APOSTROPHE 21
-%define SYMBOL_QUOTES 22
-%define SYMBOL_COMMA 23
-%define SYMBOL_LEFT_ANGLE 24
-%define SYMBOL_PERIOD 25
-%define SYMBOL_RIGHT_ANGLE 26
-%define SYMBOL_SLASH 27
-%define SYMBOL_QUESTION 28
-%define SYMBOL_BACKTICK 39
-%define SYMBOL_TILDE 30
-%define SYMBOL_NEWLINE 31
 
 
 
@@ -85,7 +51,7 @@ dq 0
 main:
 	sub rsp, 40
 	call lex_init
-	call lex_input
+	call lex
 	call print_tokens
 	call parse_init
 	call parse
@@ -106,6 +72,7 @@ parse_init:
 	lea rsi, [tokens]
 	lea r12, [nodes]
 	ret
+
 
 
 ; rcx: u64 length
@@ -132,57 +99,58 @@ print_token:
 	add rcx, .jump_start
 	jmp rcx
 
-.jump_table:
-	db .none - .jump_start
-	db .identifier - .jump_start
-	db .symbol - .jump_start
-	db .int - .jump_start
-	db .char - .jump_start
-	db .string - .jump_start
+	.jump_table:
+		db .none - .jump_start
+		db .identifier - .jump_start
+		db .symbol - .jump_start
+		db .int - .jump_start
+		db .char - .jump_start
+		db .string - .jump_start
 
-.jump_start:
-.none:
-	lea rcx, [formatTokenNone]
-	call printf
-	jmp .end
-.identifier:
-	cmp byte [rdi + 1], 8
-	ja .identifier_long
-.identifier_short:
-	lea rcx, [formatTokenIdShort]
-	lea rdx, [rdi + 8]
-	jmp .identifier_end
-.identifier_long:
-	lea rcx, [formatTokenIdLong]
-	mov rdx, qword [rdi + 8]
-.identifier_end:
-	call printf
-	jmp .end
-.symbol:
-	lea rcx, [formatTokenSymbol]
-	movzx rdx, byte [rdi + 1]
-	lea rdx, [symbolStrings + rdx * 8]
-	call printf
-	jmp .end
-.int:
-	lea rcx, [formatTokenInt]
-	mov rdx, qword [rdi + 8]
-	call printf
-	jmp .end
-.char:
-	lea rcx, [formatTokenChar]
-	mov edx, dword [rdi + 8]
-	call printf
-	jmp .end
-.string:
-	lea rcx, [formatTokenString]
-	mov rdx, qword [rdi + 8]
-	call printf
-	jmp .end
-.end:
-	add rsp, 32
-	pop rdi
-	ret
+	.jump_start:
+	.none:
+		lea rcx, [formatTokenNone]
+		call printf
+		jmp .end
+	.identifier:
+		cmp byte [rdi + 1], 8
+		ja .identifier_long
+	.identifier_short:
+		lea rcx, [formatTokenIdShort]
+		lea rdx, [rdi + 8]
+		jmp .identifier_end
+	.identifier_long:
+		lea rcx, [formatTokenIdLong]
+		mov rdx, qword [rdi + 8]
+	.identifier_end:
+		call printf
+		jmp .end
+	.symbol:
+		lea rcx, [formatTokenSymbol]
+		movzx rdx, byte [rdi + 1]
+		lea rdx, [symbolStrings + rdx * 8]
+		call printf
+		jmp .end
+	.int:
+		lea rcx, [formatTokenInt]
+		mov rdx, qword [rdi + 8]
+		call printf
+		jmp .end
+	.char:
+		lea rcx, [formatTokenChar]
+		mov edx, dword [rdi + 8]
+		call printf
+		jmp .end
+	.string:
+		lea rcx, [formatTokenString]
+		mov rdx, qword [rdi + 8]
+		call printf
+		jmp .end
+	.end:
+		add rsp, 32
+		pop rdi
+		ret
+.print_token_end:
 
 
 
@@ -211,11 +179,19 @@ print_nodes:
 
 
 
-; LEX procedure
-; rsi: source position
+
+
+
+;;;;;;;;;;;;;;;;;
+;      LEX      ;
+;;;;;;;;;;;;;;;;;
+; rsi: pSrc
 ; rdi: current char
-; r12: token stream position
-; r13: line index
+; r12: pTokens
+; r13: line number
+;;;;;;;;;;;;;;;;;
+
+
 
 
 
@@ -367,7 +343,26 @@ read_identifier:
 
 
 
-lex_input:
+.read_string_literal:
+	sub rsp, 40
+	sub rsi, 1
+	xor ecx, ecx
+
+	.length_loop:
+		movzx edi, byte [rsi + rcx]
+		cmp edi, '"'
+		je .end
+		add ecx, 1
+		jmp .length_loop
+	.end:
+		add rsp, 40
+		ret
+.read_string_literal_end:
+
+
+
+
+lex:
 	sub rsp, 40
 
 	lea rsi, [input]
@@ -625,16 +620,22 @@ lex_input:
 		db .right_brace - .eos ; 7D
 		db .tilde - .eos       ; 7E
 		db .invalid - .eos     ; 7F
-lex_input_end:
+lex_end:
+
+
+
 
 
 
 ;;;;;;;;;;;;;;;;;;;
-; PARSE PROCEDURE ;
+;      PARSE      ;
 ;;;;;;;;;;;;;;;;;;;
 ; rsi: pTokens    ;
 ; r12: pNodes     ;
 ;;;;;;;;;;;;;;;;;;;
+
+
+
 
 
 
@@ -656,3 +657,33 @@ parse:
 	lea rcx, [stringFatalError]
 	call printf
 	call ExitProcess
+
+
+
+; rcx: char[8] string
+resolve_mnemonic:
+	mov r8, rcx
+	lea rcx, [mnemonicSearchTable]
+	mov rdx, NUM_MNEMONICS
+	call binary_search_u64
+	cmp rax, -1
+	je .end
+	xor eax, eax
+	mov ax, [mnemonicIndexTable + rax * 2]
+.end:
+	ret
+
+
+
+; rcx: char[8] string
+resolve_register:
+	mov r8, rcx
+	lea rcx, [registerSearchTable]
+	mov rdx, NUM_REGISTERS
+	call binary_search_u64
+	cmp rax, -1
+	je .end
+	xor eax, eax
+	mov ax, [registerValueTable + rax * 2]
+.end:
+	ret

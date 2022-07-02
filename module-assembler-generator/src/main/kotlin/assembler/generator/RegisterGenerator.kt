@@ -18,6 +18,7 @@ class RegisterGenerator {
 		}
 
 		println("\n\n\n;enum Register (2 bytes)")
+		println("%define NUM_REGISTERS ${unsorted.size}")
 		for(register in unsorted) {
 			println("%define REGISTER_$register ${register.fullValue}")
 		}
@@ -31,10 +32,11 @@ class RegisterGenerator {
 		for(type in RegType.values())
 			println("\tdq \"$type\"")
 
-		println("\n\n\nregisterValueMap:")
+		println("\n\n\nregisterValueTable:")
 		for(register in sorted)
 			println("\tdw ${register.fullValue}")
 
+		// index into this table is 32 * register.type + register.value
 		println("\n\n\nregisterReverseIndexTable:")
 		for(regList in byType) {
 			println("\talign 32")
