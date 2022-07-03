@@ -11,7 +11,7 @@ sourceSets {
 sourceSets {
 	main {
 		java {
-			srcDir("src")
+			srcDir("kt")
 		}
 	}
 }

@@ -2,12 +2,10 @@ package core
 
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.io.path.createDirectory
-import kotlin.io.path.exists
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.writeText
+import kotlin.io.path.*
 import kotlin.system.exitProcess
 
+@Suppress("Unused", "MemberVisibilityCanBePrivate")
 object Core {
 
 
@@ -62,8 +60,20 @@ object Core {
 
 	fun nasmRun(directory: String, fileName: String) {
 		val outDir = Paths.get("$directory/out")
+
 		if(!outDir.exists()) outDir.createDirectory()
-		nasmRun("$directory/$fileName", "$directory/out/$fileName", "-i module-core/asm/core")
+
+		val srcDir = Paths.get("$directory/src")
+
+		val includes = srcDir
+			.listDirectoryEntries()
+			.filter { it.isDirectory() }
+			.map { it.toString() }
+			.toMutableList()
+			.also { it.add(srcDir.toString()) }
+			.joinToString(separator = " -I ", prefix = "-I ")
+
+		nasmRun("$directory/src/$fileName", "$directory/out/$fileName", includes)
 	}
 
 

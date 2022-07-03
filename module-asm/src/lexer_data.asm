@@ -7,13 +7,14 @@ errorInvalidChar db "Invalid char: %d", 10, 0
 
 
 tokenFormats:
-	formatTokenNone       db "Invalid token", 10, 0
-	formatTokenIdShort    db "Identifier:  %.8s", 10, 0
-	formatTokenIdLong     db "Identifier:  %s", 10, 0
-	formatTokenSymbol     db "Symbol:      %s", 10, 0
-	formatTokenInt        db "Literal:     %llu", 10, 0
-	formatTokenChar       db "Literal:     '%c'", 10, 0
-	formatTokenString     db "Literal:     ", 0x22, "%s", 0x22, 10, 0
+	formatTokenNone        db "Invalid token", 10, 0
+	formatTokenIdShort     db "Identifier:  %.8s", 10, 0
+	formatTokenIdLong      db "Identifier:  %s", 10, 0
+	formatTokenSymbol      db "Symbol:      %s", 10, 0
+	formatTokenInt         db "Literal:     %llu", 10, 0
+	formatTokenChar        db "Literal:     '%c'", 10, 0
+	formatTokenStringShort db "Literal:     ", 0x22, "%.8s", 0x22, 10, 0
+	formatTokenStringLong  db "Literal:     ", 0x22, "%s", 0x22, 10, 0
 
 
 
