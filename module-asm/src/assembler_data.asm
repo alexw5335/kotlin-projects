@@ -15,6 +15,8 @@ tokenFormats:
 	formatTokenChar        db "Literal:     '%c'", 10, 0
 	formatTokenStringShort db "Literal:     ", 0x22, "%.8s", 0x22, 10, 0
 	formatTokenStringLong  db "Literal:     ", 0x22, "%s", 0x22, 10, 0
+	formatTokenMnemonic    db "Mnemonic:    %s", 10, 0
+	formatTokenRegister    db "Register:    %s", 10, 0
 
 
 
@@ -67,17 +69,15 @@ idCharMap:
 %define SYMBOL_VERT_SLASH 18
 %define SYMBOL_SEMICOLON 19
 %define SYMBOL_COLON 20
-%define SYMBOL_APOSTROPHE 21
-%define SYMBOL_QUOTES 22
-%define SYMBOL_COMMA 23
-%define SYMBOL_LEFT_ANGLE 24
-%define SYMBOL_PERIOD 25
-%define SYMBOL_RIGHT_ANGLE 26
-%define SYMBOL_SLASH 27
-%define SYMBOL_QUESTION 28
-%define SYMBOL_BACKTICK 39
-%define SYMBOL_TILDE 30
-%define SYMBOL_NEWLINE 31
+%define SYMBOL_COMMA 21
+%define SYMBOL_LEFT_ANGLE 22
+%define SYMBOL_PERIOD 23
+%define SYMBOL_RIGHT_ANGLE 24
+%define SYMBOL_SLASH 25
+%define SYMBOL_QUESTION 26
+%define SYMBOL_BACKTICK 27
+%define SYMBOL_TILDE 28
+%define SYMBOL_NEWLINE 29
 
 
 
@@ -103,8 +103,6 @@ symbolStrings:
     dq "|"
     dq ";"
     dq ":"
-    dq "'"
-    dq 34
     dq ","
     dq "<"
     dq "."
@@ -134,6 +132,9 @@ symbolStrings:
 ;;;;;;;;;;;;;
 ; REGISTERS ;
 ;;;;;;;;;;;;;
+
+
+
 
 
 
@@ -223,10 +224,10 @@ registerSearchTable:
 	dq "dh"
 	dq "di"
 	dq "si"
-	dq "dl"
 	dq "al"
 	dq "bl"
 	dq "cl"
+	dq "dl"
 	dq "bp"
 	dq "sp"
 	dq "ax"
@@ -245,40 +246,48 @@ registerSearchTable:
 	dq "r9d"
 	dq "edi"
 	dq "rdi"
-	dq "rsi"
 	dq "esi"
-	dq "rbp"
+	dq "rsi"
 	dq "ebp"
-	dq "rsp"
+	dq "rbp"
 	dq "esp"
+	dq "rsp"
 	dq "r8w"
 	dq "r9w"
-	dq "rax"
 	dq "eax"
-	dq "rbx"
+	dq "rax"
 	dq "ebx"
-	dq "rcx"
+	dq "rbx"
 	dq "ecx"
+	dq "rcx"
 	dq "edx"
 	dq "rdx"
 	dq "r10b"
-	dq "r12b"
 	dq "r11b"
+	dq "r12b"
 	dq "r13b"
 	dq "r14b"
 	dq "r15b"
 	dq "r10d"
-	dq "r14d"
 	dq "r11d"
-	dq "r15d"
 	dq "r12d"
 	dq "r13d"
+	dq "r14d"
+	dq "r15d"
 	dq "r10w"
 	dq "r11w"
 	dq "r12w"
 	dq "r13w"
 	dq "r14w"
 	dq "r15w"
+
+
+
+regTypeNames:
+	dq "GP8"
+	dq "GP16"
+	dq "GP32"
+	dq "GP64"
 
 
 
@@ -291,10 +300,10 @@ registerValueTable:
 	dw 6
 	dw 263
 	dw 262
-	dw 2
 	dw 0
 	dw 3
 	dw 1
+	dw 2
 	dw 261
 	dw 260
 	dw 256
@@ -313,34 +322,34 @@ registerValueTable:
 	dw 521
 	dw 519
 	dw 775
-	dw 774
 	dw 518
-	dw 773
+	dw 774
 	dw 517
-	dw 772
+	dw 773
 	dw 516
+	dw 772
 	dw 264
 	dw 265
-	dw 768
 	dw 512
-	dw 771
+	dw 768
 	dw 515
-	dw 769
+	dw 771
 	dw 513
+	dw 769
 	dw 514
 	dw 770
 	dw 10
-	dw 12
 	dw 11
+	dw 12
 	dw 13
 	dw 14
 	dw 15
 	dw 522
-	dw 526
 	dw 523
-	dw 527
 	dw 524
 	dw 525
+	dw 526
+	dw 527
 	dw 266
 	dw 267
 	dw 268
@@ -349,13 +358,12 @@ registerValueTable:
 	dw 271
 
 
-
+align 32
 registerReverseIndexTable:
-	align 32
-	db 9
-	db 11
 	db 8
 	db 10
+	db 11
+	db 9
 	db 2
 	db 4
 	db 5
@@ -363,8 +371,8 @@ registerReverseIndexTable:
 	db 24
 	db 25
 	db 46
-	db 48
 	db 47
+	db 48
 	db 49
 	db 50
 	db 51
@@ -386,30 +394,30 @@ registerReverseIndexTable:
 	db 62
 	db 63
 	align 32
-	db 39
-	db 43
-	db 44
-	db 41
-	db 35
-	db 33
-	db 31
-	db 28
-	db 26
-	db 27
-	db 52
-	db 54
-	db 56
-	db 57
-	db 53
-	db 55
-	align 32
 	db 38
 	db 42
-	db 45
+	db 44
 	db 40
 	db 34
 	db 32
 	db 30
+	db 28
+	db 26
+	db 27
+	db 52
+	db 53
+	db 54
+	db 55
+	db 56
+	db 57
+	align 32
+	db 39
+	db 43
+	db 45
+	db 41
+	db 35
+	db 33
+	db 31
 	db 29
 	db 0
 	db 1
@@ -422,9 +430,15 @@ registerReverseIndexTable:
 
 
 
+
+
+
 ;;;;;;;;;;;;;
 ; MNEMONICS ;
 ;;;;;;;;;;;;;
+
+
+
 
 
 
@@ -442,35 +456,35 @@ registerReverseIndexTable:
 
 
 mnemonicSearchTable:
-	dq "OR"
-	dq "SBB"
-	dq "SUB"
-	dq "ADC"
-	dq "ADD"
-	dq "AND"
-	dq "CMP"
-	dq "XOR"
+	dq "or"
+	dq "sbb"
+	dq "sub"
+	dq "adc"
+	dq "add"
+	dq "and"
+	dq "cmp"
+	dq "xor"
 
 
 
 mnemonicIndexTable:
-	dw 4
-	dw 0
-	dw 3
 	dw 1
+	dw 3
 	dw 5
 	dw 2
+	dw 0
+	dw 4
 	dw 7
 	dw 6
 
 
 
 mnemonicReverseIndexTable:
-	dw 1
+	dw 4
+	dw 0
 	dw 3
+	dw 1
 	dw 5
 	dw 2
-	dw 0
-	dw 4
 	dw 7
 	dw 6

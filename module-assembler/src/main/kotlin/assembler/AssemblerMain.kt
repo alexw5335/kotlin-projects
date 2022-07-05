@@ -7,7 +7,7 @@ fun main() {
 	val tokens = Lexer(input.toCharArray()).lex()
 	val nodes = Parser(tokens).parse()
 	for(n in nodes) println(n.printableString)
-	Assembler(nodes).assemble()
+	//Assembler(nodes).assemble()
 }
 
 

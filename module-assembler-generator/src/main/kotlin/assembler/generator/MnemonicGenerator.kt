@@ -7,9 +7,9 @@ class MnemonicGenerator {
 
 	private val sorted = unsorted.sortedBy { it.name.lowercase().ascii8 }
 
-	private val indexTable = unsorted.map(sorted::indexOf)
+	private val indexTable = sorted.map(unsorted::indexOf)
 
-	private val reverseIndexTable = sorted.map(unsorted::indexOf)
+	private val reverseIndexTable = unsorted.map(sorted::indexOf)
 
 
 
@@ -38,7 +38,7 @@ class MnemonicGenerator {
 	private val String.ascii8: Long get() {
 		var value = 0L
 		for(i in length - 1 downTo 0)
-			value = value shl 8 or value or (this[i].code.toLong())
+			value = value shl 8 or (this[i].code.toLong())
 		return value
 	}
 

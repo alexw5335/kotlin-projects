@@ -16,7 +16,7 @@ section .data
 	charPrintFormat db "%c", 0
 	stringPrintFormat db "%s", 0
 	newlinePrintFormat db 10, 0
-	stringFatalError db "A fatal error occured", 10, 0
+	stringFatalError db "A fatal error has occurred", 10, 0
 
 
 
@@ -78,5 +78,10 @@ print_string:
 	PRINT_PRIMITIVE stringPrintFormat
 	ret
 
+%macro PRINT_INT 1
+	mov rcx, %1
+	call print_long
+	call ExitProcess
+%endmacro
 
 %endif

@@ -34,16 +34,6 @@ class Assembler(private val nodes: List<AstNode>) {
 		}
 	}
 
-	/*
-	Instruction precedence?
-
-	add rax, 10 should use RM IMM8
-	add rax, 1000 should use A IMM
-
-	How to handle opcode extensions?
-	Cannot just let the Operands encode everything.
-	 */
-
 
 
 	private val OperandNode?.flags get() = when(this) {

@@ -37,7 +37,8 @@ class RegisterGenerator {
 			println("\tdw ${register.fullValue}")
 
 		// index into this table is 32 * register.type + register.value
-		println("\n\n\nregisterReverseIndexTable:")
+		println("\n\n\nalign 32")
+		println("registerReverseIndexTable:")
 		for(regList in byType) {
 			println("\talign 32")
 			for(register in regList)
@@ -50,7 +51,7 @@ class RegisterGenerator {
 	private val String.ascii8: Long get() {
 		var value = 0L
 		for(i in length - 1 downTo 0)
-			value = value shl 8 or value or (this[i].code.toLong())
+			value = value shl 8 or (this[i].code.toLong())
 		return value
 	}
 

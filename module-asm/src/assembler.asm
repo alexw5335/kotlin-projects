@@ -2,17 +2,11 @@ default rel
 
 %include "std.asm"
 %include "data.asm"
-%include "lexer_data.asm"
+%include "assembler_data.asm"
 
 global main
 
 
-
-; struct Node (16 bytes)
-%define NODE_INSTRUCTION 0 ; u8 type, u8 operandCount, u16 mnemonic, Node* operands (operands stored separately)
-%define NODE_REGISTER    1 ; u8 type, u8 regType, u8 regValue
-%define NODE_IMMEDIATE   2 ; u8 type, u8 width, i64 value
-%define NODE_ADDRESS     3 ; u8 type, u8 flags, u8 base, u8 index, u8 scale, i64 offset
 
 ; struct Token (16 bytes)
 %define TOKEN_NONE       0
@@ -23,6 +17,14 @@ global main
 %define TOKEN_STRING     5 ; u8 type, u16 length, if(length <= 8) char[8] string else char* string (nt)
 %define TOKEN_REGISTER   6 ; u8 type, u8 registerValue, u8 registerType
 %define TOKEN_MNEMONIC   7 ; u8 type, u16 mnemonicOrdinal
+
+; struct AstNode (16 bytes)
+%define AST_NONE         0 ; u8 type
+%define AST_INSTRUCTION  1 ; u8 type, u16 mnemonic, Node* operands
+%define AST_OPERAND_REG  2 ; u8 type, u16 register
+%define AST_OPERAND_IMM  3 ; u8 type, i64 value
+%define AST_OPERAND_MEM  4 ; u8 type, u8 addressType, u8 base, u8 index, u8 scale, i64 offset
+%define AST_LABEL        5 ; u8 type, char* name
 
 
 
@@ -35,6 +37,8 @@ section .bss
 
 section .data
 	stringsPos dq strings
+	tokenCount dq 0
+	nodeCount dq 0
 
 
 
@@ -43,8 +47,8 @@ section .text
 
 
 input:
-db "add"
-dq 0
+	db "add rax, rcx"
+	dq 0
 
 
 
@@ -55,7 +59,7 @@ main:
 	call print_tokens
 	call parse_init
 	call parse
-	call print_nodes
+	;call print_nodes
 	call ExitProcess
 
 
@@ -144,7 +148,7 @@ print_token:
 
 	.char:
 		lea rcx, [formatTokenChar]
-		mov edx, dword [rdi + 8]
+		mov edx, dword [rdi + 4]
 		call printf
 		jmp .end
 
@@ -163,10 +167,18 @@ print_token:
 		jmp .end
 
 	.register:
+		movzx ecx, word [rdi + 2]
+		call get_register_name
+		mov rdx, rax
+		lea rcx, [formatTokenRegister]
+		call printf
 		jmp .end
 
 	.mnemonic:
-		lea rcx, [testString]
+		movzx ecx, word [rdi + 2]
+		call get_mnemonic_name
+		mov rdx, rax
+		lea rcx, [formatTokenMnemonic]
 		call printf
 		jmp .end
 
@@ -176,7 +188,7 @@ print_token:
 		ret
 .print_token_end:
 
-testString db "MNEMONIC", 10, 0
+
 
 print_tokens:
 	push rdi
@@ -309,7 +321,8 @@ read_number:
 
 
 read_identifier:
-	sub rsp, 40
+	push rbx    ; char[8] string (if length <= 8)
+	sub rsp, 32
 	sub rsi, 1
 	xor ecx, ecx
 	lea rdx, [idCharMap]
@@ -324,48 +337,55 @@ read_identifier:
 		add ecx, 1
 		jmp .length_loop
 	.length_end:
-		mov eax, ecx
-		shl eax, 8
-		or eax, TOKEN_IDENTIFIER
-		mov qword [r12], rax
-		add r12, 8
 		cmp ecx, 8
 		ja .string_copy_indirect
 
-		mov rax, [rsi]
-		mov edx, ecx
+		mov rbx, [rsi] ; store entire string in rbx
+		mov edx, ecx   ; save ecx
 		neg cl
 		add cl, 8
 		shl cl, 3
-		shl rax, cl
-		shr rax, cl
-		mov ecx, edx
-		;mov rdi, rax ; rdi = string
+		shl rbx, cl
+		shr rbx, cl
+		mov ecx, edx   ; restore ecx
 
 		mov edi, ecx ; save ecx
-		mov rcx, [rsi]
+		mov rcx, rbx
 		call resolve_mnemonic
 		mov ecx, edi ; restore ecx
 		cmp eax, -1
-		je .string_copy_direct
+		jne .mnemonic
 
+		mov edi, ecx ; save ecx
+		mov rcx, rbx
+		call resolve_register
+		mov ecx, edi ; restore ecx
+		cmp eax, -1
+		jne .register
+
+		jmp .string_copy_direct
+
+		; need to resolve registers as well
 	.mnemonic:
 		mov byte [r12], TOKEN_MNEMONIC
-		add r12, 1
-		mov byte [r12], al
+		add r12, 2
+		mov word [r12], ax
+		add r12, 14
+		jmp .end
+
+	.register:
+		mov byte [r12], TOKEN_REGISTER
+		add r12, 2
+		mov word [r12], ax
 		add r12, 14
 		jmp .end
 
 	.string_copy_direct:
-		mov rax, [rsi]
-		mov edx, ecx
-		neg cl
-		add cl, 8
-		shl cl, 3
-		shl rax, cl
-		shr rax, cl
-		mov ecx, edx
-		mov qword [r12], rax
+		mov byte [r12], TOKEN_IDENTIFIER
+		add r12, 1
+		mov byte [r12], cl
+		add r12, 7
+		mov qword [r12], rbx
 		add r12, 8
 		jmp .end
 
@@ -383,11 +403,16 @@ read_identifier:
 		jb .string_copy_loop
 	.string_copy_end:
 		mov byte [rax + rcx], 0 ; null-terminator
+		mov byte [r12], TOKEN_IDENTIFIER
+		add r12, 1
+		mov byte [r12], cl
+		add r12, 7
 		mov qword [r12], rax
 		add r12, 8
 	.end:
 		add rsi, rcx ; advance by length of string
-		add rsp, 40
+		add rsp, 32
+		pop rbx
 		ret
 .read_identifier_end:
 
@@ -447,6 +472,18 @@ read_string_literal_end:
 
 
 
+read_char_literal:
+	xor eax, eax
+	mov al, [rsi]
+	add rsi, 2
+	mov byte [r12], TOKEN_CHAR
+	add r12, 4
+	mov dword [r12], eax
+	add r12, 12
+	ret
+
+
+
 lex:
 	sub rsp, 40
 
@@ -490,7 +527,6 @@ lex:
 		jmp .symbol
 	.quotes:
 		call read_string_literal
-		;mov cl, SYMBOL_QUOTES
 		jmp .loop
 	.hash:
 		mov cl, SYMBOL_HASH
@@ -505,8 +541,8 @@ lex:
 		mov cl, SYMBOL_AMPERSAND
 		jmp .symbol
 	.apostrophe:
-		mov cl, SYMBOL_APOSTROPHE
-		jmp .symbol
+		call read_char_literal
+		jmp .loop
 	.left_paren:
 		mov cl, SYMBOL_LEFT_PAREN
 		jmp .symbol
@@ -710,6 +746,58 @@ lex_end:
 
 
 
+; rcx: char[8] string
+resolve_mnemonic:
+	sub rsp, 40
+	mov r8, rcx
+	lea rcx, [mnemonicSearchTable]
+	mov rdx, NUM_MNEMONICS
+	call binary_search_u64
+	cmp rax, -1
+	je .end
+	mov ax, [mnemonicIndexTable + rax * 2]
+.end:
+	add rsp, 40
+	ret
+
+
+
+; rcx: char[8] string
+resolve_register:
+	sub rsp, 40
+	mov r8, rcx
+	lea rcx, [registerSearchTable]
+	mov rdx, NUM_REGISTERS
+	call binary_search_u64
+	cmp rax, -1
+	je .end
+	mov ax, [registerValueTable + rax * 2]
+.end:
+	add rsp, 40
+	ret
+
+
+
+; rcx: u16 register
+get_register_name:
+	mov eax, ecx
+	shr eax, 8
+	shl eax, 5    ; eax = register.type * 32
+	and ecx, 0xFF ; ecx = register.value
+	movzx eax, byte [registerReverseIndexTable + rax + rcx]
+	lea rax, [registerSearchTable + rax * 8]
+	ret
+
+
+
+; rcx: u8 mnemonic
+get_mnemonic_name:
+	movzx eax, byte [mnemonicReverseIndexTable + rcx * 2]
+	lea rax, [mnemonicSearchTable + rax * 8]
+	ret
+
+
+
 
 
 
@@ -728,52 +816,31 @@ lex_end:
 parse:
 	sub rsp, 40
 
-	cmp byte [rsi], TOKEN_IDENTIFIER
-	jne .error
-	cmp byte [rsi + 1], 8
-	ja .error
+	.loop:
+		movzx edi, byte [rsi]
+		add rsi, 16
+		movzx eax, byte [.jump_table + rdi]
+		add rax, .eos
+		jmp rax
+	.eos:
+		add rsp, 40
+		ret
+	.identifier:
+		jmp .loop
+	.mnemonic:
+		jmp .loop
+	.error:
+		lea rcx, [stringFatalError]
+		call printf
+		call ExitProcess
 
-	mov rcx, [rsi + 8]
-	cmp rcx, "add"
-	jne .error
-
-	add rsp, 40
-	ret
-.error:
-	lea rcx, [stringFatalError]
-	call printf
-	call ExitProcess
-
-
-
-; rcx: char[8] string
-resolve_mnemonic:
-	sub rsp, 40
-	mov r8, rcx
-	lea rcx, [mnemonicSearchTable]
-	mov rdx, NUM_MNEMONICS
-	call binary_search_u64
-	cmp rax, -1
-	je .end
-	xor eax, eax
-	mov ax, [mnemonicIndexTable + rax * 2]
-.end:
-	add rsp, 40
-	ret
-
-
-
-; rcx: char[8] string
-resolve_register:
-	sub rsp, 40
-	mov r8, rcx
-	lea rcx, [registerSearchTable]
-	mov rdx, NUM_REGISTERS
-	call binary_search_u64
-	cmp rax, -1
-	je .end
-	xor eax, eax
-	mov ax, [registerValueTable + rax * 2]
-.end:
-	add rsp, 40
-	ret
+	.jump_table:
+		db .eos - .eos         ; NONE
+		db .error - .eos       ; IDENTIFIER
+		db .error - .eos       ; SYMBOL
+		db .error - .eos       ; INT
+		db .error - .eos       ; CHAR
+		db .error - .eos       ; STRING
+		db .error - .eos       ; REGISTER
+		db .mnemonic - .eos    ; MNEMONIC
+.parse_end:
