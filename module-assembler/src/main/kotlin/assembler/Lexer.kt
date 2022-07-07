@@ -7,6 +7,8 @@ class Lexer(private val chars: CharArray) {
 
 	private val tokens = ArrayList<Token>()
 
+	private val newlines = ArrayList<Int>()
+
 
 
 	/*
@@ -15,12 +17,17 @@ class Lexer(private val chars: CharArray) {
 
 
 
-	fun lex(): List<Token> {
+	fun lex(): LexResult {
 		while(pos < chars.size) {
 			val char = chars[pos++]
 
 			if(char == ' ' || char == '\t' || char == '\r')
 				continue
+
+			if(char == '\n') {
+				newlines.add(tokens.size)
+				continue
+			}
 
 			val symbol = symbol(char)
 			if(symbol != null) {
@@ -60,7 +67,7 @@ class Lexer(private val chars: CharArray) {
 			tokens.add(Identifier(string))
 		}
 
-		return tokens
+		return LexResult(tokens, newlines)
 	}
 
 
@@ -154,6 +161,8 @@ class Lexer(private val chars: CharArray) {
 				keywordMap[r.name.lowercase()] = RegisterToken(r)
 			for(m in Mnemonic.values())
 				keywordMap[m.name.lowercase()] = MnemonicToken(m)
+			for(k in Keyword.values())
+				keywordMap[k.string] = KeywordToken(k)
 		}
 
 		private val Char.isIdChar get() = isLetterOrDigit() || this == '_'

@@ -14,6 +14,21 @@ data class RegisterToken(val value: Register) : Token
 
 data class MnemonicToken(val value: Mnemonic) : Token
 
+data class KeywordToken(val keyword: Keyword) : Token
+
+
+
+enum class Keyword {
+
+	BYTE,
+	WORD,
+	DWORD,
+	QWORD;
+
+	val string = name.lowercase()
+
+}
+
 
 
 enum class Symbol(
@@ -30,7 +45,6 @@ enum class Symbol(
 	SLASH("/", binaryOp = BinaryOp.DIV),
 	EQUALS("="),
 	COMMA(","),
-	NEWLINE("\\n"),
 	SEMICOLON(";"),
 	COLON(":"),
 	PIPE("|", binaryOp = BinaryOp.OR),

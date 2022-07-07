@@ -1,18 +1,23 @@
 package assembler
 
-class Parser(private val tokens: List<Token>) {
+class Parser(lexResult: LexResult) {
 
 
 	private var pos = 0
 
+	private val tokens = lexResult.tokens
+
+	private val newlines = lexResult.newlines
+
 	private val nodes = ArrayList<AstNode>()
+
+	private fun atNewline() = newlines[pos]
 
 
 
 	fun parse(): List<AstNode> {
 		while(pos < tokens.size) {
 			when(val token = tokens[pos++]) {
-				Symbol.NEWLINE -> continue
 				is MnemonicToken -> nodes.add(parseInstruction(token.value))
 				else -> error("Invalid token: $token")
 			}

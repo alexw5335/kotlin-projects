@@ -4,8 +4,6 @@ package assembler
 value class OperandFlags(val value: Int) {
 
 
-	//operator fun plus(other: OperandFlags) = OperandFlags(value + other.value)
-
 	operator fun contains(other: OperandFlags) = other.value and value == other.value
 
 	infix fun shl(count: Int) = OperandFlags(value shl count)
@@ -22,6 +20,7 @@ value class OperandFlags(val value: Int) {
 
 	companion object {
 
+		// Bits 0-4: type. Bits 5-7: flags.
 		val NONE  = OperandFlags(0)
 		val R8    = OperandFlags(1)
 		val R16   = OperandFlags(2)
