@@ -5,6 +5,7 @@ package assembler
  */
 data class InstructionEncoding(
 	val opcode    : Int,
+	val opType    : OpType,
 	val operands  : Operands,
 	val extension : Int = 0
 )

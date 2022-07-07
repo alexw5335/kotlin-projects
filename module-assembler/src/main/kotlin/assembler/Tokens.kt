@@ -41,4 +41,5 @@ enum class Symbol(
 	RIGHT_ANGLE(">"),
 	LEFT_SHIFT("<<", binaryOp = BinaryOp.SHL),
 	RIGHT_SHIFT(">>", binaryOp = BinaryOp.SHR);
+
 }
