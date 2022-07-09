@@ -14,4 +14,6 @@ enum class Mnemonic {
 	ADCX,
 	ADOX;
 
+	val string = name.lowercase()
+
 }

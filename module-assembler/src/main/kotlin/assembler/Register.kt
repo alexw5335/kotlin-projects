@@ -84,4 +84,6 @@ enum class Register(
 	SIL(4, 1, OperandFlags.R8REX),
 	DIL(4, 1, OperandFlags.R8REX);
 
+	val string = name.lowercase()
+
 }

@@ -11,16 +11,16 @@ class Assembler(private val nodes: List<AstNode>) {
 
 
 	fun assemble(): ByteArray {
-		for(node in nodes)
-			if(node is InstructionNode)
-				node.assemble()
+		//for(node in nodes)
+		//	if(node is InstructionNode)
+		//		node.assemble()
 
 		return writer.trimmedBytes()
 	}
 
 
 
-	private fun InstructionNode.assemble() {
+/*	private fun InstructionNode.assemble() {
 		when(mnemonic) {
 			ADD  -> encode1(0x00, 0)
 			OR   -> encode1(0x08, 1)
@@ -105,7 +105,7 @@ class Assembler(private val nodes: List<AstNode>) {
 		}
 
 		encode(InstructionEncoding(firstOpcode, operands, extension))
-	}
+	}*/
 
 
 }

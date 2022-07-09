@@ -3,49 +3,13 @@ package assembler
 
 
 fun main() {
-	val input = "add rax, 1000"
-	val tokens = Lexer(input.toCharArray()).lex()
-	val nodes = Parser(tokens).parse()
-	for(n in nodes) println(n.printableString)
-	//Assembler(nodes).assemble()
-}
+	val input = "add rax, [rax]"
 
+	val lexResult = Lexer(input.toCharArray()).lex()
+	println("Lex Result:")
+	lexResult.printTokens()
 
-
-fun calculate(node: AstNode): Long = when(node) {
-	is IntNode      -> node.value
-	is UnaryOpNode  -> node.op.calculate(calculate(node.node))
-	is BinaryOpNode -> node.op.calculate(calculate(node.left), calculate(node.right))
-	else            -> error("Invalid node: $node")
-}
-
-
-
-val AstNode.printableString: String get() = when(this) {
-	is BinaryOpNode -> "$op(${left.printableString}, ${right.printableString})"
-	is IdNode -> value
-	is InstructionNode -> buildString {
-		append(mnemonic)
-		if(op1 != null) append(" ${op1.printableString}")
-		if(op2 != null) append(", ${op2.printableString}")
-		if(op3 != null) append(", ${op3.printableString}")
-		if(op4 != null) append(", ${op4.printableString}")
-	}
-	is IntNode -> value.toString()
-	is RegisterNode -> register.toString().lowercase()
-	is ImmediateNode -> value.toString()
-	is OperandNode -> "ERROR: Unhandled operand"
-	is UnaryOpNode -> "$op($node)"
-}
-
-
-
-fun printToken(token: Token) {
-	when(token) {
-		is Symbol        -> println("SYMBOL    ${token.string}")
-		is Identifier    -> println("ID        ${token.value}")
-		is IntLiteral    -> println("INT       ${token.value}")
-		is MnemonicToken -> println("MNEMONIC  ${token.value.name.lowercase()}")
-		is RegisterToken -> println("REGISTER  ${token.value.toString().lowercase()}")
-	}
+	val parseResult = Parser(lexResult).parse()
+	println("\nParse Result:")
+	parseResult.printNodes()
 }

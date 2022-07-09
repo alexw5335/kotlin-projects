@@ -15,14 +15,16 @@ class Parser(lexResult: LexResult) {
 
 
 
-	fun parse(): List<AstNode> {
+	fun parse(): ParseResult {
 		while(pos < tokens.size) {
 			when(val token = tokens[pos++]) {
 				is MnemonicToken -> nodes.add(parseInstruction(token.value))
-				else -> error("Invalid token: $token")
+				is EndToken      -> break
+				else             -> error("Invalid token: $token")
 			}
 		}
-		return nodes
+
+		return ParseResult(nodes)
 	}
 
 
@@ -41,6 +43,8 @@ class Parser(lexResult: LexResult) {
 		}
 
 		is IntLiteral -> IntNode(token.value)
+
+		is RegisterToken -> RegisterNode(token.value)
 
 		else -> error("Invalid expression operand token: $token")
 	}
@@ -65,9 +69,23 @@ class Parser(lexResult: LexResult) {
 
 
 	private fun parseOperand(): OperandNode {
-		if(pos >= tokens.size) error("Expecting operand")
+		val token = tokens[pos++]
 
-		return when(val token = tokens[pos++]) {
+		if(token == Symbol.LEFT_BRACKET) {
+			val expression = readExpression()
+
+			if(tokens[pos++] != Symbol.RIGHT_BRACKET)
+				error("Expecting ']', found ${tokens[pos - 1]}")
+
+			if(expression is IntNode)
+				return MemoryNode(null, null, 0, expression.value.toInt(), null)
+			if(expression is RegisterNode)
+				return MemoryNode(expression.value, null, 0, 0, null)
+			if(expression !is BinaryOpNode)
+				error("Invalid effective address")
+		}
+
+		return when(token) {
 			is RegisterToken -> RegisterNode(token.value)
 			is IntLiteral    -> ImmediateNode(token.value)
 			else             -> error("Expecting operand, found ${tokens[pos-1]}")
@@ -77,27 +95,24 @@ class Parser(lexResult: LexResult) {
 
 
 	private fun parseInstruction(mnemonic: Mnemonic): InstructionNode {
-		if(pos >= tokens.size || tokens[pos] == Symbol.NEWLINE) {
-			pos++
-			return InstructionNode(mnemonic, null, null, null, null)
-		}
-
+		if(atNewline()) return InstructionNode(mnemonic, null, null, null, null)
 		val operand1 = parseOperand()
-		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
-			return InstructionNode(mnemonic, operand1, null, null, null)
-		pos++
+
+		if(atNewline() || tokens[pos] == EndToken) return InstructionNode(mnemonic, operand1, null, null, null)
+		if(tokens[pos++] != Symbol.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand2 = parseOperand()
-		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
-			return InstructionNode(mnemonic, operand1, operand2, null, null)
-		pos++
+
+		if(atNewline() || tokens[pos] == EndToken) return InstructionNode(mnemonic, operand1, operand2, null, null)
+		if(tokens[pos++] != Symbol.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand3 = parseOperand()
-		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
-			return InstructionNode(mnemonic, operand1, operand2, operand3, null)
+
+		if(atNewline() || tokens[pos] == EndToken) return InstructionNode(mnemonic, operand1, operand2, operand3, null)
+		if(tokens[pos++] != Symbol.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand4 = parseOperand()
-		if(pos >= tokens.size || tokens[pos] != Symbol.COMMA)
-			return InstructionNode(mnemonic, operand1, operand2, operand3, operand4)
-		pos++
-		error("Too many operands")
+
+		if(!atNewline() && tokens[pos] != EndToken) error("unexpected token: ${tokens[pos]}")
+
+		return InstructionNode(mnemonic, operand1, operand2, operand3, operand4)
 	}
 
 

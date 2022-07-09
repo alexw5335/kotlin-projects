@@ -7,7 +7,7 @@ class Lexer(private val chars: CharArray) {
 
 	private val tokens = ArrayList<Token>()
 
-	private val newlines = ArrayList<Int>()
+	private val newlines = NewlineList()
 
 
 
@@ -25,7 +25,7 @@ class Lexer(private val chars: CharArray) {
 				continue
 
 			if(char == '\n') {
-				newlines.add(tokens.size)
+				newlines.set(tokens.size)
 				continue
 			}
 
@@ -67,6 +67,8 @@ class Lexer(private val chars: CharArray) {
 			tokens.add(Identifier(string))
 		}
 
+		for(i in 0 until 4) tokens.add(EndToken)
+		newlines.ensureBitCapacity(tokens.size)
 		return LexResult(tokens, newlines)
 	}
 
@@ -101,6 +103,8 @@ class Lexer(private val chars: CharArray) {
 		'&' -> Symbol.AMPERSAND
 		'~' -> Symbol.TILDE
 		'^' -> Symbol.CARET
+		'[' -> Symbol.LEFT_BRACKET
+		']' -> Symbol.RIGHT_BRACKET
 		'<' -> checkCompoundSymbol(Symbol.LEFT_ANGLE, '<', Symbol.LEFT_SHIFT)
 		'>' -> checkCompoundSymbol(Symbol.RIGHT_ANGLE, '>', Symbol.RIGHT_SHIFT)
 		else -> null

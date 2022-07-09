@@ -27,12 +27,9 @@ value class OperandFlags(val value: Int) {
 		val R32   = OperandFlags(3)
 		val R64   = OperandFlags(4)
 		val IMM   = OperandFlags(5)
-		val MEM8  = OperandFlags(6)
-		val MEM16 = OperandFlags(7)
-		val MEM32 = OperandFlags(8)
-		val MEM64 = OperandFlags(9)
-		val XMM   = OperandFlags(10)
-		val YMM   = OperandFlags(11)
+		val MEM   = OperandFlags(6)
+		val XMM   = OperandFlags(7)
+		val YMM   = OperandFlags(8)
 
 		val AL = OperandFlags(0b001) or R8
 		val CL = OperandFlags(0b010) or R8
@@ -46,6 +43,8 @@ value class OperandFlags(val value: Int) {
 		val RAX = OperandFlags(0b001) or R64
 
 		val IMM8 = OperandFlags(0b001) or IMM
+
+		val MEM_EXPLICIT = OperandFlags(0b001) or MEM
 
 	}
 

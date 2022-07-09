@@ -2,6 +2,18 @@ package assembler
 
 
 
+val Token.printableString get() = when(this) {
+	is Symbol        -> "SYMBOL    $string"
+	is Identifier    -> "ID        $value"
+	is IntLiteral    -> "INT       $value"
+	is MnemonicToken -> "MNEMONIC  ${value.string}"
+	is RegisterToken -> "REGISTER  ${value.string}"
+	is KeywordToken  -> "KEYWORD   ${value.string}"
+	is EndToken      -> "END OF STREAM"
+}
+
+
+
 sealed interface Token
 
 
@@ -14,16 +26,18 @@ data class RegisterToken(val value: Register) : Token
 
 data class MnemonicToken(val value: Mnemonic) : Token
 
-data class KeywordToken(val keyword: Keyword) : Token
+data class KeywordToken(val value: Keyword) : Token
+
+object EndToken : Token
 
 
 
-enum class Keyword {
+enum class Keyword(val width: Width? = null) {
 
-	BYTE,
-	WORD,
-	DWORD,
-	QWORD;
+	BYTE(width = Width.BIT8),
+	WORD(width = Width.BIT16),
+	DWORD(width = Width.BIT32),
+	QWORD(width = Width.BIT64);
 
 	val string = name.lowercase()
 
@@ -54,6 +68,8 @@ enum class Symbol(
 	LEFT_ANGLE("<"),
 	RIGHT_ANGLE(">"),
 	LEFT_SHIFT("<<", binaryOp = BinaryOp.SHL),
-	RIGHT_SHIFT(">>", binaryOp = BinaryOp.SHR);
+	RIGHT_SHIFT(">>", binaryOp = BinaryOp.SHR),
+	LEFT_BRACKET("["),
+	RIGHT_BRACKET("]");
 
 }
