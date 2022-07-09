@@ -220,3 +220,35 @@ Register representation
 	6 XMM
 	7 YMM
 	8 ZMM
+
+mov byte [rax + rcx * 2 + label + 1000], 10
+- ADD(RAX, ADD(MUL(RCX, 2), ADD(label, 1000)))
+- ADD
+	RAX
+	ADD
+		MUL
+			RCX
+			2
+		ADD
+			label
+			1000
+
+mov byte [label + 1000 + rax * 2 + rcx]
+ADD
+	label
+	ADD
+		1000
+		ADD
+			MUL
+				rax
+				2
+			RCX
+
+- Need to determine:
+	- base register
+	- index register
+	- scale
+	- displacement
+- Must simplify to the form:
+	- base + index * scale + displacement
+

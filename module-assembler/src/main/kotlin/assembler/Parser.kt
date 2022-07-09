@@ -81,8 +81,8 @@ class Parser(lexResult: LexResult) {
 				return MemoryNode(null, null, 0, expression.value.toInt(), null)
 			if(expression is RegisterNode)
 				return MemoryNode(expression.value, null, 0, 0, null)
-			if(expression !is BinaryOpNode)
-				error("Invalid effective address")
+			//if(expression !is BinaryOpNode)
+			error("Invalid effective address")
 		}
 
 		return when(token) {

@@ -37,7 +37,11 @@ enum class Keyword(val width: Width? = null) {
 	BYTE(width = Width.BIT8),
 	WORD(width = Width.BIT16),
 	DWORD(width = Width.BIT32),
-	QWORD(width = Width.BIT64);
+	QWORD(width = Width.BIT64),
+	REL,
+	REL8,
+	REL32,
+	ABS;
 
 	val string = name.lowercase()
 

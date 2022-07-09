@@ -27,6 +27,7 @@ val AstNode.printableString: String get() = when(this) {
 		if(op3 != null) append(", ${op3.printableString}")
 		if(op4 != null) append(", ${op4.printableString}")
 	}
+	else -> "Unhandled AST node: $this"
 }
 
 
