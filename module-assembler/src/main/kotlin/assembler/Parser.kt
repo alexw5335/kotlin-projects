@@ -1,6 +1,8 @@
 package assembler
 
-class Parser(lexResult: LexResult) {
+import core.LexResult
+
+class Parser(lexResult: LexResult<Token>) {
 
 
 	private var pos = 0

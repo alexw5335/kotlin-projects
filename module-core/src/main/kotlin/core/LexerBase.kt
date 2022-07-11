@@ -3,13 +3,20 @@ package core
 abstract class LexerBase<T>(chars: CharArray) : ReaderBase(chars) {
 
 
-	private val tokens = ArrayList<T>()
+	protected val tokens = ArrayList<T>()
+
+	protected val newlines = NewlineList()
 
 
 
-	fun lex(): List<T> {
+	fun lex(): LexResult<T> {
 		while(pos < chars.size) {
 			val char = chars[pos++]
+
+			if(char == '\n') {
+				newlines.set(tokens.size)
+				continue
+			}
 
 			if(char.isSkippableWhitespace) continue
 
@@ -27,7 +34,7 @@ abstract class LexerBase<T>(chars: CharArray) : ReaderBase(chars) {
 			pos--
 
 			if(shouldReadIntegers && char.isDigit()) {
-				tokens.add(resolveInteger(readNumber(char))!!)
+				tokens.add(resolveInteger(readNumber(char)))
 				continue
 			}
 
@@ -45,10 +52,14 @@ abstract class LexerBase<T>(chars: CharArray) : ReaderBase(chars) {
 			tokens.add(resolveIdentifier(string))
 		}
 
-		return tokens
+		onLexEnd()
+		newlines.ensureBitCapacity(tokens.size)
+		return LexResult(tokens, newlines)
 	}
 
 
+
+	protected open fun onLexEnd() { }
 
 	protected open val shouldReadIntegers = true
 
@@ -70,7 +81,7 @@ abstract class LexerBase<T>(chars: CharArray) : ReaderBase(chars) {
 
 	protected abstract fun resolveIdentifier(string: String): T
 
-	protected abstract fun resolveInteger(value: Long): T?
+	protected abstract fun resolveInteger(value: Long): T
 
 
 }

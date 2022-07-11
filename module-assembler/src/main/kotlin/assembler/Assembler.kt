@@ -19,6 +19,11 @@ class Assembler(private val nodes: List<AstNode>) {
 	}
 
 
+	/*
+
+	 */
+
+
 
 /*	private fun InstructionNode.assemble() {
 		when(mnemonic) {

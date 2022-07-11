@@ -1,4 +1,4 @@
-package assembler
+package core
 
 class NewlineList(initialCapacity: Int = 20){
 

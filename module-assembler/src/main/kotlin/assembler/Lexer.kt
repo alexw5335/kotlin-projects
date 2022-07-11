@@ -1,94 +1,21 @@
 package assembler
 
-class Lexer(private val chars: CharArray) {
+import core.LexerBase
+
+class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
 
 
-	private var pos = 0
+	override val Char.isSkippableWhitespace get() = this.isWhitespace()
 
-	private val tokens = ArrayList<Token>()
+	override fun resolveKeyword(string: String) = keywordMap[string]
 
-	private val newlines = NewlineList()
+	override fun resolveIdentifier(string: String) = Identifier(string)
 
-
-
-	/*
-	Lexing
-	 */
-
-
-
-	fun lex(): LexResult {
-		while(pos < chars.size) {
-			val char = chars[pos++]
-
-			if(char == ' ' || char == '\t' || char == '\r')
-				continue
-
-			if(char == '\n') {
-				newlines.set(tokens.size)
-				continue
-			}
-
-			val symbol = symbol(char)
-			if(symbol != null) {
-				tokens.add(symbol)
-				continue
-			}
-
-			pos--
-
-			if(char.isDigit()) {
-				val value = if(char == '0' && pos < chars.size)
-					when(chars[pos + 1]) {
-						'b'  -> { pos += 2; parseBinary() }
-						else -> parseDecimal()
-					}
-				else
-					parseDecimal()
-
-				tokens.add(IntLiteral(value))
-				continue
-			}
-
-			if(!char.isIdStartChar)
-				throw RuntimeException("Invalid char: $char")
-
-			val string = buildString {
-				while(pos < chars.size && chars[pos].isIdChar)
-					append(chars[pos++])
-			}
-
-			val keyword = keywordMap[string]
-			if(keyword != null) {
-				tokens.add(keyword)
-				continue
-			}
-
-			tokens.add(Identifier(string))
-		}
-
-		for(i in 0 until 4) tokens.add(EndToken)
-		newlines.ensureBitCapacity(tokens.size)
-		return LexResult(tokens, newlines)
-	}
+	override fun resolveInteger(value: Long) = IntLiteral(value)
 
 
 
-	/*
-	Symbols
-	 */
-
-
-
-	private fun checkCompoundSymbol(single: Symbol, char: Char, double: Symbol) =
-		if(pos < chars.size && chars[pos] == char)
-			double.also { pos++ }
-		else
-			single
-
-
-
-	private fun symbol(char: Char) = when(char) {
+	override fun resolveSymbol(char: Char) = when(char) {
 		'+' -> Symbol.PLUS
 		'-' -> Symbol.MINUS
 		'*' -> Symbol.ASTERISK
@@ -105,47 +32,15 @@ class Lexer(private val chars: CharArray) {
 		'^' -> Symbol.CARET
 		'[' -> Symbol.LEFT_BRACKET
 		']' -> Symbol.RIGHT_BRACKET
-		'<' -> checkCompoundSymbol(Symbol.LEFT_ANGLE, '<', Symbol.LEFT_SHIFT)
-		'>' -> checkCompoundSymbol(Symbol.RIGHT_ANGLE, '>', Symbol.RIGHT_SHIFT)
+		'<' -> {
+			if(chars[pos] == '<') { pos++; Symbol.LEFT_SHIFT }
+			else { Symbol.LEFT_ANGLE }
+		}
+		'>' -> {
+			if(chars[pos] == '>') { pos++; Symbol.RIGHT_SHIFT }
+			else { Symbol.RIGHT_ANGLE }
+		}
 		else -> null
-	}
-
-
-
-	/*
-	Number literal parsing
-	 */
-
-
-
-	private fun parseDecimal(): Long {
-		if(chars[pos] < '0' || chars[pos] > '9') error("Invalid decimal literal")
-		var value = 0L
-		while(pos < chars.size) {
-			val char = chars[pos++]
-			if(char == '_') continue
-			if(char.isIdStartChar) error("Unsupported decimal literal postfix '$char'")
-			if(char < '0' || char > '9') { pos--; break }
-			val digit = char - '0'
-			value = value * 10 + digit
-		}
-		return value
-	}
-
-
-
-	private fun parseBinary(): Long {
-		if(chars[pos] < '0' || chars[pos] > '1') error("Invalid binary literal")
-		var value = 0L
-		while(pos < chars.size) {
-			val char = chars[pos++]
-			if(char == '_') continue
-			if(char.isIdStartChar) error("Unsupported binary literal postfix: '$char'")
-			if(char < '0' || char > '1') { pos--; break }
-			val digit = char - '0'
-			value = (value shl 1) or digit.toLong()
-		}
-		return value
 	}
 
 
@@ -158,20 +53,16 @@ class Lexer(private val chars: CharArray) {
 
 	companion object {
 
-		private val keywordMap = HashMap<String, Token>()
-
-		init {
+		private val keywordMap = HashMap<String, Token>().apply {
 			for(r in Register.values())
-				keywordMap[r.name.lowercase()] = RegisterToken(r)
+				this[r.string] = RegisterToken(r)
+
 			for(m in Mnemonic.values())
-				keywordMap[m.name.lowercase()] = MnemonicToken(m)
+				this[m.string] = MnemonicToken(m)
+
 			for(k in Keyword.values())
-				keywordMap[k.string] = KeywordToken(k)
+				this[k.string] = KeywordToken(k)
 		}
-
-		private val Char.isIdChar get() = isLetterOrDigit() || this == '_'
-
-		private val Char.isIdStartChar get() = isLetter() || this == '_'
 
 	}
 
