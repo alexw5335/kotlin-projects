@@ -3,13 +3,13 @@ package assembler
 
 
 fun main() {
-	val input = "add rax, [rax + rcx * 2 + 10]"
+	val input = "const testing = 1 + 2 * 3 + 4 / 5"
 
 	val lexResult = Lexer(input.toCharArray()).lex()
 	println("Lex Result:")
-	lexResult.tokens.forEach { if(it !is EndToken) println(it.printableString) }
+	lexResult.tokens.forEach { println(it.printableString) }
 
 	val parseResult = Parser(lexResult).parse()
 	println("\nParse Result:")
-	parseResult.printNodes()
+	parseResult.nodes.forEach { println(it.printableString) }
 }

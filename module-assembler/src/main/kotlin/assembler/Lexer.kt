@@ -9,9 +9,9 @@ class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
 
 	override fun resolveKeyword(string: String) = keywordMap[string]
 
-	override fun resolveIdentifier(string: String) = Identifier(string)
+	override fun resolveIdentifier(string: String) = IdToken(string)
 
-	override fun resolveInteger(value: Long) = IntLiteral(value)
+	override fun resolveInteger(value: Long) = IntToken(value)
 
 
 
@@ -33,11 +33,11 @@ class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
 		'[' -> Symbol.LEFT_BRACKET
 		']' -> Symbol.RIGHT_BRACKET
 		'<' -> {
-			if(chars[pos] == '<') { pos++; Symbol.LEFT_SHIFT }
+			if(pos < chars.size && chars[pos] == '<') { pos++; Symbol.LEFT_SHIFT }
 			else { Symbol.LEFT_ANGLE }
 		}
 		'>' -> {
-			if(chars[pos] == '>') { pos++; Symbol.RIGHT_SHIFT }
+			if(pos < chars.size && chars[pos] == '>') { pos++; Symbol.RIGHT_SHIFT }
 			else { Symbol.RIGHT_ANGLE }
 		}
 		else -> null
@@ -61,7 +61,7 @@ class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
 				this[m.string] = MnemonicToken(m)
 
 			for(k in Keyword.values())
-				this[k.string] = KeywordToken(k)
+				this[k.string] = k
 		}
 
 	}
