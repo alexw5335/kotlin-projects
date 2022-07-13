@@ -1,19 +1,19 @@
 package assembler
 
-enum class BinaryOp(val precedence: Int) {
+enum class BinaryOp(val symbol: String, val precedence: Int) {
 
-	MUL(5),
-	DIV(5),
+	MUL("*", 4),
+	DIV("/", 4),
 
-	ADD(4),
-	SUB(4),
+	ADD("+", 3),
+	SUB("-", 3),
 
-	SHL(3),
-	SHR(3),
+	SHL("<<", 2),
+	SHR(">>", 2),
 
-	AND(1),
-	XOR(1),
-	OR(1);
+	AND("&", 1),
+	XOR("^", 1),
+	OR("|", 1);
 
 	fun calculate(a: Long, b: Long) = when(this) {
 		MUL -> a * b

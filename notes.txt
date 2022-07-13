@@ -252,5 +252,8 @@ ADD
 - Must simplify to the form:
 	- base + index * scale + displacement
 
-
--
+- AST simplification
+- 1 + 2 + PI
+	- ADD(ADD(1, 2), PI)
+- 1 + PI + 2
+	- ADD(ADD(1, PI), 2)

@@ -3,12 +3,12 @@ package assembler
 
 
 val Token.printableString get() = when(this) {
-	is Symbol        -> "SYMBOL    $string"
+	is SymbolToken        -> "SYMBOL    $string"
 	is IdToken       -> "ID        $value"
 	is IntToken      -> "INT       $value"
 	is MnemonicToken -> "MNEMONIC  ${value.string}"
 	is RegisterToken -> "REGISTER  ${value.string}"
-	is Keyword       -> "KEYWORD   $string"
+	is KeywordToken       -> "KEYWORD   $string"
 }
 
 
@@ -33,12 +33,8 @@ data class MnemonicToken(val value: Mnemonic) : Token
 
 
 
-enum class Keyword : Token {
+enum class KeywordToken : Token {
 
-	BYTE,
-	WORD,
-	DWORD,
-	QWORD,
 	CONST;
 
 	val string = name.lowercase()
@@ -47,7 +43,7 @@ enum class Keyword : Token {
 
 
 
-enum class Symbol(
+enum class SymbolToken(
 	val string   : String,
 	val binaryOp : BinaryOp? = null,
 	val unaryOp  : UnaryOp? = null
@@ -72,6 +68,7 @@ enum class Symbol(
 	LEFT_SHIFT    ("<<", binaryOp = BinaryOp.SHL),
 	RIGHT_SHIFT   (">>", binaryOp = BinaryOp.SHR),
 	LEFT_BRACKET  ("["),
-	RIGHT_BRACKET ("]");
+	RIGHT_BRACKET ("]"),
+	NEWLINE       ("\\n");
 
 }

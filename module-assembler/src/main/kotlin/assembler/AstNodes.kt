@@ -12,13 +12,13 @@ fun calculate(node: AstNode): Long = when(node) {
 
 
 val AstNode.printableString: String get() = when(this) {
-	is BinaryNode      -> "$op(${left.printableString}, ${right.printableString})"
+	is BinaryNode      -> "(${left.printableString} ${op.symbol} ${right.printableString})"//"$op(${left.printableString}, ${right.printableString})"
 	is IdNode          -> value
 	is IntNode         -> value.toString()
 	is RegisterNode    -> value.string
-	is ImmediateNode   -> value.toString()
-	is MemoryNode      -> "[$displacement]"
-	is UnaryNode       -> "$op($node)"
+	is ImmediateNode   -> value.printableString
+	is MemoryNode      -> "[${value.printableString}]"
+	is UnaryNode       -> "${op.symbol}${node.printableString}"//"$op(${node.printableString})"
 	is InstructionNode -> printableString
 	is ConstNode       -> "const $name = ${value.printableString}"
 	else               -> "No printable string for AST node: ${this::class.simpleName}"
@@ -86,8 +86,8 @@ class RegisterNode(val value: Register) : OperandNode
 
 
 
-class ImmediateNode(val value: Long) : OperandNode
+class ImmediateNode(val value: AstNode) : OperandNode
 
 
 
-class MemoryNode(val displacement: Int) : OperandNode
+class MemoryNode(val value: AstNode) : OperandNode

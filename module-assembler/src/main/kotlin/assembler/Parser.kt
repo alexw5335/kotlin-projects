@@ -4,6 +4,13 @@ import core.LexResult
 
 class Parser(lexResult: LexResult<Token>) {
 
+	class Symbol(val name: String, val type: SymbolType, val node: AstNode)
+
+	enum class SymbolType {
+		CONST,
+		LABEL;
+	}
+
 
 	private var pos = 0
 
@@ -19,14 +26,16 @@ class Parser(lexResult: LexResult<Token>) {
 
 	private fun atStatementEnd() = atEnd() || atNewline()
 
+	private val symbols = ArrayList<Symbol>()
+
 
 
 	fun parse(): ParseResult {
 		while(pos < tokens.size) {
 			when(val token = tokens[pos++]) {
-				Keyword.CONST    -> parseConst()
-				is MnemonicToken -> nodes.add(parseInstruction(token.value))
-				else             -> error("Invalid token: $token")
+				KeywordToken.CONST  -> parseConst()
+				is MnemonicToken    -> nodes.add(parseInstruction(token.value))
+				else                -> error("Invalid token: $token")
 			}
 		}
 
@@ -36,14 +45,14 @@ class Parser(lexResult: LexResult<Token>) {
 
 
 	private fun readAtom(): AstNode = when(val token = tokens[pos++]) {
-		Symbol.LEFT_PAREN -> {
+		SymbolToken.LEFT_PAREN -> {
 			val expression = readExpression(0)
-			if(pos >= tokens.size || tokens[pos++] != Symbol.RIGHT_PAREN)
+			if(pos >= tokens.size || tokens[pos++] != SymbolToken.RIGHT_PAREN)
 				error("Expected ')'")
 			expression
 		}
 
-		is Symbol -> {
+		is SymbolToken -> {
 			val unaryOp = token.unaryOp ?: error("Unexpected symbol: $token")
 			UnaryNode(unaryOp, readAtom())
 		}
@@ -51,6 +60,8 @@ class Parser(lexResult: LexResult<Token>) {
 		is IntToken -> IntNode(token.value)
 
 		is RegisterToken -> RegisterNode(token.value)
+
+		is IdToken -> IdNode(token.value)
 
 		else -> error("Invalid expression operand token: $token")
 	}
@@ -60,8 +71,8 @@ class Parser(lexResult: LexResult<Token>) {
 	private fun readExpression(precedence: Int = 0): AstNode {
 		var result = readAtom()
 
-		while(pos < tokens.size) {
-			val symbol = tokens[pos] as? Symbol ?: error("Expected symbol, found: ${tokens[pos]}")
+		while(pos < tokens.size && !atStatementEnd()) {
+			val symbol = tokens[pos] as? SymbolToken ?: error("Expected symbol, found: ${tokens[pos]}")
 			val op = symbol.binaryOp ?: break
 			if(op.precedence < precedence) break
 			pos++
@@ -76,17 +87,29 @@ class Parser(lexResult: LexResult<Token>) {
 
 	private fun parseConst() {
 		val name = (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier, found ${tokens[pos - 1]}")
-		if(tokens[pos++] != Symbol.EQUALS) error("Expecting '=', found ${tokens[pos - 1]}")
-		nodes.add(ConstNode(name, readExpression()))
+		if(tokens[pos++] != SymbolToken.EQUALS) error("Expecting '=', found ${tokens[pos - 1]}")
+		val node = readExpression()
+		nodes.add(ConstNode(name, node))
+		symbols.add(Symbol(name, SymbolType.CONST, node))
 	}
 
 
 
 	private fun parseOperand(): OperandNode {
-		return when(val token = tokens[pos++]) {
-			is RegisterToken -> RegisterNode(token.value)
-			is IntToken      -> ImmediateNode(token.value)
-			else             -> error("Expecting operand, found ${tokens[pos-1]}")
+		if(tokens[pos] == SymbolToken.LEFT_BRACKET) {
+			pos++
+			val node = MemoryNode(readExpression())
+			if(tokens[pos++] != SymbolToken.RIGHT_BRACKET)
+				error("Expecting ']', found ${tokens[pos - 1]}")
+			return node
+		}
+
+		return when(val node = readExpression()) {
+			is RegisterNode -> node
+			is IntNode      -> ImmediateNode(node)
+			is BinaryNode   -> ImmediateNode(node)
+			is UnaryNode    -> ImmediateNode(node)
+			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}
 
@@ -97,15 +120,15 @@ class Parser(lexResult: LexResult<Token>) {
 		val operand1 = parseOperand()
 
 		if(atStatementEnd()) return InstructionNode(mnemonic, operand1, null, null, null)
-		if(tokens[pos++] != Symbol.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
+		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand2 = parseOperand()
 
 		if(atStatementEnd()) return InstructionNode(mnemonic, operand1, operand2, null, null)
-		if(tokens[pos++] != Symbol.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
+		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand3 = parseOperand()
 
 		if(atStatementEnd()) return InstructionNode(mnemonic, operand1, operand2, operand3, null)
-		if(tokens[pos++] != Symbol.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
+		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand4 = parseOperand()
 
 		if(!atStatementEnd()) error("unexpected token: ${tokens[pos]}")

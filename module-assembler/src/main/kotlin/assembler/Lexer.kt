@@ -16,29 +16,29 @@ class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
 
 
 	override fun resolveSymbol(char: Char) = when(char) {
-		'+' -> Symbol.PLUS
-		'-' -> Symbol.MINUS
-		'*' -> Symbol.ASTERISK
-		'/' -> Symbol.SLASH
-		'(' -> Symbol.LEFT_PAREN
-		')' -> Symbol.RIGHT_PAREN
-		'=' -> Symbol.EQUALS
-		',' -> Symbol.COMMA
-		';' -> Symbol.SEMICOLON
-		':' -> Symbol.COLON
-		'|' -> Symbol.PIPE
-		'&' -> Symbol.AMPERSAND
-		'~' -> Symbol.TILDE
-		'^' -> Symbol.CARET
-		'[' -> Symbol.LEFT_BRACKET
-		']' -> Symbol.RIGHT_BRACKET
+		'+' -> SymbolToken.PLUS
+		'-' -> SymbolToken.MINUS
+		'*' -> SymbolToken.ASTERISK
+		'/' -> SymbolToken.SLASH
+		'(' -> SymbolToken.LEFT_PAREN
+		')' -> SymbolToken.RIGHT_PAREN
+		'=' -> SymbolToken.EQUALS
+		',' -> SymbolToken.COMMA
+		';' -> SymbolToken.SEMICOLON
+		':' -> SymbolToken.COLON
+		'|' -> SymbolToken.PIPE
+		'&' -> SymbolToken.AMPERSAND
+		'~' -> SymbolToken.TILDE
+		'^' -> SymbolToken.CARET
+		'[' -> SymbolToken.LEFT_BRACKET
+		']' -> SymbolToken.RIGHT_BRACKET
 		'<' -> {
-			if(pos < chars.size && chars[pos] == '<') { pos++; Symbol.LEFT_SHIFT }
-			else { Symbol.LEFT_ANGLE }
+			if(pos < chars.size && chars[pos] == '<') { pos++; SymbolToken.LEFT_SHIFT }
+			else { SymbolToken.LEFT_ANGLE }
 		}
 		'>' -> {
-			if(pos < chars.size && chars[pos] == '>') { pos++; Symbol.RIGHT_SHIFT }
-			else { Symbol.RIGHT_ANGLE }
+			if(pos < chars.size && chars[pos] == '>') { pos++; SymbolToken.RIGHT_SHIFT }
+			else { SymbolToken.RIGHT_ANGLE }
 		}
 		else -> null
 	}
@@ -60,7 +60,7 @@ class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
 			for(m in Mnemonic.values())
 				this[m.string] = MnemonicToken(m)
 
-			for(k in Keyword.values())
+			for(k in KeywordToken.values())
 				this[k.string] = k
 		}
 

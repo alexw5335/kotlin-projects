@@ -1,10 +1,10 @@
 package assembler
 
-enum class UnaryOp {
+enum class UnaryOp(val symbol: String) {
 
-	POS,
-	NEG,
-	NOT;
+	POS("+"),
+	NEG("-"),
+	NOT("~");
 
 	fun calculate(value: Long) = when(this) {
 		POS -> value

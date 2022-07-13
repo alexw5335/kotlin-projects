@@ -1,10 +1,17 @@
 import core.Core
 
+
+
+object NasmMain
+
+object AsmMain
+
+
+
 fun main() {
 	//Core.nasmRun("module-asm", "assembler")
 	Core.nasmAssemble("""
-		label:
-			mov byte [label2 - label - label - label], 0xA
-		label2:
+		.xmm0:
+			mov rax, rax
 	""".trimIndent())
 }

@@ -3,7 +3,9 @@ package assembler
 
 
 fun main() {
-	val input = "const testing = 1 + 2 * 3 + 4 / 5"
+	val input = """
+		add rax, [rax + rcx * 8 + 32 + -MY_BASE]
+	"""
 
 	val lexResult = Lexer(input.toCharArray()).lex()
 	println("Lex Result:")
