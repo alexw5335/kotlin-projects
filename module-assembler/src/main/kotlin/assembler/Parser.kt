@@ -1,32 +1,17 @@
 package assembler
 
-import core.LexResult
-
-class Parser(lexResult: LexResult<Token>) {
-
-	class Symbol(val name: String, val type: SymbolType, val node: AstNode)
-
-	enum class SymbolType {
-		CONST,
-		LABEL;
-	}
+class Parser(lexResult: LexResult) {
 
 
 	private var pos = 0
 
 	private val tokens = lexResult.tokens
 
-	private val newlines = lexResult.newlines
-
 	private val nodes = ArrayList<AstNode>()
 
-	private fun atNewline() = newlines[pos]
-
-	private fun atEnd() = pos >= tokens.size
-
-	private fun atStatementEnd() = atEnd() || atNewline()
-
 	private val symbols = ArrayList<Symbol>()
+
+	private fun atStatementEnd() = pos >= tokens.size || tokens[pos] == SymbolToken.NEWLINE
 
 
 
@@ -34,12 +19,24 @@ class Parser(lexResult: LexResult<Token>) {
 		while(pos < tokens.size) {
 			when(val token = tokens[pos++]) {
 				KeywordToken.CONST  -> parseConst()
+				SymbolToken.NEWLINE -> continue
 				is MnemonicToken    -> nodes.add(parseInstruction(token.value))
+				is IdToken          -> parseLabel(token)
 				else                -> error("Invalid token: $token")
 			}
 		}
 
-		return ParseResult(nodes)
+		return ParseResult(nodes, symbols)
+	}
+
+
+
+	private fun parseLabel(id: IdToken) {
+		if(pos >= tokens.size || tokens[pos++] != SymbolToken.COLON)
+			error("Label identifier must be followed by a colon")
+		val node = LabelNode(id.value)
+		nodes.add(node)
+		symbols.add(Symbol(id.value, Symbol.Type.LABEL, node))
 	}
 
 
@@ -90,12 +87,12 @@ class Parser(lexResult: LexResult<Token>) {
 		if(tokens[pos++] != SymbolToken.EQUALS) error("Expecting '=', found ${tokens[pos - 1]}")
 		val node = readExpression()
 		nodes.add(ConstNode(name, node))
-		symbols.add(Symbol(name, SymbolType.CONST, node))
+		symbols.add(Symbol(name, Symbol.Type.CONST, node))
 	}
 
 
 
-	private fun parseOperand(): OperandNode {
+	private fun parseOperand(): AstNode {
 		if(tokens[pos] == SymbolToken.LEFT_BRACKET) {
 			pos++
 			val node = MemoryNode(readExpression())
@@ -116,7 +113,7 @@ class Parser(lexResult: LexResult<Token>) {
 
 
 	private fun parseInstruction(mnemonic: Mnemonic): InstructionNode {
-		if(atNewline()) return InstructionNode(mnemonic, null, null, null, null)
+		if(atStatementEnd()) return InstructionNode(mnemonic, null, null, null, null)
 		val operand1 = parseOperand()
 
 		if(atStatementEnd()) return InstructionNode(mnemonic, operand1, null, null, null)

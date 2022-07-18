@@ -4,7 +4,8 @@ package assembler
 
 fun main() {
 	val input = """
-		add rax, [rax + rcx * 8 + 32 + -MY_BASE]
+		testing:
+			add rax, 1 << 8 | 2 << 16 | 3 << -0
 	"""
 
 	val lexResult = Lexer(input.toCharArray()).lex()

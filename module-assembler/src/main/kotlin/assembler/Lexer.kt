@@ -1,21 +1,60 @@
 package assembler
 
-import core.LexerBase
+import core.ReaderBase
 
-class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
+class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 
-	override val Char.isSkippableWhitespace get() = this.isWhitespace()
-
-	override fun resolveKeyword(string: String) = keywordMap[string]
-
-	override fun resolveIdentifier(string: String) = IdToken(string)
-
-	override fun resolveInteger(value: Long) = IntToken(value)
+	private val tokens = ArrayList<Token>()
 
 
 
-	override fun resolveSymbol(char: Char) = when(char) {
+	fun lex(): LexResult {
+		while(pos < chars.size) {
+			val char = chars[pos++]
+
+			if(char == '\n') {
+				tokens.add(SymbolToken.NEWLINE)
+				continue
+			}
+
+			if(char.isWhitespace()) continue
+
+			val symbol = resolveSymbol(char)
+
+			if(symbol != null) {
+				tokens.add(symbol)
+				continue
+			}
+
+			pos--
+
+			if(char.isDigit()) {
+				tokens.add(IntToken(readNumber(char)))
+				continue
+			}
+
+			if(!char.isIdStartChar)
+				error("Unexpected character '$char'")
+
+			val string = readWhile { it.isIdChar }
+
+			val keyword = keywordMap[string]
+
+			if(keyword != null) {
+				tokens.add(keyword)
+				continue
+			}
+
+			tokens.add(IdToken(string))
+		}
+
+		return LexResult(tokens)
+	}
+
+
+
+	private fun resolveSymbol(char: Char) = when(char) {
 		'+' -> SymbolToken.PLUS
 		'-' -> SymbolToken.MINUS
 		'*' -> SymbolToken.ASTERISK
@@ -45,23 +84,23 @@ class Lexer(chars: CharArray) : LexerBase<Token>(chars) {
 
 
 
-	/*
-	Utils
-	 */
-
-
-
 	companion object {
 
-		private val keywordMap = HashMap<String, Token>().apply {
+		private val Char.isIdStartChar get() = isLetter() || this == '_'
+
+		private val Char.isIdChar get() = isLetterOrDigit() || this == '_'
+
+		private val keywordMap = HashMap<String, Token>()
+
+		init {
 			for(r in Register.values())
-				this[r.string] = RegisterToken(r)
+				keywordMap[r.string] = RegisterToken(r)
 
 			for(m in Mnemonic.values())
-				this[m.string] = MnemonicToken(m)
+				keywordMap[m.string] = MnemonicToken(m)
 
 			for(k in KeywordToken.values())
-				this[k.string] = k
+				keywordMap[k.string] = k
 		}
 
 	}

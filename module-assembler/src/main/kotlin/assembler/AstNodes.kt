@@ -2,11 +2,11 @@ package assembler
 
 
 
-fun calculate(node: AstNode): Long = when(node) {
-	is IntNode     -> node.value
-	is UnaryNode   -> node.op.calculate(calculate(node.node))
-	is BinaryNode  -> node.op.calculate(calculate(node.left), calculate(node.right))
-	else           -> error("Cannot perform integer arithmetic on AST node: $node")
+fun AstNode.calculate(): Long = when(this) {
+	is IntNode     -> value
+	is UnaryNode   -> op.calculate(node.calculate())
+	is BinaryNode  -> op.calculate(left.calculate(), right.calculate())
+	else           -> error("Cannot perform integer arithmetic on AST node: $this")
 }
 
 
@@ -18,9 +18,10 @@ val AstNode.printableString: String get() = when(this) {
 	is RegisterNode    -> value.string
 	is ImmediateNode   -> value.printableString
 	is MemoryNode      -> "[${value.printableString}]"
-	is UnaryNode       -> "${op.symbol}${node.printableString}"//"$op(${node.printableString})"
+	is UnaryNode       -> "${op.symbol}(${node.printableString})"//"$op(${node.printableString})"
 	is InstructionNode -> printableString
 	is ConstNode       -> "const $name = ${value.printableString}"
+	is LabelNode       -> "$name:"
 	else               -> "No printable string for AST node: ${this::class.simpleName}"
 }
 
@@ -68,26 +69,26 @@ class ConstNode(val name: String, val value: AstNode) : AstNode
 
 
 
+class LabelNode(val name: String) : AstNode
+
+
+
 class InstructionNode(
 	val mnemonic: Mnemonic,
-	val op1: OperandNode?,
-	val op2: OperandNode?,
-	val op3: OperandNode?,
-	val op4: OperandNode?
+	val op1: AstNode?,
+	val op2: AstNode?,
+	val op3: AstNode?,
+	val op4: AstNode?
 ) : AstNode
 
 
 
-sealed interface OperandNode : AstNode
+class RegisterNode(val value: Register) : AstNode
 
 
 
-class RegisterNode(val value: Register) : OperandNode
+class ImmediateNode(val value: AstNode) : AstNode
 
 
 
-class ImmediateNode(val value: AstNode) : OperandNode
-
-
-
-class MemoryNode(val value: AstNode) : OperandNode
+class MemoryNode(val value: AstNode) : AstNode

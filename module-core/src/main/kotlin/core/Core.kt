@@ -78,7 +78,7 @@ object Core {
 
 
 
-	fun nasmAssemble(code: String) {
+	fun nasmPrint(code: String) {
 		fun ByteArray.int32(pos: Int) =
 			this[pos].toInt() or
 			(this[pos + 1].toInt() shl 8) or

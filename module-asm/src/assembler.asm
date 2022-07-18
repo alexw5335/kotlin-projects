@@ -212,15 +212,52 @@ assemble2:
 
 %if 0
 
+- MEM width can be implicit or explicit
+	- If implicit, then the width is chosen based on the instruction
 
-
-IMUL
+IMUL 1
 REG
 	REG8 -> REG8
+	REG16 -> REG16
+	REG32 -> REG32
+	REG64
+MEM
+	MEM8 -> MEM8
+	MEM16 -> MEM16
+	MEM32 -> MEM32
+	MEM64 -> MEM64
+
+IMUL 2
+REG
 	REG16
+		_REG16 -> REG16_REG16
+		_MEM16 -> REG16_MEM16
+	REG32
+		_REG32 -> REG32_REG32
+		_MEM32 -> REG32_MEM32
+	REG64
+		_REG64 -> REG64_REG64
+		_MEM64 -> REG64_MEM64
 
-
-
+IMUL 3
+REG
+	REG16
+		_REG16
+			__IMM16 -> REG16_REG16_IMM16
+		_MEM16
+			__IMM16 -> REG16_MEM16_IMM16
+	REG32
+		_REG32
+			__IMM32 -> REG32_REG32_IMM32
+		_MEM32
+			__IMM32 -> REG32_MEM32_IMM32
+	REG64
+		_REG64
+			__IMM8 -> REG64_REG64_IMM8
+			__IMM32 -> REG64_REG64_IMM32
+		_MEM64
+			__IMM8 -> REG64_MEM64_IMM8
+			__IMM32 -> REG64_MEM64_IMM32
 
 
 
@@ -257,6 +294,55 @@ MEM
 			MEM64_REG64
 		_IMM8
 			MEM64_IMM8
+
+
+ADD
+REG
+	A
+		AL
+			_IMM8
+		AX
+			_IMM16
+		EAX
+			_IMM32
+		RAX
+			_IMM64
+	REG8
+		_IMM8
+		_REG8
+		_MEM8
+	REG16
+		_IMM8
+		_IMM16
+		_REG16
+		_MEM16
+	REG32
+		_IMM8
+		_IMM32
+		_REG32
+		_MEM32
+	REG64
+		_IMM8
+		_IMM32
+		_REG64
+		_MEM64
+MEM
+	MEM8
+		_IMM8
+		_REG8
+	MEM16
+		_IMM8
+		_IMM16
+		_REG16
+	MEM32
+		_IMM8
+		_IMM32
+		_REG32
+	MEM64
+		_IMM8
+		_IMM32
+		_REG64
+
 
 
 

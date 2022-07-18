@@ -1,17 +1,15 @@
 import core.Core
 
 
-
+@Suppress("unused")
 object NasmMain
 
+@Suppress("unused")
 object AsmMain
 
 
 
 fun main() {
 	//Core.nasmRun("module-asm", "assembler")
-	Core.nasmAssemble("""
-		.xmm0:
-			mov rax, rax
-	""".trimIndent())
+	Core.nasmPrint("ret")
 }
