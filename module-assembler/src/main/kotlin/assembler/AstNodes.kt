@@ -2,15 +2,6 @@ package assembler
 
 
 
-fun AstNode.calculate(): Long = when(this) {
-	is IntNode     -> value
-	is UnaryNode   -> op.calculate(node.calculate())
-	is BinaryNode  -> op.calculate(left.calculate(), right.calculate())
-	else           -> error("Cannot perform integer arithmetic on AST node: $this")
-}
-
-
-
 val AstNode.printableString: String get() = when(this) {
 	is BinaryNode      -> "(${left.printableString} ${op.symbol} ${right.printableString})"//"$op(${left.printableString}, ${right.printableString})"
 	is IdNode          -> value
@@ -28,7 +19,7 @@ val AstNode.printableString: String get() = when(this) {
 
 
 val InstructionNode.printableString get() = buildString {
-	append(mnemonic)
+	append(mnemonic.string)
 	if(op1 == null) return@buildString
 	append(' ')
 	append(op1.printableString)

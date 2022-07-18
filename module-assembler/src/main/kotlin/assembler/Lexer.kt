@@ -20,6 +20,11 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 			if(char.isWhitespace()) continue
 
+			if(char == '/') {
+				resolveSlash()
+				continue
+			}
+
 			val symbol = resolveSymbol(char)
 
 			if(symbol != null) {
@@ -58,7 +63,6 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 		'+' -> SymbolToken.PLUS
 		'-' -> SymbolToken.MINUS
 		'*' -> SymbolToken.ASTERISK
-		'/' -> SymbolToken.SLASH
 		'(' -> SymbolToken.LEFT_PAREN
 		')' -> SymbolToken.RIGHT_PAREN
 		'=' -> SymbolToken.EQUALS
@@ -80,6 +84,42 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 			else { SymbolToken.RIGHT_ANGLE }
 		}
 		else -> null
+	}
+
+
+
+	private fun resolveSlash() {
+		if(pos >= chars.size) {
+			tokens.add(SymbolToken.SLASH)
+			return
+		}
+
+		if(chars[pos] == '/') {
+			pos++
+			skipLine()
+			return
+		}
+
+		if(chars[pos] != '*') {
+			tokens.add(SymbolToken.SLASH)
+			return
+		}
+
+		pos++
+		var count = 1
+
+		while(count > 0) {
+			if(pos >= chars.size) error("Unterminated comment")
+			val char = chars[pos++]
+
+			if(char == '/' && chars[pos] == '*') {
+				count++
+				pos++
+			} else if(char == '*' && chars[pos] == '/') {
+				count--
+				pos++
+			}
+		}
 	}
 
 

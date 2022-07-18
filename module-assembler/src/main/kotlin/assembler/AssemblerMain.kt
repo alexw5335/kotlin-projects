@@ -1,12 +1,7 @@
 package assembler
 
-
-
 fun main() {
-	val input = """
-		testing:
-			add rax, 1 << 8 | 2 << 16 | 3 << -0
-	"""
+	val input = "add rax, rax"
 
 	val lexResult = Lexer(input.toCharArray()).lex()
 	println("Lex Result:")
@@ -15,4 +10,7 @@ fun main() {
 	val parseResult = Parser(lexResult).parse()
 	println("\nParse Result:")
 	parseResult.nodes.forEach { println(it.printableString) }
+
+	val assembler = Assembler(parseResult)
+	assembler.assemble()
 }

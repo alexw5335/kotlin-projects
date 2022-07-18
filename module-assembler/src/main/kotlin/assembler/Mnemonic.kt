@@ -9,7 +9,8 @@ enum class Mnemonic {
 	AND,
 	SUB,
 	XOR,
-	CMP;
+	CMP,
+	MOV;
 
 	val string = name.lowercase()
 

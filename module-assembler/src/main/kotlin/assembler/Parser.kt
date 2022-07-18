@@ -33,7 +33,7 @@ class Parser(lexResult: LexResult) {
 
 	private fun parseLabel(id: IdToken) {
 		if(pos >= tokens.size || tokens[pos++] != SymbolToken.COLON)
-			error("Label identifier must be followed by a colon")
+			error("Label identifier $id must be followed by a colon")
 		val node = LabelNode(id.value)
 		nodes.add(node)
 		symbols.add(Symbol(id.value, Symbol.Type.LABEL, node))
@@ -106,6 +106,7 @@ class Parser(lexResult: LexResult) {
 			is IntNode      -> ImmediateNode(node)
 			is BinaryNode   -> ImmediateNode(node)
 			is UnaryNode    -> ImmediateNode(node)
+			is IdNode       -> ImmediateNode(node)
 			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}

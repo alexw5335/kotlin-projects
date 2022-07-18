@@ -257,3 +257,37 @@ ADD
 	- ADD(ADD(1, 2), PI)
 - 1 + PI + 2
 	- ADD(ADD(1, PI), 2)
+
+Newline note:
+Both valid newline usages:
+
+symbol
+	.node
+	.calculate()
+
+symbol.
+	node.
+	calculate()
+
+Checking for expression ends may be complicated.
+
+Symbols
+- Symbols are identified during parsing
+- Symbols are names that are associated with a type and a node that represents its value
+- Symbols are resolved by the assembler and then stored as resolved symbols
+
+Assembler
+- The assembler first produces a stream of instructions
+- The instructions are not yet encoded.
+- An instruction in this stage consists only of its mnemonic, encoding, and length.
+
+Encoding chooser
+- Encodings are represented by a tree
+- Operand types
+	- register (must refer to a register)
+	- immediate (can be a literal or can refer to an expression)
+	- memory (same as immediate but surrounded by square brackets)
+- One tree for each operand count
+- Empty tree for no operands
+- Can be collapsed into an array for simple encoding choosing
+	- Use a tree later as optimisation
