@@ -1,7 +1,7 @@
 package assembler
 
 fun main() {
-	val input = "add rax, rax"
+	val input = "add qword [rax], rax"
 
 	val lexResult = Lexer(input.toCharArray()).lex()
 	println("Lex Result:")

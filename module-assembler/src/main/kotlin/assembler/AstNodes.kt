@@ -2,18 +2,53 @@ package assembler
 
 
 
+fun AstNode.isConstantInt(): Boolean = when(this) {
+	is BinaryNode -> left.isConstantInt() && right.isConstantInt()
+	is UnaryNode  -> node.isConstantInt()
+	is IntNode    -> true
+	else          -> false
+}
+
+
+
+fun AstNode.calculateConstantInt() = calculateConstantInt { error("Cannot resolve symbol: $it") }
+
+
+
+fun AstNode.calculateConstantInt(resolver: (String) -> Long): Long = when(this) {
+	is IntNode    -> value
+	is UnaryNode  -> op.calculate(node.calculateConstantInt(resolver))
+	is BinaryNode -> op.calculate(left.calculateConstantInt(resolver), right.calculateConstantInt(resolver))
+	is IdNode     -> resolver(value)
+	else          -> error("Cannot perform integer arithmetic on node: $this")
+}
+
+
+
 val AstNode.printableString: String get() = when(this) {
 	is BinaryNode      -> "(${left.printableString} ${op.symbol} ${right.printableString})"//"$op(${left.printableString}, ${right.printableString})"
 	is IdNode          -> value
 	is IntNode         -> value.toString()
 	is RegisterNode    -> value.string
 	is ImmediateNode   -> value.printableString
-	is MemoryNode      -> "[${value.printableString}]"
+	is MemoryNode      -> printableString
 	is UnaryNode       -> "${op.symbol}(${node.printableString})"//"$op(${node.printableString})"
 	is InstructionNode -> printableString
 	is ConstNode       -> "const $name = ${value.printableString}"
 	is LabelNode       -> "$name:"
 	else               -> "No printable string for AST node: ${this::class.simpleName}"
+}
+
+
+
+val MemoryNode.printableString get() = buildString {
+	if(width != null) {
+		append(width.string)
+		append(' ')
+	}
+	append('[')
+	append(value.printableString)
+	append(']')
 }
 
 
@@ -78,8 +113,8 @@ class RegisterNode(val value: Register) : AstNode
 
 
 
-class ImmediateNode(val value: AstNode) : AstNode
+class ImmediateNode(val value: AstNode, val calculatedValue: Long? = null) : AstNode
 
 
 
-class MemoryNode(val value: AstNode) : AstNode
+class MemoryNode(val value: AstNode, val width: Width?) : AstNode

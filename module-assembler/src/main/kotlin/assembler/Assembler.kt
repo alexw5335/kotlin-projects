@@ -23,6 +23,12 @@ class Assembler(parseResult: ParseResult) {
 
 
 
+	private fun chooseEncodings(node: InstructionNode) {
+		val encodings = Instructions.get(node.mnemonic) ?: error("Unrecognised mnemonic: ${node.mnemonic}")
+	}
+
+
+
 	private fun resolveSymbols() {
 		for(symbol in symbols) when(symbol.type) {
 			Symbol.Type.CONST ->

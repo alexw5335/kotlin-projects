@@ -33,8 +33,12 @@ data class MnemonicToken(val value: Mnemonic) : Token
 
 
 
-enum class KeywordToken : Token {
+enum class KeywordToken(val width: Width? = null) : Token {
 
+	BYTE(width = Width.BIT8),
+	WORD(width = Width.BIT16),
+	DWORD(width = Width.BIT32),
+	QWORD(width = Width.BIT64),
 	CONST;
 
 	val string = name.lowercase()

@@ -1,19 +1,19 @@
 package assembler
 
-enum class Width {
+enum class Width(val string: String) {
 
-	BIT8,
+	BIT8("byte"),
 
-	BIT16,
+	BIT16("word"),
 
-	BIT32,
+	BIT32("dword"),
 
-	BIT64,
+	BIT64("qword"),
 
-	BIT128,
+	BIT128("128-bit"),
 
-	BIT256,
+	BIT256("256-bit"),
 
-	BIT512;
+	BIT512("512-bit");
 
 }

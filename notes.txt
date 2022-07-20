@@ -275,6 +275,7 @@ Symbols
 - Symbols are identified during parsing
 - Symbols are names that are associated with a type and a node that represents its value
 - Symbols are resolved by the assembler and then stored as resolved symbols
+- The parser determines CONST symbols as it parses them.
 
 Assembler
 - The assembler first produces a stream of instructions
@@ -291,3 +292,68 @@ Encoding chooser
 - Empty tree for no operands
 - Can be collapsed into an array for simple encoding choosing
 	- Use a tree later as optimisation
+- Immediate value width is complicated
+	- Multiple passes
+- Operand tree
+	- Each node has a predicate and a list of children
+	- A leaf node consists of a predicate and an encoding
+	- First layer: operand1 type (REG/MEM)
+	- Second layer: operand2 specific type (REG8/MEM8)
+	- This will not work. If MEM is first, cannot identify the correct encoding, which may be based on the second REG
+	operand.
+	- Difference between explicit and implicit memory widths.
+
+ADD:
+
+04    ADD  AL  IMM8
+05    ADD  A   IMM
+80/0  ADD  RM8 IMM8
+81/0  ADD  RM  IMM
+83/0  ADD  RM  IMM8
+00    ADD  RM8 R8
+01    ADD  RM  R
+02    ADD  R8  RM8
+03    ADD  R   RM
+
+	 |||
+	 |||
+	\|||/
+	 \|/
+
+R8 IMM8  /  R8 IMM*
+AL IMM8  /  AL IMM*
+R8 R8
+R8 M8  /  R8 M
+
+R16 IMM8
+AX  IMM16
+R16 IMM16
+R16 R16
+R16 M16  /  R16 M
+
+R32 IMM8
+EAX IMM32
+R32 IMM32
+R32 R32
+R32 M32  /  R32 M
+
+R64 IMM8
+RAX IMM32
+R64 IMM32
+R64 R64
+R64 M64  /  R64 M
+
+M8 IMM8
+M8 R8  /  M R8
+
+M16 IMM8
+M16 IMM16
+M16 R16  /  M R16
+
+M32 IMM8
+M32 IMM32
+M32 R32  /  M R32
+
+M64 IMM8
+M64 IMM32
+M64 R64  /  M R64

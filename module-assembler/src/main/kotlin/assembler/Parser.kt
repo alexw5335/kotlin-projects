@@ -13,6 +13,8 @@ class Parser(lexResult: LexResult) {
 
 	private fun atStatementEnd() = pos >= tokens.size || tokens[pos] == SymbolToken.NEWLINE
 
+	private val constSymbols = HashMap<String, Long>()
+
 
 
 	fun parse(): ParseResult {
@@ -86,6 +88,8 @@ class Parser(lexResult: LexResult) {
 		val name = (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier, found ${tokens[pos - 1]}")
 		if(tokens[pos++] != SymbolToken.EQUALS) error("Expecting '=', found ${tokens[pos - 1]}")
 		val node = readExpression()
+		val value = node.calculateConstantInt { constSymbols[it] ?: error("Unresolved symbol: $it") }
+		constSymbols[name] = value
 		nodes.add(ConstNode(name, node))
 		symbols.add(Symbol(name, Symbol.Type.CONST, node))
 	}
@@ -93,20 +97,31 @@ class Parser(lexResult: LexResult) {
 
 
 	private fun parseOperand(): AstNode {
-		if(tokens[pos] == SymbolToken.LEFT_BRACKET) {
+		var token = tokens[pos]
+		var width: Width? = null
+
+		if(token is KeywordToken) {
+			width = token.width ?: error("Expected explicit memory width, found: $token")
+			token = tokens[++pos]
+		}
+
+		if(token == SymbolToken.LEFT_BRACKET) {
 			pos++
-			val node = MemoryNode(readExpression())
+			val node = MemoryNode(readExpression(), width)
 			if(tokens[pos++] != SymbolToken.RIGHT_BRACKET)
 				error("Expecting ']', found ${tokens[pos - 1]}")
 			return node
 		}
 
+		if(width != null)
+			error("Unexpected width specifier")
+
 		return when(val node = readExpression()) {
 			is RegisterNode -> node
-			is IntNode      -> ImmediateNode(node)
-			is BinaryNode   -> ImmediateNode(node)
-			is UnaryNode    -> ImmediateNode(node)
-			is IdNode       -> ImmediateNode(node)
+			is IntNode      -> ImmediateNode(node, node.value)
+			is BinaryNode   -> ImmediateNode(node, if(node.isConstantInt()) node.calculateConstantInt() else null)
+			is UnaryNode    -> ImmediateNode(node, if(node.isConstantInt()) node.calculateConstantInt() else null)
+			is IdNode       -> ImmediateNode(node, null)
 			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}

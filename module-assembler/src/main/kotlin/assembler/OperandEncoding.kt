@@ -2,5 +2,24 @@ package assembler
 
 enum class OperandEncoding {
 
-	R_RM;
+	/**
+	 * REG, RM
+	 */
+	RM,
+
+	/**
+	 * RM, REG
+	 */
+	MR,
+
+	/**
+	 * IMM
+	 */
+	I,
+
+	/**
+	 * RM, IMM
+	 */
+	MI;
+
 }
