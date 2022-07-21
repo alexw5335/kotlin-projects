@@ -91,9 +91,7 @@ class Parser(lexResult: LexResult) {
 
 		val expression = readExpression()
 
-		val value = expression.calculateConstantInt {
-			(symbols[it] as? IntSymbol)?.value ?: error("Cannot resolve symbol: $it")
-		}
+		val value = expression.calculateConstantInt(symbols)
 
 		nodes.add(ConstNode(name, expression))
 
@@ -122,12 +120,17 @@ class Parser(lexResult: LexResult) {
 		if(width != null)
 			error("Unexpected width specifier")
 
+		fun immediate(node: AstNode) = if(node.isConstantInt(symbols))
+			ImmediateIntNode(node.calculateConstantInt(symbols))
+		else
+			ImmediateNode(node)
+
 		return when(val node = readExpression()) {
 			is RegisterNode -> node
-			is IntNode      -> ImmediateNode(node, node.value)
-			is BinaryNode   -> ImmediateNode(node, if(node.isConstantInt()) node.calculateConstantInt() else null)
-			is UnaryNode    -> ImmediateNode(node, if(node.isConstantInt()) node.calculateConstantInt() else null)
-			is IdNode       -> ImmediateNode(node, null)
+			is IntNode      -> ImmediateIntNode(node.value)
+			is BinaryNode   -> immediate(node)
+			is UnaryNode    -> immediate(node)
+			is IdNode       -> ImmediateNode(node)
 			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}

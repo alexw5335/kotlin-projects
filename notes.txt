@@ -358,6 +358,10 @@ M64 IMM8
 M64 IMM32
 M64 R64  /  M R64
 
+REG
+	R8
+
+
 
 
 Assembler stages
@@ -381,3 +385,47 @@ Newlines
 - Use newlines as symbols if expressions don't go over newlines
 - Use a newline list if expressions can go over newlines
 - Consecutive newlines should not be tokenised.
+
+Operand types
+- 3 levels of types
+- Level 1: REG, IMM, MEM
+- Level 2: R8, R16, R32, R64, IMMn, IMM8, IMM16, IMM32, IMM64, MEMn, MEM8, MEM16, MEM32, MEM64
+- Level 3: AL, CL, AX, DX, EAX, RAX, 0, 1, OTHER (level 3 not required)
+- REG
+	- R8
+		- AL
+		- CL
+	- R16
+		- AX
+		- DX
+	- R32
+		- EAX
+	- R64
+		- RAX
+- MEM
+	- MEMn
+	- MEM8
+	- MEM16
+	- MEM32
+	- MEM64
+- IMM
+	- IMMn
+	- IMM8
+		- 0
+		- 1
+	- IMM16
+	- IMM32
+	- IMM64
+
+- RegisterNode
+	- u8 nodeType
+	- u8 registerType
+	- u8 registerValue
+- MemoryNode
+	- u8 nodeType
+	- u8 width (implicit, undetermined, byte, word, dword, qword, ...)
+	- ...
+- ImmediateNode
+	- u8 nodeType
+	- u8 width (implicit, undetermined, byte, word, dword, qword)
+	- s8, s16, s32, or index into s64 array

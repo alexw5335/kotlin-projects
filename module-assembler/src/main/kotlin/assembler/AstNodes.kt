@@ -2,33 +2,21 @@ package assembler
 
 
 
-fun AstNode.isConstantInt(): Boolean = when(this) {
-	is BinaryNode -> left.isConstantInt() && right.isConstantInt()
-	is UnaryNode  -> node.isConstantInt()
+fun AstNode.isConstantInt(symbols: Map<String, Symbol> = emptyMap()): Boolean = when(this) {
+	is BinaryNode -> left.isConstantInt(symbols) && right.isConstantInt(symbols)
+	is UnaryNode  -> node.isConstantInt(symbols)
 	is IntNode    -> true
-	else          -> false
-}
-
-
-fun AstNode.isConstantInt(resolver: (String) -> Boolean): Boolean = when(this) {
-	is BinaryNode -> left.isConstantInt(resolver) && right.isConstantInt(resolver)
-	is UnaryNode  -> node.isConstantInt(resolver)
-	is IntNode    -> true
-	is IdNode     -> resolver(value)
+	is IdNode     -> symbols[value] is IntSymbol
 	else          -> false
 }
 
 
 
-fun AstNode.calculateConstantInt() = calculateConstantInt { error("Cannot resolve symbol: $it") }
-
-
-
-fun AstNode.calculateConstantInt(resolver: (String) -> Long): Long = when(this) {
+fun AstNode.calculateConstantInt(symbols: Map<String, Symbol>): Long = when(this) {
 	is IntNode    -> value
-	is UnaryNode  -> op.calculate(node.calculateConstantInt(resolver))
-	is BinaryNode -> op.calculate(left.calculateConstantInt(resolver), right.calculateConstantInt(resolver))
-	is IdNode     -> resolver(value)
+	is UnaryNode  -> op.calculate(node.calculateConstantInt(symbols))
+	is BinaryNode -> op.calculate(left.calculateConstantInt(symbols), right.calculateConstantInt(symbols))
+	is IdNode     -> (symbols[value] as? IntSymbol)?.value ?: error("Undefined integer symbol: $value")
 	else          -> error("Cannot perform integer arithmetic on node: $this")
 }
 
@@ -127,10 +115,8 @@ class InstructionNode(
 
 class RegisterNode(val value: Register) : AstNode
 
+class ImmediateIntNode(val value: Long) : AstNode
 
-
-class ImmediateNode(val value: AstNode, val calculatedValue: Long? = null) : AstNode
-
-
+class ImmediateNode(val value: AstNode) : AstNode
 
 class MemoryNode(val value: AstNode, val width: Width?) : AstNode

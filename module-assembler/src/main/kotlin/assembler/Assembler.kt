@@ -23,18 +23,34 @@ class Assembler(parseResult: ParseResult) {
 			if(node is LabelNode) error("Labels not yet supported")
 			if(node !is InstructionNode) error("Expected instruction")
 
-			chooseEncodings(node)
+			chooseEncoding2(node)
 		}
 	}
 
 
-	//private fun chooseOperandType(node: AstNode) = when(node) {
-	//	is ImmediateNode ->
-	//}
 
-	private fun chooseEncodings(node: InstructionNode) {
+	private fun chooseEncoding2(node: InstructionNode) {
 		val encodings = Instructions.get(node.mnemonic)
 			?: error("Unrecognised mnemonic: ${node.mnemonic}")
+
+		val op1 = node.op1!!
+		val op2 = node.op2!!
+
+		var op12 = when(op1) {
+			is RegisterNode -> when(op1.value.width) {
+				1    -> OperandType2.R8
+				2    -> OperandType2.R16
+				3    -> OperandType2.R32
+				else -> OperandType2.R64
+			}
+			is MemoryNode -> when(op1.width) {
+				null        -> OperandType2.MEMn
+				Width.BIT8  -> OperandType2.MEM8
+				Width.BIT16 -> OperandType2.MEM16
+				Width.BIT32 -> OperandType2.MEM32
+				Width.BIT64 -> OperandType2.MEM64
+			}
+		}
 	}
 
 
