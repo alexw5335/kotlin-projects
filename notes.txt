@@ -376,3 +376,8 @@ Assembler stages
 		- add [rax], .end - .start (will cause an error, requires explicit width)
 		- jmp .end - .start (will use rel32)
 		- jmp byte .end - .start (will use rel8 but will throw an error if not in the correct range)
+
+Newlines
+- Use newlines as symbols if expressions don't go over newlines
+- Use a newline list if expressions can go over newlines
+- Consecutive newlines should not be tokenised.

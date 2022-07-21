@@ -10,6 +10,15 @@ fun AstNode.isConstantInt(): Boolean = when(this) {
 }
 
 
+fun AstNode.isConstantInt(resolver: (String) -> Boolean): Boolean = when(this) {
+	is BinaryNode -> left.isConstantInt(resolver) && right.isConstantInt(resolver)
+	is UnaryNode  -> node.isConstantInt(resolver)
+	is IntNode    -> true
+	is IdNode     -> resolver(value)
+	else          -> false
+}
+
+
 
 fun AstNode.calculateConstantInt() = calculateConstantInt { error("Cannot resolve symbol: $it") }
 
@@ -105,7 +114,14 @@ class InstructionNode(
 	val op2: AstNode?,
 	val op3: AstNode?,
 	val op4: AstNode?
-) : AstNode
+) : AstNode {
+
+	var op1Type = Operand.NONE
+	var op2Type = Operand.NONE
+	var op3Type = Operand.NONE
+	var op4Type = Operand.NONE
+
+}
 
 
 

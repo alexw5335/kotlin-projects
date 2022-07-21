@@ -1,16 +1,20 @@
 package assembler
 
 fun main() {
-	val input = "add qword [rax], rax"
+	val input = """
+		const myValue  = 2
+		const myValue2 = myValue * 2 + 1
+	"""
 
 	val lexResult = Lexer(input.toCharArray()).lex()
-	println("Lex Result:")
-	lexResult.tokens.forEach { println(it.printableString) }
+	println("Lexer:")
+	lexResult.tokens.forEach { print('\t'); println(it.printableString) }
 
 	val parseResult = Parser(lexResult).parse()
-	println("\nParse Result:")
-	parseResult.nodes.forEach { println(it.printableString) }
+	println("\nParser:")
+	parseResult.nodes.forEach { print('\t'); println(it.printableString) }
 
 	val assembler = Assembler(parseResult)
+	println("\nAssembler:")
 	assembler.assemble()
 }

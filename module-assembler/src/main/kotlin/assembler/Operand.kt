@@ -2,6 +2,7 @@ package assembler
 
 enum class Operand(val matches: (AstNode) -> Boolean = { false }) {
 
+	NONE,
 	R8    ({ it is RegisterNode && it.value.width == 1 }),
 	R16   ({ it is RegisterNode && it.value.width == 2 }),
 	R32   ({ it is RegisterNode && it.value.width == 3 }),
