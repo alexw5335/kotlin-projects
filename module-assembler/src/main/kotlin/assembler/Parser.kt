@@ -13,8 +13,6 @@ class Parser(lexResult: LexResult) {
 
 	private fun atStatementEnd() = pos >= tokens.size || tokens[pos] == SymbolToken.NEWLINE
 
-	private val constSymbols = HashMap<String, Long>()
-
 
 
 	fun parse(): ParseResult {
@@ -38,7 +36,7 @@ class Parser(lexResult: LexResult) {
 			error("Label identifier $id must be followed by a colon")
 		val node = LabelNode(id.value)
 		nodes.add(node)
-		symbols.add(Symbol(id.value, Symbol.Type.LABEL, node))
+		symbols.add(Symbol(id.value, SymbolType.LABEL, node))
 	}
 
 
@@ -88,10 +86,8 @@ class Parser(lexResult: LexResult) {
 		val name = (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier, found ${tokens[pos - 1]}")
 		if(tokens[pos++] != SymbolToken.EQUALS) error("Expecting '=', found ${tokens[pos - 1]}")
 		val node = readExpression()
-		val value = node.calculateConstantInt { constSymbols[it] ?: error("Unresolved symbol: $it") }
-		constSymbols[name] = value
 		nodes.add(ConstNode(name, node))
-		symbols.add(Symbol(name, Symbol.Type.CONST, node))
+		symbols.add(Symbol(name, SymbolType.CONST, node))
 	}
 
 

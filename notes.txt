@@ -357,3 +357,22 @@ M32 R32  /  M R32
 M64 IMM8
 M64 IMM32
 M64 R64  /  M R64
+
+
+
+Assembler stages
+- lexer: converts text into tokens
+- parser: converts tokens into nodes and creates a symbol table
+- assembler
+	- resolves constant nodes
+	- converts instruction nodes into instruction prototypes
+
+- Multiple passes are necessary
+- The parser resolves const symbols after the first pass
+- Labels may cause instruction length problems
+	- Any instruction that references labels will use the longest instruction
+	- Or, the instruction width can be specified, e.g.
+		- add al, .end - .start (doesn't need specification)
+		- add [rax], .end - .start (will cause an error, requires explicit width)
+		- jmp .end - .start (will use rel32)
+		- jmp byte .end - .start (will use rel8 but will throw an error if not in the correct range)
