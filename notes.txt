@@ -358,9 +358,23 @@ M64 IMM8
 M64 IMM32
 M64 R64  /  M R64
 
-REG
-	R8
 
+
+M_R = { op1 is MemoryNode && (op1.width == null || op1.width == op2.width) && op2 is RegisterNode }
+
+
+
+R
+	R8
+	R16
+	R32
+	R64
+M
+	M*
+	M8
+	M16
+	M32
+	M64
 
 
 
@@ -429,3 +443,18 @@ Operand types
 	- u8 nodeType
 	- u8 width (implicit, undetermined, byte, word, dword, qword)
 	- s8, s16, s32, or index into s64 array
+
+04    ADD  AL  IMM8    (IMM*)
+05    ADD  A   IMM     (IMM*)
+80/0  ADD  RM8 IMM8
+81/0  ADD  RM  IMM     (IMM*)
+83/0  ADD  RM  IMM8
+00    ADD  RM8 R8
+01    ADD  RM  R
+02    ADD  R8  RM8
+03    ADD  R   RM
+
+- Memory operands and immediate operands that reference labels use the largest possible encoding (pessimistic)
+	- Memory operands default to 32-bit displacements (vs 8-bit) when a label is used
+	- Immediate operands use the largest (usually 8-bit vs 16/32/64-bit or rel8 vs rel32) size encoding.
+		- A reference can be kept to the smaller encoding to allow for later optimisation.

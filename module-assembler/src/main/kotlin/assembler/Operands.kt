@@ -2,6 +2,25 @@ package assembler
 
 
 
+/*
+
+04    ADD  AL  IMM8    (IMM*)
+05    ADD  A   IMM     (IMM*)
+80/0  ADD  RM8 IMM8
+81/0  ADD  RM  IMM     (IMM*)
+83/0  ADD  RM  IMM8
+00    ADD  RM8 R8
+01    ADD  RM  R
+02    ADD  R8  RM8
+03    ADD  R   RM
+ */
+enum class Operands2(matcher: (InstructionNode) -> Boolean) {
+
+
+}
+
+
+
 enum class OperandType1(val matcher: (AstNode) -> Boolean){
 
 	REG({ it is RegisterNode }),
