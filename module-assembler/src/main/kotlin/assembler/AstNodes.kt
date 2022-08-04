@@ -95,6 +95,10 @@ class MemoryNode(val value: AstNode, val width: Width?) : AstNode
 
 
 
+class ImmediateNode(val value: AstNode) : AstNode
+
+
+
 class InstructionNode(
 	val mnemonic: Mnemonic,
 	val op1: AstNode?,

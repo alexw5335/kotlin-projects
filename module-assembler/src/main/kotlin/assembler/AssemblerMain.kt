@@ -2,7 +2,7 @@ package assembler
 
 fun main() {
 	val input = """
-		mov qword [rax], 1
+		add rax, 1
 	"""
 
 	val lexResult = Lexer.lex(input)

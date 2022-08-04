@@ -89,11 +89,11 @@ class Parser(lexResult: LexResult) {
 			error("Unexpected width specifier")
 
 		return when(val node = readExpression()) {
-			is RegisterNode,
+			is RegisterNode -> node
 			is IntNode,
 			is BinaryNode,
 			is UnaryNode,
-			is IdNode       -> node
+			is IdNode       -> ImmediateNode(node)
 			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}

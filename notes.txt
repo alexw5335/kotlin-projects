@@ -489,3 +489,17 @@ R
 - e.g. imm8 can be a specialised version of imm32, e.g. R32_IMM32 -> R32_IMM8
 - e.g. rax can be a specialised version of r64, e.g. R64_IMM32 -> RAX_IMM32
 - Specificities are checked after checking the more general version.
+
+1. Choose the general encoding, e.g. R64_IMM (but not RAX_IMM)
+2. Search the mnemonic instruction group's flag bits for the presence of the general encoding
+3. If the encoding bit's flag is not set, then the operands are invalid for that mnemonic
+4. If the operands are valid, then the encoding's index in the instruction group's general encoding array is found
+by counting the number of set bits before the operand encoding's bit.
+5. The general encoding is checked for any specifier encodings, e.g. Shorter immediates, AL, AX, EAX, RAX, CL, DX, 1, 0
+- The instructions must be laid out in the order of their operand encoding ordinals
+- Any instructions with more specific operands must be placed at the end of the instruction list
+- OperandsEncodings/InstructionEncodings can have multiple specifiers
+	- e.g. R64_IMM32 -> R64_IMM8, R64_IMM32 -> RAX_IMM32
+	- here, R64_IMM8 takes precedence over RAX_IMM32
+
+
