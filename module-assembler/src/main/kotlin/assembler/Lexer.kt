@@ -1,8 +1,43 @@
 package assembler
 
 import core.ReaderBase
+import java.nio.file.Path
+import java.nio.file.Files
 
 class Lexer(chars: CharArray) : ReaderBase(chars) {
+
+
+	companion object {
+
+
+		fun lex(string: String) = Lexer(CharArray(string.length + 8).also(string::toCharArray)).lex()
+
+		fun lex(path: Path) = lex(Files.readString(path))
+
+
+
+		private val Char.isIdStartChar get() = isLetter() || this == '_'
+
+		private val Char.isIdChar get() = isLetterOrDigit() || this == '_'
+
+		private val keywordMap = HashMap<String, Token>()
+
+
+
+		init {
+			for(r in Register.values())
+				keywordMap[r.string] = RegisterToken(r)
+
+			for(m in Mnemonic.values())
+				keywordMap[m.string] = MnemonicToken(m)
+
+			for(k in KeywordToken.values())
+				keywordMap[k.string] = k
+		}
+
+
+	}
+
 
 
 	private val tokens = ArrayList<Token>()
@@ -10,11 +45,16 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 
 	fun lex(): LexResult {
-		while(pos < chars.size) {
+		while(chars[pos] == '\n') pos++
+
+		while(true) {
 			val char = chars[pos++]
+
+			if(char == Char(0)) break
 
 			if(char == '\n') {
 				tokens.add(SymbolToken.NEWLINE)
+				while(chars[pos] == '\n') pos++
 				continue
 			}
 
@@ -75,14 +115,8 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 		'^' -> SymbolToken.CARET
 		'[' -> SymbolToken.LEFT_BRACKET
 		']' -> SymbolToken.RIGHT_BRACKET
-		'<' -> {
-			if(pos < chars.size && chars[pos] == '<') { pos++; SymbolToken.LEFT_SHIFT }
-			else { SymbolToken.LEFT_ANGLE }
-		}
-		'>' -> {
-			if(pos < chars.size && chars[pos] == '>') { pos++; SymbolToken.RIGHT_SHIFT }
-			else { SymbolToken.RIGHT_ANGLE }
-		}
+		'<' -> if(chars[pos] == '<') SymbolToken.LEFT_SHIFT.adv() else SymbolToken.LEFT_ANGLE
+		'>' -> if(chars[pos] == '>') SymbolToken.RIGHT_SHIFT.adv() else SymbolToken.RIGHT_ANGLE
 		else -> null
 	}
 
@@ -123,31 +157,4 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 	}
 
 
-
-	companion object {
-
-		private val Char.isIdStartChar get() = isLetter() || this == '_'
-
-		private val Char.isIdChar get() = isLetterOrDigit() || this == '_'
-
-		private val keywordMap = HashMap<String, Token>()
-
-		init {
-			for(r in Register.values())
-				keywordMap[r.string] = RegisterToken(r)
-
-			for(m in Mnemonic.values())
-				keywordMap[m.string] = MnemonicToken(m)
-
-			for(k in KeywordToken.values())
-				keywordMap[k.string] = k
-		}
-
-	}
-
-
 }
-
-
-
-

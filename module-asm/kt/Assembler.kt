@@ -10,6 +10,5 @@ object AsmMain
 
 
 fun main() {
-	//Core.nasmRun("module-asm", "assembler")
-	Core.nasmPrint("ret")
+	Core.nasmRun("module-asm", "program")
 }

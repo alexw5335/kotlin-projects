@@ -3,12 +3,12 @@ package assembler
 
 
 val Token.printableString get() = when(this) {
-	is SymbolToken        -> "SYMBOL    $string"
+	is SymbolToken   -> "SYMBOL    $string"
 	is IdToken       -> "ID        $value"
 	is IntToken      -> "INT       $value"
 	is MnemonicToken -> "MNEMONIC  ${value.string}"
 	is RegisterToken -> "REGISTER  ${value.string}"
-	is KeywordToken       -> "KEYWORD   $string"
+	is KeywordToken  -> "KEYWORD   $string"
 }
 
 

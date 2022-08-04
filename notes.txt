@@ -458,3 +458,34 @@ Operand types
 	- Memory operands default to 32-bit displacements (vs 8-bit) when a label is used
 	- Immediate operands use the largest (usually 8-bit vs 16/32/64-bit or rel8 vs rel32) size encoding.
 		- A reference can be kept to the smaller encoding to allow for later optimisation.
+
+- An instruction node will produce the most specific encoding (e.g. AX, M16)
+	- This is then ANDed with the flag bits of the instruction
+	- The encoding index is found by counting the number of bits set before the matching bit.
+	- AND will produce 0 if the encoding is invalid.
+- Memory operands will match regardless of explicit width
+	- Encodings will check for the correct width
+	- Implicit width will be determined according to other operands
+		- i.e. memory operand width will not be used to determine the encoding
+	- Encodings that require explicit widths will check for them.
+		- e.g. add [rax], 100 -> M_IMM, which should require explicit memory width
+	- Immediates of indeterminate width will use the largest possible encoding.
+		- e.g. R8_IMMN is an encoding that will have been auto-generated during encoding generation.
+- Instruction length variation
+	- Immediate length (rel8 vs rel32, imm8 vs imm16/32)
+	- Memory length
+		- May require SIB byte, may require disp8 or disp32
+
+R
+	R8
+		_IMM8 -> R8_IMM8 or AL_IMM8
+		_R8   -> R8_R8
+		_M8   -> R8_M8
+	R
+		_IMM8 -> R_IMM8
+		_IMM  -> R_IMM or A_IMM
+
+- Some instruction encodings can have more specific versions
+- e.g. imm8 can be a specialised version of imm32, e.g. R32_IMM32 -> R32_IMM8
+- e.g. rax can be a specialised version of r64, e.g. R64_IMM32 -> RAX_IMM32
+- Specificities are checked after checking the more general version.

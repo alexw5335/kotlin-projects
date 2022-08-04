@@ -1,13 +1,9 @@
 package assembler
 
-import assembler.Mnemonic.*
-import assembler.Operand.*
-import assembler.OperandEncoding.*
-
 object Instructions {
 
 
-	private val map = HashMap<Mnemonic, ArrayList<InstructionEncoding>>()
+/*	private val map = HashMap<Mnemonic, ArrayList<InstructionEncoding>>()
 
 	fun get(mnemonic: Mnemonic) = map[mnemonic]
 
@@ -62,7 +58,7 @@ object Instructions {
 		ADD.add(0x81, MI, M32, IMM32)
 		ADD.add(0x81, MI, R64, IMM32)
 		ADD.add(0x81, MI, M64, IMM32)
-	}
+	}*/
 
 
 }

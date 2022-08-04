@@ -9,8 +9,6 @@ class Parser(lexResult: LexResult) {
 
 	private val nodes = ArrayList<AstNode>()
 
-	private val symbols = HashMap<String, Symbol>()
-
 	private fun atStatementEnd() = pos >= tokens.size || tokens[pos] == SymbolToken.NEWLINE
 
 
@@ -18,25 +16,13 @@ class Parser(lexResult: LexResult) {
 	fun parse(): ParseResult {
 		while(pos < tokens.size) {
 			when(val token = tokens[pos++]) {
-				KeywordToken.CONST  -> parseConst()
 				SymbolToken.NEWLINE -> continue
 				is MnemonicToken    -> nodes.add(parseInstruction(token.value))
-				is IdToken          -> parseLabel(token)
 				else                -> error("Invalid token: $token")
 			}
 		}
 
-		return ParseResult(nodes, symbols)
-	}
-
-
-
-	private fun parseLabel(id: IdToken) {
-		if(pos >= tokens.size || tokens[pos++] != SymbolToken.COLON)
-			error("Label identifier $id must be followed by a colon")
-		val node = LabelNode(id.value)
-		nodes.add(node)
-		symbols[id.value] = LabelSymbol(id.value, node)
+		return ParseResult(nodes)
 	}
 
 
@@ -82,24 +68,6 @@ class Parser(lexResult: LexResult) {
 
 
 
-	private fun parseConst() {
-		val name = (tokens[pos++] as? IdToken)?.value
-			?: error("Expecting identifier, found ${tokens[pos - 1]}")
-
-		if(tokens[pos++] != SymbolToken.EQUALS)
-			error("Expecting '=', found ${tokens[pos - 1]}")
-
-		val expression = readExpression()
-
-		val value = expression.calculateConstantInt(symbols)
-
-		nodes.add(ConstNode(name, expression))
-
-		symbols[name] = IntSymbol(name, value)
-	}
-
-
-
 	private fun parseOperand(): AstNode {
 		var token = tokens[pos]
 		var width: Width? = null
@@ -120,17 +88,12 @@ class Parser(lexResult: LexResult) {
 		if(width != null)
 			error("Unexpected width specifier")
 
-		fun immediate(node: AstNode) = if(node.isConstantInt(symbols))
-			ImmediateIntNode(node.calculateConstantInt(symbols))
-		else
-			ImmediateNode(node)
-
 		return when(val node = readExpression()) {
-			is RegisterNode -> node
-			is IntNode      -> ImmediateIntNode(node.value)
-			is BinaryNode   -> immediate(node)
-			is UnaryNode    -> immediate(node)
-			is IdNode       -> ImmediateNode(node)
+			is RegisterNode,
+			is IntNode,
+			is BinaryNode,
+			is UnaryNode,
+			is IdNode       -> node
 			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}

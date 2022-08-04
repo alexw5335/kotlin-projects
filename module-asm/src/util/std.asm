@@ -17,6 +17,7 @@ section .data
 	stringPrintFormat db "%s", 0
 	newlinePrintFormat db 10, 0
 	stringFatalError db "A fatal error has occurred", 10, 0
+	stringFinished db "Finished", 10, 0
 
 
 

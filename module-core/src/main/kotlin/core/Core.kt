@@ -44,6 +44,12 @@ object Core {
 
 
 
+	fun readResourceBytes(path: String) = this::class.java
+		.getResourceAsStream(path)!!
+		.readAllBytes()
+
+
+
 	fun nasmBuild(src: String, out: String, vararg args: String) {
 		runOrExit("nasm -fwin64 $src.asm -o $out.obj ${args.joinToString(" ") }")
 		runOrExit("gcc $out.obj -o $out.exe")

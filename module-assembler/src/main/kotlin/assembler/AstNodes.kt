@@ -2,23 +2,23 @@ package assembler
 
 
 
-fun AstNode.isConstantInt(symbols: Map<String, Symbol> = emptyMap()): Boolean = when(this) {
+/*fun AstNode.isConstantInt(symbols: Map<String, Symbol> = emptyMap()): Boolean = when(this) {
 	is BinaryNode -> left.isConstantInt(symbols) && right.isConstantInt(symbols)
 	is UnaryNode  -> node.isConstantInt(symbols)
 	is IntNode    -> true
 	is IdNode     -> symbols[value] is IntSymbol
 	else          -> false
-}
+}*/
 
 
 
-fun AstNode.calculateConstantInt(symbols: Map<String, Symbol>): Long = when(this) {
+/*fun AstNode.calculateConstantInt(symbols: Map<String, Symbol>): Long = when(this) {
 	is IntNode    -> value
 	is UnaryNode  -> op.calculate(node.calculateConstantInt(symbols))
 	is BinaryNode -> op.calculate(left.calculateConstantInt(symbols), right.calculateConstantInt(symbols))
 	is IdNode     -> (symbols[value] as? IntSymbol)?.value ?: error("Undefined integer symbol: $value")
 	else          -> error("Cannot perform integer arithmetic on node: $this")
-}
+}*/
 
 
 
@@ -27,12 +27,11 @@ val AstNode.printableString: String get() = when(this) {
 	is IdNode          -> value
 	is IntNode         -> value.toString()
 	is RegisterNode    -> value.string
-	is ImmediateNode   -> value.printableString
 	is MemoryNode      -> printableString
 	is UnaryNode       -> "${op.symbol}(${node.printableString})"//"$op(${node.printableString})"
 	is InstructionNode -> printableString
-	is ConstNode       -> "const $name = ${value.printableString}"
-	is LabelNode       -> "$name:"
+	//is ConstNode       -> "const $name = ${value.printableString}"
+	//is LabelNode       -> "$name:"
 	else               -> "No printable string for AST node: ${this::class.simpleName}"
 }
 
@@ -88,11 +87,11 @@ class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstN
 
 
 
-class ConstNode(val name: String, val value: AstNode) : AstNode
+class RegisterNode(val value: Register) : AstNode
 
 
 
-class LabelNode(val name: String) : AstNode
+class MemoryNode(val value: AstNode, val width: Width?) : AstNode
 
 
 
@@ -102,21 +101,4 @@ class InstructionNode(
 	val op2: AstNode?,
 	val op3: AstNode?,
 	val op4: AstNode?
-) : AstNode {
-
-	var op1Type = Operand.NONE
-	var op2Type = Operand.NONE
-	var op3Type = Operand.NONE
-	var op4Type = Operand.NONE
-
-}
-
-
-
-class RegisterNode(val value: Register) : AstNode
-
-class ImmediateIntNode(val value: Long) : AstNode
-
-class ImmediateNode(val value: AstNode) : AstNode
-
-class MemoryNode(val value: AstNode, val width: Width?) : AstNode
+) : AstNode

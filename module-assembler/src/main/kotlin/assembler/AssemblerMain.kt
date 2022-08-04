@@ -2,11 +2,10 @@ package assembler
 
 fun main() {
 	val input = """
-		const myValue  = 2
-		const myValue2 = myValue * 2 + 1
+		mov qword [rax], 1
 	"""
 
-	val lexResult = Lexer(input.toCharArray()).lex()
+	val lexResult = Lexer.lex(input)
 	println("Lexer:")
 	lexResult.tokens.forEach { print('\t'); println(it.printableString) }
 

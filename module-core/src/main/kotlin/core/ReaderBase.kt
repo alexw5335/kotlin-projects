@@ -1,7 +1,8 @@
 package core
 
 /**
- * Not intended as a general-purpose lexer superclass. Contains convenience methods for simple lexers/parsers.
+ * Not intended as a general-purpose lexer superclass. Contains convenience methods for simple lexers/parsers. The
+ * [chars] array is expected to provide a buffer of at 8 null chars at the end of the array.
  */
 abstract class ReaderBase(val chars: CharArray) {
 
@@ -35,6 +36,10 @@ abstract class ReaderBase(val chars: CharArray) {
 	fun skipLine() = skipTo { it == '\n' }
 
 	fun skipSpaces() = skipWhile { it.isWhitespace() && it != '\n' }
+
+	fun skipLines() = skipWhile { it == '\n' }
+
+	protected fun<T> T.adv(): T { pos++; return this }
 
 
 
