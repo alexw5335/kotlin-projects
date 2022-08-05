@@ -2,16 +2,16 @@ package assembler
 
 fun main() {
 	val input = """
-		add rax, 1
+		add rax, 123123
 	"""
 
 	val lexResult = Lexer.lex(input)
-	println("Lexer:")
-	lexResult.tokens.forEach { print('\t'); println(it.printableString) }
+	//println("Lexer:")
+	//lexResult.tokens.forEach { print('\t'); println(it.printableString) }
 
 	val parseResult = Parser(lexResult).parse()
 	println("\nParser:")
-	parseResult.nodes.forEach { print('\t'); println(it.printableString) }
+	parseResult.nodes.forEach { println('\t'); println(it.printableString) }
 
 	val assembler = Assembler(parseResult)
 	println("\nAssembler:")

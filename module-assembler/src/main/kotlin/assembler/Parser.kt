@@ -9,6 +9,8 @@ class Parser(lexResult: LexResult) {
 
 	private val nodes = ArrayList<AstNode>()
 
+	private val symbols = HashMap<String, Symbol<*>>()
+
 	private fun atStatementEnd() = pos >= tokens.size || tokens[pos] == SymbolToken.NEWLINE
 
 
@@ -90,10 +92,10 @@ class Parser(lexResult: LexResult) {
 
 		return when(val node = readExpression()) {
 			is RegisterNode -> node
-			is IntNode,
+			is IntNode      -> ImmediateNode(node, node.value)
 			is BinaryNode,
 			is UnaryNode,
-			is IdNode       -> ImmediateNode(node)
+			is IdNode       -> ImmediateNode(node, null)
 			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}

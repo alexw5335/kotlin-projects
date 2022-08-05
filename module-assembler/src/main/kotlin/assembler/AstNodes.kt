@@ -30,6 +30,7 @@ val AstNode.printableString: String get() = when(this) {
 	is MemoryNode      -> printableString
 	is UnaryNode       -> "${op.symbol}(${node.printableString})"//"$op(${node.printableString})"
 	is InstructionNode -> printableString
+	is ImmediateNode   -> value.printableString
 	//is ConstNode       -> "const $name = ${value.printableString}"
 	//is LabelNode       -> "$name:"
 	else               -> "No printable string for AST node: ${this::class.simpleName}"
@@ -95,7 +96,7 @@ class MemoryNode(val value: AstNode, val width: Width?) : AstNode
 
 
 
-class ImmediateNode(val value: AstNode) : AstNode
+class ImmediateNode(val value: AstNode, val constValue: Long?) : AstNode
 
 
 
