@@ -5,7 +5,7 @@ abstract class LexerBase<T>(chars: CharArray) : ReaderBase(chars) {
 
 	protected val tokens = ArrayList<T>()
 
-	protected val newlines = NewlineList()
+	protected val newlines = BitList()
 
 
 

@@ -9,11 +9,16 @@ val Token.printableString get() = when(this) {
 	is MnemonicToken -> "MNEMONIC  ${value.string}"
 	is RegisterToken -> "REGISTER  ${value.string}"
 	is KeywordToken  -> "KEYWORD   $string"
+	is EndToken      -> "End"
 }
 
 
 
 sealed interface Token
+
+
+
+object EndToken : Token
 
 
 
@@ -39,7 +44,8 @@ enum class KeywordToken(val width: Width? = null) : Token {
 	WORD(width = Width.BIT16),
 	DWORD(width = Width.BIT32),
 	QWORD(width = Width.BIT64),
-	CONST;
+	CONST,
+	ENUM;
 
 	val string = name.lowercase()
 
@@ -73,6 +79,7 @@ enum class SymbolToken(
 	RIGHT_SHIFT   (">>", binaryOp = BinaryOp.SHR),
 	LEFT_BRACKET  ("["),
 	RIGHT_BRACKET ("]"),
-	NEWLINE       ("\\n");
+	LEFT_BRACE    ("{"),
+	RIGHT_BRACE   ("}");
 
 }

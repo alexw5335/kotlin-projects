@@ -17,3 +17,11 @@ interface SymbolData
 
 
 class IntSymbolData(val value: Long) : SymbolData
+
+
+
+class EnumSymbolData(val name: String, val entries: List<EnumEntry>)
+
+
+
+class EnumEntry(val name: String, val value: AstNode?)

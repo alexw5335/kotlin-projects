@@ -1,5 +1,6 @@
 package assembler
 
+import core.BitList
 import core.ReaderBase
 import java.nio.file.Path
 import java.nio.file.Files
@@ -42,18 +43,18 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 	private val tokens = ArrayList<Token>()
 
+	private val newlines = BitList()
+
 
 
 	fun lex(): LexResult {
-		while(chars[pos] == '\n') pos++
-
 		while(true) {
 			val char = chars[pos++]
 
 			if(char == Char(0)) break
 
 			if(char == '\n') {
-				tokens.add(SymbolToken.NEWLINE)
+				newlines.set(tokens.size)
 				while(chars[pos] == '\n') pos++
 				continue
 			}
@@ -94,7 +95,9 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 			tokens.add(IdToken(string))
 		}
 
-		return LexResult(tokens)
+		for(i in 0 until 4) tokens.add(EndToken)
+		newlines.ensureBitCapacity(tokens.size)
+		return LexResult(tokens, newlines)
 	}
 
 
@@ -115,6 +118,8 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 		'^' -> SymbolToken.CARET
 		'[' -> SymbolToken.LEFT_BRACKET
 		']' -> SymbolToken.RIGHT_BRACKET
+		'{' -> SymbolToken.LEFT_BRACE
+		'}' -> SymbolToken.RIGHT_BRACE
 		'<' -> if(chars[pos] == '<') SymbolToken.LEFT_SHIFT.adv() else SymbolToken.LEFT_ANGLE
 		'>' -> if(chars[pos] == '>') SymbolToken.RIGHT_SHIFT.adv() else SymbolToken.RIGHT_ANGLE
 		else -> null

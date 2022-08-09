@@ -44,7 +44,7 @@ val MemoryNode.printableString get() = buildString {
 		append(' ')
 	}
 	append('[')
-	append(value.printableString)
+	append(components.joinToString { it.printableString })
 	append(']')
 }
 
@@ -92,7 +92,7 @@ class RegisterNode(val value: Register) : AstNode
 
 
 
-class MemoryNode(val value: AstNode, val width: Width?) : AstNode
+class MemoryNode(val components: List<AstNode>, val width: Width?) : AstNode
 
 
 

@@ -502,4 +502,6 @@ by counting the number of set bits before the operand encoding's bit.
 	- e.g. R64_IMM32 -> R64_IMM8, R64_IMM32 -> RAX_IMM32
 	- here, R64_IMM8 takes precedence over RAX_IMM32
 
-
+Memory operands
+- Traverse the AST node to determine the base, index, scale, and displacement
+- BASE + INDEX * SCALE + DISPLACEMENT

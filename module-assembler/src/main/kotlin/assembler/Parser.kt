@@ -7,25 +7,77 @@ class Parser(lexResult: LexResult) {
 
 	private val tokens = lexResult.tokens
 
+	private val newlines = lexResult.newlines
+
 	private val nodes = ArrayList<AstNode>()
 
 	private val symbols = HashMap<String, Symbol<*>>()
 
-	private fun atStatementEnd() = pos >= tokens.size || tokens[pos] == SymbolToken.NEWLINE
+
+
+	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos]
+
+	private val prevToken get() = tokens[pos - 1]
 
 
 
 	fun parse(): ParseResult {
-		while(pos < tokens.size) {
+		while(true) {
 			when(val token = tokens[pos++]) {
-				SymbolToken.NEWLINE -> continue
 				is MnemonicToken    -> nodes.add(parseInstruction(token.value))
+				//is KeywordToken     -> parseKeyword(token)
+				is EndToken         -> break
 				else                -> error("Invalid token: $token")
 			}
 		}
 
 		return ParseResult(nodes)
 	}
+
+
+
+/*	private fun parseKeyword(keyword: KeywordToken) {
+		when(keyword) {
+			KeywordToken.ENUM -> parseEnum()
+			else -> { }
+		}
+	}
+
+
+
+	private fun parseEnum() {
+		val name = (tokens[pos++] as? IdToken)?.value
+			?: error("Expecting enum name, found: $prevToken")
+
+		if(tokens[pos++] != SymbolToken.LEFT_BRACE)
+			error("Expecting '{', found $prevToken")
+
+		while(true) {
+			if(tokens[pos] == SymbolToken.RIGHT_BRACE) {
+				pos++
+				break
+			}
+
+			val entryName = (tokens[pos++] as? IdToken)?.value
+				?: error("Expecting enum entry name, found: $prevToken")
+
+			var explicitValue: AstNode? = null
+
+			if(tokens[pos] == SymbolToken.EQUALS) {
+				pos++
+				explicitValue = readExpression()
+			}
+
+			if(tokens[pos] == SymbolToken.SEMICOLON) {
+				pos++
+				break
+			}
+
+			if(tokens[pos++] != SymbolToken.COMMA) error("Expected ',")
+
+			println("$name.$entryName = ${explicitValue?.printableString}")
+		}
+	}*/
 
 
 
@@ -81,10 +133,13 @@ class Parser(lexResult: LexResult) {
 
 		if(token == SymbolToken.LEFT_BRACKET) {
 			pos++
-			val node = MemoryNode(readExpression(), width)
-			if(tokens[pos++] != SymbolToken.RIGHT_BRACKET)
-				error("Expecting ']', found ${tokens[pos - 1]}")
-			return node
+			val components = ArrayList<AstNode>()
+			while(true) {
+				components.add(readExpression())
+				if(tokens[pos] == SymbolToken.RIGHT_BRACKET) { pos++; break }
+				if(tokens[pos++] != SymbolToken.COMMA) error("Expecting ',' or ']', found: $prevToken")
+			}
+			return MemoryNode(components, width)
 		}
 
 		if(width != null)

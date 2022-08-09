@@ -1,3 +1,5 @@
 package assembler
 
-class LexResult(val tokens: List<Token>)
+import core.BitList
+
+class LexResult(val tokens: List<Token>, val newlines: BitList)

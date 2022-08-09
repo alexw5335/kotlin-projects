@@ -1,9 +1,9 @@
 package core
 
-class BitList(initialCapacity: Int = 20) {
+class BitList(private var fields: IntArray) {
 
 
-	private var fields = IntArray(initialCapacity)
+	constructor(initialCapacity: Int = 512) : this(IntArray(initialCapacity shr 5))
 
 
 

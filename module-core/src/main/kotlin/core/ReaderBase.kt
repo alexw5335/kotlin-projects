@@ -41,6 +41,8 @@ abstract class ReaderBase(val chars: CharArray) {
 
 	protected fun<T> T.adv(): T { pos++; return this }
 
+	fun advanceIfAt(char: Char) = if(chars[pos] == char) { pos++; true; } else false
+
 
 
 	/*

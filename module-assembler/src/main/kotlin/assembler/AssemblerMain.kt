@@ -1,17 +1,30 @@
 package assembler
 
-fun main() {
-	val input = """
-		add rax, 123123
-	"""
 
+
+private const val INPUT = """
+
+add rax, [rax, rcx, 1]
+
+"""
+
+
+
+fun main() {
+	assemble(INPUT)
+}
+
+
+
+@Suppress("SameParameterValue")
+private fun assemble(input: String) {
 	val lexResult = Lexer.lex(input)
 	//println("Lexer:")
-	//lexResult.tokens.forEach { print('\t'); println(it.printableString) }
+	//for(t in lexResult.tokens) println(t.printableString)
 
 	val parseResult = Parser(lexResult).parse()
 	println("\nParser:")
-	parseResult.nodes.forEach { println('\t'); println(it.printableString) }
+	for(n in parseResult.nodes) println(n.printableString)
 
 	val assembler = Assembler(parseResult)
 	println("\nAssembler:")

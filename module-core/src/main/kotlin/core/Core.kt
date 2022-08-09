@@ -99,8 +99,19 @@ object Core {
 		val path = Paths.get("nasmTemp.obj")
 		val bytes = Files.readAllBytes(path)
 		val data = bytes.copyOfRange(bytes.int32(40), bytes.int32(40) + bytes.int32(36))
-		data.forEach { println(it.hex8) }
+		data.forEach { println(it.toInt().hex8) }
 		Files.delete(path)
+	}
+
+
+
+	fun toPackedInts(bytes: ByteArray): IntArray {
+		val ints = IntArray(bytes.size shr 2)
+
+		for(i in bytes.indices)
+			ints[i shr 2] = ints[i shr 2] or (bytes[i].toInt() shl ((4 - (i + 3) and -4) shl 3))
+
+		return ints
 	}
 
 
