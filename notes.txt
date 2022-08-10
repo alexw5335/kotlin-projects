@@ -520,3 +520,7 @@ Assembly
 	- RM_R: R16_R16, M16_M16, R32_R32, M32_R32, R64_R64, M64_R64
 	- R_RM: R16_M16, R32_M32, R64_M64
 	- reduce repetition
+- steps:
+	1. Determine width
+	2. Determine operand types
+	3. Identify memory operands

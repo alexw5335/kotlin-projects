@@ -6,10 +6,12 @@ package assembler
 enum class Register(
 	val value : Int,
 	val width : Width,
-	val rex   : Int = 0
+	val rex   : Int = 0,
+	val rex8  : Boolean = false,
+	val noRex : Boolean = false
 ) {
 
-	// 64-bit general-purpose
+	// 64-bit
 	RAX(0, Width.BIT64),
 	RCX(1, Width.BIT64),
 	RDX(2, Width.BIT64),
@@ -27,7 +29,7 @@ enum class Register(
 	R14(14, Width.BIT64, rex = 1),
 	R15(15, Width.BIT64, rex = 1),
 
-	// 32-bit general-purpose
+	// 32-bit
 	EAX(0, Width.BIT32),
 	ECX(1, Width.BIT32),
 	EDX(2, Width.BIT32),
@@ -45,7 +47,7 @@ enum class Register(
 	R14D(14, Width.BIT32, rex = 1),
 	R15D(15, Width.BIT32, rex = 1),
 
-	// 16-bit general-purpose
+	// 16-bit
 	AX(0, Width.BIT16),
 	CX(1, Width.BIT16),
 	DX(2, Width.BIT16),
@@ -63,15 +65,15 @@ enum class Register(
 	R14W(14, Width.BIT16, rex = 1),
 	R15W(15, Width.BIT16, rex = 1),
 
-	// 8-bit general-purpose
+	// 8-bit
 	AL(0, Width.BIT8),
 	CL(1, Width.BIT8),
 	DL(2, Width.BIT8),
 	BL(3, Width.BIT8),
-	AH(4, Width.BIT8),
-	CH(5, Width.BIT8),
-	DH(6, Width.BIT8),
-	BH(7, Width.BIT8),
+	AH(4, Width.BIT8, noRex = true),
+	CH(5, Width.BIT8, noRex = true),
+	DH(6, Width.BIT8, noRex = true),
+	BH(7, Width.BIT8, noRex = true),
 	R8B(8, Width.BIT8, rex = 1),
 	R9B(9, Width.BIT8, rex = 1),
 	R10B(10, Width.BIT8, rex = 1),
@@ -81,11 +83,11 @@ enum class Register(
 	R14B(14, Width.BIT8, rex = 1),
 	R15B(15, Width.BIT8, rex = 1),
 
-	// high 8-bit general purpose
-	SPL(4, Width.BIT8),
-	BPL(4, Width.BIT8),
-	SIL(4, Width.BIT8),
-	DIL(4, Width.BIT8);
+	// 8-bit with any REX prefix
+	SPL(4, Width.BIT8, rex8 = true),
+	BPL(4, Width.BIT8, rex8 = true),
+	SIL(4, Width.BIT8, rex8 = true),
+	DIL(4, Width.BIT8, rex8 = true);
 
 	val string = name.lowercase()
 
