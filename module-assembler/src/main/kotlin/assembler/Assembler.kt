@@ -1,13 +1,25 @@
 package assembler
 
+import core.binary.BinaryWriter
+
 class Assembler(private val parseResult: ParseResult) {
+
+
+	private val writer = BinaryWriter()
+
 
 
 	fun assemble() {
 		for(node in parseResult.nodes) {
 			if(node !is InstructionNode) continue
-			println(encoding(node))
+			assemble(node)
 		}
+	}
+
+
+
+	private fun assemble(node: InstructionNode) {
+		val encoding = encoding(node)
 	}
 
 

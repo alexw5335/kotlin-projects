@@ -505,3 +505,18 @@ by counting the number of set bits before the operand encoding's bit.
 Memory operands
 - Traverse the AST node to determine the base, index, scale, and displacement
 - BASE + INDEX * SCALE + DISPLACEMENT
+
+Assembly
+- The encoding is first chosen according to the operand nodes and the mnemonic
+- Assembly is coordinated mostly by the encoding
+- REX.W: 64-bit operand size
+- REX.R: extends ModRM:reg for GPR, SSE, CR, or DR.
+- REX.X: extends SIB:index
+- REX.B: extends ModRM:rm, SIB:base, or opcode:reg
+- Encodings are grouped by schemes
+	- e.g. R8_R8, R16_R16, R32_R32, and R64_R64
+	- These are encoded by ModRM:rm and ModRM:reg
+- Group encodings?
+	- RM_R: R16_R16, M16_M16, R32_R32, M32_R32, R64_R64, M64_R64
+	- R_RM: R16_M16, R32_M32, R64_M64
+	- reduce repetition

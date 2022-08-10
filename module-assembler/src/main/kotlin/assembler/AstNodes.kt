@@ -12,13 +12,13 @@ package assembler
 
 
 
-/*fun AstNode.calculateConstantInt(symbols: Map<String, Symbol>): Long = when(this) {
+fun AstNode.calculateConstantInt(symbols: Map<String, Symbol<*>>): Long = when(this) {
 	is IntNode    -> value
 	is UnaryNode  -> op.calculate(node.calculateConstantInt(symbols))
 	is BinaryNode -> op.calculate(left.calculateConstantInt(symbols), right.calculateConstantInt(symbols))
-	is IdNode     -> (symbols[value] as? IntSymbol)?.value ?: error("Undefined integer symbol: $value")
+	is IdNode     -> (symbols[value]?.data as? IntSymbolData)?.value ?: error("Undefined integer symbol: $value")
 	else          -> error("Cannot perform integer arithmetic on node: $this")
-}*/
+}
 
 
 
