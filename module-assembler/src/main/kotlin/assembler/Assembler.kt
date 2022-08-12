@@ -9,16 +9,22 @@ class Assembler(private val parseResult: ParseResult) {
 
 	var context = Context()
 
+	private fun invalidEncoding(): Nothing = error("Invalid encoding")
+
 
 
 	inner class Context {
 
+		var modrm = ModRM(0)
+		var sib = SIB(0)
 		var rex = REX(0)
-		var memoryNode: AstNode? = null
+		var memOperand: MemOperand? = null
 		lateinit var width: Width
 		lateinit var operands: Operands
 		var cannotHaveRex = false
 		var oso = false
+		var hasModRM = false
+		var hasSIB = false
 
 	}
 
@@ -34,48 +40,103 @@ class Assembler(private val parseResult: ParseResult) {
 
 
 	private fun assemble(node: InstructionNode) {
-		val encoding = encoding(node)
-	}
-
-
-
-	private fun encoding(node: InstructionNode): InstructionEncoding {
 		val group = Instructions.get(node.mnemonic)
 			?: error("No encodings for mnemonic: ${node.mnemonic}")
 
-		val operands = operands(group, node)
-		var flags = group.encodingFlags
-		if(flags and operands.bit == 0L) error("Invalid encoding")
-		flags = group.encodingFlags and ((1L shl operands.ordinal) - 1)
-		return group.list[flags.countOneBits()]
-	}
+		context.rex = REX(0)
+		context.memOperand = null
+		context.cannotHaveRex = false
+		context.oso = false
+		context.modrm = ModRM(0)
+		context.sib = SIB(0)
+		context.hasModRM = false
+		context.hasSIB = false
 
-
-
-	private fun operands(group: InstructionGroup, node: InstructionNode): Operands = when {
-		node.op1 == null -> Operands.NONE
-		node.op2 == null -> error("Invalid encoding")
-		//node.op2 == null -> operands1(node.op1)
-		node.op3 == null -> operands2(group, node.op1, node.op2)
-		else -> error("Invalid encoding")
-	}
-
-
-
-/*	private fun operands1(op1: AstNode): Operands = when(op1) {
-		is RegisterNode -> when(op1.value.width) {
-			Width.BIT8 -> Operands.R8
-			Width.BIT16 -> Operands.R16
-			Width.BIT32 -> Operands.R32
-			Width.BIT64 -> Operands.R64
-			else -> error("Invalid register width")
+		when {
+			node.op1 == null -> invalidEncoding()
+			node.op2 == null -> invalidEncoding()
+			node.op3 == null -> operands2(group, node)
+			else             -> invalidEncoding()
 		}
-		is MemoryNode -> Operands.M
-		is ImmediateNode -> Operands.IMM
-		else -> error("Invalid operand node")
-	}*/
 
-	private fun invalidEncoding(): Nothing = error("Invalid encoding")
+		var flags = group.encodingFlags
+		if(flags and context.operands.bit == 0L)
+			error("Invalid encoding")
+		flags = group.encodingFlags and ((1L shl context.operands.ordinal) - 1)
+		val encoding = group.list[flags.countOneBits()]
+	}
+
+
+
+	private fun toMemOperand(node: MemoryNode): MemOperand {
+		var base: Register? = null
+		var index: Register? = null
+		var scale = 1
+		var displacement: AstNode? = null
+
+		for(c in node.components) {
+			if(c is RegisterNode) {
+				if(base == null) {
+					base = c.value
+				} else if(index == null) {
+					index = c.value
+				} else {
+					error("Invalid memory operand")
+				}
+
+				continue
+			}
+
+			if(c is BinaryNode) {
+				if(c.op == BinaryOp.MUL && (c.left is RegisterNode || c.right is RegisterNode)) {
+					when {
+						index != null -> error("Invalid memory opreand")
+
+						c.left is RegisterNode && c.right is IntNode -> {
+							index = c.left.value
+							scale = c.right.value.toInt()
+						}
+
+						c.left is IntNode && c.right is RegisterNode -> {
+							index = c.right.value
+							scale = c.left.value.toInt()
+						}
+
+						else -> error("Invalid memory operand")
+					}
+
+					when(scale) {
+						1, 2, 4, 8 -> { }
+						else -> error("Invalid memory operand")
+					}
+
+					continue
+				}
+			}
+
+			if(displacement != null)
+				error("Invalid memory operand")
+
+			displacement = c
+		}
+
+		return MemOperand(node.width, base, index, scale, displacement)
+	}
+
+
+
+	private fun operands2(group: InstructionGroup, node: InstructionNode) {
+		when(node.op1) {
+			is RegisterNode -> when(node.op2) {
+				is RegisterNode -> operands2RR(group, node.op1.value, node.op2.value)
+				is MemoryNode -> operands2RM(group, node.op1.value, toMemOperand(node.op2))
+				else -> invalidEncoding()
+			}
+			else -> invalidEncoding()
+		}
+	}
+
+
 
 	private fun operands2RR(group: InstructionGroup, op1: Register, op2: Register) {
 		// oso used for 16-bit
@@ -83,13 +144,13 @@ class Assembler(private val parseResult: ParseResult) {
 		// REX.R used for second register
 		// REX.X not used
 		// REX.B used for first register
+		// First register in ModRM:r/m
+		// Second register in ModRM:reg
 
 		val RM_CL = Specialisation.RM_CL.inFlags(group.specialisationFlags)
 
 		context.width = op1.width
-		context.memoryNode = null
-		context.cannotHaveRex = false
-		context.oso = false
+		context.hasModRM = true
 
 		if(op1.width != op2.width)
 			invalidEncoding()
@@ -99,6 +160,8 @@ class Assembler(private val parseResult: ParseResult) {
 
 		if(op2.rex != 0)
 			context.rex = context.rex.withR
+
+		context.modrm = ModRM(0b11_000_000 or (op1.value shl 3) or op2.value)
 
 		when(op1.width) {
 			Width.BIT8 -> {
@@ -142,10 +205,34 @@ class Assembler(private val parseResult: ParseResult) {
 
 
 
-	private fun operands2RM(group: InstructionGroup, op1: Register, op2: MemOperand): Operands {
+	private fun operands2RM(group: InstructionGroup, op1: Register, op2: MemOperand) {
+		val RM_CL = Specialisation.RM_CL.inFlags(group.specialisationFlags)
+
+		context.width = op1.width
+		context.hasModRM = true
+
+		if(op2.width != null && op1.width != op2.width)
+			invalidEncoding()
+
+		if(op1.rex != 0)
+			context.rex = context.rex.withB
+	}
+
+
+
+	private fun encodeMem(operand: MemOperand) {
 
 	}
 
+
+	/*
+	- mod = 11: Direct register addressing mode
+	- mod = 00, r/m = 100: SIB with no displacement
+	- mod = 00, r/m = 101: Displacement only
+	- mod = 00, r/m != 100 and r/m != 101: Indirect register, no displacement
+	- mod = 01, r/m = 100: SIB with disp8
+	- mod = 10, r/m = 100: SIB with disp32
+	 */
 
 
 	private fun operands2(group: InstructionGroup, op1: AstNode, op2: AstNode): Operands {

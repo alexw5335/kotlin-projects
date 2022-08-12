@@ -99,7 +99,7 @@ object Core {
 		val path = Paths.get("nasmTemp.obj")
 		val bytes = Files.readAllBytes(path)
 		val data = bytes.copyOfRange(bytes.int32(40), bytes.int32(40) + bytes.int32(36))
-		data.forEach { println(it.toInt().hex8) }
+		data.forEach { println("${it.hex8}  ${it.bin233}") }
 		Files.delete(path)
 	}
 

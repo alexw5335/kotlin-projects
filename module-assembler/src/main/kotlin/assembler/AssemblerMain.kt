@@ -4,7 +4,7 @@ package assembler
 
 private const val INPUT = """
 
-add rax, [rax, rcx, 1]
+const test = 1 + 2 + rax * 2
 
 """
 
@@ -23,10 +23,10 @@ private fun assemble(input: String) {
 	//for(t in lexResult.tokens) println(t.printableString)
 
 	val parseResult = Parser(lexResult).parse()
-	println("\nParser:")
-	for(n in parseResult.nodes) println(n.printableString)
+	//println("\nParser:")
+	//for(n in parseResult.nodes) println(n.printableString)
 
-	val assembler = Assembler(parseResult)
-	println("\nAssembler:")
-	assembler.assemble()
+	//val assembler = Assembler(parseResult)
+	//println("\nAssembler:")
+	//assembler.assemble()
 }

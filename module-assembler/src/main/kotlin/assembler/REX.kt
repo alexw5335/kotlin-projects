@@ -13,9 +13,9 @@ value class REX(val value: Int) {
 	val hasX get() = (value and 0b01000010) != 0
 	val hasB get() = (value and 0b01000001) != 0
 
-	val withW get() = REX(value and 0b01001000)
-	val withR get() = REX(value and 0b01000100)
-	val withX get() = REX(value and 0b01000010)
-	val withB get() = REX(value and 0b01000001)
+	val withW get() = REX(value or 0b01001000)
+	val withR get() = REX(value or 0b01000100)
+	val withX get() = REX(value or 0b01000010)
+	val withB get() = REX(value or 0b01000001)
 
 }
