@@ -18,7 +18,6 @@ class Assembler(private val parseResult: ParseResult) {
 		var modrm = ModRM(0)
 		var sib = SIB(0)
 		var rex = REX(0)
-		var memOperand: MemOperand? = null
 		lateinit var width: Width
 		lateinit var operands: Operands
 		var cannotHaveRex = false
@@ -44,7 +43,6 @@ class Assembler(private val parseResult: ParseResult) {
 			?: error("No encodings for mnemonic: ${node.mnemonic}")
 
 		context.rex = REX(0)
-		context.memOperand = null
 		context.cannotHaveRex = false
 		context.oso = false
 		context.modrm = ModRM(0)
@@ -220,7 +218,7 @@ class Assembler(private val parseResult: ParseResult) {
 
 
 
-	private fun encodeMem(operand: MemOperand) {
+	private fun encodeMem(operand: MemoryNode) {
 
 	}
 
