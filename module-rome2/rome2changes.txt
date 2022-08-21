@@ -1,0 +1,235 @@
+scutum_marian
+	defence: 25 -> 35
+	missile block chance: 50 -> 55
+
+scutum_imperial
+	defence: 25 -> 40
+	armour: 40 -> 45
+	missile block chance: 50 -> 60
+
+shields:
+	scutum:          30 defence, 35 armour, 50 missile block chance
+	scutum_marian:   35 defence, 40 armour, 55 missile block chance
+	scutum_imperial: 40 defence, 45 armour, 60 missile block chance
+
+cloth:
+	armour: 10 -> 15
+
+mail_improved
+	armour: 45 -> 50
+
+segmentata:
+	armour: 50 -> 60
+
+segmentata_arm
+	armour: 55 -> 70
+
+rome_gladius_marian
+	damage: 30 -> 35
+
+rome_gladius_imperial
+	damage: 30 -> 40
+
+rome_gladius_elite
+	damage: 34 -> 45
+	ap damage: 5 -> 10
+
+rome_spear_cav_elite
+	damage: 24 -> 30
+	ap damage: 5 -> 10
+
+weapons:
+	gladius:          30 damage
+	gladius_marian:   35 damage (+5)
+	gladius_imperial: 40 damage (+10)
+	gladius_elite:    45 damage (+11)
+
+armour:
+	mail:          40 armour
+	mail_improved: 50 armour (+5)
+	segmentata:    60 armour (+10)
+
+
+
+Rorarii
+	attack: 13 -> 15
+	defence: 24 -> 30 (60)
+	morale: 30 -> 40
+	bonusHp: 5 -> 10
+	charge: 11 -> 10
+	damage: 20
+	cost: 200
+	upkeep: 60
+
+Vigiles
+	attack:  13 -> 25
+	defence: 24 -> 40 (75)
+	morale:  30 -> 50
+	bonusHp: 5 -> 20
+	charge:  11 -> 15
+	armour: cloth -> chest
+	shield: scutum -> scutum_marian
+	damage: 20
+	cost: 200 -> 400
+	upkeep: 60 -> 100
+
+Hastati
+	attack: 35
+	defence: 18 -> 20 (50)
+	morale: 45
+	bonusHp: 10
+	charge: 12 -> 15
+	damage: 30
+	cost: 350 -> 400
+	upkeep: 90 -> 100
+
+Principes
+	attack: 47 -> 50
+	defence: 23 -> 25 (55)
+	morale: 55
+	bonusHp: 15
+	charge: 14 -> 20
+	damage: 30
+	cost: 680 -> 700
+	upkeep: 120
+
+Legionaries:
+	attack: 47 -> 55
+	defence: 23 -> 30 (65)
+	morale: 55 -> 65
+	bonusHp: 15 -> 20
+	charge: 14 -> 20
+	damage: 30 -> 35
+	cost: 660 -> 850
+	upkeep: 140 -> 150
+
+Legionary Cohort
+	attack: 47 -> 60
+	defence: 23 -> 35 (75)
+	morale: 55 -> 75
+	bonusHp: 15 -> 25
+	charge: 14 -> 25
+	damage: 30 -> 40
+	cost: 700 -> 1000
+	upkeep: 140 -> 200
+
+Armoured Legionaries
+	attack: 60
+	defence: 26 -> 40 (80)
+	morale: 65 -> 80
+	bonusHp: 15 -> 30
+	charge: 15 -> 25
+	damage: 30 -> 40
+	cost: 930 -> 1200
+	upkeep: 160 -> 220
+
+Triarii
+	attack: 31 -> 35
+	defence: 34 -> 40 (70)
+	morale: 65
+	bonusHp: 20
+	charge: 24 -> 20
+	armour: 95 (60 + 35)
+	damage: 20
+	cost: 790 -> 800
+	upkeep: 140 -> 150
+
+Veteran Legionaries
+	attack: 59 -> 55
+	defence: 23 -> 45 (80)
+	morale: 65 -> 70
+	bonusHp: 15 -> 25
+	charge: 15 -> 20
+	armour: 85 -> 90 (50 + 40)
+	damage: 30 -> 35
+	cost: 850 -> 1000
+	upkeep: 160 -> 200
+
+Evocati Cohort
+	attack: 61 -> 60
+	defence: 23 -> 50 (90)
+	morale: 65 -> 75
+	bonusHp: 15 -> 30
+	charge: 15 -> 25
+	armour: 90 -> 105 (60 + 45)
+	damage: 30 -> 40
+	cost: 890 -> 1500
+	upkeep: 160 -> 250
+
+First Cohort
+	attack: 47 -> 65
+	defence: 33 -> 35 (70)
+	morale: 65 -> 70
+	bonusHp: 20
+	charge: 12 -> 25
+	armour: 85 -> 90 (50 + 40)
+	damage: 30 -> 35
+	cost: 910 -> 1200
+	upkeep: 220
+
+Eagle Cohort
+	attack: 47 -> 75
+	defence: 35 -> 40 (80)
+	morale: 65 -> 75
+	bonusHp: 20 -> 25
+	charge: 12 -> 30
+	armour: 90 -> 105 (60 + 45)
+	damage: 30 -> 40
+	cost: 930 -> 1750
+	upkeep: 180 -> 275
+
+Praetorians
+	attack: 65 -> 70
+	defence: 30 -> 50 (85)
+	morale: 70 -> 80
+	bonusHp: 20 -> 25
+	charge: 19 -> 30
+	armour: 85 -> 90 (50 + 40)
+	damage: 34 -> 45
+	cost: 1280 -> 2000
+	upkeep: 200 -> 400
+
+Praetorian Guard
+	attack: 65 -> 85
+	defence: 30 -> 60 (100)
+	morale: 70 -> 100
+	bonusHp -> 20 -> 30
+	charge: 25 -> 35
+	armour: 85 -> 105 (60 + 45)
+	damage: 34 -> 45
+	shield: scutum_marian -> scutum_imperial
+	cost: 1280 -> 4000
+	upkeep: 200 -> 500
+
+Equites:
+	attack: 33 -> 40
+	defence: 12 -> 15 (35)
+	morale: 40 -> 45
+	bonusHp: 10
+	charge: 29 -> 30
+	armour: 70
+	damage: 20
+	cost: 500
+	upkeep: 100
+
+Legionary Cavalry
+	attack: 33 -> 50
+	defence: 10 -> 25 (45)
+	morale: 45 -> 55
+	bonusHp: 15
+	charge: 29 -> 35
+	armour: 70
+	damage: 20
+	cost: 620 -> 1000
+	upkeep: 120 -> 150
+
+Praetorian Cavalry
+	attack: 49 -> 65
+	defence: 22 -> 40 (60)
+	morale: 70
+	bonusHp: 20 -> 25
+	charge: 42 -> 45
+	armour: 70
+	damage: 30
+	cost: 1250 -> 3000
+	upkeep: 200 -> 400

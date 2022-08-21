@@ -1,30 +1,22 @@
 package assembler
 
-enum class BinaryOp(val symbol: String, val precedence: Int) {
+enum class BinaryOp(
+	val symbol: String,
+	val precedence: Int,
+	val calculateInt: (Long, Long) -> Long
+) {
 
-	MUL("*", 4),
-	DIV("/", 4),
+	MUL("*", 4, { a, b -> a * b }),
+	DIV("/", 4, { a, b -> a / b }),
 
-	ADD("+", 3),
-	SUB("-", 3),
+	ADD("+", 3, { a, b -> a + b }),
+	SUB("-", 3, { a, b -> a - b }),
 
-	SHL("<<", 2),
-	SHR(">>", 2),
+	SHL("<<", 2, { a, b -> a shl b.toInt() }),
+	SHR(">>", 2, { a, b -> a shr b.toInt() }),
 
-	AND("&", 1),
-	XOR("^", 1),
-	OR("|", 1);
-
-	fun calculate(a: Long, b: Long) = when(this) {
-		MUL -> a * b
-		DIV -> a / b
-		ADD -> a + b
-		SUB -> a - b
-		SHL -> a shl b.toInt()
-		SHR -> a shr b.toInt()
-		AND -> a and b
-		XOR -> a xor b
-		OR  -> a or b
-	}
+	AND("&", 1, { a, b -> a and b }),
+	XOR("^", 1, { a, b -> a xor b }),
+	OR("|", 1,  { a, b -> a or b });
 
 }

@@ -2,10 +2,15 @@ package core.binary
 
 import java.util.*
 
-class BinaryWriter(
-	var bytes: ByteArray = ByteArray(8192),
-	var endianness: Endianness = LittleEndian
-) {
+class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
+
+
+	constructor(bytes: ByteArray) : this(bytes, LittleEndian)
+
+	constructor(initialSize: Int) : this(ByteArray(initialSize))
+
+	constructor() : this(8192)
+
 
 
 	var pos = 0
@@ -411,12 +416,19 @@ class BinaryWriter(
 		pos += length
 	}
 
+	fun fillTo(endPos: Int, value: Byte) = fill(endPos - pos, value)
+
 
 
 	fun zero(pos: Int, length: Int) = fill(pos, length, 0)
 
 	fun zero(length: Int) = fill(length, 0)
 
+	fun zeroTo(endPos: Int) = fillTo(endPos, 0)
+
+
+
+	fun alignEven() { if(pos and 1 != 0) u8(0) }
 
 
 }

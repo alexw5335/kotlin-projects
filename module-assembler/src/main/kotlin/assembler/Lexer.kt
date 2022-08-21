@@ -66,6 +66,16 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 				continue
 			}
 
+			if(char == '"') {
+				resolveDoubleApostrophe()
+				continue
+			}
+
+			if(char == '\'') {
+				resolveSingleApostrophe()
+				continue
+			}
+
 			val symbol = resolveSymbol(char)
 
 			if(symbol != null) {
@@ -159,6 +169,22 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 				pos++
 			}
 		}
+	}
+
+
+
+	private fun resolveDoubleApostrophe(): StringToken {
+		val string = readUntil { it == '"' }
+		pos++
+		return StringToken(string)
+	}
+
+
+
+	private fun resolveSingleApostrophe(): CharToken {
+		val char = chars[pos++]
+		pos++
+		return CharToken(char)
 	}
 
 

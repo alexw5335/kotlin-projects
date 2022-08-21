@@ -2,23 +2,22 @@ package assembler
 
 
 
-/*fun AstNode.isConstantInt(symbols: Map<String, Symbol> = emptyMap()): Boolean = when(this) {
-	is BinaryNode -> left.isConstantInt(symbols) && right.isConstantInt(symbols)
-	is UnaryNode  -> node.isConstantInt(symbols)
-	is IntNode    -> true
-	is IdNode     -> symbols[value] is IntSymbol
-	else          -> false
-}*/
-
-
-
-fun AstNode.calculateConstantInt(symbols: Map<String, Symbol<*>>): Long = when(this) {
+fun AstNode.calculateInt(resolver: (String) -> Long? = { null }): Long = when(this) {
 	is IntNode    -> value
-	is UnaryNode  -> op.calculate(node.calculateConstantInt(symbols))
-	is BinaryNode -> op.calculate(left.calculateConstantInt(symbols), right.calculateConstantInt(symbols))
-	is IdNode     -> (symbols[value]?.data as? IntSymbolData)?.value ?: error("Undefined integer symbol: $value")
+	is UnaryNode  -> op.calculate(node.calculateInt(resolver))
+	is BinaryNode -> op.calculateInt(left.calculateInt(resolver), right.calculateInt(resolver))
+	is IdNode     -> resolver(value) ?: error("Undefined integer symbol: $value")
 	else          -> error("Cannot perform integer arithmetic on node: $this")
 }
+
+
+
+fun AstNode.calculateIntOrNull(resolver: (String) -> Long? = { null }): Long? = try {
+	calculateInt(resolver)
+} catch(e: Exception) {
+	null
+}
+
 
 
 
@@ -31,9 +30,10 @@ val AstNode.printableString: String get() = when(this) {
 	is UnaryNode       -> "${op.symbol}(${node.printableString})"//"$op(${node.printableString})"
 	is InstructionNode -> printableString
 	is ImmediateNode   -> value.printableString
+	is DefineNode      -> "db ${components.joinToString { it.printableString }}"
 	//is ConstNode       -> "const $name = ${value.printableString}"
 	//is LabelNode       -> "$name:"
-	else               -> "No printable string for AST node: ${this::class.simpleName}"
+	//else               -> "No printable string for AST node: ${this::class.simpleName}"
 }
 
 
@@ -43,7 +43,7 @@ val MemoryNode.printableString get() = buildString {
 		append(width.string)
 		append(' ')
 	}
-	append("[$base + $index * $scale + ${displacement?.printableString}]")
+	append("[$base + $index * $scale + ${disp?.printableString}]")
 }
 
 
@@ -86,16 +86,21 @@ class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstN
 
 
 
+class DefineNode(val components: List<AstNode>) : AstNode
+
+
+
 class RegisterNode(val value: Register) : AstNode
 
 
 
 class MemoryNode(
-	val width: Width?,
-	val base: Register?,
-	val index: Register?,
-	val scale: Int,
-	val displacement: AstNode?
+	val width : Width?,
+	val rel   : Boolean,
+	val base  : Register?,
+	val index : Register?,
+	val scale : Int,
+	val disp  : AstNode?
 ) : AstNode
 
 

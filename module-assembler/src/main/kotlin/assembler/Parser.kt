@@ -40,6 +40,7 @@ class Parser(lexResult: LexResult) {
 				is MnemonicToken    -> nodes.add(parseInstruction(token.value))
 				is KeywordToken     -> parseKeyword(token)
 				is EndToken         -> break
+				is IdToken          -> parseId()
 				else                -> error("Invalid token: $token")
 			}
 		}
@@ -95,9 +96,14 @@ class Parser(lexResult: LexResult) {
 
 
 
+	private fun parseId() { }
+
+
+
 	private fun parseKeyword(keyword: KeywordToken) {
 		when(keyword) {
-			KeywordToken.CONST -> parseConst()
+			KeywordToken.DB -> parseDb()
+			//KeywordToken.CONST -> parseConst()
 			//KeywordToken.ENUM -> parseEnum()
 			else -> { }
 		}
@@ -105,15 +111,17 @@ class Parser(lexResult: LexResult) {
 
 
 
-	private fun parseConst() {
-		pos += 2
-		baseReg = null
-		indexReg = null
-		val displacement = parseMemoryOperand(readExpression())
-		println(baseReg)
-		println(indexReg)
-		println(indexScale)
-		println(displacement?.printableString)
+	private fun parseDb() {
+		val components = ArrayList<AstNode>()
+
+		while(true) {
+			components.add(readExpression())
+			if(tokens[pos++] != SymbolToken.COMMA)
+				break
+			pos++
+		}
+
+		nodes.add(DefineNode(components))
 	}
 
 
@@ -213,7 +221,7 @@ class Parser(lexResult: LexResult) {
 			val displacement = parseMemoryOperand(readExpression())
 			when(indexScale) { 0, 1, 2, 4, 8 -> Unit else -> error("Invalid index scale") }
 			if(tokens[pos++] != SymbolToken.RIGHT_BRACKET) error("Expecting ']', found $prevToken")
-			return MemoryNode(width, baseReg, indexReg, indexScale, displacement)
+			return MemoryNode(width, true, baseReg, indexReg, indexScale, displacement)
 		}
 
 		if(width != null)

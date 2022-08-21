@@ -9,7 +9,9 @@ val Token.printableString get() = when(this) {
 	is MnemonicToken -> "MNEMONIC  ${value.string}"
 	is RegisterToken -> "REGISTER  ${value.string}"
 	is KeywordToken  -> "KEYWORD   $string"
-	is EndToken      -> "End"
+	is EndToken      -> "END OF STREAM"
+	is CharToken     -> "CHAR      $value"
+	is StringToken   -> "STRING    $value"
 }
 
 
@@ -23,6 +25,14 @@ object EndToken : Token
 
 
 data class IntToken(val value: Long) : Token
+
+
+
+data class CharToken(val value: Char) : Token
+
+
+
+data class StringToken(val value: String) : Token
 
 
 
@@ -45,7 +55,8 @@ enum class KeywordToken(val width: Width? = null) : Token {
 	DWORD(width = Width.BIT32),
 	QWORD(width = Width.BIT64),
 	CONST,
-	ENUM;
+	ENUM,
+	DB;
 
 	val string = name.lowercase()
 

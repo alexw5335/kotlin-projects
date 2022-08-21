@@ -1,6 +1,5 @@
 package pefile
 
-import core.bin16Full
 import core.hexFull
 
 
@@ -58,12 +57,12 @@ data class Section(
 	val virtualAddress	: Int,
 	val rawDataSize	    : Int,
 	val pRawData		: Int,
-	val pRelocations	: Int,
-	val pLineNumbers	: Int,
-	val relocationCount	: Int,
-	val lineNumberCount	: Int,
-	val characteristics	: Int,
-	val relocations     : List<Relocation>
+	val pRelocations	: Int = 0,
+	val pLineNumbers	: Int = 0,
+	val relocationCount	: Int = 0,
+	val lineNumberCount	: Int = 0,
+	val characteristics	: SectionFlags     = SectionFlags(0),
+	val relocations     : List<Relocation> = emptyList()
 )
 
 
@@ -191,7 +190,7 @@ fun CoffHeader.print() {
 			pSymbolTable        ${pSymbolTable.hexFull} ($pSymbolTable)
 			symbolCount         $numSymbols
 			optionalHeaderSize  ${sizeOfOptionalHeader.hexFull} ($sizeOfOptionalHeader)
-			characteristics     ${characteristics.bin16Full} ($characteristics)
+			characteristics     ${characteristics.hexFull} ${CoffFlags(characteristics)}
 	""".trimIndent())
 }
 
@@ -200,37 +199,37 @@ fun CoffHeader.print() {
 fun OptionalHeader.print() {
 	println("""
 		Optional Header:
-			magic:                   ${magic.hexFull}
-			majorLinkerVersion:      $majorLinkerVersion
-			minorLinkerVersion:      $minorLinkerVersion
-			sizeofCode:              ${sizeOfCode.hexFull} ($sizeOfCode)
-			sizeOfInitialisedData:   ${sizeOfInitialisedData.hexFull} ($sizeOfInitialisedData)
-			sizeOfUninitialisedData: ${sizeOfUninitialisedData.hexFull} ($sizeOfUninitialisedData)
-			addressOfEntryPoint:     ${addressOfEntryPoint.hexFull} ($addressOfEntryPoint)
-			baseOfCode:              ${baseOfCode.hexFull} ($baseOfCode)
-			baseOfData:              ${baseOfData.hexFull} ($baseOfData)
-			imageBase:               ${imageBase.toInt().hexFull} ($imageBase)
-			sectionAlignment:        ${sectionAlignment.hexFull} ($sectionAlignment)
-			fileAlignment:           ${fileAlignment.hexFull} ($fileAlignment)
-			majorOSVersion:          $majorOSVersion
-			minorOSVersion:          $minorOSVersion
-			majorImageVersion:       $majorImageVersion
-			minorImageVersion:       $minorImageVersion
-			majorSubsystemVersion:   $majorSubsystemVersion
-			minorSubsystemVersion:   $minorSubsystemVersion
-			win32VersionValue:       $win32VersionValue
-			sizeOfImage:             ${sizeOfImage.hexFull} ($sizeOfImage)
-			sizeOfHeaders:           ${sizeOfHeaders.hexFull} ($sizeOfHeaders)
-			checkSum:                $checkSum
-			subsystem:               $subsystem
-			dllCharacteristics:      $dllCharacteristics
-			sizeOfStackReserve:      $sizeOfStackReserve
-			sizeOfStackCommit:       $sizeOfStackCommit
-			sizeOfHeapReserve:       $sizeOfHeapReserve
-			sizeOfHeapCommit:        $sizeOfHeapCommit
-			loaderFlags:             $loaderFlags
-			numberOfRvaAndSizes:     $numberOfRvaAndSizes	
-	""")
+			magic                    ${magic.hexFull}
+			majorLinkerVersion       $majorLinkerVersion
+			minorLinkerVersion       $minorLinkerVersion
+			sizeofCode               ${sizeOfCode.hexFull} ($sizeOfCode)
+			sizeOfInitialisedData    ${sizeOfInitialisedData.hexFull} ($sizeOfInitialisedData)
+			sizeOfUninitialisedData  ${sizeOfUninitialisedData.hexFull} ($sizeOfUninitialisedData)
+			addressOfEntryPoint      ${addressOfEntryPoint.hexFull} ($addressOfEntryPoint)
+			baseOfCode               ${baseOfCode.hexFull} ($baseOfCode)
+			baseOfData               ${baseOfData.hexFull} ($baseOfData)
+			imageBase                ${imageBase.toInt().hexFull} ($imageBase)
+			sectionAlignment         ${sectionAlignment.hexFull} ($sectionAlignment)
+			fileAlignment            ${fileAlignment.hexFull} ($fileAlignment)
+			majorOSVersion           $majorOSVersion
+			minorOSVersion           $minorOSVersion
+			majorImageVersion        $majorImageVersion
+			minorImageVersion        $minorImageVersion
+			majorSubsystemVersion    $majorSubsystemVersion
+			minorSubsystemVersion    $minorSubsystemVersion
+			win32VersionValue        $win32VersionValue
+			sizeOfImage              ${sizeOfImage.hexFull} ($sizeOfImage)
+			sizeOfHeaders            ${sizeOfHeaders.hexFull} ($sizeOfHeaders)
+			checkSum                 $checkSum
+			subsystem                $subsystem
+			dllCharacteristics       ${dllCharacteristics.hexFull} ${DllFlags(dllCharacteristics)}
+			sizeOfStackReserve       ${sizeOfStackReserve.hexFull} ($sizeOfStackReserve)
+			sizeOfStackCommit        ${sizeOfStackCommit.hexFull} ($sizeOfStackCommit)
+			sizeOfHeapReserve        ${sizeOfHeapReserve.hexFull} ($sizeOfHeapReserve)
+			sizeOfHeapCommit         ${sizeOfHeapCommit.hexFull} ($sizeOfHeapCommit)
+			loaderFlags              $loaderFlags
+			numberOfRvaAndSizes      $numberOfRvaAndSizes	
+	""".trimIndent())
 }
 
 
@@ -238,12 +237,13 @@ fun OptionalHeader.print() {
 fun Section.print() {
 	println("""
 		$name:
-			virtualSize     ${virtualSize.hexFull} ($virtualSize)
-			virtualAddress  ${virtualAddress.hexFull} ($virtualSize)
-			pRawData        ${pRawData.hexFull} ($pRawData)")
-			rawDataSize     ${rawDataSize.hexFull} ($rawDataSize)")
-			pRelocations    ${pRelocations.hexFull} ($pRelocations)")
-			numRelocations  ${relocationCount.hexFull} ($relocationCount)")
+			virtualSize      ${virtualSize.hexFull} ($virtualSize)
+			virtualAddress   ${virtualAddress.hexFull} ($virtualSize)
+			pRawData         ${pRawData.hexFull} ($pRawData)
+			rawDataSize      ${rawDataSize.hexFull} ($rawDataSize)
+			pRelocations     ${pRelocations.hexFull} ($pRelocations)
+			numRelocations   ${relocationCount.hexFull} ($relocationCount)
+			characteristics  ${characteristics.value.hexFull} $characteristics
 	""".trimIndent())
 }
 
@@ -299,7 +299,10 @@ fun PEFile.print() {
 	if(dataDirectories.isNotEmpty()) {
 		println("Data directories:")
 		for(d in dataDirectories)
-			d.print()
+			if(d.size != 0 && d.virtualAddress != 0)
+				d.print()
+		val emptyCount = dataDirectories.count { it.size == 0 || it.virtualAddress == 0 }
+		if(emptyCount != 0) println("$emptyCount empty directory entries")
 	} else {
 		println("No data directories")
 	}

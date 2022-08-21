@@ -4,7 +4,8 @@ package assembler
 
 private const val INPUT = """
 
-add rax, [20 * 5+ rax + rcx * 8 + 15]
+message db "test"
+//add rax, [20 * 5+ rax + rcx * 8 + 15]
 
 """
 
@@ -12,15 +13,17 @@ add rax, [20 * 5+ rax + rcx * 8 + 15]
 
 fun main() {
 	assemble(INPUT)
+	//Linker().link()
+	//PEReader("/generated.exe").read().print()
+	//PeWriter().write()
 }
 
 
 
-@Suppress("SameParameterValue")
 private fun assemble(input: String) {
 	val lexResult = Lexer.lex(input)
-	//println("Lexer:")
-	//for(t in lexResult.tokens) println(t.printableString)
+	println("Lexer:")
+	for(t in lexResult.tokens) println(t.printableString)
 
 	val parseResult = Parser(lexResult).parse()
 	println("\nParser:")

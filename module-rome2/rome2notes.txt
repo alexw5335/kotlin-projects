@@ -1,0 +1,167 @@
+land_units:
+	0  name
+	1  accuracy
+	2  ammo
+	3  armour
+	4  campaign action points
+	5  category
+	6  charge bonus
+	7  class
+	8  dismounted charge bonus
+	9  dismounted melee attack
+	10 dismounted melee defence
+	11 historical description text
+	12 man animation
+	13 man entity
+	14 melee attack
+	15 melee defence
+	16 morale
+	17 bonus hit points
+	18 mount
+	19 num animals
+	20 animal
+	21 num mounts
+	22 primary melee weapon
+	23 primary missile weapon
+	24 rank depth
+	25 shield
+	26 short description text
+	27 spacing strengths and weaknesses text
+	28 supports first person
+	29 training level
+
+unit_shield_types:
+	0: name
+	1: shield defence value
+	2: shield armour value
+	3: audio material
+	4: missile block chance
+
+unit_armour_types
+	0: name
+	1: armour value
+	2: bonus vs missiles
+	3: is weak vs missiles
+	4: audio material
+
+melee_weapons
+	0: name
+	1: is armour penetrating (always zero)
+	2: is armour piercing
+	3: bonus vs cavalry
+	4: bonus vs elephants
+	5: bonus vs infantry
+	6: damage
+	7: ap damage
+	8: first strike (always zero)
+	9: is shield piercing (always zero)
+	10: weapon length
+	11: melee weapon type
+	12: audio material
+
+main_units
+	0: name
+	1: additional building requirement (empty)
+	2: campaign cap
+	3: cast
+	4: create time
+	5: is naval
+	6: land unit
+	7: num men
+	8: multiplayer cap
+	9: multiplayer cost
+	10: naval unit
+	11: num ships
+	12: min men per ship
+	13: max men per ship
+	14: prestige
+	15: recruitment cost
+	16: recruitment movie
+	17: religion requirement
+	18: upkeep cost
+	19: weight
+	20: campaign total cap
+	21: resource requirement
+	22: is world leader only
+	23: can trade
+	24: special edition mask
+	25: unique index
+	26: is in encyclopedia
+	27: region unit resource requirement
+	28: audio language
+
+// Most values are unused
+// level, create time, create cost, demolition cost are used
+building_levels
+	0: name
+	1: chain
+	2: level
+	3: condition
+	4: create time (turns)
+	5: create cost
+	6: upkeep cost
+	7: demolition cost
+	8: zone of control
+	9: lower happiness
+	10: upper happiness
+	11: repression
+	12: gdp
+	13: town wealth growth
+	14: pop change
+	15: maxpop change
+	16: commodity
+	17: gov type key
+	18: commodity vol
+	19: is only in capital
+	20: military prestige
+	21: naval prestige
+	22: economic prestige
+	23: enlightenment prestige
+	24: is destruction terminator
+	25: is faction unique
+	26: religion requirement
+	27: first in world bundle
+	28: resource requirement
+	29: working model
+	30: unique index
+	31: can convert
+	32: building instance key
+	33: audio building type
+	34: should show level
+	35: isNew
+
+building_effects_junction
+	0: name
+	1: effect
+	2: effect scope
+	3: value
+	4: value damaged
+	5: value ruined
+
+technology_effects_junction
+	0: name
+	1: effect
+	2: effect scope
+	3: value
+
+technologies
+	0: name
+	1: building level
+	2: position index
+	3: research points required
+	4: icon name
+	5: military prestige
+	6: naval prestige
+	7: economic prestige
+	8: enlightenment prestige
+	9: is mp available early
+	10: is mp available late
+	11: info pic
+	12: ai bias
+	13: unique index
+	13: cost per round
+	14: is civil
+	15: is engineering
+	16: is military
+
+

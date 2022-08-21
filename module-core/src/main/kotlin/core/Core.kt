@@ -1,6 +1,7 @@
 package core
 
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.*
 import kotlin.system.exitProcess
@@ -41,6 +42,13 @@ object Core {
 		.reader()
 		.readText()
 		.toCharArray()
+
+
+
+	fun readResourceLines(path: String) = this::class.java
+		.getResourceAsStream(path)!!
+		.bufferedReader()
+		.readLines()
 
 
 
@@ -112,6 +120,20 @@ object Core {
 			ints[i shr 2] = ints[i shr 2] or (bytes[i].toInt() shl ((4 - (i + 3) and -4) shl 3))
 
 		return ints
+	}
+
+
+
+	fun writeLines(path: Path, lines: List<String>) {
+		if(!path.parent.exists())
+			path.parent.createDirectories()
+		Files.write(path, lines)
+	}
+
+
+
+	fun writeLines(path: String, lines: List<String>) {
+		writeLines(Paths.get(path), lines)
 	}
 
 

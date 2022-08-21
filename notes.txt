@@ -524,3 +524,9 @@ Assembly
 	1. Determine width
 	2. Determine operand types
 	3. Identify memory operands
+
+- import dll:KERNEL32:WriteFile
+
+Simple PE File generation
+- Takes a list of DLL imports and a byte array of code
+- Two sections, .text and .idata

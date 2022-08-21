@@ -1,0 +1,192 @@
+rom_slum_0	rom_Slum	0		1	500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	360	true		town	true	false
+rome_agriculture_1	rome_agriculture	0		2	700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15367	true		town	true	true
+rome_agriculture_farm_2	rome_agriculture	1		3	1200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15376	true	rom_Economic_Secondary_Food_Farm	town	true	true
+rome_agriculture_farm_3	rome_agriculture	2		5	2000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15378	true	rom_Economic_Secondary_Food_Farm	town	true	true
+rome_agriculture_farm_4	rome_agriculture	3		8	3200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15380	true	rom_Economic_Secondary_Food_Farm	town	true	true
+rome_agriculture_granary_2	rome_agriculture	1		3	1300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15408	true	rom_Economic_Storage	town	true	true
+rome_agriculture_granary_3	rome_agriculture	2		5	2300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15416	true	rom_Economic_Storage	town	true	true
+rome_agriculture_granary_4	rome_agriculture	3		8	3500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15423	true	rom_Economic_Storage	town	true	true
+rome_agriculture_herd_2	rome_agriculture	1		3	1300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15388	true	rom_Economic_Secondary_Food_Cattle	town	true	true
+rome_agriculture_herd_3	rome_agriculture	2		5	2600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15396	true	rom_Economic_Secondary_Food_Cattle	town	true	true
+rome_agriculture_herd_4	rome_agriculture	3		8	4300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15405	true	rom_Economic_Secondary_Food_Cattle	town	true	true
+rome_amber_1	rome_amber	0		2	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14671	true	rom_SettlementMinor	town	false	true
+rome_amber_2	rome_amber	1		3	1400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14681	true	rom_SettlementMinor	town	false	true
+rome_amber_3	rome_amber	2		5	1900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14688	true	rom_SettlementMinor	town	false	true
+rome_amber_4	rome_amber	3		8	2500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14692	true	rom_SettlementMinor	town	false	true
+rome_city_1	rome_city	0		2	1500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14606	true	rom_Settlement_Major	city	true	true
+rome_city_centre_1	rome_city_centre	0		2	700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15023	true		general_civic	true	true
+rome_city_centre_cattle_2	rome_city_centre	1		3	1600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15070	true	rom_Economic_Salt	market	true	true
+rome_city_centre_cattle_3	rome_city_centre	2		5	3700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15080	true	rom_Economic_Salt	market	true	true
+rome_city_centre_cattle_4	rome_city_centre	3		8	8400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_leather	campaign_sho_city_castle_construction_lvl1	15081	true	rom_Economic_Salt	market	true	true
+rome_city_centre_circus_5	rome_city_centre	4		12	13900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	true			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15138	true	rom_City_Lot_Public_Order	general_civic	true	true
+rome_city_centre_food_2	rome_city_centre	1		3	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15033	true	rom_Economic_Primary_Food	market	true	true
+rome_city_centre_food_3	rome_city_centre	2		5	2200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15038	true	rom_Economic_Primary_Food	market	true	true
+rome_city_centre_food_4	rome_city_centre	3		8	3800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_oil	campaign_sho_city_castle_construction_lvl1	15048	true	rom_Economic_Primary_Food	market	true	true
+rome_city_centre_gladiator_2	rome_city_centre	1		3	1400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15113	true	rom_City_Lot_Public_Order	general_civic	true	true
+rome_city_centre_gladiator_3	rome_city_centre	2		5	5100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15116	true	rom_City_Lot_Public_Order	general_civic	true	true
+rome_city_centre_gladiator_4	rome_city_centre	3		8	10300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15122	true	rom_City_Lot_Public_Order	general_civic	true	true
+rome_city_centre_gladiator_5	rome_city_centre	4		12	13600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	true			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15130	true	rom_City_Lot_Public_Order	general_civic	true	true
+rome_city_centre_library_2	rome_city_centre	1		3	1300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15085	true	rom_City_Lot_Research	general_civic	true	true
+rome_city_centre_library_3	rome_city_centre	2		5	2700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15086	true	rom_City_Lot_Research	general_civic	true	true
+rome_city_centre_library_4	rome_city_centre	3		8	5800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_glass	campaign_sho_city_castle_construction_lvl1	15092	true	rom_City_Lot_Research	general_civic	true	true
+rome_city_centre_slave_2	rome_city_centre	1		3	4000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15100	true	rom_Economic_Primary_Slave	general_civic	true	true
+rome_city_centre_slave_3	rome_city_centre	2		5	11500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15107	true	rom_Economic_Primary_Slave	general_civic	true	true
+rome_city_centre_wine_2	rome_city_centre	1		3	1700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15056	true	rom_Economic_Primary_Trade	market	true	true
+rome_city_centre_wine_3	rome_city_centre	2		5	4200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_wine	campaign_sho_city_castle_construction_lvl1	15058	true	rom_Economic_Primary_Trade	market	true	true
+rome_city_centre_wine_4	rome_city_centre	3		8	8800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_wine	campaign_sho_city_castle_construction_lvl1	15062	true	rom_Economic_Primary_Trade	market	true	true
+rome_city_civil_2	rome_city	1		3	2700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14613	true	rom_Settlement_Major	city	true	true
+rome_city_civil_3	rome_city	2		5	4400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14617	true	rom_Settlement_Major	city	true	true
+rome_city_civil_4	rome_city	3		8	7100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14618	true	rom_Settlement_Major	city	true	true
+rome_city_garrison_2	rome_city	1		3	2000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14625	true	rom_Settlement_Major	city	true	true
+rome_city_garrison_3	rome_city	2		5	3000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14629	true	rom_Settlement_Major	city	true	true
+rome_city_garrison_4	rome_city	3		8	6000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14635	true	rom_Settlement_Major	city	true	true
+rome_glass_1	rome_glass	0		2	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14693	true	rom_SettlementMinor	town	false	true
+rome_glass_2	rome_glass	1		3	1400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14701	true	rom_SettlementMinor	town	false	true
+rome_glass_3	rome_glass	2		5	2100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14706	true	rom_SettlementMinor	town	false	true
+rome_glass_4	rome_glass	3		8	3100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14707	true	rom_SettlementMinor	town	false	true
+rome_gold_1	rome_gold	0		2	1400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14713	true	rom_SettlementMinor	town	false	true
+rome_gold_2	rome_gold	1		3	3400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14721	true	rom_SettlementMinor	town	false	true
+rome_gold_3	rome_gold	2		5	6500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14729	true	rom_SettlementMinor	town	false	true
+rome_gold_4	rome_gold	3		8	11800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14735	true	rom_SettlementMinor	town	false	true
+rome_grain_1	rome_grain	0		2	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14736	true	rom_SettlementMinor	town	false	true
+rome_grain_2	rome_grain	1		3	1600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14743	true	rom_SettlementMinor	town	false	true
+rome_grain_3	rome_grain	2		5	2600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14744	true	rom_SettlementMinor	town	false	true
+rome_grain_4	rome_grain	3		8	4300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14754	true	rom_SettlementMinor	town	false	true
+rome_horse_1	rome_horse	0		2	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14760	true	rom_SettlementMinor	town	true	true
+rome_horse_2	rome_horse	1		3	2100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14762	true	rom_SettlementMinor	town	true	true
+rome_horse_3	rome_horse	2		5	3900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14768	true	rom_SettlementMinor	town	true	true
+rome_industry_1	rome_industry	0		2	800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15227	true		workshop	true	true
+rome_industry_amphora_2	rome_industry	1		3	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15246	true	rom_Economic_Ironworking	workshop	true	true
+rome_industry_amphora_3	rome_industry	2		5	3900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15253	true	rom_Economic_Ironworking	workshop	true	true
+rome_industry_amphora_4	rome_industry	3		8	7100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_timber	campaign_sho_city_castle_construction_lvl1	15261	true	rom_Economic_Ironworking	workshop	true	true
+rome_industry_coin_2	rome_industry	1		3	1500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15264	true	rom_Economic_Mint	workshop	true	true
+rome_industry_coin_3	rome_industry	2		5	2700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15265	true	rom_Economic_Mint	workshop	true	true
+rome_industry_coin_4	rome_industry	3		8	5300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_timber	campaign_sho_city_castle_construction_lvl1	15269	true	rom_Economic_Mint	workshop	true	true
+rome_industry_jeweller_2	rome_industry	1		3	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15234	true	rom_Economic_Bronzeworking	workshop	true	true
+rome_industry_jeweller_3	rome_industry	2		5	4500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15241	true	rom_Economic_Bronzeworking	workshop	true	true
+rome_industry_jeweller_4	rome_industry	3		8	8500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_glass	campaign_sho_city_castle_construction_lvl1	15242	true	rom_Economic_Bronzeworking	workshop	true	true
+rome_iron_1	rome_iron	0		2	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14772	true	rom_SettlementMinor	town	true	true
+rome_iron_armour_2	rome_iron	1		3	2500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14775	true	rom_SettlementMinor	town	true	true
+rome_iron_armour_3	rome_iron	2		5	3500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14777	true	rom_SettlementMinor	town	true	true
+rome_iron_weapon_2	rome_iron	1		3	2500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14787	true	rom_SettlementMinor	town	true	true
+rome_iron_weapon_3	rome_iron	2		5	3500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14796	true	rom_SettlementMinor	town	true	true
+rome_lead_1	rome_lead	0		2	1200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14806	true	rom_SettlementMinor	town	false	true
+rome_lead_2	rome_lead	1		3	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14807	true	rom_SettlementMinor	town	false	true
+rome_lead_3	rome_lead	2		5	2800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14810	true	rom_SettlementMinor	town	false	true
+rome_lead_4	rome_lead	3		8	4300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14811	true	rom_SettlementMinor	town	false	true
+rome_leather_1	rome_leather	0		2	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14818	true	rom_SettlementMinor	town	false	true
+rome_leather_2	rome_leather	1		3	1400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14820	true	rom_SettlementMinor	town	false	true
+rome_leather_3	rome_leather	2		5	1900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14830	true	rom_SettlementMinor	town	false	true
+rome_leather_4	rome_leather	3		8	2500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14832	true	rom_SettlementMinor	town	false	true
+rome_lumber_1	rome_lumber	0		2	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14835	true	rom_SettlementMinor	town	false	true
+rome_lumber_2	rome_lumber	1		3	1600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14842	true	rom_SettlementMinor	town	false	true
+rome_lumber_3	rome_lumber	2		5	2300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14852	true	rom_SettlementMinor	town	false	true
+rome_lumber_4	rome_lumber	3		8	3200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14855	true	rom_SettlementMinor	town	false	true
+rome_marble_1	rome_marble	0		2	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14859	true	rom_SettlementMinor	town	false	true
+rome_marble_2	rome_marble	1		3	1400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14860	true	rom_SettlementMinor	town	false	true
+rome_marble_3	rome_marble	2		5	1900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14870	true	rom_SettlementMinor	town	false	true
+rome_marble_4	rome_marble	3		8	2500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14872	true	rom_SettlementMinor	town	false	true
+rome_military_1	rome_military	0		2	900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15143	true		military	true	true
+rome_military_1_pun	rome_military_pun	0		2	900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15516	true		military	true	true
+rome_military_aux_2	rome_military	1		3	1200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15163	true	rom_Military_Main_Other	military	true	true
+rome_military_aux_2_pun	rome_military_pun	1		3	1200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15538	true	rom_Military_Main_Other	military	true	true
+rome_military_aux_3	rome_military	2		5	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15170	true	rom_Military_Main_Other	military	true	true
+rome_military_aux_3_pun	rome_military_pun	2		5	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15548	true	rom_Military_Main_Other	military	true	true
+rome_military_aux_4	rome_military	3		8	2200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_iron	campaign_sho_city_castle_construction_lvl1	15174	true	rom_Military_Main_Other	military	true	true
+rome_military_aux_4_pun	rome_military_pun	3		8	2200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_iron	campaign_sho_city_castle_construction_lvl1	15550	true	rom_Military_Main_Other	military	true	true
+rome_military_buff_1	rome_military_buff	0		2	500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15193	true		military	true	true
+rome_military_buff_attack_2	rome_military_buff	1		3	600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15199	true	rom_Military_Buff_Att_Inf	military	true	true
+rome_military_buff_attack_3	rome_military_buff	2		5	900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15200	true	rom_Military_Buff_Att_Inf	military	true	true
+rome_military_buff_defence_2	rome_military_buff	1		3	600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15203	true	rom_Military_Buff_Def_Inf	military	true	true
+rome_military_buff_defence_3	rome_military_buff	2		5	900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15204	true	rom_Military_Buff_Def_Inf	military	true	true
+rome_military_buff_horse_2	rome_military_buff	1		3	600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15218	true	rom_Military_Buff_Cav	military	true	true
+rome_military_buff_horse_3	rome_military_buff	2		5	900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15226	true	rom_Military_Buff_Cav	military	true	true
+rome_military_buff_range_2	rome_military_buff	1		3	600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15205	true	rom_Military_Buff_Ranged	military	true	true
+rome_military_buff_range_3	rome_military_buff	2		5	900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15214	true	rom_Military_Buff_Ranged	military	true	true
+rome_military_main_2	rome_military	1		3	1500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15147	true	rom_Military_Main_Heavy	military	true	true
+rome_military_main_2_pun	rome_military_pun	1		3	1500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15526	true	rom_Military_Main_Heavy	military	true	true
+rome_military_main_3	rome_military	2		5	2400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15153	true	rom_Military_Main_Heavy	military	true	true
+rome_military_main_3_pun	rome_military_pun	2		5	2400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15527	true	rom_Military_Main_Heavy	military	true	true
+rome_military_main_4	rome_military	3		8	3100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_iron	campaign_sho_city_castle_construction_lvl1	15159	true	rom_Military_Main_Heavy	military	true	true
+rome_military_main_4_pun	rome_military_pun	3		8	3100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_iron	campaign_sho_city_castle_construction_lvl1	15530	true	rom_Military_Main_Heavy	military	true	true
+rome_military_siege_1	rome_military_siege	0		2	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15179	true	rom_Military_Equipment_Ranged	military	true	true
+rome_military_siege_2	rome_military_siege	1		3	2200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15185	true	rom_Military_Equipment_Ranged	military	true	true
+rome_military_siege_3	rome_military_siege	2		5	3500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_timber	campaign_sho_city_castle_construction_lvl1	15191	true	rom_Military_Equipment_Ranged	military	true	true
+rome_olive_1	rome_olive	0		2	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14880	true	rom_SettlementMinor	town	false	true
+rome_olive_2	rome_olive	1		3	1400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14888	true	rom_SettlementMinor	town	false	true
+rome_olive_3	rome_olive	2		5	2000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14890	true	rom_SettlementMinor	town	false	true
+rome_olive_4	rome_olive	3		8	2600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14893	true	rom_SettlementMinor	town	false	true
+rome_port_1	rome_port	0		2	800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14958	true		trade_port	true	true
+rome_port_fish_2	rome_port	1		3	1500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14986	true	rom_Port_Food	fishing_port	true	true
+rome_port_fish_3	rome_port	2		5	2300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14996	true	rom_Port_Food	fishing_port	true	true
+rome_port_fish_4	rome_port	3		8	3100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_timber	campaign_sho_city_castle_construction_lvl1	15002	true	rom_Port_Food	fishing_port	true	true
+rome_port_military_2	rome_port	1		3	2100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14964	true	rom_Port_Ships	military_port	true	true
+rome_port_military_3	rome_port	2		5	3800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14965	true	rom_Port_Ships	military_port	true	true
+rome_port_military_4	rome_port	3		8	5900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_timber	campaign_sho_city_castle_construction_lvl1	14971	true	rom_Port_Ships	military_port	true	true
+rome_port_patrol_2	rome_port	1		3	1600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15010	true	rom_Port_Small_Ships	military_port	true	true
+rome_port_patrol_3	rome_port	2		5	2900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15015	true	rom_Port_Small_Ships	military_port	true	true
+rome_port_patrol_4	rome_port	3		8	4900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_timber	campaign_sho_city_castle_construction_lvl1	15021	true	rom_Port_Small_Ships	military_port	true	true
+rome_port_trade_2	rome_port	1		3	1700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14974	true	rom_Port_Trade	trade_port	true	true
+rome_port_trade_3	rome_port	2		5	3400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14975	true	rom_Port_Trade	trade_port	true	true
+rome_port_trade_4	rome_port	3		8	5600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_timber	campaign_sho_city_castle_construction_lvl1	14978	true	rom_Port_Trade	trade_port	true	true
+rome_purple_dye_1	rome_purple_dye	0		2	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14895	true	rom_SettlementMinor	town	false	true
+rome_purple_dye_2	rome_purple_dye	1		3	1500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14896	true	rom_SettlementMinor	town	false	true
+rome_purple_dye_3	rome_purple_dye	2		5	2300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14897	true	rom_SettlementMinor	town	false	true
+rome_purple_dye_4	rome_purple_dye	3		8	3800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14903	true	rom_SettlementMinor	town	false	true
+rome_religious_1	rome_religious	0		2	700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15439	true		roman_temple	true	true
+rome_religious_jupiter_2	rome_religious	1		3	1700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15491	true	rom_Temple_Imperial_Cult	roman_temple	true	true
+rome_religious_jupiter_3	rome_religious	2		5	3500	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15492	true	rom_Temple_Imperial_Cult	roman_temple	true	true
+rome_religious_jupiter_4	rome_religious	3		8	6300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15502	true	rom_Temple_Imperial_Cult	roman_temple	true	true
+rome_religious_jupiter_5	rome_religious	4		12	12600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	true			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15509	true	rom_Temple_Imperial_Cult	roman_temple	true	true
+rome_religious_mars_2	rome_religious	1		3	1200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15475	true	rom_Temple_War_Offense	roman_temple	true	true
+rome_religious_mars_3	rome_religious	2		5	1900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15481	true	rom_Temple_War_Offense	roman_temple	true	true
+rome_religious_mars_4	rome_religious	3		8	3000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15488	true	rom_Temple_War_Offense	roman_temple	true	true
+rome_religious_minerva_2	rome_religious	1		3	1300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15444	true	rom_Temple_Medicine	roman_temple	true	true
+rome_religious_minerva_3	rome_religious	2		5	2200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15446	true	rom_Temple_Medicine	roman_temple	true	true
+rome_religious_minerva_4	rome_religious	3		8	2600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15451	true	rom_Temple_Medicine	roman_temple	true	true
+rome_religious_neptune_2	rome_religious	1		3	1600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15463	true	rom_Temple_Naval	roman_temple	true	true
+rome_religious_neptune_3	rome_religious	2		5	3000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15470	true	rom_Temple_Naval	roman_temple	true	true
+rome_religious_neptune_4	rome_religious	3		8	5000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15472	true	rom_Temple_Naval	roman_temple	true	true
+rome_religious_vulcan_2	rome_religious	1		3	1300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15455	true	rom_Temple_Necropolis	roman_temple	true	true
+rome_religious_vulcan_3	rome_religious	2		5	2100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15456	true	rom_Temple_Necropolis	roman_temple	true	true
+rome_religious_vulcan_4	rome_religious	3		8	3700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15459	true	rom_Temple_Necropolis	roman_temple	true	true
+rome_silk_1	rome_silk	0		2	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14904	true	rom_SettlementMinor	town	false	true
+rome_silk_2	rome_silk	1		3	1700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14908	true	rom_SettlementMinor	town	false	true
+rome_silk_3	rome_silk	2		5	3000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14915	true	rom_SettlementMinor	town	false	true
+rome_silk_4	rome_silk	3		8	5600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14917	true	rom_SettlementMinor	town	false	true
+rome_spice_1	rome_spice	0		2	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	26463	true	rom_SettlementMinor	town	false	true
+rome_spice_2	rome_spice	1		3	1700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	26468	true	rom_SettlementMinor	town	false	true
+rome_spice_3	rome_spice	2		5	3000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	26476	true	rom_SettlementMinor	town	false	true
+rome_spice_4	rome_spice	3		8	5600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	26482	true	rom_SettlementMinor	town	false	true
+rome_town_1	rome_town	0		2	1200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14636	true	rom_SettlementMinor	town	true	true
+rome_town_centre_1	rome_town_centre	0		2	700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15322	true		general_civic	true	true
+rome_town_centre_theatre_2	rome_town_centre	1		3	1200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15344	true	rom_Economic_Primary_Public_Order	general_civic	true	true
+rome_town_centre_theatre_3	rome_town_centre	2		5	2600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15353	true	rom_Economic_Primary_Public_Order	general_civic	true	true
+rome_town_centre_theatre_4	rome_town_centre	3		8	4300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_marble	campaign_sho_city_castle_construction_lvl1	15361	true	rom_Economic_Primary_Public_Order	general_civic	true	true
+rome_town_centre_trade_2	rome_town_centre	1		3	1000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15325	true	rom_Economic_Secondary_Trade	market	true	true
+rome_town_centre_trade_3	rome_town_centre	2		5	2200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15332	true	rom_Economic_Secondary_Trade	market	true	true
+rome_town_centre_trade_4	rome_town_centre	3		8	3800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_textiles	campaign_sho_city_castle_construction_lvl1	15335	true	rom_Economic_Secondary_Trade	market	true	true
+rome_town_civil_2	rome_town	1		3	1900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14641	true	rom_SettlementMinor	town	true	true
+rome_town_civil_3	rome_town	2		5	2700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14645	true	rom_SettlementMinor	town	true	true
+rome_town_civil_4	rome_town	3		8	3800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14652	true	rom_SettlementMinor	town	true	true
+rome_town_farm_2	rome_town	1		3	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14659	true	rom_SettlementMinor	town	true	true
+rome_town_farm_3	rome_town	2		5	2600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14661	true	rom_SettlementMinor	town	true	true
+rome_town_farm_4	rome_town	3		8	3600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14662	true	rom_SettlementMinor	town	true	true
+rome_town_trade_2	rome_town	1		3	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15554	true	rom_SettlementMinor	town	true	true
+rome_town_trade_3	rome_town	2		5	2700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15564	true	rom_SettlementMinor	town	true	true
+rome_town_trade_4	rome_town	3		8	3700	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15571	true	rom_SettlementMinor	town	true	true
+rome_water_1	rome_water	0		2	800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15279	true		sanitation	true	true
+rome_water_baths_2	rome_water	1		3	2600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15301	true	rom_Economic_Secondary_Growth	sanitation	true	true
+rome_water_baths_3	rome_water	2		5	5400	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_lead	campaign_sho_city_castle_construction_lvl1	15307	true	rom_Economic_Secondary_Growth	sanitation	true	true
+rome_water_baths_4	rome_water	3		8	10200	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_lead	campaign_sho_city_castle_construction_lvl1	15308	true	rom_Economic_Secondary_Growth	sanitation	true	true
+rome_water_sewer_2	rome_water	1		3	1800	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15310	true	rom_Economic_Secondary_Sanitation	sanitation	true	true
+rome_water_sewer_3	rome_water	2		5	3900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_lead	campaign_sho_city_castle_construction_lvl1	15313	true	rom_Economic_Secondary_Sanitation	sanitation	true	true
+rome_water_sewer_4	rome_water	3		8	7000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_lead	campaign_sho_city_castle_construction_lvl1	15314	true	rom_Economic_Secondary_Sanitation	sanitation	true	true
+rome_water_sewer_5	rome_water	4		12	16000	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_lead	campaign_sho_city_castle_construction_lvl1	15681	true	rom_Economic_Secondary_Sanitation	sanitation	true	true
+rome_water_tank_2	rome_water	1		3	1300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	15281	true	rom_City_Lot_Protection	sanitation	true	true
+rome_water_tank_3	rome_water	2		5	1900	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_lead	campaign_sho_city_castle_construction_lvl1	15291	true	rom_City_Lot_Protection	sanitation	true	true
+rome_water_tank_4	rome_water	3		8	3100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false			res_rom_lead	campaign_sho_city_castle_construction_lvl1	15294	true	rom_City_Lot_Protection	sanitation	true	true
+rome_wine_1	rome_wine	0		2	1100	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	true	false				campaign_sho_city_castle_construction_lvl1	14926	true	rom_SettlementMinor	town	false	true
+rome_wine_2	rome_wine	1		3	1600	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14936	true	rom_SettlementMinor	town	false	true
+rome_wine_3	rome_wine	2		5	2300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14945	true	rom_SettlementMinor	town	false	true
+rome_wine_4	rome_wine	3		8	3300	0	0	0	0	0	0	0	0	0	0			0	false	0	0	0	0	false	false				campaign_sho_city_castle_construction_lvl1	14951	true	rom_SettlementMinor	town	false	true
