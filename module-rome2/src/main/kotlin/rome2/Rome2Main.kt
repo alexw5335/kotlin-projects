@@ -5,14 +5,7 @@ import core.Core
 
 
 fun main() {
-	modifyArmours()
-	modifyShields()
-	modifyWeapons()
-	modifyUnits()
-	applyMods("RAI", Tables.ARMOURS, armours.values)
-	applyMods("RAI", Tables.SHIELDS, shields.values)
-	applyMods("RAI", Tables.WEAPONS, weapons.values)
-	applyMods("RAI", Tables.LAND_UNITS, Tables.MAIN_UNITS, units.values)
+	applyMods()
 }
 
 
@@ -23,10 +16,28 @@ Modifications
 
 
 
+fun applyMods() {
+	modifyArmours()
+	modifyShields()
+	modifyWeapons()
+	modifyUnits()
+	modifyBuildings()
+	applyMods("RAI", Tables.ARMOURS, modifiedArmours)
+	applyMods("RAI", Tables.SHIELDS, modifiedShields)
+	applyMods("RAI", Tables.WEAPONS, modifiedWeapons)
+	applyMods("RAI", Tables.LAND_UNITS, Tables.MAIN_UNITS, modifiedUnits)
+	applyMods("RAI", Tables.BUILDING_LEVELS, modifiedBuildings)
+	applyMods("RAI", Tables.BUILDING_EFFECTS, modifiedBuildingEffects)
+}
+
+
+
 fun applyMods(prefix: String, table: Table, mods: Collection<Rome2Object>) {
 	val lines = ArrayList<String>()
 	lines.add(table.keys)
-	for(mod in mods) lines.add(mod.assembleLine)
+	lines.add(table.secondLine(prefix))
+	for(mod in mods)
+		lines.add(mod.assembleLine)
 	Core.writeLines(table.outputPath(prefix), lines)
 }
 
@@ -36,9 +47,11 @@ fun applyMods(prefix: String, table1: Table, table2: Table, mods: Collection<Rom
 	val lines1 = ArrayList<String>()
 	val lines2 = ArrayList<String>()
 	lines1.add(table1.keys)
+	lines1.add(table1.secondLine(prefix))
 	lines2.add(table2.keys)
+	lines2.add(table2.secondLine(prefix))
 	for(mod in mods) {
-		lines1.add(mod.assembleLine1)
+		lines1.add(mod.assembleLine)
 		lines2.add(mod.assembleLine2)
 	}
 	Core.writeLines(table1.outputPath(prefix), lines1)
@@ -53,59 +66,38 @@ Info
 
 
 
-private fun tableLines(table: Table) = Core.readResourceLines("/${table.name}.txt")
+private fun table(table: Table) = Core.readResourceLines("/${table.name}.txt")
 
 
 
-val armours = tableLines(Tables.ARMOURS).map(::Armour).associateBy { it.name }
+val armours = table(Tables.ARMOURS).map(::Armour).associateBy { it.name }
 
-val shields = tableLines(Tables.SHIELDS).map(::Shield).associateBy { it.name }
+val shields = table(Tables.SHIELDS).map(::Shield).associateBy { it.name }
 
-val weapons = tableLines(Tables.WEAPONS).map(::Weapon).associateBy { it.name }
+val weapons = table(Tables.WEAPONS).map(::Weapon).associateBy { it.name }
 
-val unitLines1 = tableLines(Tables.LAND_UNITS)
+val unitLines1 = table(Tables.LAND_UNITS)
 
-val unitLines2 = tableLines(Tables.MAIN_UNITS).associateBy { it.substringBefore('\t') }
+val unitLines2 = table(Tables.MAIN_UNITS).associateBy { it.substringBefore('\t') }
 
 val units = unitLines1.filter { unitLines2.contains(it.substringBefore('\t')) }.map { Unit(it, unitLines2[it.substringBefore('\t')] ?: error(it)) }.associateBy { it.name }
 
-
-
-/*
-val buildingInfos = map("building_levels") {
-	BuildingInfo(
-		name      = it[0],
-		level     = it[2].toInt(),
-		buildTime = it[4].toInt(),
-		cost      = it[5].toInt()
-	)
+val buildings = table(Tables.BUILDING_LEVELS).map(::Building).associateBy { it.name }.also { map ->
+	table(Tables.BUILDING_EFFECTS).map(::BuildingEffect).forEach { map[it.building]?.effects?.add(it) }
+	table(Tables.GARRISONS).map(::Garrison).forEach { map[it.building]?.garrisons?.add(it) }
 }
 
 
 
-val buildingEffects = HashMap<String, ArrayList<BuildingEffect>>().also { map ->
-	val lines = Core.readResourceLines("/building_effects_junction.txt")
+fun armour(name: String) = armours[name]!!
 
-	for(line in lines) {
-		val parts = line.split('\t')
-		val name = parts[0]
-		map.getOrPut(name, ::ArrayList).add(BuildingEffect(
-			effect = parts[1],
-			scope = parts[2],
-			value = parts[3].toInt(),
-			valueDamaged = parts[4].toInt(),
-			valueRuined = parts[5].toInt()
-		))
-	}
-}
+fun shield(name: String) = shields[name]!!
 
+fun weapon(name: String) = weapons[name]!!
 
+fun unit(name: String) = units[name]!!
 
-val buildings = buildingInfos.map {
-	Building(it.name, it.level, it.buildTime, it.cost, buildingEffects[it.name] ?: emptyList())
-}.associateBy { it.name }
-*/
-
+fun building(name: String) = buildings[name]!!
 
 
 
@@ -115,24 +107,20 @@ Units
 
 
 
-private val String.unit get() = units["Rom_$this"]!!
-
-
-
-val ARMOURED_LEGIONARIES = "Armour_Legionaries".unit
-val EAGLE_COHORT = "Eagle_Cohort".unit
-val EQUITES = "Equites".unit
-val EVOCATI_COHORT = "Evocati_Cohort".unit
-val FIRST_COHORT = "First_Cohort".unit
-val HASTATI = "Hastati".unit
-val LEGIONARIES = "Legionaries".unit
-val LEGIONARY_CAVALRY = "Legionary_Cav".unit
-val LEGIONARY_COHORT = "Legionary_Cohort".unit
-val PRAETORIAN_CAVALRY = "Praetorian_Cav".unit
-val PRAETORIAN_GUARD = "Praetorian_Guard".unit
-val PRAETORIANS = "Praetorians".unit
-val PRINCIPES = "Principes".unit
-val RORARII = "Rorarii".unit
-val TRIARII = "Triarii".unit
-val VETERAN_LEGIONARIES = "Vet_Legionaries".unit
-val VIGILES = "Vigiles".unit
+val ARMOURED_LEGIONARIES = unit("Rom_Armour_Legionaries")
+val EAGLE_COHORT = unit("Rom_Eagle_Cohort")
+val EQUITES = unit("Rom_Equites")
+val EVOCATI_COHORT = unit("Rom_Evocati_Cohort")
+val FIRST_COHORT = unit("Rom_First_Cohort")
+val HASTATI = unit("Rom_Hastati")
+val LEGIONARIES = unit("Rom_Legionaries")
+val LEGIONARY_CAVALRY = unit("Rom_Legionary_Cav")
+val LEGIONARY_COHORT = unit("Rom_Legionary_Cohort")
+val PRAETORIAN_CAVALRY = unit("Rom_Praetorian_Cav")
+val PRAETORIAN_GUARD = unit("Rom_Praetorian_Guard")
+val PRAETORIANS = unit("Rom_Praetorians")
+val PRINCIPES = unit("Rom_Principes")
+val RORARII = unit("Rom_Rorarii")
+val TRIARII = unit("Rom_Triarii")
+val VETERAN_LEGIONARIES = unit("Rom_Vet_Legionaries")
+val VIGILES = unit("Rom_Vigiles")

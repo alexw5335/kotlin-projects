@@ -10,7 +10,10 @@ Utils
 
 
 
-class BooleanProperty(private val parts: MutableList<String>, private val index: Int) {
+class BooleanProperty(
+	private val parts: MutableList<String>,
+	private val index: Int
+) {
 	private var value = parts[index] == "1" || parts[index] == "true"
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
@@ -21,7 +24,10 @@ class BooleanProperty(private val parts: MutableList<String>, private val index:
 
 
 
-class IntProperty(private val parts: MutableList<String>, private val index: Int) {
+class IntProperty(
+	private val parts: MutableList<String>,
+	private val index: Int
+) {
 	private var value = parts[index].toInt()
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
@@ -32,7 +38,10 @@ class IntProperty(private val parts: MutableList<String>, private val index: Int
 
 
 
-class StringProperty(private val parts: MutableList<String>, private val index: Int) {
+class StringProperty(
+	private val parts: MutableList<String>,
+	private val index: Int
+) {
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = parts[index]
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
 		parts[index] = value
@@ -41,7 +50,12 @@ class StringProperty(private val parts: MutableList<String>, private val index: 
 
 
 
-class ObjectProperty<T>(private val parts: MutableList<String>, private val index: Int, val getter: (String) -> T, val setter: (T) -> String) {
+class ObjectProperty<T>(
+	private val parts: MutableList<String>,
+	private val index: Int,
+	private val getter: (String) -> T,
+	private val setter: (T) -> String
+) {
 	private var value = getter(parts[index])
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
@@ -53,7 +67,7 @@ class ObjectProperty<T>(private val parts: MutableList<String>, private val inde
 
 
 abstract class Rome2Object(line: String) {
-	protected val parts = line.split('\t').toMutableList()
+	private val parts = line.split('\t').toMutableList()
 	val assembleLine get() = parts.joinToString("\t")
 	protected fun IntProperty(index: Int) = IntProperty(parts, index)
 	protected fun StringProperty(index: Int) = StringProperty(parts, index)
@@ -63,11 +77,13 @@ abstract class Rome2Object(line: String) {
 
 
 
-abstract class Rome2Object2(line1: String, line2: String) {
-	protected val parts1 = line1.split('\t').toMutableList()
-	protected val parts2 = line2.split('\t').toMutableList()
-	val assembleLine1 get() = parts1.joinToString("\t")
+abstract class Rome2Object2(line1: String, line2: String) : Rome2Object(line1) {
+	private val parts2 = line2.split('\t').toMutableList()
 	val assembleLine2 get() = parts2.joinToString("\t")
+	protected fun IntProperty2(index: Int) = IntProperty(parts2, index)
+	protected fun StringProperty2(index: Int) = StringProperty(parts2, index)
+	protected fun BooleanProperty2(index: Int) = BooleanProperty(parts2, index)
+	protected fun<T> ObjectProperty2(index: Int, getter: (String) -> T, setter: (T) -> String) = ObjectProperty(parts2, index, getter, setter)
 }
 
 
@@ -106,8 +122,14 @@ fun Building.printFormatted() {
 		append("$name\n")
 		append("\tcost:  $cost\n")
 		append("\tturns: $turns\n")
+		append("\teffects:\n")
 		for(effect in effects)
-			append("\t${effect.effect} ${effect.scope} ${effect.value}\n")
+			append("\t\t${effect.effect} ${effect.scope} ${effect.value}\n")
+		if(garrisons.isNotEmpty()) {
+			append("\tgarrison:\n")
+			for(garrison in garrisons)
+				append("\t\t${garrison.unit}\n")
+		}
 	})
 }
 
@@ -123,17 +145,17 @@ Types
  * land_units, main_units
  */
 class Unit(line1: String, line2: String) : Rome2Object2(line1, line2) {
-	val name    by StringProperty(parts1, 0)
-	var attack  by IntProperty(parts1, 14)
-	var defence by IntProperty(parts1, 15)
-	var morale  by IntProperty(parts1, 16)
-	var bonusHp by IntProperty(parts1, 17)
-	var charge  by IntProperty(parts1, 6)
-	var armour  by ObjectProperty(parts1, 3, { armours[it]!! }, { it.name })
-	var weapon  by ObjectProperty(parts1, 22, { weapons[it]!! }, { it.name })
-	var shield  by ObjectProperty(parts1, 25, { shields[it]!! }, { it.name })
-	var cost    by IntProperty(parts2, 15)
-	var upkeep  by IntProperty(parts2, 18)
+	val name    by StringProperty(0)
+	var attack  by IntProperty(14)
+	var defence by IntProperty(15)
+	var morale  by IntProperty(16)
+	var bonusHp by IntProperty(17)
+	var charge  by IntProperty(6)
+	var armour  by ObjectProperty(3, { armour(it) }, Armour::name)
+	var weapon  by ObjectProperty(22, { weapon(it) }, Weapon::name)
+	var shield  by ObjectProperty(25, { shield(it) }, Shield::name)
+	var cost    by IntProperty2(15)
+	var upkeep  by IntProperty2(18)
 
 	val totalDefence get() = defence + shield.defence
 	val totalArmour get() = armour.armour + shield.armour
@@ -145,10 +167,10 @@ class Unit(line1: String, line2: String) : Rome2Object2(line1, line2) {
  * unit_armour_types
  */
 class Armour(line: String) : Rome2Object(line) {
-	val name            by StringProperty(parts, 0)
-	var armour          by IntProperty(parts, 1)
-	var bonusVsMissiles by IntProperty(parts, 2)
-	var weakVsMissiles  by BooleanProperty(parts, 3)
+	val name            by StringProperty(0)
+	var armour          by IntProperty(1)
+	var bonusVsMissiles by IntProperty(2)
+	var weakVsMissiles  by BooleanProperty(3)
 }
 
 
@@ -157,7 +179,7 @@ class Armour(line: String) : Rome2Object(line) {
  * unit_shield_types
  */
 class Shield(line: String) : Rome2Object(line) {
-	val name     by StringProperty(parts, 0)
+	val name     by StringProperty(0)
 	var defence  by IntProperty(1)
 	var armour   by IntProperty(2)
 	var block    by IntProperty(4)
@@ -184,6 +206,7 @@ class Weapon(line: String) : Rome2Object(line) {
  * building_effects_junction
  */
 class BuildingEffect(line: String) : Rome2Object(line) {
+	val building     by StringProperty(0)
 	val effect       by StringProperty(1)
 	var scope        by StringProperty(2)
 	var value        by IntProperty(3)
@@ -195,11 +218,30 @@ class BuildingEffect(line: String) : Rome2Object(line) {
 
 /**
  * building_levels
- * building_effects_junction
  */
-class Building(line: String, val effects: MutableList<BuildingEffect>) : Rome2Object(line) {
+class Building(line: String) : Rome2Object(line) {
 	val name  by StringProperty(0)
-	val level by IntProperty(2)
-	val turns by IntProperty(4)
-	val cost  by IntProperty(5)
+	var level by IntProperty(2)
+	var turns by IntProperty(4)
+	var cost  by IntProperty(5)
+
+	val effects = ArrayList<BuildingEffect>()
+	val garrisons = ArrayList<Garrison>()
+	//val explicitEffects = ArrayList<ExplicitEffect>()
+	//val explicitGarrisons = ArrayList<ExplicitGarrison>()
+}
+
+
+class ExplicitEffect(val effect: String, val scope: String, val value: Int)
+class ExplicitGarrison(val unit: Unit, val count: Int)
+
+
+
+/**
+ * building_level_armed_citizenry_junctions
+ */
+class Garrison(line: String) : Rome2Object(line) {
+	val id by IntProperty(0)
+	val building by StringProperty(1)
+	val unit by StringProperty(2)
 }

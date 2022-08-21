@@ -1,0 +1,2705 @@
+all_mine_1
+	cost:  800
+	turns: 2
+	effects:
+		rom_building_gdp_industry_mining this_building 100
+
+all_mine_2
+	cost:  1300
+	turns: 3
+	effects:
+		rom_building_gdp_industry_mining this_building 150
+		rom_building_public_order_attitude_squalor this_province -2
+
+all_mine_3
+	cost:  3000
+	turns: 5
+	effects:
+		rom_building_gdp_industry_mining this_building 300
+		rom_building_public_order_attitude_squalor this_province -4
+
+all_mine_4
+	cost:  5500
+	turns: 8
+	effects:
+		rom_building_gdp_industry_mining this_building 450
+		rom_building_public_order_attitude_squalor this_province -8
+
+rome_agriculture_1
+	cost:  700
+	turns: 2
+	effects:
+		rom_building_food_farming_grain this_region 4
+		rom_building_gdp_agriculture_farming this_building 40
+
+rome_agriculture_farm_2
+	cost:  1200
+	turns: 3
+	effects:
+		rom_building_food_farming_grain this_region 7
+		rom_building_gdp_agriculture_farming this_building 60
+		rom_building_public_order_attitude_squalor this_province -1
+
+rome_agriculture_farm_3
+	cost:  2000
+	turns: 5
+	effects:
+		rom_building_food_farming_grain this_region 10
+		rom_building_gdp_agriculture_farming this_building 80
+		rom_building_public_order_attitude_squalor this_province -3
+
+rome_agriculture_farm_4
+	cost:  3200
+	turns: 8
+	effects:
+		rom_building_food_farming_grain this_region 15
+		rom_building_gdp_agriculture_farming this_building 100
+		rom_building_public_order_attitude_squalor this_province -6
+
+rome_agriculture_granary_2
+	cost:  1300
+	turns: 3
+	effects:
+		rom_building_food_farming_grain this_region 4
+		rom_building_gdp_agriculture_farming this_building 100
+		rom_building_replenishment_land regions_in_this_province 3
+
+rome_agriculture_granary_3
+	cost:  2300
+	turns: 5
+	effects:
+		rom_building_food_farming_grain this_region 4
+		rom_building_gdp_agriculture_farming this_building 150
+		rom_building_replenishment_land regions_in_this_province 6
+
+rome_agriculture_granary_4
+	cost:  3500
+	turns: 8
+	effects:
+		rom_building_food_farming_grain this_region 4
+		rom_building_gdp_agriculture_farming this_building 200
+		rom_building_replenishment_land regions_in_this_province 9
+
+rome_agriculture_herd_2
+	cost:  1300
+	turns: 3
+	effects:
+		rom_building_food_farming_grain this_region 5
+		rom_building_gdp_agriculture_animal_husbandry this_building 100
+		rom_building_public_order_attitude_squalor this_province -1
+
+rome_agriculture_herd_3
+	cost:  2600
+	turns: 5
+	effects:
+		rom_building_food_farming_grain this_region 7
+		rom_building_gdp_agriculture_animal_husbandry this_building 175
+		rom_building_public_order_attitude_squalor this_province -3
+
+rome_agriculture_herd_4
+	cost:  4300
+	turns: 8
+	effects:
+		rom_building_food_farming_grain this_region 9
+		rom_building_gdp_agriculture_animal_husbandry this_building 250
+		rom_building_public_order_attitude_squalor this_province -6
+
+rome_amber_1
+	cost:  1000
+	turns: 2
+	effects:
+		rom_building_gdp_trade_local this_building 150
+		rom_building_growth_all this_province 1
+		rom_building_public_order_happiness this_province 1
+		rom_building_trade_tariffs_all this_faction 2
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_amber_2
+	cost:  1400
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_trade_local this_building 250
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness this_province 2
+		rom_building_road this_region 3
+		rom_building_trade_tariffs_all this_faction 4
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_amber_3
+	cost:  1900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_trade_local this_building 350
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 3
+		rom_building_road this_region 3
+		rom_building_trade_tariffs_all this_faction 6
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_amber_4
+	cost:  2500
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_trade_local this_building 500
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness this_province 4
+		rom_building_road this_region 3
+		rom_building_trade_tariffs_all this_faction 8
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_city_1
+	cost:  1500
+	turns: 2
+	effects:
+		rom_building_gdp_mod_all regions_in_this_province 6
+		rom_building_gdp_subsistence this_building 200
+		rom_building_growth_all this_province 3
+		rom_hidden_walls_15m this_region 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_warriors
+		cig_roman_cel_levy_freemen
+		cig_roman_cel_skirmishers
+		cig_roman_cel_skirmishers
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+		rom_roman_vigiles_garrison
+
+rome_city_centre_1
+	cost:  700
+	turns: 2
+	effects:
+		rom_building_gdp_trade_local this_building 50
+		rom_building_public_order_happiness this_province 1
+
+rome_city_centre_cattle_2
+	cost:  1600
+	turns: 3
+	effects:
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 10
+		rom_building_gdp_trade_local this_building 120
+		rom_building_public_order_attitude_squalor this_province -1
+		rom_building_road this_region 2
+
+rome_city_centre_cattle_3
+	cost:  3700
+	turns: 5
+	effects:
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 20
+		rom_building_gdp_trade_local this_building 240
+		rom_building_public_order_attitude_squalor this_province -3
+		rom_building_road this_region 3
+
+rome_city_centre_cattle_4
+	cost:  8400
+	turns: 8
+	effects:
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 30
+		rom_building_gdp_trade_local this_building 480
+		rom_building_public_order_attitude_squalor this_province -6
+		rom_building_road this_region 4
+
+rome_city_centre_circus_5
+	cost:  13900
+	turns: 12
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_culture_entertainment this_building 160
+		rom_building_public_order_happiness this_province 30
+		rom_building_road this_region 4
+		rom_character_power_to_ruling_party_per_turn this_faction 2
+
+rome_city_centre_food_2
+	cost:  1100
+	turns: 3
+	effects:
+		rom_building_food_farming_animal_husbandry this_region 5
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 10
+		rom_building_gdp_trade_local this_building 70
+		rom_building_public_order_attitude_squalor this_province -2
+		rom_building_road this_region 2
+
+rome_city_centre_food_3
+	cost:  2200
+	turns: 5
+	effects:
+		rom_building_food_farming_animal_husbandry this_region 8
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 20
+		rom_building_gdp_trade_local this_building 100
+		rom_building_public_order_attitude_squalor this_province -4
+		rom_building_road this_region 3
+
+rome_city_centre_food_4
+	cost:  3800
+	turns: 8
+	effects:
+		rom_building_food_farming_animal_husbandry this_region 14
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 30
+		rom_building_gdp_trade_local this_building 150
+		rom_building_public_order_attitude_squalor this_province -8
+		rom_building_road this_region 4
+
+rome_city_centre_gladiator_2
+	cost:  1400
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_culture_entertainment this_building 60
+		rom_building_public_order_happiness this_province 5
+		rom_building_road this_region 2
+
+rome_city_centre_gladiator_3
+	cost:  5100
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_culture_entertainment this_building 130
+		rom_building_public_order_happiness this_province 12
+		rom_building_road this_region 3
+
+rome_city_centre_gladiator_4
+	cost:  10300
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_culture_entertainment this_building 200
+		rom_building_public_order_happiness this_province 24
+		rom_building_road this_region 4
+
+rome_city_centre_gladiator_5
+	cost:  13600
+	turns: 12
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_culture_entertainment this_building 500
+		rom_building_public_order_happiness this_province 12
+		rom_building_road this_region 4
+		rom_character_power_to_ruling_party_per_turn this_faction 2
+
+rome_city_centre_library_2
+	cost:  1300
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_culture_learning this_building 70
+		rom_building_research_points this_faction 6
+		rom_building_road this_region 2
+
+rome_city_centre_library_3
+	cost:  2700
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_culture_learning this_building 100
+		rom_building_research_points this_faction 12
+		rom_building_road this_region 3
+
+rome_city_centre_library_4
+	cost:  5800
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_culture_learning this_building 150
+		rom_building_research_points this_faction 24
+		rom_building_road this_region 4
+
+rome_city_centre_slave_2
+	cost:  4000
+	turns: 3
+	effects:
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 10
+		rom_building_gdp_mod_industry regions_in_this_province 10
+		rom_building_gdp_trade_local this_building 100
+		rom_building_public_order_attitude_squalor this_province -4
+		rom_building_road this_region 2
+		rom_building_slave_decrease_mod this_province 25
+		rom_building_slave_gpd_mod this_province 25
+
+rome_city_centre_slave_3
+	cost:  11500
+	turns: 5
+	effects:
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 20
+		rom_building_gdp_mod_industry regions_in_this_province 20
+		rom_building_gdp_trade_local this_building 250
+		rom_building_public_order_attitude_squalor this_province -8
+		rom_building_road this_region 3
+		rom_building_slave_decrease_mod this_province 50
+		rom_building_slave_gpd_mod this_province 50
+
+rome_city_centre_wine_2
+	cost:  1700
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_culture_all regions_in_this_province 10
+		rom_building_gdp_trade_local this_building 80
+		rom_building_public_order_happiness this_province 1
+		rom_building_road this_region 2
+		rom_building_trade_route_value_mod_global this_faction 6
+
+rome_city_centre_wine_3
+	cost:  4200
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_culture_all regions_in_this_province 20
+		rom_building_gdp_trade_local this_building 160
+		rom_building_public_order_happiness this_province 2
+		rom_building_road this_region 3
+		rom_building_trade_route_value_mod_global this_faction 12
+
+rome_city_centre_wine_4
+	cost:  8800
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_culture_all regions_in_this_province 30
+		rom_building_gdp_trade_local this_building 320
+		rom_building_public_order_happiness this_province 3
+		rom_building_road this_region 4
+		rom_building_trade_route_value_mod_global this_faction 18
+
+rome_city_civil_2
+	cost:  2700
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_all regions_in_this_province 8
+		rom_building_gdp_subsistence this_building 300
+		rom_building_growth_all this_province 5
+		rom_building_road this_region 5
+		rom_building_wall_defences_enable_arrow_towers this_region 1
+		rom_hidden_walls_15m this_region 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_warriors
+		cig_roman_cel_levy_freemen
+		cig_roman_cel_skirmishers
+		cig_roman_cel_skirmishers
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+		rom_roman_vigiles_garrison
+
+rome_city_civil_3
+	cost:  4400
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 4
+		rom_building_defence_artillery_slots this_region 3
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_all regions_in_this_province 10
+		rom_building_gdp_subsistence this_building 400
+		rom_building_growth_all this_province 7
+		rom_building_road this_region 10
+		rom_building_wall_defences_enable_arrow_towers this_region 1
+		rom_hidden_walls_15m this_region 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_warriors
+		cig_roman_cel_levy_freemen
+		cig_roman_cel_skirmishers
+		cig_roman_cel_slingers
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_scorpion
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+		rom_roman_vigiles_garrison
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_scorpion
+
+rome_city_civil_4
+	cost:  7100
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 6
+		rom_building_defence_artillery_slots this_region 6
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_all regions_in_this_province 12
+		rom_building_gdp_subsistence this_building 500
+		rom_building_growth_all this_province 9
+		rom_building_road this_region 15
+		rom_building_wall_defences_enable_scorpio_towers this_region 1
+		rom_hidden_walls_15m this_region 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_slingers
+		cig_roman_cel_slingers
+		cig_roman_cel_skirmishers
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_onager
+		cig_roman_fixed_defence_onager
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+		rom_roman_vigiles_garrison
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_onager
+		rom_roman_fixed_defence_onager
+
+rome_city_garrison_2
+	cost:  2000
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_all regions_in_this_province 6
+		rom_building_gdp_subsistence this_building 250
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 2
+		rom_building_road this_region 5
+		rom_building_wall_defences_enable_arrow_towers this_region 1
+		rom_hidden_walls_15m this_region 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_skirmishers
+		cig_roman_cel_skirmishers
+		cig_roman_cel_levy_freemen
+		cig_roman_cel_warriors
+		cig_roman_legionaries
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_medium_melee
+		rom_roman_medium_ranged
+		rom_roman_medium_ranged
+		rom_roman_medium_melee
+		rom_roman_vigiles_garrison
+		rom_roman_vigiles_garrison
+
+rome_city_garrison_3
+	cost:  3000
+	turns: 5
+	effects:
+		rom_building_defence_artillery_slots this_region 3
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_all regions_in_this_province 6
+		rom_building_gdp_subsistence this_building 300
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 4
+		rom_building_road this_region 10
+		rom_building_wall_defences_enable_arrow_towers this_region 1
+		rom_hidden_walls_15m this_region 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		cig_roman_legionaries
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_ballista
+		cig_roman_cel_slingers
+		cig_roman_cel_skirmishers
+		cig_roman_cel_levy_freemen
+		cig_roman_cel_warriors
+		cig_roman_legionaries
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_medium_ranged
+		rom_roman_medium_ranged
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_vigiles_garrison
+		rom_roman_vigiles_garrison
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_scorpion
+
+rome_city_garrison_4
+	cost:  6000
+	turns: 8
+	effects:
+		rom_building_defence_artillery_slots this_region 6
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_all regions_in_this_province 6
+		rom_building_gdp_subsistence this_building 350
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 6
+		rom_building_road this_region 15
+		rom_building_wall_defences_enable_scorpio_towers this_region 1
+		rom_hidden_walls_15m this_region 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		cig_roman_fixed_defence_onager
+		cig_roman_fixed_defence_onager
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_scorpion
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_ballista
+		cig_roman_fixed_defence_ballista
+		cig_roman_cel_skirmishers
+		cig_roman_cel_slingers
+		cig_roman_cel_slingers
+		cig_roman_legionaries
+		cig_roman_legionaries
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_medium_ranged
+		rom_roman_medium_ranged
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_vigiles_garrison
+		rom_roman_vigiles_garrison
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_ballista
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_scorpion
+		rom_roman_fixed_defence_onager
+		rom_roman_fixed_defence_onager
+
+rome_glass_1
+	cost:  1000
+	turns: 2
+	effects:
+		rom_building_gdp_industry_manufacture this_building 100
+		rom_building_growth_all this_province 1
+		rom_building_research_points this_faction 4
+		rom_building_resource_glass_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_glass_2
+	cost:  1400
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_industry_manufacture this_building 150
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness this_province 1
+		rom_building_research_points this_faction 8
+		rom_building_resource_glass_production this_building 80
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_glass_3
+	cost:  2100
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_industry_manufacture this_building 200
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 2
+		rom_building_research_points this_faction 12
+		rom_building_resource_glass_production this_building 120
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_glass_4
+	cost:  3100
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_industry_manufacture this_building 300
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness this_province 3
+		rom_building_research_points this_faction 16
+		rom_building_resource_glass_production this_building 160
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_gold_1
+	cost:  1400
+	turns: 2
+	effects:
+		rom_building_gdp_industry_mining this_building 200
+		rom_building_gdp_mod_industry_mining in_all_your_regions 5
+		rom_building_growth_all this_province 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_gold_2
+	cost:  3400
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_industry_mining this_building 350
+		rom_building_gdp_mod_industry_mining in_all_your_regions 10
+		rom_building_growth_all this_province 2
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_gold_3
+	cost:  6500
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_industry_mining this_building 500
+		rom_building_gdp_mod_industry_mining in_all_your_regions 15
+		rom_building_growth_all this_province 3
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_gold_4
+	cost:  11800
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_industry_mining this_building 700
+		rom_building_gdp_mod_industry_mining in_all_your_regions 20
+		rom_building_gdp_mod_trade_all regions_in_this_province 5
+		rom_building_growth_all this_province 4
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_grain_1
+	cost:  1100
+	turns: 2
+	effects:
+		rom_building_food_farming_grain in_all_your_regions_in_adjacent_provinces 1
+		rom_building_food_farming_grain_local_province regions_in_this_province 1
+		rom_building_gdp_agriculture_farming this_building 40
+		rom_building_gdp_mod_agriculture_farming regions_in_this_province 10
+		rom_building_growth_all this_province 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_grain_2
+	cost:  1600
+	turns: 3
+	effects:
+		rom_building_food_farming_grain in_all_your_regions_in_adjacent_provinces 2
+		rom_building_food_farming_grain_local_province regions_in_this_province 2
+		rom_building_gdp_agriculture_farming this_building 60
+		rom_building_gdp_mod_agriculture_farming regions_in_this_province 20
+		rom_building_growth_all this_province 2
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_grain_3
+	cost:  2600
+	turns: 5
+	effects:
+		rom_building_food_farming_grain in_all_your_regions_in_adjacent_provinces 3
+		rom_building_food_farming_grain_local_province regions_in_this_province 3
+		rom_building_gdp_agriculture_farming this_building 80
+		rom_building_gdp_mod_agriculture_farming regions_in_this_province 40
+		rom_building_growth_all this_province 3
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_grain_4
+	cost:  4300
+	turns: 8
+	effects:
+		rom_building_food_farming_grain in_all_your_regions_in_adjacent_provinces 4
+		rom_building_food_farming_grain_local_province regions_in_this_province 4
+		rom_building_gdp_agriculture_farming this_building 100
+		rom_building_gdp_mod_agriculture_farming regions_in_this_province 80
+		rom_building_growth_all this_province 4
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_horse_1
+	cost:  1000
+	turns: 2
+	effects:
+		rom_building_gdp_agriculture_animal_husbandry this_building 100
+		rom_building_growth_all this_province 1
+		rom_building_unit_equipment_cavalry_horse_bonus_i in_all_your_provinces 5
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_horse_2
+	cost:  2100
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 2
+		rom_building_gdp_agriculture_animal_husbandry this_building 200
+		rom_building_growth_all this_province 2
+		rom_building_road this_region 5
+		rom_building_unit_equipment_cavalry_horse_bonus_ii in_all_your_provinces 10
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_horse_3
+	cost:  3900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 6
+		rom_building_gdp_agriculture_animal_husbandry this_building 300
+		rom_building_growth_all this_province 3
+		rom_building_road this_region 11
+		rom_building_unit_equipment_cavalry_horse_bonus_iii in_all_your_provinces 20
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_industry_1
+	cost:  800
+	turns: 2
+	effects:
+		rom_building_gdp_industry_manufacture this_building 100
+
+rome_industry_amphora_2
+	cost:  1800
+	turns: 3
+	effects:
+		rom_building_gdp_industry_manufacture this_building 100
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 5
+		rom_building_gdp_mod_trade_all regions_in_this_province 10
+		rom_building_public_order_attitude_squalor this_province -2
+
+rome_industry_amphora_3
+	cost:  3900
+	turns: 5
+	effects:
+		rom_building_gdp_industry_manufacture this_building 125
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 10
+		rom_building_gdp_mod_trade_all regions_in_this_province 20
+		rom_building_public_order_attitude_squalor this_province -4
+
+rome_industry_amphora_4
+	cost:  7100
+	turns: 8
+	effects:
+		rom_building_gdp_industry_manufacture this_building 150
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 20
+		rom_building_gdp_mod_trade_all regions_in_this_province 30
+		rom_building_public_order_attitude_squalor this_province -8
+
+rome_industry_coin_2
+	cost:  1500
+	turns: 3
+	effects:
+		rom_building_gdp_mod_industry_manufacturing regions_in_this_province 5
+		rom_building_gdp_trade_local this_building 150
+		rom_building_public_order_attitude_squalor this_province -2
+
+rome_industry_coin_3
+	cost:  2700
+	turns: 5
+	effects:
+		rom_building_gdp_mod_industry_manufacturing regions_in_this_province 10
+		rom_building_gdp_trade_local this_building 200
+		rom_building_public_order_attitude_squalor this_province -4
+
+rome_industry_coin_4
+	cost:  5300
+	turns: 8
+	effects:
+		rom_building_gdp_mod_industry_manufacturing regions_in_this_province 20
+		rom_building_gdp_trade_local this_building 300
+		rom_building_public_order_attitude_squalor this_province -8
+
+rome_industry_jeweller_2
+	cost:  1800
+	turns: 3
+	effects:
+		rom_building_gdp_industry_manufacture this_building 200
+		rom_building_gdp_mod_industry_mining regions_in_this_province 5
+		rom_building_public_order_attitude_squalor this_province -2
+
+rome_industry_jeweller_3
+	cost:  4500
+	turns: 5
+	effects:
+		rom_building_gdp_industry_manufacture this_building 400
+		rom_building_gdp_mod_industry_mining regions_in_this_province 10
+		rom_building_public_order_attitude_squalor this_province -4
+
+rome_industry_jeweller_4
+	cost:  8500
+	turns: 8
+	effects:
+		rom_building_gdp_industry_manufacture this_building 600
+		rom_building_gdp_mod_industry_mining regions_in_this_province 15
+		rom_building_public_order_attitude_squalor this_province -8
+
+rome_iron_1
+	cost:  1000
+	turns: 2
+	effects:
+		rom_building_gdp_industry_manufacture this_building 100
+		rom_building_growth_all this_province 1
+		rom_building_resource_iron_production this_building 50
+		rom_building_unit_equipment_armour_bronze in_all_your_provinces 5
+		rom_building_unit_equipment_weapon_bronze in_all_your_provinces 5
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_iron_armour_2
+	cost:  2500
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 2
+		rom_building_gdp_industry_manufacture this_building 200
+		rom_building_growth_all this_province 2
+		rom_building_resource_iron_production this_building 100
+		rom_building_road this_region 5
+		rom_building_unit_equipment_armour_silver in_all_your_provinces 10
+		rom_building_unit_equipment_shields_silver in_all_your_provinces 10
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_iron_armour_3
+	cost:  3500
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 6
+		rom_building_gdp_industry_manufacture this_building 300
+		rom_building_growth_all this_province 3
+		rom_building_resource_iron_production this_building 150
+		rom_building_road this_region 11
+		rom_building_unit_equipment_armour_gold in_all_your_provinces 20
+		rom_building_unit_equipment_shields_gold in_all_your_provinces 20
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_iron_weapon_2
+	cost:  2500
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 2
+		rom_building_gdp_industry_manufacture this_building 200
+		rom_building_growth_all this_province 2
+		rom_building_resource_iron_production this_building 100
+		rom_building_road this_region 5
+		rom_building_unit_equipment_armour_bronze in_all_your_provinces 5
+		rom_building_unit_equipment_weapon_silver in_all_your_provinces 10
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_iron_weapon_3
+	cost:  3500
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 6
+		rom_building_gdp_industry_manufacture this_building 300
+		rom_building_growth_all this_province 3
+		rom_building_resource_iron_production this_building 150
+		rom_building_road this_region 11
+		rom_building_unit_equipment_armour_bronze in_all_your_provinces 5
+		rom_building_unit_equipment_weapon_gold in_all_your_provinces 20
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lead_1
+	cost:  1200
+	turns: 2
+	effects:
+		rom_building_gdp_industry_mining this_building 100
+		rom_building_growth_all this_province 1
+		rom_building_public_order_happiness_sanitation in_all_your_provinces 1
+		rom_building_resource_lead_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lead_2
+	cost:  1800
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_industry_mining this_building 150
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness_sanitation in_all_your_provinces 2
+		rom_building_resource_lead_production this_building 80
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lead_3
+	cost:  2800
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_industry_mining this_building 200
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness_sanitation in_all_your_provinces 3
+		rom_building_resource_lead_production this_building 120
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lead_4
+	cost:  4300
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_industry_mining this_building 300
+		rom_building_gdp_mod_industry regions_in_this_province 5
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness_sanitation in_all_your_provinces 4
+		rom_building_resource_lead_production this_building 160
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_leather_1
+	cost:  1000
+	turns: 2
+	effects:
+		rom_building_gdp_industry_manufacture this_building 100
+		rom_building_gdp_mod_industry_manufacturing in_all_your_regions 5
+		rom_building_growth_all this_province 1
+		rom_building_resource_leather_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_leather_2
+	cost:  1400
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_industry_manufacture this_building 150
+		rom_building_gdp_mod_industry_manufacturing in_all_your_regions 10
+		rom_building_growth_all this_province 2
+		rom_building_resource_leather_production this_building 80
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_leather_3
+	cost:  1900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_industry_manufacture this_building 200
+		rom_building_gdp_mod_industry_manufacturing in_all_your_regions 15
+		rom_building_growth_all this_province 3
+		rom_building_resource_leather_production this_building 120
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_leather_4
+	cost:  2500
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_industry_manufacture this_building 250
+		rom_building_gdp_mod_industry_manufacturing in_all_your_regions 20
+		rom_building_growth_all this_province 4
+		rom_building_resource_leather_production this_building 160
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lumber_1
+	cost:  1100
+	turns: 2
+	effects:
+		rom_building_gdp_industry_manufacture this_building 40
+		rom_building_gdp_mod_industry regions_in_this_province 5
+		rom_building_growth_all this_province 1
+		rom_building_resource_timber_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lumber_2
+	cost:  1600
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_industry_manufacture this_building 60
+		rom_building_gdp_mod_industry regions_in_this_province 10
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness this_province 1
+		rom_building_resource_timber_production this_building 80
+		rom_building_road this_region 3
+		rom_building_unit_equipment_hull_health_bronze in_all_your_sea_regions 5
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lumber_3
+	cost:  2300
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_industry_manufacture this_building 80
+		rom_building_gdp_mod_industry regions_in_this_province 15
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 2
+		rom_building_resource_timber_production this_building 120
+		rom_building_road this_region 7
+		rom_building_unit_equipment_hull_health_silver in_all_your_sea_regions 10
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_lumber_4
+	cost:  3200
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_industry_manufacture this_building 100
+		rom_building_gdp_mod_industry regions_in_this_province 20
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness this_province 3
+		rom_building_resource_timber_production this_building 160
+		rom_building_road this_region 11
+		rom_building_unit_equipment_hull_health_gold in_all_your_sea_regions 20
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_marble_1
+	cost:  1000
+	turns: 2
+	effects:
+		rom_building_building_cost_mod regions_in_this_province -5
+		rom_building_gdp_industry_mining this_building 100
+		rom_building_growth_all this_province 1
+		rom_building_public_order_happiness in_all_your_provinces 1
+		rom_building_resource_marble_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_marble_2
+	cost:  1400
+	turns: 3
+	effects:
+		rom_building_building_cost_mod regions_in_this_province -10
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_industry_mining this_building 150
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness in_all_your_provinces 2
+		rom_building_resource_marble_production this_building 80
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_marble_3
+	cost:  1900
+	turns: 5
+	effects:
+		rom_building_building_cost_mod regions_in_this_province -15
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_industry_mining this_building 200
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness in_all_your_provinces 3
+		rom_building_resource_marble_production this_building 120
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_marble_4
+	cost:  2500
+	turns: 8
+	effects:
+		rom_building_building_cost_mod regions_in_this_province -20
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_industry_mining this_building 300
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness in_all_your_provinces 4
+		rom_building_resource_marble_production this_building 160
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_military_1
+	cost:  900
+	turns: 2
+	effects:
+	garrison:
+		cig_roman_legionaries
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+
+rome_military_1_pun
+	cost:  900
+	turns: 2
+	effects:
+	garrison:
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+
+rome_military_aux_2
+	cost:  1200
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_light_horse
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+
+rome_military_aux_2_pun
+	cost:  1200
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+	garrison:
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+
+rome_military_aux_3
+	cost:  1800
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 3
+		rom_building_recruitment_cost_mod_provincial_mercenaries your_characters_in_this_province -5
+		rom_building_recruitment_points this_province 1
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_legionary_cav
+		cig_roman_cel_slingers
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_ranged
+		rom_roman_medium_ranged
+
+rome_military_aux_3_pun
+	cost:  1800
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 3
+		rom_building_recruitment_points this_province 1
+	garrison:
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_ranged
+		rom_roman_medium_ranged
+
+rome_military_aux_4
+	cost:  2200
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 6
+		rom_building_recruitment_cost_mod_provincial_mercenaries your_characters_in_this_province -10
+		rom_building_recruitment_points this_province 1
+	garrison:
+		cig_roman_veteran
+		cig_roman_cel_legionary_cav
+		cig_roman_cel_slingers
+		cig_roman_cel_slingers
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_ranged
+		rom_roman_medium_ranged
+
+rome_military_aux_4_pun
+	cost:  2200
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 6
+		rom_building_recruitment_points this_province 1
+	garrison:
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_ranged
+		rom_roman_medium_ranged
+
+rome_military_buff_1
+	cost:  500
+	turns: 2
+	effects:
+		rom_building_recruitment_points this_province 1
+
+rome_military_buff_attack_2
+	cost:  600
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_attack_melee_inf this_province 5
+
+rome_military_buff_attack_3
+	cost:  900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_attack_melee_inf this_province 10
+
+rome_military_buff_defence_2
+	cost:  600
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_defence_melee_inf this_province 5
+
+rome_military_buff_defence_3
+	cost:  900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_defence_melee_inf this_province 10
+
+rome_military_buff_horse_2
+	cost:  600
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_attack_melee_cavalry this_province 5
+
+rome_military_buff_horse_3
+	cost:  900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_attack_melee_cavalry this_province 10
+
+rome_military_buff_range_2
+	cost:  600
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_accuracy_ranged_inf this_province 5
+
+rome_military_buff_range_3
+	cost:  900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_recruitment_points this_province 1
+		rom_building_unit_training_accuracy_ranged_inf this_province 10
+
+rome_military_main_2
+	cost:  1500
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+	garrison:
+		cig_roman_legionaries
+		cig_roman_cel_levy_freemen
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+
+rome_military_main_2_pun
+	cost:  1500
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+	garrison:
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+
+rome_military_main_3
+	cost:  2400
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_recruitment_points this_province 1
+	garrison:
+		cig_roman_legionaries
+		cig_roman_legionaries
+		cig_roman_cel_warriors
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_strong_melee
+		rom_roman_strong_melee
+
+rome_military_main_3_pun
+	cost:  2400
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_recruitment_points this_province 1
+	garrison:
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+
+rome_military_main_4
+	cost:  3100
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_recruitment_points this_province 1
+	garrison:
+		cig_roman_legionaries
+		cig_roman_legionaries
+		cig_roman_veteran
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_strong_melee
+		rom_roman_strong_melee
+		rom_roman_elite_melee
+
+rome_military_main_4_pun
+	cost:  3100
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_recruitment_points this_province 1
+	garrison:
+		rom_roman_medium_melee
+		rom_roman_medium_melee
+		rom_roman_strong_melee
+		rom_roman_strong_melee
+		rom_roman_strong_melee
+
+rome_military_siege_1
+	cost:  1100
+	turns: 2
+	effects:
+		rom_building_gdp_industry_manufacture this_building 50
+
+rome_military_siege_2
+	cost:  2200
+	turns: 3
+	effects:
+		rom_building_gdp_industry_manufacture this_building 100
+		rom_building_public_order_attitude_squalor this_province -3
+
+rome_military_siege_3
+	cost:  3500
+	turns: 5
+	effects:
+		rom_building_gdp_industry_manufacture this_building 150
+		rom_building_public_order_attitude_squalor this_province -6
+
+rome_olive_1
+	cost:  1000
+	turns: 2
+	effects:
+		rom_building_food_trade this_region 1
+		rom_building_gdp_agriculture_farming this_building 100
+		rom_building_gdp_mod_agriculture_all in_all_your_regions 5
+		rom_building_growth_all this_province 1
+		rom_building_resource_olive_oil_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_olive_2
+	cost:  1400
+	turns: 3
+	effects:
+		rom_building_food_trade this_region 2
+		rom_building_gdp_agriculture_farming this_building 150
+		rom_building_gdp_mod_agriculture_all in_all_your_regions 10
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness this_province 1
+		rom_building_resource_olive_oil_production this_building 80
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_olive_3
+	cost:  2000
+	turns: 5
+	effects:
+		rom_building_food_trade this_region 4
+		rom_building_gdp_agriculture_farming this_building 200
+		rom_building_gdp_mod_agriculture_all in_all_your_regions 15
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 2
+		rom_building_resource_olive_oil_production this_building 120
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_olive_4
+	cost:  2600
+	turns: 8
+	effects:
+		rom_building_food_trade this_region 8
+		rom_building_gdp_agriculture_farming this_building 300
+		rom_building_gdp_mod_agriculture_all in_all_your_regions 20
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness this_province 3
+		rom_building_resource_olive_oil_production this_building 160
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_port_1
+	cost:  800
+	turns: 2
+	effects:
+		rom_building_gdp_trade_sea this_building 30
+	garrison:
+		cig_roman_naval_basic_legio
+		rom_roman_naval_basic
+		rom_roman_naval_basic
+
+rome_port_fish_2
+	cost:  1500
+	turns: 3
+	effects:
+		rom_building_food_fishing this_region 6
+		rom_building_gdp_trade_sea this_building 40
+		rom_building_public_order_attitude_squalor this_province -2
+	garrison:
+		cig_roman_naval_basic_legio
+		rom_roman_naval_basic
+		rom_roman_naval_basic
+
+rome_port_fish_3
+	cost:  2300
+	turns: 5
+	effects:
+		rom_building_food_fishing this_region 9
+		rom_building_gdp_trade_sea this_building 50
+		rom_building_public_order_attitude_squalor this_province -4
+	garrison:
+		cig_roman_naval_basic_legio
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_basic
+		rom_roman_naval_basic
+
+rome_port_fish_4
+	cost:  3100
+	turns: 8
+	effects:
+		rom_building_food_fishing this_region 12
+		rom_building_gdp_trade_sea this_building 60
+		rom_building_public_order_attitude_squalor this_province -8
+	garrison:
+		cig_roman_naval_basic_legio
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_basic
+		rom_roman_naval_basic
+
+rome_port_military_2
+	cost:  2100
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_industry_manufacture this_building 70
+	garrison:
+		cig_roman_naval_med_legio
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_main_lvl2
+		rom_roman_naval_main_lvl2
+		rom_roman_naval_basic
+
+rome_port_military_3
+	cost:  3800
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_industry_manufacture this_building 140
+	garrison:
+		cig_roman_naval_med_legio
+		cig_roman_naval_med_legio
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_main_lvl3
+		rom_roman_naval_main_lvl3
+		rom_roman_naval_basic
+
+rome_port_military_4
+	cost:  5900
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_industry_manufacture this_building 210
+	garrison:
+		cig_roman_naval_vet_legio
+		cig_roman_naval_med_legio
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_main_lvl3
+		rom_roman_naval_main_lvl3
+		rom_roman_naval_basic
+
+rome_port_patrol_2
+	cost:  1600
+	turns: 3
+	effects:
+		rom_building_gdp_industry_manufacture this_building 70
+	garrison:
+		cig_roman_naval_basic_legio
+		cig_roman_naval_cel_skirm
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_patrol_lvl2
+		rom_roman_naval_patrol_lvl2
+		rom_roman_naval_basic
+
+rome_port_patrol_3
+	cost:  2900
+	turns: 5
+	effects:
+		rom_building_gdp_industry_manufacture this_building 140
+	garrison:
+		cig_roman_naval_basic_legio
+		cig_roman_naval_med_legio
+		cig_roman_naval_cel_skirm
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_patrol_lvl3
+		rom_roman_naval_patrol_lvl3
+		rom_roman_naval_basic
+
+rome_port_patrol_4
+	cost:  4900
+	turns: 8
+	effects:
+		rom_building_gdp_industry_manufacture this_building 210
+	garrison:
+		cig_roman_naval_med_legio
+		cig_roman_naval_med_legio
+		cig_roman_naval_cel_skirm
+		cig_roman_naval_cel_skirm
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_patrol_lvl4
+		rom_roman_naval_patrol_lvl4
+		rom_roman_naval_basic
+
+rome_port_trade_2
+	cost:  1700
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_trade_local this_building 60
+		rom_building_gdp_trade_sea this_building 120
+	garrison:
+		cig_roman_naval_basic_legio
+		rom_roman_naval_basic
+		rom_roman_naval_basic
+
+rome_port_trade_3
+	cost:  3400
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_trade_local this_building 120
+		rom_building_gdp_trade_sea this_building 240
+	garrison:
+		cig_roman_naval_basic_legio
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_basic
+		rom_roman_naval_basic
+
+rome_port_trade_4
+	cost:  5600
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_trade_local this_building 180
+		rom_building_gdp_trade_sea this_building 360
+	garrison:
+		cig_roman_naval_basic_legio
+		cig_roman_naval_cel_skirm
+		rom_roman_naval_basic
+		rom_roman_naval_basic
+
+rome_purple_dye_1
+	cost:  1100
+	turns: 2
+	effects:
+		rom_building_gdp_mod_industry_manufacturing regions_in_this_province 10
+		rom_building_gdp_trade_local this_building 200
+		rom_building_growth_all this_province 1
+		rom_building_public_order_happiness in_all_your_provinces 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_purple_dye_2
+	cost:  1500
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_industry_manufacturing regions_in_this_province 20
+		rom_building_gdp_trade_local this_building 350
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness in_all_your_provinces 2
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_purple_dye_3
+	cost:  2300
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_industry_manufacturing regions_in_this_province 30
+		rom_building_gdp_trade_local this_building 500
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness in_all_your_provinces 4
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_purple_dye_4
+	cost:  3800
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_industry_manufacturing regions_in_this_province 40
+		rom_building_gdp_trade_local this_building 650
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness in_all_your_provinces 6
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_religious_1
+	cost:  700
+	turns: 2
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_public_order_happiness this_province 2
+
+rome_religious_jupiter_2
+	cost:  1700
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 4
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_all regions_in_this_province 4
+		rom_building_public_order_happiness this_province 4
+		rom_province_initiative_non_barbarian_taxes_mod_taxrate this_province 2
+
+rome_religious_jupiter_3
+	cost:  3500
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 6
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_all regions_in_this_province 8
+		rom_building_public_order_happiness this_province 6
+		rom_province_initiative_non_barbarian_taxes_mod_taxrate this_province 4
+
+rome_religious_jupiter_4
+	cost:  6300
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 8
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_all regions_in_this_province 16
+		rom_building_public_order_happiness this_province 8
+		rom_province_initiative_non_barbarian_taxes_mod_taxrate this_province 6
+
+rome_religious_jupiter_5
+	cost:  12600
+	turns: 12
+	effects:
+		rom_building_culture_conversion_latin this_region 12
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_all regions_in_this_province 20
+		rom_building_public_order_happiness this_province 12
+		rom_character_power_to_ruling_party_per_turn this_faction 2
+		rom_province_initiative_non_barbarian_taxes_mod_taxrate this_province 10
+
+rome_religious_mars_2
+	cost:  1200
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 1
+		rom_building_public_order_happiness this_province 3
+		rom_building_slave_gpd_mod this_province 3
+		rom_building_unit_training_morale_all this_province 5
+		rom_building_unit_training_morale_all_sea_hidden this_province 5
+		rom_province_initiative_festival_mod_recruitment_cost_land_mod this_province -5
+
+rome_religious_mars_3
+	cost:  1900
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 4
+		rom_building_public_order_happiness this_province 4
+		rom_building_slave_gpd_mod this_province 6
+		rom_building_unit_training_morale_all this_province 10
+		rom_building_unit_training_morale_all_sea_hidden this_province 10
+		rom_province_initiative_festival_mod_recruitment_cost_land_mod this_province -10
+
+rome_religious_mars_4
+	cost:  3000
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 8
+		rom_building_public_order_happiness this_province 5
+		rom_building_slave_gpd_mod this_province 12
+		rom_building_unit_training_morale_all this_province 20
+		rom_building_unit_training_morale_all_sea_hidden this_province 20
+		rom_province_initiative_festival_mod_recruitment_cost_land_mod this_province -20
+
+rome_religious_minerva_2
+	cost:  1300
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_culture_all regions_in_this_province 5
+		rom_building_public_order_happiness this_province 4
+		rom_building_research_points this_faction 2
+		rom_province_initiative_roman_romanisation_mod_cultural_conversion this_province 2
+
+rome_religious_minerva_3
+	cost:  2200
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_culture_all regions_in_this_province 10
+		rom_building_public_order_happiness this_province 6
+		rom_building_research_points this_faction 4
+		rom_province_initiative_roman_romanisation_mod_cultural_conversion this_province 4
+
+rome_religious_minerva_4
+	cost:  2600
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_culture_all regions_in_this_province 20
+		rom_building_public_order_happiness this_province 8
+		rom_building_research_points this_faction 8
+		rom_province_initiative_roman_romanisation_mod_cultural_conversion this_province 8
+
+rome_religious_neptune_2
+	cost:  1600
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 3
+		rom_building_gdp_mod_trade_sea regions_in_this_province 10
+		rom_building_public_order_happiness this_province 2
+		rom_province_initiative_festival_mod_food_production this_province 1
+
+rome_religious_neptune_3
+	cost:  3000
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 4
+		rom_building_gdp_mod_trade_sea regions_in_this_province 20
+		rom_building_public_order_happiness this_province 2
+		rom_province_initiative_festival_mod_food_production this_province 2
+
+rome_religious_neptune_4
+	cost:  5000
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 5
+		rom_building_gdp_mod_trade_sea regions_in_this_province 30
+		rom_building_public_order_happiness this_province 2
+		rom_province_initiative_festival_mod_food_production this_province 3
+
+rome_religious_vulcan_2
+	cost:  1300
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_culture_entertainment this_building 60
+		rom_building_gdp_mod_industry regions_in_this_province 5
+		rom_building_public_order_happiness this_province 2
+		rom_province_initiative_festival_mod_gdp_industry_mod this_province 5
+
+rome_religious_vulcan_3
+	cost:  2100
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_culture_entertainment this_building 120
+		rom_building_gdp_mod_industry regions_in_this_province 10
+		rom_building_public_order_happiness this_province 2
+		rom_province_initiative_festival_mod_gdp_industry_mod this_province 10
+
+rome_religious_vulcan_4
+	cost:  3700
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_culture_entertainment this_building 240
+		rom_building_gdp_mod_industry regions_in_this_province 20
+		rom_building_public_order_happiness this_province 2
+		rom_province_initiative_festival_mod_gdp_industry_mod this_province 20
+
+rome_silk_1
+	cost:  1100
+	turns: 2
+	effects:
+		rom_building_gdp_mod_trade_all in_all_your_regions 5
+		rom_building_gdp_trade_local this_building 100
+		rom_building_growth_all this_province 1
+		rom_building_resource_textiles_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_silk_2
+	cost:  1700
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_trade_all in_all_your_regions 10
+		rom_building_gdp_trade_local this_building 150
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness this_province 1
+		rom_building_resource_textiles_production this_building 80
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_silk_3
+	cost:  3000
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_trade_all in_all_your_regions 15
+		rom_building_gdp_trade_local this_building 200
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 2
+		rom_building_resource_textiles_production this_building 120
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_silk_4
+	cost:  5600
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_trade_all in_all_your_regions 20
+		rom_building_gdp_trade_local this_building 250
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 3
+		rom_building_resource_textiles_production this_building 160
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_spice_1
+	cost:  1100
+	turns: 2
+	effects:
+		rom_building_gdp_trade_local this_building 200
+		rom_building_growth_all this_province 1
+		rom_building_resource_spice_production this_region 40
+		rom_building_slave_happiness_mod this_province 2
+		rom_building_trade_tariffs_all this_faction 2
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_spice_2
+	cost:  1700
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 2
+		rom_building_gdp_trade_local this_building 350
+		rom_building_growth_all this_province 2
+		rom_building_resource_spice_production this_region 80
+		rom_building_road this_region 3
+		rom_building_slave_happiness_mod this_province 4
+		rom_building_trade_tariffs_all this_faction 4
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_spice_3
+	cost:  3000
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_trade_local this_building 500
+		rom_building_growth_all this_province 3
+		rom_building_resource_spice_production this_region 120
+		rom_building_road this_region 3
+		rom_building_slave_happiness_mod this_province 6
+		rom_building_trade_tariffs_all this_faction 6
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_spice_4
+	cost:  5600
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_trade_local this_building 650
+		rom_building_growth_all this_province 4
+		rom_building_resource_spice_production this_region 160
+		rom_building_road this_region 3
+		rom_building_slave_happiness_mod this_province 8
+		rom_building_trade_tariffs_all this_faction 8
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_1
+	cost:  1200
+	turns: 2
+	effects:
+		rom_building_gdp_mod_all regions_in_this_province 1
+		rom_building_gdp_subsistence this_building 50
+		rom_building_growth_all this_province 1
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_centre_1
+	cost:  700
+	turns: 2
+	effects:
+		rom_building_gdp_trade_local this_building 50
+		rom_building_public_order_happiness this_province 1
+
+rome_town_centre_theatre_2
+	cost:  1200
+	turns: 3
+	effects:
+		rom_building_gdp_culture_entertainment this_building 80
+		rom_building_public_order_happiness this_province 2
+
+rome_town_centre_theatre_3
+	cost:  2600
+	turns: 5
+	effects:
+		rom_building_gdp_culture_entertainment this_building 160
+		rom_building_public_order_happiness this_province 4
+
+rome_town_centre_theatre_4
+	cost:  4300
+	turns: 8
+	effects:
+		rom_building_gdp_culture_entertainment this_building 240
+		rom_building_public_order_happiness this_province 6
+
+rome_town_centre_trade_2
+	cost:  1000
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_trade_local this_building 100
+
+rome_town_centre_trade_3
+	cost:  2200
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 3
+		rom_building_gdp_trade_local this_building 200
+
+rome_town_centre_trade_4
+	cost:  3800
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 6
+		rom_building_gdp_trade_local this_building 300
+
+rome_town_civil_2
+	cost:  1900
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_all regions_in_this_province 2
+		rom_building_gdp_subsistence this_building 100
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness this_province 1
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_civil_3
+	cost:  2700
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_all regions_in_this_province 4
+		rom_building_gdp_subsistence this_building 150
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness this_province 2
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_civil_4
+	cost:  3800
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_all regions_in_this_province 6
+		rom_building_gdp_subsistence this_building 200
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness this_province 3
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_farm_2
+	cost:  1800
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_agriculture_farming this_building 100
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 3
+		rom_building_growth_all this_province 2
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_farm_3
+	cost:  2600
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_agriculture_farming this_building 150
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 6
+		rom_building_growth_all this_province 3
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_farm_4
+	cost:  3600
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_agriculture_farming this_building 200
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 9
+		rom_building_growth_all this_province 4
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_trade_2
+	cost:  1800
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_trade_all regions_in_this_province 3
+		rom_building_gdp_trade_local this_building 100
+		rom_building_growth_all this_province 2
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_trade_3
+	cost:  2700
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_trade_all regions_in_this_province 6
+		rom_building_gdp_trade_local this_building 150
+		rom_building_growth_all this_province 3
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_town_trade_4
+	cost:  3700
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_trade_all regions_in_this_province 9
+		rom_building_gdp_trade_local this_building 200
+		rom_building_growth_all this_province 4
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_water_1
+	cost:  800
+	turns: 2
+	effects:
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness_sanitation this_province 2
+
+rome_water_baths_2
+	cost:  2600
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 4
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_culture_entertainment this_building 60
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness_sanitation this_province 3
+
+rome_water_baths_3
+	cost:  5400
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 6
+		rom_building_food_consumption this_region 2
+		rom_building_gdp_culture_entertainment this_building 120
+		rom_building_growth_all this_province 6
+		rom_building_public_order_happiness_sanitation this_province 4
+
+rome_water_baths_4
+	cost:  10200
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 8
+		rom_building_food_consumption this_region 3
+		rom_building_gdp_culture_entertainment this_building 240
+		rom_building_growth_all this_province 8
+		rom_building_public_order_happiness_sanitation this_province 5
+
+rome_water_sewer_2
+	cost:  1800
+	turns: 3
+	effects:
+		rom_building_culture_conversion_latin this_region 2
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness_sanitation this_province 2
+
+rome_water_sewer_3
+	cost:  3900
+	turns: 5
+	effects:
+		rom_building_culture_conversion_latin this_region 3
+		rom_building_growth_all this_province 8
+		rom_building_public_order_happiness_sanitation this_province 2
+
+rome_water_sewer_4
+	cost:  7000
+	turns: 8
+	effects:
+		rom_building_culture_conversion_latin this_region 4
+		rom_building_growth_all this_province 12
+		rom_building_public_order_happiness_sanitation this_province 2
+
+rome_water_sewer_5
+	cost:  16000
+	turns: 12
+	effects:
+		rom_building_culture_conversion_latin this_region 8
+		rom_building_growth_all this_province 16
+		rom_building_public_order_happiness_sanitation this_province 8
+		rom_character_power_to_ruling_party_per_turn this_faction 2
+
+rome_water_tank_2
+	cost:  1300
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 5
+		rom_building_growth_all this_province 2
+		rom_building_province_attribute_all this_province 2
+		rom_building_public_order_happiness_sanitation this_province 2
+
+rome_water_tank_3
+	cost:  1900
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 3
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 10
+		rom_building_growth_all this_province 2
+		rom_building_province_attribute_all this_province 4
+		rom_building_public_order_happiness_sanitation this_province 2
+
+rome_water_tank_4
+	cost:  3100
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 6
+		rom_building_gdp_mod_agriculture_all regions_in_this_province 20
+		rom_building_growth_all this_province 2
+		rom_building_province_attribute_all this_province 6
+		rom_building_public_order_happiness_sanitation this_province 2
+
+rome_wine_1
+	cost:  1100
+	turns: 2
+	effects:
+		rom_building_gdp_mod_trade_all regions_in_this_province 5
+		rom_building_gdp_trade_local this_building 150
+		rom_building_growth_all this_province 1
+		rom_building_public_order_happiness in_all_your_provinces 1
+		rom_building_resource_wine_production this_building 40
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_wine_2
+	cost:  1600
+	turns: 3
+	effects:
+		rom_building_food_consumption this_region 1
+		rom_building_gdp_mod_trade_all regions_in_this_province 10
+		rom_building_gdp_trade_local this_building 200
+		rom_building_growth_all this_province 2
+		rom_building_public_order_happiness in_all_your_provinces 2
+		rom_building_resource_wine_production this_building 80
+		rom_building_road this_region 3
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_wine_3
+	cost:  2300
+	turns: 5
+	effects:
+		rom_building_food_consumption this_region 4
+		rom_building_gdp_mod_trade_all regions_in_this_province 15
+		rom_building_gdp_trade_local this_building 250
+		rom_building_growth_all this_province 3
+		rom_building_public_order_happiness in_all_your_provinces 3
+		rom_building_resource_wine_production this_building 120
+		rom_building_road this_region 7
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
+
+rome_wine_4
+	cost:  3300
+	turns: 8
+	effects:
+		rom_building_food_consumption this_region 8
+		rom_building_gdp_mod_trade_all regions_in_this_province 20
+		rom_building_gdp_trade_local this_building 250
+		rom_building_growth_all this_province 4
+		rom_building_public_order_happiness in_all_your_provinces 4
+		rom_building_resource_wine_production this_building 160
+		rom_building_road this_region 11
+		rom_region_line_of_sight_extension this_region 12
+	garrison:
+		rom_roman_strong_melee
+		rom_roman_mobs
+		rom_roman_mobs
+		rom_roman_basic_ranged
+		rom_roman_basic_ranged
+		rom_roman_vigiles_garrison
