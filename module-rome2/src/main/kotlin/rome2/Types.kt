@@ -124,12 +124,24 @@ fun Building.printFormatted() {
 		append("\tturns: $turns\n")
 		append("\teffects:\n")
 		for(effect in effects)
-			append("\t\t${effect.effect} ${effect.scope} ${effect.value}\n")
+			append("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value}\n")
 		if(garrisons.isNotEmpty()) {
 			append("\tgarrison:\n")
 			for(garrison in garrisons)
 				append("\t\t${garrison.unit}\n")
 		}
+	})
+}
+
+
+
+fun Tech.printFormatted() {
+	println(buildString {
+		append("$name\n")
+		append("\tcost: $cost\n")
+		append("\teffects:\n")
+		for(effect in effects)
+			append("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value}\n")
 	})
 }
 
@@ -243,5 +255,29 @@ class ExplicitGarrison(val unit: Unit, val count: Int)
 class Garrison(line: String) : Rome2Object(line) {
 	val id by IntProperty(0)
 	val building by StringProperty(1)
-	val unit by StringProperty(2)
+	var unit by StringProperty(2)
+}
+
+
+
+/**
+ * technologies
+ */
+class Tech(line: String) : Rome2Object(line) {
+	val name by StringProperty(0)
+	var cost by IntProperty(3)
+
+	val effects = ArrayList<TechEffect>()
+}
+
+
+
+/**
+ * technology_effects_junction
+ */
+class TechEffect(line: String) : Rome2Object(line) {
+	val tech by StringProperty(0)
+	var effect by StringProperty(1)
+	var scope by StringProperty(2)
+	var value by IntProperty(3)
 }

@@ -22,12 +22,15 @@ fun applyMods() {
 	modifyWeapons()
 	modifyUnits()
 	modifyBuildings()
+	modifyTechs()
 	applyMods("RAI", Tables.ARMOURS, modifiedArmours)
 	applyMods("RAI", Tables.SHIELDS, modifiedShields)
 	applyMods("RAI", Tables.WEAPONS, modifiedWeapons)
 	applyMods("RAI", Tables.LAND_UNITS, Tables.MAIN_UNITS, modifiedUnits)
 	applyMods("RAI", Tables.BUILDING_LEVELS, modifiedBuildings)
 	applyMods("RAI", Tables.BUILDING_EFFECTS, modifiedBuildingEffects)
+	applyMods("RAI", Tables.TECHS, modifiedTechs)
+	applyMods("RAI", Tables.TECH_EFFECTS, modifiedTechEffects)
 }
 
 
@@ -87,6 +90,10 @@ val buildings = table(Tables.BUILDING_LEVELS).map(::Building).associateBy { it.n
 	table(Tables.GARRISONS).map(::Garrison).forEach { map[it.building]?.garrisons?.add(it) }
 }
 
+val techs = table(Tables.TECHS).map(::Tech).associateBy { it.name }.also { map ->
+	table(Tables.TECH_EFFECTS).map(::TechEffect).forEach { map[it.tech]?.effects?.add(it) }
+}
+
 
 
 fun armour(name: String) = armours[name]!!
@@ -98,6 +105,8 @@ fun weapon(name: String) = weapons[name]!!
 fun unit(name: String) = units[name]!!
 
 fun building(name: String) = buildings[name]!!
+
+fun tech(name: String) = techs[name]!!
 
 
 

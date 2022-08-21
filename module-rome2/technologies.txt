@@ -1,0 +1,419 @@
+rom_roman_civil_agriculture_animal_husbandry
+	cost: 500
+	effects:
+
+rom_roman_civil_agriculture_double_cropping
+	cost: 300
+	effects:
+		rom_tech_civil_economy_agriculture_building_cost_mod :: in_all_your_regions :: -3
+		rom_tech_civil_economy_agriculture_gdp_mod :: in_all_your_regions :: 3
+
+rom_roman_civil_agriculture_improved_irrigation
+	cost: 500
+	effects:
+		rom_tech_civil_economy_agriculture_building_cost_mod :: in_all_your_regions :: -4
+		rom_tech_civil_economy_agriculture_gdp_mod :: in_all_your_regions :: 4
+
+rom_roman_civil_agriculture_iron_tools
+	cost: 200
+	effects:
+		rom_tech_civil_economy_agriculture_building_cost_mod :: in_all_your_regions :: -2
+		rom_tech_civil_economy_agriculture_gdp_mod :: in_all_your_regions :: 2
+
+rom_roman_civil_agriculture_land_drainage
+	cost: 700
+	effects:
+
+rom_roman_civil_agriculture_land_reclamation
+	cost: 1000
+	effects:
+		rom_tech_civil_economy_agriculture_building_cost_mod :: in_all_your_regions :: -5
+		rom_tech_civil_economy_agriculture_gdp_mod :: in_all_your_regions :: 5
+
+rom_roman_civil_agriculture_manuring
+	cost: 300
+	effects:
+
+rom_roman_civil_agriculture_perennial_irrigation
+	cost: 800
+	effects:
+
+rom_roman_civil_agriculture_seed_selection
+	cost: 2100
+	effects:
+		rom_tech_civil_economy_agriculture_building_cost_mod :: in_all_your_regions :: -6
+		rom_tech_civil_economy_agriculture_gdp_mod :: in_all_your_regions :: 6
+
+rom_roman_civil_economy_common_currency
+	cost: 1000
+	effects:
+		rom_tech_civil_economy_trade_gdp_mod :: in_all_your_regions :: 3
+		rom_tech_civil_economy_trade_mod :: this_faction :: 3
+
+rom_roman_civil_economy_common_weights_and_measures
+	cost: 300
+	effects:
+		rom_tech_civil_economy_trade_gdp_mod :: in_all_your_regions :: 2
+		rom_tech_civil_economy_trade_mod :: this_faction :: 2
+
+rom_roman_civil_economy_consensual_contracts
+	cost: 2200
+	effects:
+		rom_tech_agent_action_cost_mod :: all_agents :: -10
+		rom_tech_civil_economy_tax_mod :: this_faction :: 6
+		rom_tech_civil_philosophy_happiness_mod :: in_all_your_provinces :: 4
+		rom_tech_module_civil_philosophy :: this_faction :: -7
+
+rom_roman_civil_economy_denominational_system
+	cost: 1600
+	effects:
+		rom_tech_civil_economy_trade_gdp_mod :: in_all_your_regions :: 4
+		rom_tech_civil_economy_trade_mod :: this_faction :: 4
+
+rom_roman_civil_economy_labour_organisation
+	cost: 600
+	effects:
+		rom_tech_civil_economy_tax_mod :: this_faction :: 3
+		rom_tech_civil_philosophy_happiness_mod :: in_all_your_provinces :: 2
+		rom_tech_module_civil_philosophy :: this_faction :: -5
+
+rom_roman_civil_economy_legal_documentation
+	cost: 400
+	effects:
+		rom_tech_agent_action_cost_mod :: all_agents :: -5
+		rom_tech_civil_economy_tax_mod :: this_faction :: 2
+
+rom_roman_civil_economy_legal_institutions
+	cost: 1000
+	effects:
+		rom_tech_civil_economy_tax_mod :: this_faction :: 4
+		rom_tech_civil_philosophy_happiness_mod :: in_all_your_provinces :: 3
+		rom_tech_module_civil_philosophy :: this_faction :: -5
+
+rom_roman_civil_economy_production_lines
+	cost: 2400
+	effects:
+		rom_tech_civil_economy_trade_gdp_mod :: in_all_your_regions :: 5
+		rom_tech_civil_economy_trade_mod :: this_faction :: 5
+
+rom_roman_civil_economy_set_grain_prices
+	cost: 600
+	effects:
+
+rom_roman_civil_philosophy_astrolabe
+	cost: 600
+	effects:
+
+rom_roman_civil_philosophy_astrology
+	cost: 700
+	effects:
+
+rom_roman_civil_philosophy_astronomy
+	cost: 600
+	effects:
+		rom_tech_civil_economy_culture_gdp_mod :: in_all_your_regions :: 10
+		rom_tech_civil_philosophy_political_action_cost_mod :: this_faction :: -20
+		rom_tech_civil_philosophy_political_political_event_mod :: this_faction :: -10
+
+rom_roman_civil_philosophy_field_surgery
+	cost: 500
+	effects:
+
+rom_roman_civil_philosophy_mysticism
+	cost: 2600
+	effects:
+		rom_tech_civil_economy_culture_gdp_mod :: in_all_your_regions :: 20
+		rom_tech_civil_philosophy_conversion_mod :: this_faction :: 6
+		rom_tech_civil_philosophy_political_political_event_mod :: this_faction :: -15
+
+rom_roman_civil_philosophy_natural_philosophy
+	cost: 1000
+	effects:
+		rom_tech_civil_economy_culture_gdp_mod :: in_all_your_regions :: 15
+		rom_tech_civil_philosophy_conversion_mod :: this_faction :: 4
+		rom_tech_civil_philosophy_political_action_cost_mod :: this_faction :: -30
+
+rom_roman_civil_philosophy_philosophers
+	cost: 400
+	effects:
+		rom_tech_civil_economy_culture_gdp_mod :: in_all_your_regions :: 6
+		rom_tech_civil_philosophy_conversion_mod :: this_faction :: 2
+
+rom_roman_civil_philosophy_physicians
+	cost: 400
+	effects:
+
+rom_roman_civil_philosophy_scholarship
+	cost: 300
+	effects:
+		rom_building_dignitary_availibility :: in_all_your_provinces :: 1
+
+rom_roman_civil_top_land_management
+	cost: 200
+	effects:
+		rom_tech_civil_economy_agriculture_gdp_mod :: in_all_your_regions :: 1
+
+rom_roman_engineering_construction_advanced_construction_techniques
+	cost: 500
+	effects:
+
+rom_roman_engineering_construction_concrete
+	cost: 300
+	effects:
+
+rom_roman_engineering_construction_crane
+	cost: 1600
+	effects:
+		rom_tech_civil_economy_growth_region_mod :: in_all_your_provinces :: 2
+
+rom_roman_engineering_construction_dioptra
+	cost: 1000
+	effects:
+		rom_tech_engineering_construction_castle_cost_mod :: in_all_your_regions :: -10
+		rom_tech_engineering_construction_castle_time_mod :: in_all_your_regions :: -1
+
+rom_roman_engineering_construction_fired_brick
+	cost: 1000
+	effects:
+		rom_tech_civil_economy_industry_gdp_mod :: in_all_your_regions :: 5
+
+rom_roman_engineering_construction_improved_sewer
+	cost: 1600
+	effects:
+
+rom_roman_engineering_construction_moulded_architecture
+	cost: 2600
+	effects:
+		rom_tech_civil_economy_industry_gdp_mod :: in_all_your_regions :: 7
+		rom_tech_engineering_construction_castle_time_mod :: in_all_your_regions :: -1
+
+rom_roman_engineering_construction_tax_labour
+	cost: 200
+	effects:
+		rom_tech_civil_economy_growth_mod :: in_all_your_provinces :: 1
+		rom_tech_engineering_construction_castle_cost_mod :: in_all_your_regions :: -5
+
+rom_roman_engineering_construction_water_sluicing
+	cost: 300
+	effects:
+		rom_tech_civil_economy_growth_mod :: in_all_your_provinces :: 3
+		rom_tech_civil_economy_industry_gdp_mod :: in_all_your_regions :: 3
+
+rom_roman_engineering_siege_ammunition_stores
+	cost: 300
+	effects:
+		rom_tech_engineering_siege_defence_ammunition :: in_all_your_forces :: 25
+		rom_tech_military_tactics_reload_siege_mod :: in_all_your_armies :: 20
+
+rom_roman_engineering_siege_armoured_siege_engines
+	cost: 1600
+	effects:
+		rom_tech_engineering_siege_siege_tower_armour_mod :: in_all_your_armies :: 25
+		rom_tech_engineering_siege_unlock_siege_machine_armour :: in_all_your_forces :: 25
+
+rom_roman_engineering_siege_battering_ram
+	cost: 200
+	effects:
+		rom_tech_engineering_siege_unlock_battering_ram :: in_all_your_armies :: 1
+		rom_tech_engineering_siege_unlock_tortoise :: in_all_your_armies :: 1
+
+rom_roman_engineering_siege_boiling_oil
+	cost: 300
+	effects:
+		rom_tech_engineering_siege_unlock_boiling_oil :: in_all_your_regions :: 1
+
+rom_roman_engineering_siege_central_grain_warehouse
+	cost: 800
+	effects:
+		rom_tech_engineering_siege_defence_attrition_mod :: all_your_generals :: -40
+		rom_tech_engineering_siege_defence_time_mod :: in_all_your_regions :: 3
+
+rom_roman_engineering_siege_chariot_dart_throwers
+	cost: 800
+	effects:
+
+rom_roman_engineering_siege_improved_defensive_artillery
+	cost: 2400
+	effects:
+		rom_force_unit_mod_artillery_damage :: in_all_your_armies :: 10
+		rom_tech_engineering_siege_tower_accuracy_mod :: in_all_your_forces :: 10
+		rom_tech_engineering_siege_tower_reload_mod :: in_all_your_forces :: 10
+
+rom_roman_engineering_siege_onager
+	cost: 2400
+	effects:
+		rom_tech_engineering_siege_offence_attrition_mod :: all_your_generals :: -60
+		rom_tech_military_tactics_accuracy_siege_mod :: in_all_your_armies :: 15
+
+rom_roman_engineering_siege_siege_tower
+	cost: 500
+	effects:
+		rom_tech_engineering_siege_offence_attrition_mod :: all_your_generals :: -40
+		rom_tech_engineering_siege_offence_time_mod :: all_your_generals :: 1
+		rom_tech_engineering_siege_unlock_siege_tower :: in_all_your_armies :: 1
+
+rom_roman_engineering_top_engineering
+	cost: 1000
+	effects:
+		rom_tech_engineering_siege_offence_time_mod :: all_your_generals :: 1
+
+rom_roman_military_management_cohort_organisation
+	cost: 1600
+	effects:
+		rom_tech_agent_cost_mod :: in_all_your_provinces :: -5
+		rom_tech_military_management_unit_cost_mod :: in_all_your_provinces :: -4
+		rom_tech_military_management_upkeep_mod :: in_all_your_armies :: -4
+
+rom_roman_military_management_foraging_protection
+	cost: 400
+	effects:
+
+rom_roman_military_management_land_laws
+	cost: 700
+	effects:
+
+rom_roman_military_management_manipular_organisation
+	cost: 200
+	effects:
+		rom_building_champion_availibility :: in_all_your_provinces :: 1
+		rom_tech_military_management_ammunition_mod :: in_all_your_forces :: 25
+
+rom_roman_military_management_mercenary_assets
+	cost: 500
+	effects:
+		rom_tech_military_management_mercenary_cost :: this_faction :: -15
+		rom_tech_military_management_mercenary_upkeep :: in_all_your_forces :: -15
+
+rom_roman_military_management_professional_soldiery
+	cost: 2400
+	effects:
+		rom_tech_military_management_recruitment_mod :: in_all_your_provinces :: 1
+		rom_tech_military_management_unit_cost_mod :: in_all_your_provinces :: -5
+		rom_tech_military_management_upkeep_mod :: in_all_your_forces :: -6
+
+rom_roman_military_management_remuneration_reforms
+	cost: 1000
+	effects:
+		rom_tech_agent_cost_mod :: in_all_your_provinces :: -10
+		rom_tech_military_management_unit_cost_mod :: in_all_your_provinces :: -3
+		rom_tech_military_management_upkeep_mod :: in_all_your_armies :: -3
+
+rom_roman_military_management_supply_reforms
+	cost: 200
+	effects:
+
+rom_roman_military_management_training_reforms
+	cost: 300
+	effects:
+		rom_tech_military_management_unit_cost_mod :: in_all_your_provinces :: -2
+		rom_tech_military_management_upkeep_mod :: in_all_your_armies :: -2
+
+rom_roman_military_navy_corvus
+	cost: 400
+	effects:
+
+rom_roman_military_navy_deck_artillary
+	cost: 600
+	effects:
+		rom_tech_military_navy_ship_artillary_accuracy_mod :: in_all_your_navies :: 15
+		rom_tech_military_tactics_reload_ship_mod :: in_all_your_navies :: 20
+
+rom_roman_military_navy_double_plank_construction
+	cost: 1000
+	effects:
+		rom_tech_military_management_ship_cost_mod :: in_all_your_sea_regions :: -5
+		rom_tech_military_navy_upkeep_mod :: in_all_your_forces :: -5
+
+rom_roman_military_navy_fore_and_aft_rigging
+	cost: 2100
+	effects:
+		rom_tech_military_management_recruitment_navy_mod :: in_all_your_sea_regions :: 1
+		rom_tech_military_management_ship_cost_mod :: in_all_your_sea_regions :: -7
+		rom_tech_military_navy_upkeep_mod :: in_all_your_forces :: -7
+
+rom_roman_military_navy_greek_fire
+	cost: 800
+	effects:
+
+rom_roman_military_navy_harpax
+	cost: 600
+	effects:
+
+rom_roman_military_navy_improved_ramming
+	cost: 2200
+	effects:
+		rom_tech_military_navy_battle_speed_mod :: in_all_your_navies :: 10
+		rom_tech_military_tactics_naval_charge_mod :: in_all_your_navies :: 15
+
+rom_roman_military_navy_naval_manoeuvres
+	cost: 300
+	effects:
+		rom_tech_military_management_ship_cost_mod :: in_all_your_sea_regions :: -3
+		rom_tech_military_navy_upkeep_mod :: in_all_your_forces :: -3
+
+rom_roman_military_navy_ram
+	cost: 1000
+	effects:
+		rom_tech_military_navy_battle_speed_mod :: in_all_your_navies :: 5
+		rom_tech_military_tactics_naval_charge_mod :: in_all_your_navies :: 10
+
+rom_roman_military_navy_ramming_speed
+	cost: 400
+	effects:
+
+rom_roman_military_navy_ship_pumps
+	cost: 400
+	effects:
+		rom_tech_military_navy_ship_hp_mod :: in_all_your_navies :: 20
+		rom_tech_military_tactics_naval_charge_mod :: in_all_your_navies :: 5
+
+rom_roman_military_tactics_advanced_cavalry_tactics
+	cost: 2600
+	effects:
+		rom_tech_military_management_unit_attack_skill_mod :: in_all_your_forces :: 14
+		rom_tech_military_management_unit_defence_skill_mod :: in_all_your_forces :: 14
+		rom_tech_military_tactics_charge_mod :: in_all_your_armies :: 10
+		rom_tech_military_tactics_morale_mod :: in_all_your_armies :: 10
+
+rom_roman_military_tactics_flaming_arrows
+	cost: 500
+	effects:
+
+rom_roman_military_tactics_physical_conditioning
+	cost: 300
+	effects:
+		rom_tech_military_tactics_morale_mod :: in_all_your_armies :: 5
+
+rom_roman_military_tactics_rapid_advance
+	cost: 400
+	effects:
+
+rom_roman_military_tactics_spearwall
+	cost: 400
+	effects:
+
+rom_roman_military_tactics_stategic_manoeuvres
+	cost: 1000
+	effects:
+		rom_tech_military_tactics_reload_mod :: in_all_your_armies :: 20
+		rom_tech_military_tactics_run_speed_mod :: in_all_your_armies :: 10
+
+rom_roman_military_tactics_tactical_drills
+	cost: 600
+	effects:
+		rom_tech_military_management_unit_attack_skill_mod :: in_all_your_forces :: 6
+		rom_tech_military_management_unit_defence_skill_mod :: in_all_your_forces :: 6
+		rom_tech_military_tactics_charge_mod :: in_all_your_armies :: 5
+
+rom_roman_military_tactics_testudo_formation
+	cost: 700
+	effects:
+
+rom_roman_military_tactics_weapon_proficiency
+	cost: 400
+	effects:
+		rom_tech_military_tactics_accuracy_mod :: in_all_your_armies :: 15
+
+rom_roman_military_top_logistics
+	cost: 200
+	effects:

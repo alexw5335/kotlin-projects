@@ -1,7 +1,5 @@
 package rome2
 
-import java.security.PublicKey
-
 
 
 val modifiedWeapons = HashSet<Weapon>()
@@ -15,6 +13,10 @@ val modifiedUnits = HashSet<Unit>()
 val modifiedBuildings = HashSet<Building>()
 
 val modifiedBuildingEffects = HashSet<BuildingEffect>()
+
+val modifiedTechs = HashSet<Tech>()
+
+val modifiedTechEffects = HashSet<TechEffect>()
 
 
 
@@ -32,6 +34,14 @@ private fun Building.effect(name: String, value: Int) {
 	val effect = effects.first { it.effect == name }
 	effect.value = value
 	modifiedBuildingEffects.add(effect)
+}
+
+private fun Tech.mod(block: Tech.() -> kotlin.Unit) = also(block).let(modifiedTechs::add)
+
+private fun Tech.effect(name: String, value: Int) {
+	val effect = effects.first { it.effect == name }
+	effect.value = value
+	modifiedTechEffects.add(effect)
 }
 
 
@@ -268,6 +278,8 @@ private const val GDP_MOD_ALL = "rom_building_gdp_mod_all"
 private const val GDP_SUBSISTENCE = "rom_building_gdp_subsistence"
 private const val ARMY_RECRUITMENT_SLOT = "rom_building_recruitment_points"
 private const val GDP_MOD_AGRICULTURE = "rom_building_gdp_mod_agriculture_all"
+private const val GDP_MOD_TRADE = "rom_building_gdp_mod_trade_all"
+private const val SECURITY = "rom_building_province_attribute_all"
 
 
 
@@ -280,30 +292,118 @@ fun modifyBuildings() {
 				0 -> 2
 				1 -> 3
 				2 -> 4
-				3 -> 6
+				3 -> 5
 				4 -> 8
 				else -> error("")
 			}
 		}
 	}
 
+	// BATHS
+	building("rome_water_baths_2").mod {
+		effect(SANITATION, 4)
+		effect(GROWTH, 4)
+		effect(FOOD_CONSUMPTION, 1)
+		effect(GDP_CULTURE_ENTERTAINMENT, 100)
+		effect(LATIN_INFLUENCE, 2)
+	}
+	building("rome_water_baths_3").mod {
+		effect(SANITATION, 8)
+		effect(GROWTH, 6)
+		effect(FOOD_CONSUMPTION, 3)
+		effect(GDP_CULTURE_ENTERTAINMENT, 200)
+		effect(LATIN_INFLUENCE, 4)
+	}
+	building("rome_water_baths_4").mod {
+		effect(SANITATION, 16)
+		effect(GROWTH, 8)
+		effect(FOOD_CONSUMPTION, 6)
+		effect(GDP_CULTURE_ENTERTAINMENT, 400)
+		effect(LATIN_INFLUENCE, 6)
+	}
+
+	// SEWER
+	building("rome_water_sewer_2").mod {
+		effect(SANITATION, 4)
+		effect(GROWTH, 4)
+		effect(LATIN_INFLUENCE, 4)
+	}
+	building("rome_water_sewer_3").mod {
+		effect(SANITATION, 6)
+		effect(GROWTH, 8)
+		effect(LATIN_INFLUENCE, 6)
+	}
+	building("rome_water_sewer_4").mod {
+		effect(SANITATION, 8)
+		effect(GROWTH, 16)
+		effect(LATIN_INFLUENCE, 8)
+	}
+	building("rome_water_sewer_5").mod {
+		effect(SANITATION, 16)
+		effect(GROWTH, 32)
+		effect(LATIN_INFLUENCE, 16)
+	}
+
+	// WATER TANK
+	building("rome_water_tank_2").mod {
+		effect(SANITATION, 3)
+		effect(GROWTH, 3)
+		effect(GDP_MOD_AGRICULTURE, 10)
+		effect(SECURITY, 4)
+	}
+	building("rome_water_tank_3").mod {
+		effect(SANITATION, 4)
+		effect(GROWTH, 4)
+		effect(GDP_MOD_AGRICULTURE, 20)
+		effect(SECURITY, 8)
+	}
+	building("rome_water_tank_4").mod {
+		effect(SANITATION, 5)
+		effect(GROWTH, 5)
+		effect(GDP_MOD_AGRICULTURE, 30)
+		effect(SECURITY, 16)
+	}
+
+	// MARKET TOWN
+	building("rome_town_trade_2").mod {
+		effect(GDP_LOCAL_TRADE, 150)
+		effect(GDP_MOD_TRADE, 10)
+	}
+	building("rome_town_trade_3").mod {
+		effect(GDP_LOCAL_TRADE, 250)
+		effect(GDP_MOD_TRADE, 20)
+	}
+	building("rome_town_trade_4").mod {
+		effect(GDP_LOCAL_TRADE, 350)
+		effect(GDP_MOD_TRADE, 30)
+	}
+
 	// CIVIL TOWN
-	building("rome_town_civil")
+	building("rome_town_civil_2").mod {
+		effect(GDP_MOD_ALL, 5)
+	}
+	building("rome_town_civil_3").mod {
+		effect(GDP_MOD_ALL, 10)
+	}
+	building("rome_town_civil_4").mod {
+		effect(GDP_MOD_ALL, 15)
+	}
+
 	// FARMING TOWN
 	building("rome_town_farm_2").mod {
 		effect(GROWTH, 4)
 		effect(GDP_AGRICULTURE_FARMING, 100)
-		effect(GDP_MOD_AGRICULTURE, 5)
+		effect(GDP_MOD_AGRICULTURE, 10)
 	}
 	building("rome_town_farm_3").mod {
 		effect(GROWTH, 6)
 		effect(GDP_AGRICULTURE_FARMING, 200)
-		effect(GDP_MOD_AGRICULTURE, 10)
+		effect(GDP_MOD_AGRICULTURE, 20)
 	}
 	building("rome_town_farm_4").mod {
 		effect(GROWTH, 8)
 		effect(GDP_AGRICULTURE_FARMING, 300)
-		effect(GDP_MOD_AGRICULTURE, 20)
+		effect(GDP_MOD_AGRICULTURE, 30)
 	}
 
 	// COLOSSEUM
@@ -555,5 +655,122 @@ fun modifyBuildings() {
 	}
 	building("all_mine_4").mod {
 		effect(GDP_INDUSTRY_MINING, 600)
+	}
+}
+
+
+
+private fun civilTech(name: String, block: Tech.() -> kotlin.Unit) = tech("rom_roman_civil_$name").let(block)
+
+private fun militaryTech(name: String, block: Tech.() -> kotlin.Unit) = tech("rom_roman_military_$name").let(block)
+
+private fun engineeringTech(name: String, block: Tech.() -> kotlin.Unit) = tech("rom_roman_engineering_$name").let(block)
+
+
+fun modifyTechs() {
+	civilTech("agriculture_iron_tools") {
+		effect("rom_tech_civil_economy_agriculture_gdp_mod", 10)
+		effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+	}
+	civilTech("agriculture_double_cropping") {
+		effect("rom_tech_civil_economy_agriculture_gdp_mod", 10)
+		effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+	}
+	civilTech("agriculture_improved_irrigation") {
+		effect("rom_tech_civil_economy_agriculture_gdp_mod", 10)
+		effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+	}
+	civilTech("agriculture_land_reclamation") {
+		effect("rom_tech_civil_economy_agriculture_gdp_mod", 15)
+		effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+	}
+	civilTech("agriculture_seed_selection") {
+		effect("rom_tech_civil_economy_agriculture_gdp_mod", 15)
+		effect("rom_tech_civil_economy_agriculture_building_cost_mod", -10)
+	}
+
+	civilTech("economy_common_weights_and_measures") {
+		effect("rom_tech_civil_economy_trade_gdp_mod", 10)
+		effect("rom_tech_civil_economy_trade_mod", 10)
+	}
+	civilTech("economy_common_currency") {
+		effect("rom_tech_civil_economy_trade_gdp_mod", 10)
+		effect("rom_tech_civil_economy_trade_mod", 10)
+	}
+	civilTech("economy_denominational_system") {
+		effect("rom_tech_civil_economy_trade_gdp_mod", 15)
+		effect("rom_tech_civil_economy_trade_mod", 15)
+	}
+	civilTech("economy_production_lines") {
+		effect("rom_tech_civil_economy_trade_gdp_mod", 15)
+		effect("rom_tech_civil_economy_trade_mod", 15)
+	}
+
+	civilTech("philosophy_philosophers") {
+		effect("rom_tech_civil_economy_culture_gdp_mod", 10)
+	}
+	civilTech("philosophy_astronomy") {
+		effect("rom_tech_civil_economy_culture_gdp_mod", 15)
+	}
+	civilTech("philosophy_natural_philosophy") {
+		effect("rom_tech_civil_economy_culture_gdp_mod", 20)
+	}
+	civilTech("philosophy_mysticism") { // AKA cultism
+		effect("rom_tech_civil_economy_culture_gdp_mod", 25)
+	}
+
+	civilTech("economy_legal_documentation") {
+		effect("rom_tech_agent_action_cost_mod", -10)
+		effect("rom_tech_civil_economy_tax_mod", 4)
+	}
+	civilTech("economy_labour_organisation") {
+		effect("rom_tech_civil_economy_tax_mod", 6)
+	}
+	civilTech("economy_legal_institutions") {
+		effect("rom_tech_civil_economy_tax_mod", 8)
+		effect("rom_tech_module_civil_philosophy", -10) // corruption
+	}
+	civilTech("economy_consensual_contracts") {
+		effect("rom_tech_agent_action_cost_mod", -20)
+		effect("rom_tech_civil_economy_tax_mod", 10)
+		effect("rom_tech_module_civil_philosophy", -15) // corruption
+	}
+
+	engineeringTech("construction_tax_labour") {
+		effect("rom_tech_civil_economy_growth_mod", 3)
+	}
+	engineeringTech("construction_fired_brick") {
+		effect("rom_tech_civil_economy_industry_gdp_mod", 15)
+	}
+	engineeringTech("construction_crane") {
+		effect("rom_tech_civil_economy_growth_region_mod", 4)
+	}
+	engineeringTech("construction_moulded_architecture") {
+		effect("rom_tech_civil_economy_industry_gdp_mod", 25)
+	}
+
+	militaryTech("management_training_reforms") {
+		effect("rom_tech_military_management_unit_cost_mod", -5)
+		effect("rom_tech_military_management_upkeep_mod", -5)
+	}
+	militaryTech("management_remuneration_reforms") {
+		effect("rom_tech_military_management_unit_cost_mod", -5)
+		effect("rom_tech_military_management_upkeep_mod", -5)
+	}
+	militaryTech("management_cohort_organisation") {
+		effect("rom_tech_military_management_unit_cost_mod", -5)
+		effect("rom_tech_military_management_upkeep_mod", -10)
+	}
+	militaryTech("management_professional_soldiery") {
+		effect("rom_tech_military_management_unit_cost_mod", -5)
+		effect("rom_tech_military_management_upkeep_mod", -5)
+	}
+	militaryTech("navy_naval_manoeuvres") {
+		effect("rom_tech_military_management_ship_cost_mod", -5)
+		effect("rom_tech_military_navy_upkeep_mod", -5)
+	}
+	militaryTech("navy_fore_and_aft_rigging") {
+		effect("rom_tech_military_management_ship_cost_mod", -10)
+		effect("rom_tech_military_navy_upkeep_mod", -10)
 	}
 }

@@ -18,4 +18,6 @@ object Tables {
 	val BUILDING_EFFECTS = Table("building_effects_junction", 3, "building\teffect\teffect_scope\tvalue\tvalue_damaged\tvalue_ruined")
 	val BUILDING_LEVELS = Table("building_levels", 7, "level_name\tchain\tlevel\tcondition\tcreate_time\tcreate_cost\tupkeep_cost\tdemolition_cost\tzoc\tlower_happiness\tupper_happiness\trepression\tgdp\ttown_wealth_growth\tpop_change\tmaxpop_change\tcommodity\tgov_type_key\tcommodity_vol\tonly_in_capital\tmilitary_prestige\tnaval_prestige\teconomic_prestige\tenlightenment_prestige\tdestruction_terminator\tfaction_unique\treligion_requirement\tfirst_in_world_bundle\tresource_requirement\tworking_model\tunique_index\tcan_convert\tbuilding_instance_key\taudio_building_type\tshould_show_building_level_in_ui_for_technology\tis_new")
 	val GARRISONS = Table("building_level_armed_citizenry_junctions", 1, "id\tbuilding_level\tunit_group")
+	val TECHS = Table("technologies", 4, "key\tbuilding_level\tposition_index\tresearch_points_required\ticon_name\tmilitary_prestige\tnaval_prestige\teconomic_prestige\tenlightenment_prestige\tmp_available_early\tmp_available_late\tinfo_pic\tai_bias\tunique_index\tcost_per_round\tis_civil\tis_engineering\tis_military")
+	val TECH_EFFECTS = Table("technology_effects_junction", 0, "technology\teffect\teffect_scope\tvalue")
 }
