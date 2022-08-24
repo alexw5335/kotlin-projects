@@ -23,6 +23,8 @@ fun applyMods() {
 	modifyUnits()
 	modifyBuildings()
 	modifyTechs()
+	modifyGarrisons()
+
 	applyMods("RAI", Tables.ARMOURS, modifiedArmours)
 	applyMods("RAI", Tables.SHIELDS, modifiedShields)
 	applyMods("RAI", Tables.WEAPONS, modifiedWeapons)
@@ -31,22 +33,36 @@ fun applyMods() {
 	applyMods("RAI", Tables.BUILDING_EFFECTS, modifiedBuildingEffects)
 	applyMods("RAI", Tables.TECHS, modifiedTechs)
 	applyMods("RAI", Tables.TECH_EFFECTS, modifiedTechEffects)
+	applyMods("RAI", Tables.GARRISONS, modifiedGarrisons, buildings.values.flatMap { it.extraGarrisons }.map { it.assembleLine })
 }
 
 
 
-fun applyMods(prefix: String, table: Table, mods: Collection<Rome2Object>) {
+fun applyMods(
+	prefix: String,
+	table: Table,
+	mods: Collection<Rome2Object>,
+	additionalLines: List<String> = emptyList()
+) {
 	val lines = ArrayList<String>()
 	lines.add(table.keys)
 	lines.add(table.secondLine(prefix))
 	for(mod in mods)
 		lines.add(mod.assembleLine)
+	lines.addAll(additionalLines)
 	Core.writeLines(table.outputPath(prefix), lines)
 }
 
 
 
-fun applyMods(prefix: String, table1: Table, table2: Table, mods: Collection<Rome2Object2>) {
+fun applyMods(
+	prefix: String,
+	table1: Table,
+	table2: Table,
+	mods: Collection<Rome2Object2>,
+	additionalLines1: List<String> = emptyList(),
+	additionalLines2: List<String> = emptyList()
+) {
 	val lines1 = ArrayList<String>()
 	val lines2 = ArrayList<String>()
 	lines1.add(table1.keys)
@@ -57,6 +73,8 @@ fun applyMods(prefix: String, table1: Table, table2: Table, mods: Collection<Rom
 		lines1.add(mod.assembleLine)
 		lines2.add(mod.assembleLine2)
 	}
+	lines1.addAll(additionalLines1)
+	lines2.addAll(additionalLines2)
 	Core.writeLines(table1.outputPath(prefix), lines1)
 	Core.writeLines(table2.outputPath(prefix), lines2)
 }
@@ -96,17 +114,17 @@ val techs = table(Tables.TECHS).map(::Tech).associateBy { it.name }.also { map -
 
 
 
-fun armour(name: String) = armours[name]!!
+fun armour(name: String) = armours[name] ?: error("Armour not present: $name")
 
-fun shield(name: String) = shields[name]!!
+fun shield(name: String) = shields[name] ?: error("Shield not present: $name")
 
-fun weapon(name: String) = weapons[name]!!
+fun weapon(name: String) = weapons[name] ?: error("Weapon not present: $name")
 
-fun unit(name: String) = units[name]!!
+fun unit(name: String) = units[name] ?: error("Unit not present: $name")
 
-fun building(name: String) = buildings[name]!!
+fun building(name: String) = buildings[name] ?: error("Building not present: $name")
 
-fun tech(name: String) = techs[name]!!
+fun tech(name: String) = techs[name] ?: error("Tech not present: $name")
 
 
 
@@ -133,3 +151,6 @@ val RORARII = unit("Rom_Rorarii")
 val TRIARII = unit("Rom_Triarii")
 val VETERAN_LEGIONARIES = unit("Rom_Vet_Legionaries")
 val VIGILES = unit("Rom_Vigiles")
+
+
+

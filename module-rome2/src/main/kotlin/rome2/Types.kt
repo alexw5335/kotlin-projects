@@ -239,13 +239,8 @@ class Building(line: String) : Rome2Object(line) {
 
 	val effects = ArrayList<BuildingEffect>()
 	val garrisons = ArrayList<Garrison>()
-	//val explicitEffects = ArrayList<ExplicitEffect>()
-	//val explicitGarrisons = ArrayList<ExplicitGarrison>()
+	val extraGarrisons = ArrayList<Garrison>()
 }
-
-
-class ExplicitEffect(val effect: String, val scope: String, val value: Int)
-class ExplicitGarrison(val unit: Unit, val count: Int)
 
 
 
@@ -253,9 +248,11 @@ class ExplicitGarrison(val unit: Unit, val count: Int)
  * building_level_armed_citizenry_junctions
  */
 class Garrison(line: String) : Rome2Object(line) {
-	val id by IntProperty(0)
+	val id       by IntProperty(0)
 	val building by StringProperty(1)
-	var unit by StringProperty(2)
+	var unit     by StringProperty(2)
+
+	constructor(id: Int, building: String, unit: String) : this(arrayOf(id, building, unit).joinToString("\t"))
 }
 
 
