@@ -1,5 +1,7 @@
 package rome2
 
+import core.Core
+
 
 
 class Table(val name: String, val num: Int, val keys: String) {
@@ -10,6 +12,10 @@ class Table(val name: String, val num: Int, val keys: String) {
 
 
 object Tables {
+	private fun create(name: String) {
+		val reader = this::class.java.getResourceAsStream("/db/${name}_tables/$name.tsv")!!.bufferedReader()
+
+	}
 	val SHIELDS = Table("unit_shield_types", 3, "key\tshield_defence_value\tshield_armour_value\taudio_material\tmissile_block_chance")
 	val ARMOURS = Table("unit_armour_types", 1, "key\tarmour_value\tbonus_vs_missiles\tweak_vs_missiles\taudio_material")
 	val WEAPONS = Table("melee_weapons", 6, "key\tarmour_penetrating\tarmour_piercing\tbonus_v_cavalry\tbonus_v_elephants\tbonus_v_infantry\tdamage\tap_damage\tfirst_strike\tshield_piercing\tweapon_length\tmelee_weapon_type\taudio_material")

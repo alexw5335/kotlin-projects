@@ -240,6 +240,23 @@ class Building(line: String) : Rome2Object(line) {
 	val effects = ArrayList<BuildingEffect>()
 	val garrisons = ArrayList<Garrison>()
 	val extraGarrisons = ArrayList<Garrison>()
+	val extraEffects = ArrayList<BuildingEffect>()
+
+	val adjustedLevel = level + 1
+
+	val isLevel1 get() = level == 0
+	val isLevel2 get() = level == 1
+	val isLevel3 get() = level == 2
+	val isLevel4 get() = level == 3
+	val isLevel5 get() = level == 4
+
+	val culture = when {
+		name.startsWith("rome_")  -> Culture.ROME
+		name.startsWith("east_")  -> Culture.EAST
+		name.startsWith("greek_") -> Culture.GREEK
+		name.startsWith("barb_")  -> Culture.BARB
+		else                      -> null
+	}
 }
 
 
@@ -251,8 +268,7 @@ class Garrison(line: String) : Rome2Object(line) {
 	val id       by IntProperty(0)
 	val building by StringProperty(1)
 	var unit     by StringProperty(2)
-
-	constructor(id: Int, building: String, unit: String) : this(arrayOf(id, building, unit).joinToString("\t"))
+	constructor(id: Int, building: String, unit: String) : this(assemble(id, building, unit))
 }
 
 
@@ -265,6 +281,7 @@ class Tech(line: String) : Rome2Object(line) {
 	var cost by IntProperty(3)
 
 	val effects = ArrayList<TechEffect>()
+	val extraEffects = ArrayList<TechEffect>()
 }
 
 
@@ -273,8 +290,13 @@ class Tech(line: String) : Rome2Object(line) {
  * technology_effects_junction
  */
 class TechEffect(line: String) : Rome2Object(line) {
-	val tech by StringProperty(0)
+	val tech  by StringProperty(0)
 	var effect by StringProperty(1)
-	var scope by StringProperty(2)
-	var value by IntProperty(3)
+	var scope  by StringProperty(2)
+	var value  by IntProperty(3)
+	constructor(tech: String, effect: String, scope: String, value: Int) : this(assemble(tech, effect, scope, value.toString()))
 }
+
+
+
+private fun assemble(vararg parts: Any) = parts.joinToString("\t")

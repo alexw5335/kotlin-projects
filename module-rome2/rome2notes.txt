@@ -29,6 +29,26 @@ land_units:
 	27 spacing strengths and weaknesses text
 	28 supports first person
 	29 training level
+	30 num guns
+	31 officers
+	32 articulated record
+	33 engine
+	34 is male
+	35 visibility spotting range min
+	36 visibility spotting range max
+	37 ability global recharge
+	38 attribute group
+	39 spot dist tree
+	40 spot dist scrub
+	41 chariot
+	42 num chariots
+	43 reload
+	44 can have loose spacing
+	45 spotting and hiding
+	46 selection vo
+	47 selected vo secondary
+	48 selected vo tertiary
+	49 hiding scalar
 
 unit_shield_types:
 	0: name

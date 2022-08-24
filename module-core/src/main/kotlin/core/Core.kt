@@ -37,6 +37,8 @@ object Core {
 
 
 
+	fun resourceBufferedReader(path: String) = this::class.java.getResourceAsStream(path)!!.bufferedReader()
+
 	fun readResourceText(path: String) = this::class.java
 		.getResourceAsStream(path)!!
 		.reader()
