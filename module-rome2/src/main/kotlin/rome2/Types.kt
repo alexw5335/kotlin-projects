@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package rome2
 
 import kotlin.reflect.KProperty
@@ -5,15 +7,12 @@ import kotlin.reflect.KProperty
 
 
 /*
-Utils
+Properties
  */
 
 
 
-class BooleanProperty(
-	private val parts: MutableList<String>,
-	private val index: Int
-) {
+class BooleanProperty(private val parts: MutableList<String>, private val index: Int) {
 	private var value = parts[index] == "1" || parts[index] == "true"
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
@@ -24,10 +23,7 @@ class BooleanProperty(
 
 
 
-class IntProperty(
-	private val parts: MutableList<String>,
-	private val index: Int
-) {
+class IntProperty(private val parts: MutableList<String>, private val index: Int) {
 	private var value = parts[index].toIntOrNull() ?: parts[index].toFloat().toInt()
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
@@ -38,10 +34,7 @@ class IntProperty(
 
 
 
-class FloatProperty(
-	private val parts: MutableList<String>,
-	private val index: Int
-) {
+class FloatProperty(private val parts: MutableList<String>, private val index: Int) {
 	private var value = parts[index].toFloat()
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
@@ -52,16 +45,40 @@ class FloatProperty(
 
 
 
-class StringProperty(
-	private val parts: MutableList<String>,
-	private val index: Int
-) {
+class StringProperty(private val parts: MutableList<String>, private val index: Int) {
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = parts[index]
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
 		parts[index] = value
 	}
 }
 
+
+
+abstract class Property<T>(private val parts: MutableList<String>, private val index: Int) {
+	abstract var cached: T
+	abstract fun set(): String
+	abstract fun get(string: String): T
+
+	operator fun getValue(thisRef: Any?, property: KProperty<*>) = cached
+	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) { cached = value; set() }
+}
+
+class TestProperty(parts: MutableList<String>, index: Int) : Property<Int>(parts, index) {
+	override var cached = get(parts[index])
+	override fun get(string: String) = string.toInt()
+	override fun set() = cached.toString()
+}
+
+
+class IntProperties(private vararg val components: IntProperty) {
+	operator fun getValue(thisRef: Any?, property: KProperty<*>) = components[0].getValue(thisRef, property)
+}
+class StringProperties(private vararg val components: StringProperty) {
+	operator fun getValue(thisRef: Any?, property: KProperty<*>) = components[0].getValue(thisRef, property)
+	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) = components.forEach {
+		it.setValue(thisRef, property, value)
+	}
+}
 
 
 class ObjectProperty<T>(
@@ -82,25 +99,20 @@ class ObjectProperty<T>(
 
 abstract class Rome2Object(line: String) {
 	private val parts = line.split('\t').toMutableList()
+
 	val assembleLine get() = parts.joinToString("\t")
-	protected fun IntProperty(index: Int) = IntProperty(parts, index)
-	protected fun FloatProperty(index: Int) = FloatProperty(parts, index)
-	protected fun StringProperty(index: Int) = StringProperty(parts, index)
-	protected fun BooleanProperty(index: Int) = BooleanProperty(parts, index)
-	protected fun<T> ObjectProperty(index: Int, getter: (String) -> T, setter: (T) -> String) = ObjectProperty(parts, index, getter, setter)
+
+	fun IntProperty(index: Int) = IntProperty(parts, index)
+	fun FloatProperty(index: Int) = FloatProperty(parts, index)
+	fun StringProperty(index: Int) = StringProperty(parts, index)
+	fun BooleanProperty(index: Int) = BooleanProperty(parts, index)
+	fun<T> ObjectProperty(index: Int, getter: (String) -> T, setter: (T) -> String) = ObjectProperty(parts, index, getter, setter)
+
 }
 
 
 
-abstract class Rome2Object2(line1: String, line2: String) : Rome2Object(line1) {
-	private val parts2 = line2.split('\t').toMutableList()
-	val assembleLine2 get() = parts2.joinToString("\t")
-	protected fun IntProperty2(index: Int) = IntProperty(parts2, index)
-	protected fun FloatProperty2(index: Int) = FloatProperty(parts2, index)
-	protected fun StringProperty2(index: Int) = StringProperty(parts2, index)
-	protected fun BooleanProperty2(index: Int) = BooleanProperty(parts2, index)
-	protected fun<T> ObjectProperty2(index: Int, getter: (String) -> T, setter: (T) -> String) = ObjectProperty(parts2, index, getter, setter)
-}
+abstract class Rome2CompoundObject(val components: List<Rome2Object>)
 
 
 
@@ -110,11 +122,7 @@ Printing
 
 
 
-fun printUnits(vararg units: Unit) = units.forEach { it.printFormatted() }
-
-
-
-fun Unit.printFormatted() {
+fun LandUnitCompound.printFormatted() {
 	var string = """
 		$name:
 			attack:   $attack
@@ -184,29 +192,44 @@ Types
 
 
 /**
- * land_units, main_units
+ * main_units
  */
-class Unit(line1: String, line2: String) : Rome2Object2(line1, line2) {
-	var name     by StringProperty(0)
-	var attack   by IntProperty(14)
-	var defence  by IntProperty(15)
-	var morale   by IntProperty(16)
-	var bonusHp  by IntProperty(17)
-	var charge   by IntProperty(6)
-	var level    by ObjectProperty(30, TrainingLevel::get, TrainingLevel::string)
-	var armour   by ObjectProperty(3, { armour(it) }, Armour::name)
-	var weapon   by ObjectProperty(22, { weapon(it) }, Weapon::name)
-	var shield   by ObjectProperty(25, { shield(it) }, Shield::name)
-	var cost     by IntProperty2(15)
-	var upkeep   by IntProperty2(18)
+class MainUnit(line: String) : Rome2Object(line) {
+	var name by StringProperty(0)
+}
 
-	var missileWeapon by ObjectProperty(23, { missileWeapons[it] }, { it?.name ?: "" })
-	var accuracy      by IntProperty(1)
-	var reload        by IntProperty(44)
-	var ammo          by IntProperty(2)
+
+
+/**
+ * land_units
+ */
+class LandUnit(line: String) : Rome2Object(line) {
+	var name by StringProperty(0)
+}
+
+
+
+class LandUnitCompound(val mainUnit: MainUnit, val landUnit: LandUnit) : Rome2CompoundObject(listOf(mainUnit, landUnit)) {
+	var name    by StringProperties(landUnit.StringProperty(0), mainUnit.StringProperty(0))
+	var attack  by landUnit.IntProperty(14)
+	var defence by landUnit.IntProperty(15)
+	var morale  by landUnit.IntProperty(16)
+	var bonusHp by landUnit.IntProperty(17)
+	var charge  by landUnit.IntProperty(6)
+	var level   by landUnit.ObjectProperty(30, TrainingLevel::get, TrainingLevel::string)
+	var armour  by landUnit.ObjectProperty(3, { armour(it) }, Armour::name)
+	var weapon  by landUnit.ObjectProperty(22, { weapon(it) }, Weapon::name)
+	var shield  by landUnit.ObjectProperty(25, { shield(it) }, Shield::name)
+	var cost    by mainUnit.IntProperty(15)
+	var upkeep  by mainUnit.IntProperty(18)
+
+	var missileWeapon by landUnit.ObjectProperty(23, { missileWeapons[it] }, { it?.name ?: ""} )
+	var accuracy      by landUnit.IntProperty(1)
+	var reload        by landUnit.IntProperty(44)
+	var ammo          by landUnit.IntProperty(2)
 
 	val totalDefence get() = defence + shield.defence
-	val totalArmour get() = armour.armour + shield.armour
+	val totalArmour  get() = armour.armour + shield.armour
 }
 
 
