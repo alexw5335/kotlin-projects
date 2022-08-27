@@ -530,3 +530,8 @@ Assembly
 Simple PE File generation
 - Takes a list of DLL imports and a byte array of code
 - Two sections, .text and .idata
+
+Memory operands
+- Addressing labels always uses RIP-relative addressing
+- Can still address absolute values, e.g. [1]
+- Memory operands with displacements always use disp32

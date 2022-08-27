@@ -26,29 +26,30 @@ land_units:
 	24 rank depth
 	25 shield
 	26 short description text
-	27 spacing strengths and weaknesses text
-	28 supports first person
-	29 training level
-	30 num guns
-	31 officers
-	32 articulated record
-	33 engine
-	34 is male
-	35 visibility spotting range min
-	36 visibility spotting range max
-	37 ability global recharge
-	38 attribute group
-	39 spot dist tree
-	40 spot dist scrub
-	41 chariot
-	42 num chariots
-	43 reload
-	44 can have loose spacing
-	45 spotting and hiding
-	46 selection vo
-	47 selected vo secondary
-	48 selected vo tertiary
-	49 hiding scalar
+	27 spacing
+	28 strengths and weaknesses text
+	29 supports first person
+	30 training level
+	31 num guns
+	32 officers
+	33 articulated record
+	34 engine
+	35 is male
+	36 visibility spotting range min
+	37 visibility spotting range max
+	38 ability global recharge
+	39 attribute group
+	40 spot dist tree
+	41 spot dist scrub
+	42 chariot
+	43 num chariots
+	44 reload
+	45 can have loose spacing
+	46 spotting and hiding
+	47 selection vo
+	48 selected vo secondary
+	49 selected vo tertiary
+	50 hiding scalar
 
 unit_shield_types:
 	0: name
@@ -183,5 +184,47 @@ technologies
 	14: is civil
 	15: is engineering
 	16: is military
+
+projectiles
+	0: name
+	1: category
+	2: shot type
+	3: explosion ype
+	4: spin type
+	5: projectile number
+	6: trajectory sight
+	7: effective range
+	8: minimum range
+	9: max elevation
+	10: muzzle velocity
+	11: marksmanship bonus
+	12: spread
+	13: damage
+	14: ap damage
+	15: penetration
+	16: incendiary
+	17: can bounce
+	18: high air resistance
+	19: collision radius
+	20: base reload time
+	21: below waterline damage modifier
+	22: calibration distance
+	23: calibration area
+	24: infantry bonus
+	25: cavalry bonus
+	26: large bonus
+	27: projectile display
+	28: overhead stat effect
+	29: projectile audio
+	30: shockwave radius
+	31: can damage buildings
+	32: contact stat effect
+	33: is grapple
+
+missile_weapons
+	0: name
+	1: is precursor
+	2: default projectile
+	3: can fire at buildings
 
 

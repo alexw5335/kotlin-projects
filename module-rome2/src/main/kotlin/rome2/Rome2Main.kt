@@ -5,12 +5,12 @@ import core.Core
 
 
 fun main() {
-	Units.AUX_PELTASTS.printFormatted()
-	Units.AUX_GALLIC_HUNTERS.printFormatted()
-	Units.AUX_LONGBOW_HUNTERS.printFormatted()
+	Units.LEVES.printFormatted()
+	Units.VELITES.printFormatted()
 	Units.AUX_CRETAN_ARCHERS.printFormatted()
-	//Mod2.mod()
-	//applyMods()
+	Units.AUX_PELTASTS.printFormatted()
+	Mod3.mod()
+	applyMods()
 }
 
 
@@ -27,6 +27,8 @@ val modifiedShields = HashSet<Shield>()
 
 val modifiedArmours = HashSet<Armour>()
 
+val modifiedProjectiles = HashSet<Projectile>()
+
 val modifiedUnits = HashSet<Unit>()
 
 val modifiedBuildings = HashSet<Building>()
@@ -39,6 +41,12 @@ val modifiedTechEffects = HashSet<TechEffect>()
 
 val modifiedGarrisons = HashSet<Garrison>()
 
+val extraProjectiles = ArrayList<Projectile>()
+
+val extraMissileWeapons = ArrayList<MissileWeapon>()
+
+val extraBuildingUnits = ArrayList<BuildingUnit>()
+
 
 
 fun Weapon.mod(block: Weapon.() -> kotlin.Unit) = also(block).let(modifiedWeapons::add)
@@ -46,6 +54,8 @@ fun Weapon.mod(block: Weapon.() -> kotlin.Unit) = also(block).let(modifiedWeapon
 fun Shield.mod(block: Shield.() -> kotlin.Unit) = also(block).let(modifiedShields::add)
 
 fun Armour.mod(block: Armour.() -> kotlin.Unit) = also(block).let(modifiedArmours::add)
+
+fun Projectile.mod(block: Projectile.() -> kotlin.Unit) = also(block).let(modifiedProjectiles::add)
 
 fun Unit.mod(block: Unit.() -> kotlin.Unit) = also(block).let(modifiedUnits::add)
 
@@ -67,6 +77,8 @@ fun Tech.effect(name: String, value: Int) {
 	modifiedTechEffects.add(effect)
 }
 
+fun Tech.effect(effect: TechEffectType, value: Int) = effect(effect.string, value)
+
 fun Tech.addEffect(name: String, scope: String, value: Int) {
 	extraEffects.add(TechEffect(this.name, name, scope, value))
 }
@@ -80,6 +92,8 @@ fun Building.garrison(prev: String, new: String) {
 fun Building.garrison(prev: GarrisonUnit, new: GarrisonUnit) = garrison(prev.string, new.string)
 
 var garrisonId = 100_000
+
+var buildingUnitId = 300_000
 
 fun Building.garrison(unit: String) = extraGarrisons.add(Garrison(arrayOf(garrisonId++, name, unit).joinToString("\t")))
 
@@ -105,6 +119,10 @@ fun Building.setGarrison(vararg garrisons: Pair<GarrisonUnit, Int>) {
 
 
 
+fun Building.unit(unit: Unit) = extraBuildingUnits.add(BuildingUnit(buildingUnitId++, name, unit.name))
+
+
+
 fun applyMods() {
 	val prefix = "RIV1"
 	applyMods(prefix, Tables.ARMOURS, modifiedArmours)
@@ -116,6 +134,10 @@ fun applyMods() {
 	applyMods(prefix, Tables.TECHS, modifiedTechs)
 	applyMods(prefix, Tables.TECH_EFFECTS, modifiedTechEffects, techs.values.flatMap { it.extraEffects }.map { it.assembleLine })
 	applyMods(prefix, Tables.GARRISONS, modifiedGarrisons, buildings.values.flatMap { it.extraGarrisons }.map { it.assembleLine })
+	applyMods(prefix, Tables.BUILDING_UNITS, extraBuildingUnits)
+	applyMods(prefix, Tables.PROJECTILES, extraProjectiles)
+	applyMods(prefix, Tables.MISSILE_WEAPONS, extraMissileWeapons)
+	println(extraProjectiles.size)
 }
 
 
@@ -128,7 +150,7 @@ fun applyMods(
 ) {
 	if(mods.isEmpty() && additionalLines.isEmpty()) return
 	val lines = ArrayList<String>()
-	lines.add(table.keys)
+	lines.add(table.firstLine)
 	lines.add(table.secondLine(prefix))
 	for(mod in mods) lines.add(mod.assembleLine)
 	lines.addAll(additionalLines)
@@ -147,7 +169,7 @@ fun applyMods(
 ) {
 	if(mods.isNotEmpty() || additionalLines1.isNotEmpty()) {
 		val lines1 = ArrayList<String>()
-		lines1.add(table1.keys)
+		lines1.add(table1.firstLine)
 		lines1.add(table1.secondLine(prefix))
 		for(mod in mods) lines1.add(mod.assembleLine)
 		lines1.addAll(additionalLines1)
@@ -155,7 +177,7 @@ fun applyMods(
 	}
 	if(mods.isNotEmpty() || additionalLines2.isNotEmpty()) {
 		val lines2 = ArrayList<String>()
-		lines2.add(table2.keys)
+		lines2.add(table2.firstLine)
 		lines2.add(table2.secondLine(prefix))
 		for(mod in mods) lines2.add(mod.assembleLine2)
 		lines2.addAll(additionalLines2)
@@ -171,29 +193,31 @@ Info
 
 
 
-private fun table(table: Table) = Core.readResourceLines("/${table.name}.txt")
+val armours = Tables.ARMOURS.lines.map(::Armour).associateBy { it.name }
 
+val shields = Tables.SHIELDS.lines.map(::Shield).associateBy { it.name }
 
+val weapons = Tables.WEAPONS.lines.map(::Weapon).associateBy { it.name }
 
-val armours = table(Tables.ARMOURS).map(::Armour).associateBy { it.name }
+val projectiles = Tables.PROJECTILES.lines.map(::Projectile).associateBy { it.name }
 
-val shields = table(Tables.SHIELDS).map(::Shield).associateBy { it.name }
+val missileWeapons = Tables.MISSILE_WEAPONS.lines.map(::MissileWeapon).associateBy { it.name }
 
-val weapons = table(Tables.WEAPONS).map(::Weapon).associateBy { it.name }
+val unitLines2 = Tables.MAIN_UNITS.lines.associateBy { it.substringBefore('\t') }
 
-val unitLines1 = table(Tables.LAND_UNITS)
+val units = Tables.LAND_UNITS.lines
+	.filter { unitLines2.contains(it.substringBefore('\t')) }
+	.map { Unit(it, unitLines2[it.substringBefore('\t')] ?: error(it)) }
+	.associateBy { it.name }
 
-val unitLines2 = table(Tables.MAIN_UNITS).associateBy { it.substringBefore('\t') }
-
-val units = unitLines1.filter { unitLines2.contains(it.substringBefore('\t')) }.map { Unit(it, unitLines2[it.substringBefore('\t')] ?: error(it)) }.associateBy { it.name }
-
-val buildings = table(Tables.BUILDING_LEVELS).map(::Building).associateBy { it.name }.also { map ->
-	table(Tables.BUILDING_EFFECTS).map(::BuildingEffect).forEach { map[it.building]?.effects?.add(it) }
-	table(Tables.GARRISONS).map(::Garrison).forEach { map[it.building]?.garrisons?.add(it) }
+val buildings = Tables.BUILDING_LEVELS.lines.map(::Building).associateBy { it.name }.also { map ->
+	Tables.BUILDING_EFFECTS.lines.map(::BuildingEffect).forEach { map[it.building]?.effects?.add(it) }
+	Tables.GARRISONS.lines.map(::Garrison).forEach { map[it.building]?.garrisons?.add(it) }
+	Tables.BUILDING_UNITS.lines.map(::BuildingUnit).forEach { map[it.building]?.units?.add(it) }
 }
 
-val techs = table(Tables.TECHS).map(::Tech).associateBy { it.name }.also { map ->
-	table(Tables.TECH_EFFECTS).map(::TechEffect).forEach { map[it.tech]?.effects?.add(it) }
+val techs = Tables.TECHS.lines.map(::Tech).associateBy { it.name }.also { map ->
+	Tables.TECH_EFFECTS.lines.map(::TechEffect).forEach { map[it.tech]?.effects?.add(it) }
 }
 
 
@@ -204,11 +228,12 @@ fun shield(name: String) = shields[name] ?: error("Shield not present: $name")
 
 fun weapon(name: String) = weapons[name] ?: error("Weapon not present: $name")
 
+fun projectile(name: String) = projectiles[name] ?: error("Projectile not present: $name")
+
+fun missileWeapon(name: String) = missileWeapons[name] ?: error("Missile weapon not present: $name")
+
 fun unit(name: String) = units[name] ?: error("Unit not present: $name")
 
 fun building(name: String) = buildings[name] ?: error("Building not present: $name")
 
 fun tech(name: String) = techs[name] ?: error("Tech not present: $name")
-
-
-

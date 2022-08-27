@@ -1,3 +1,5 @@
+id	building_level	unit_group
+#building_level_armed_citizenry_junctions_tables;1;db/building_level_armed_citizenry_junctions_tables/building_level_armed_citizenry_junctions		
 10003	rom_ROMAN_temple_Mercury_4	cig_roman_legionaries
 10008	rom_ROMAN_temple_Minerva_4	cig_roman_legionaries
 10015	rom_ROMAN_temple_Neptune_4	cig_roman_legionaries

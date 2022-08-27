@@ -31,8 +31,9 @@ val AstNode.printableString: String get() = when(this) {
 	is InstructionNode -> printableString
 	is ImmediateNode   -> value.printableString
 	is DefineNode      -> "db ${components.joinToString { it.printableString }}"
+	is StringNode      -> "\"$value\""
 	//is ConstNode       -> "const $name = ${value.printableString}"
-	//is LabelNode       -> "$name:"
+	is LabelNode       -> "$name:"
 	//else               -> "No printable string for AST node: ${this::class.simpleName}"
 }
 
@@ -70,7 +71,15 @@ sealed interface AstNode
 
 
 
+class LabelNode(val name: String) : AstNode
+
+
+
 class IdNode(val value: String) : AstNode
+
+
+
+class StringNode(val value: String) : AstNode
 
 
 
@@ -95,12 +104,12 @@ class RegisterNode(val value: Register) : AstNode
 
 
 class MemoryNode(
-	val width : Width?,
-	val rel   : Boolean,
-	val base  : Register?,
-	val index : Register?,
-	val scale : Int,
-	val disp  : AstNode?
+	val width  : Width?,
+	val rel    : Boolean,
+	val base   : Register?,
+	val index  : Register?,
+	val scale  : Int,
+	val disp   : AstNode?
 ) : AstNode
 
 

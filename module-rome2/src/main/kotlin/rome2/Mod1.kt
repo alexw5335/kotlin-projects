@@ -739,36 +739,35 @@ object Mod1 {
 			effect(GDP_MOD_ALL, 20)
 		}
 
-		// MILITARY TRAINING
-		building("rome_military_buff_attack_2").apply {
+		Buildings.ROMAN_BUFF_ATTACK_2.apply {
 			effect(FOOD_CONSUMPTION, 4)
 			effect(ATTACK_BUFF, 10)
 		}
-		building("rome_military_buff_attack_3").apply {
+		Buildings.ROMAN_BUFF_ATTACK_3.apply {
 			effect(FOOD_CONSUMPTION, 8)
 			effect(ATTACK_BUFF, 20)
 		}
-		building("rome_military_buff_defence_2").apply {
+		Buildings.ROMAN_BUFF_DEFENCE_2.apply {
 			effect(FOOD_CONSUMPTION, 4)
 			effect(DEFENCE_BUFF, 10)
 		}
-		building("rome_military_buff_defence_3").apply {
+		Buildings.ROMAN_BUFF_DEFENCE_3.apply {
 			effect(FOOD_CONSUMPTION, 8)
 			effect(DEFENCE_BUFF, 20)
 		}
-		building("rome_military_buff_horse_2").apply {
+		Buildings.ROMAN_BUFF_HORSE_2.apply {
 			effect(FOOD_CONSUMPTION, 4)
 			effect(HORSE_BUFF, 10)
 		}
-		building("rome_military_buff_horse_3").apply {
+		Buildings.ROMAN_BUFF_HORSE_3.apply {
 			effect(FOOD_CONSUMPTION, 8)
 			effect(HORSE_BUFF, 20)
 		}
-		building("rome_military_buff_range_2").apply {
+		Buildings.ROMAN_BUFF_RANGE_2.apply {
 			effect(FOOD_CONSUMPTION, 4)
 			effect(RANGE_BUFF, 10)
 		}
-		building("rome_military_buff_range_3").apply {
+		Buildings.ROMAN_BUFF_RANGE_3.apply {
 			effect(FOOD_CONSUMPTION, 8)
 			effect(RANGE_BUFF, 20)
 		}

@@ -1,11 +1,17 @@
 package assembler
 
-import java.beans.Expression
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class Parser(lexResult: LexResult) {
+
+
+	companion object {
+
+		fun parse(lexResult: LexResult) = Parser(lexResult).parse()
+
+	}
+
 
 
 	private var pos = 0
@@ -16,7 +22,7 @@ class Parser(lexResult: LexResult) {
 
 	private val nodes = ArrayList<AstNode>()
 
-	private val symbols = HashMap<String, Symbol<*>>()
+	private val symbols = HashMap<String, Symbol>()
 
 
 
@@ -40,12 +46,12 @@ class Parser(lexResult: LexResult) {
 				is MnemonicToken    -> nodes.add(parseInstruction(token.value))
 				is KeywordToken     -> parseKeyword(token)
 				is EndToken         -> break
-				is IdToken          -> parseId()
+				is IdToken          -> parseId(token)
 				else                -> error("Invalid token: $token")
 			}
 		}
 
-		return ParseResult(nodes)
+		return ParseResult(nodes, symbols)
 	}
 
 
@@ -96,7 +102,12 @@ class Parser(lexResult: LexResult) {
 
 
 
-	private fun parseId() { }
+	private fun parseId(id: IdToken) {
+		if(tokens[pos++] != SymbolToken.COLON)
+			error("Expecting colon after identifier")
+		nodes.add(LabelNode(id.value))
+		symbols[id.value] = Symbol(id.value, SymbolType.LABEL)
+	}
 
 
 
@@ -182,6 +193,8 @@ class Parser(lexResult: LexResult) {
 
 		is IdToken -> IdNode(token.value)
 
+		is StringToken -> StringNode(token.value)
+
 		else -> error("Invalid expression operand token: $token")
 	}
 
@@ -218,10 +231,10 @@ class Parser(lexResult: LexResult) {
 			baseReg = null
 			indexReg = null
 			indexScale = 0
-			val displacement = parseMemoryOperand(readExpression())
+			val disp = parseMemoryOperand(readExpression())
 			when(indexScale) { 0, 1, 2, 4, 8 -> Unit else -> error("Invalid index scale") }
 			if(tokens[pos++] != SymbolToken.RIGHT_BRACKET) error("Expecting ']', found $prevToken")
-			return MemoryNode(width, true, baseReg, indexReg, indexScale, displacement)
+			return MemoryNode(width, true, baseReg, indexReg, indexScale, disp)
 		}
 
 		if(width != null)

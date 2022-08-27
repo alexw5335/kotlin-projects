@@ -173,18 +173,18 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 
 
-	private fun resolveDoubleApostrophe(): StringToken {
+	private fun resolveDoubleApostrophe() {
 		val string = readUntil { it == '"' }
-		pos++
-		return StringToken(string)
+		if(chars[pos++] != '"') error("Unfinished string literal")
+		tokens.add(StringToken(string))
 	}
 
 
 
-	private fun resolveSingleApostrophe(): CharToken {
+	private fun resolveSingleApostrophe() {
 		val char = chars[pos++]
-		pos++
-		return CharToken(char)
+		if(chars[pos++] != '\'') error("Unfinished char literal")
+		tokens.add(CharToken(char))
 	}
 
 

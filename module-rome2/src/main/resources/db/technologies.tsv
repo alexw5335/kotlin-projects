@@ -1,3 +1,5 @@
+key	building_level	position_index	research_points_required	icon_name	military_prestige	naval_prestige	economic_prestige	enlightenment_prestige	mp_available_early	mp_available_late	info_pic	ai_bias	unique_index	cost_per_round	is_civil	is_engineering	is_military
+#technologies_tables;4;db/technologies_tables/technologies																	
 3c_alani_civil_culture_establish_ennaree_council	rom_HELLENIC_port_1	2	800	3c_alanni_establish ennaree council	0	0	0	0	false	false	barb_civ_up.png	0	6275	0	true	false	false
 3c_alani_civil_culture_gather_ennaree_shamans	rom_HELLENIC_port_1	2	400	rom_nomad_civil_philosophy_knowledge_of_the_smoke	0	0	0	0	false	false	barb_civ_up.png	0	6250	0	true	false	false
 3c_alani_civil_culture_gather_royal_storytellers	rom_HELLENIC_port_1	2	1400	3c_gothi_revive_bardic_traditions	0	0	0	0	false	false	barb_civ_up.png	0	6282	0	true	false	false

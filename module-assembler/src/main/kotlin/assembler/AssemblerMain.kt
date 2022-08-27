@@ -3,10 +3,8 @@ package assembler
 
 
 private const val INPUT = """
-
-message db "test"
-//add rax, [20 * 5+ rax + rcx * 8 + 15]
-
+message: 
+	db "test"
 """
 
 
@@ -20,14 +18,30 @@ fun main() {
 
 
 
-private fun assemble(input: String) {
-	val lexResult = Lexer.lex(input)
+private fun LexResult.printFormatted() {
 	println("Lexer:")
-	for(t in lexResult.tokens) println(t.printableString)
+	for(t in tokens) {
+		if(t == EndToken) break
+		print('\t')
+		println(t.printableString)
+	}
+}
 
-	val parseResult = Parser(lexResult).parse()
-	println("\nParser:")
-	for(n in parseResult.nodes) println(n.printableString)
+
+
+private fun ParseResult.printFormatted() {
+	println("Parser:")
+	for(n in nodes) {
+		print('\t')
+		println(n.printableString)
+	}
+}
+
+
+
+private fun assemble(input: String) {
+	val lexResult = Lexer.lex(input).also { it.printFormatted() }
+	val parseResult = Parser.parse(lexResult).also { it.printFormatted() }
 
 	//val assembler = Assembler(parseResult)
 	//println("\nAssembler:")

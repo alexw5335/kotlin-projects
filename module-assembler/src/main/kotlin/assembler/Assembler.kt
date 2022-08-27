@@ -2,8 +2,12 @@ package assembler
 
 import core.binary.BinaryWriter
 
-class Assembler(private val parseResult: ParseResult) {
+class Assembler(parseResult: ParseResult) {
 
+
+	private val nodes = parseResult.nodes
+
+	private val symbols = parseResult.symbols
 
 	private val writer = BinaryWriter()
 
@@ -26,15 +30,37 @@ class Assembler(private val parseResult: ParseResult) {
 		var hasSIB = false
 		var imm = 0L
 		var immLength = 0
+		var disp = 0L
 
 	}
 
 
 
 	fun assemble() {
-		for(node in parseResult.nodes) {
-			if(node !is InstructionNode) continue
-			assemble(node)
+		for(node in nodes) {
+			when(node) {
+				is InstructionNode -> assemble(node)
+				is LabelNode -> handleLabel(node)
+				else -> { }
+			}
+		}
+	}
+
+
+
+	private fun handleLabel(node: LabelNode) {
+		 symbols[node.name]!!.data = LabelSymbolData(writer.pos.toLong())
+	}
+
+
+
+	private fun resolveIntSymbol(name: String): Long? {
+		val symbol = symbols[name] ?: return null
+
+		return when(symbol.type) {
+			SymbolType.INT   -> (symbol.data as IntSymbolData).value
+			SymbolType.LABEL -> (symbol.data as LabelSymbolData).value
+			else             -> null
 		}
 	}
 
@@ -53,6 +79,7 @@ class Assembler(private val parseResult: ParseResult) {
 		context.hasSIB = false
 		context.imm = 0
 		context.immLength = 0
+		context.disp = 0
 
 		when {
 			node.op1 == null -> invalidEncoding()
@@ -165,7 +192,27 @@ class Assembler(private val parseResult: ParseResult) {
 
 
 
+	private fun AstNode.forEach(block: (AstNode) -> Unit) {
+		block(this)
+
+		if(this is BinaryNode) {
+			left.forEach(block)
+			right.forEach(block)
+		} else if(this is UnaryNode) {
+			node.forEach(block)
+		}
+	}
+
+
+
 	private fun encodeMem(operand: MemoryNode) {
+		val disp = operand.disp?.calculateInt(::resolveIntSymbol)
+
+		if(disp != null) {
+			context.modrm = context.modrm.withMod(0b10) // + disp32
+			context.disp = disp
+		}
+
 		if(operand.rel) {
 			context.modrm = context.modrm.withMod(0b00)
 			context.modrm = context.modrm.withRm(0b101)
@@ -175,7 +222,7 @@ class Assembler(private val parseResult: ParseResult) {
 		if(operand.index != null) {
 			context.modrm = context.modrm.withRm(0b100)
 
-			context.modrm = if(operand.disp != null)
+			context.modrm = if(disp != null)
 				context.modrm.withMod(0b00) // SIB with no disp
 			else
 				context.modrm.withMod(0b10) // SIB + disp32
@@ -183,11 +230,12 @@ class Assembler(private val parseResult: ParseResult) {
 			context.sib = context.sib.withBase(operand.base?.value ?: 0b101)
 			context.sib = context.sib.withIndex(operand.index.value)
 
-			val scale = when(operand.scale) { 1 -> 0b00 2 -> 0b01 4 -> 0b10 8 -> 0b11 else -> error("Invalid scale") }
+			if(operand.scale.countOneBits() != 1) error("Invalid scale: ${operand.scale}")
+			val scale = operand.scale.countLeadingZeroBits()
+			if(scale > 3) error("Invalid scale: ${operand.scale}")
 			context.sib = context.sib.withScale(scale)
 		}
 	}
-
 
 
 }

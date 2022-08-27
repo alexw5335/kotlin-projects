@@ -28,9 +28,23 @@ class IntProperty(
 	private val parts: MutableList<String>,
 	private val index: Int
 ) {
-	private var value = parts[index].toInt()
+	private var value = parts[index].toIntOrNull() ?: parts[index].toFloat().toInt()
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
+		parts[index] = value.toString()
+		this.value = value
+	}
+}
+
+
+
+class FloatProperty(
+	private val parts: MutableList<String>,
+	private val index: Int
+) {
+	private var value = parts[index].toFloat()
+	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
+	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
 		parts[index] = value.toString()
 		this.value = value
 	}
@@ -70,6 +84,7 @@ abstract class Rome2Object(line: String) {
 	private val parts = line.split('\t').toMutableList()
 	val assembleLine get() = parts.joinToString("\t")
 	protected fun IntProperty(index: Int) = IntProperty(parts, index)
+	protected fun FloatProperty(index: Int) = FloatProperty(parts, index)
 	protected fun StringProperty(index: Int) = StringProperty(parts, index)
 	protected fun BooleanProperty(index: Int) = BooleanProperty(parts, index)
 	protected fun<T> ObjectProperty(index: Int, getter: (String) -> T, setter: (T) -> String) = ObjectProperty(parts, index, getter, setter)
@@ -81,6 +96,7 @@ abstract class Rome2Object2(line1: String, line2: String) : Rome2Object(line1) {
 	private val parts2 = line2.split('\t').toMutableList()
 	val assembleLine2 get() = parts2.joinToString("\t")
 	protected fun IntProperty2(index: Int) = IntProperty(parts2, index)
+	protected fun FloatProperty2(index: Int) = FloatProperty(parts2, index)
 	protected fun StringProperty2(index: Int) = StringProperty(parts2, index)
 	protected fun BooleanProperty2(index: Int) = BooleanProperty(parts2, index)
 	protected fun<T> ObjectProperty2(index: Int, getter: (String) -> T, setter: (T) -> String) = ObjectProperty(parts2, index, getter, setter)
@@ -99,7 +115,7 @@ fun printUnits(vararg units: Unit) = units.forEach { it.printFormatted() }
 
 
 fun Unit.printFormatted() {
-	println("""
+	var string = """
 		$name:
 			attack:   $attack
 			defence:  $totalDefence = $defence base + ${shield.defence} ${shield.name}
@@ -111,7 +127,21 @@ fun Unit.printFormatted() {
 			bonus:    ${weapon.cavalryBonus}/${weapon.largeBonus}/${weapon.infantryBonus}
 			cost:     $cost
 			upkeep:   $upkeep
-	""".trimIndent())
+			level:    ${level.string}
+	""".trimIndent()
+
+	missileWeapon?.let {
+		string += """
+	ranged:
+		damage:    ${it.projectile.damage} (${it.name}, ${it.projectile.name})
+		apDamage:  ${it.projectile.apDamage}
+		range:     ${it.projectile.effectiveRange} 
+		reload:    $reload
+		accuracy:  $accuracy
+		ammo:      $ammo"""
+	}
+
+	println(string)
 	println()
 }
 
@@ -157,17 +187,23 @@ Types
  * land_units, main_units
  */
 class Unit(line1: String, line2: String) : Rome2Object2(line1, line2) {
-	val name    by StringProperty(0)
-	var attack  by IntProperty(14)
-	var defence by IntProperty(15)
-	var morale  by IntProperty(16)
-	var bonusHp by IntProperty(17)
-	var charge  by IntProperty(6)
-	var armour  by ObjectProperty(3, { armour(it) }, Armour::name)
-	var weapon  by ObjectProperty(22, { weapon(it) }, Weapon::name)
-	var shield  by ObjectProperty(25, { shield(it) }, Shield::name)
-	var cost    by IntProperty2(15)
-	var upkeep  by IntProperty2(18)
+	var name     by StringProperty(0)
+	var attack   by IntProperty(14)
+	var defence  by IntProperty(15)
+	var morale   by IntProperty(16)
+	var bonusHp  by IntProperty(17)
+	var charge   by IntProperty(6)
+	var level    by ObjectProperty(30, TrainingLevel::get, TrainingLevel::string)
+	var armour   by ObjectProperty(3, { armour(it) }, Armour::name)
+	var weapon   by ObjectProperty(22, { weapon(it) }, Weapon::name)
+	var shield   by ObjectProperty(25, { shield(it) }, Shield::name)
+	var cost     by IntProperty2(15)
+	var upkeep   by IntProperty2(18)
+
+	var missileWeapon by ObjectProperty(23, { missileWeapons[it] }, { it?.name ?: "" })
+	var accuracy      by IntProperty(1)
+	var reload        by IntProperty(44)
+	var ammo          by IntProperty(2)
 
 	val totalDefence get() = defence + shield.defence
 	val totalArmour get() = armour.armour + shield.armour
@@ -179,7 +215,7 @@ class Unit(line1: String, line2: String) : Rome2Object2(line1, line2) {
  * unit_armour_types
  */
 class Armour(line: String) : Rome2Object(line) {
-	val name            by StringProperty(0)
+	var name            by StringProperty(0)
 	var armour          by IntProperty(1)
 	var bonusVsMissiles by IntProperty(2)
 	var weakVsMissiles  by BooleanProperty(3)
@@ -191,7 +227,7 @@ class Armour(line: String) : Rome2Object(line) {
  * unit_shield_types
  */
 class Shield(line: String) : Rome2Object(line) {
-	val name     by StringProperty(0)
+	var name     by StringProperty(0)
 	var defence  by IntProperty(1)
 	var armour   by IntProperty(2)
 	var block    by IntProperty(4)
@@ -203,13 +239,45 @@ class Shield(line: String) : Rome2Object(line) {
  * melee_weapons
  */
 class Weapon(line: String) : Rome2Object(line) {
-	val name           by StringProperty(0)
+	var name           by StringProperty(0)
 	var armourPiercing by BooleanProperty(2)
 	var cavalryBonus   by IntProperty(3)
 	var largeBonus     by IntProperty(4)
 	var infantryBonus  by IntProperty(5)
 	var damage         by IntProperty(6)
 	var apDamage       by IntProperty(7)
+}
+
+
+
+/**
+ * missile_weapons
+ */
+class MissileWeapon(line: String) : Rome2Object(line) {
+	var name         by StringProperty(0)
+	var projectile   by ObjectProperty(2, { projectile(it) }, Projectile::name)
+}
+
+
+
+/**
+ * projectiles
+ */
+class Projectile(line: String) : Rome2Object(line) {
+	var name             by StringProperty(0)
+	var effectiveRange   by IntProperty(7)
+	var minimumRange     by IntProperty(8)
+	var damage           by IntProperty(13)
+	var apDamage         by IntProperty(14)
+	var penetration      by StringProperty(15)
+	var bonus            by StringProperty(11)
+	var muzzleVelocity   by IntProperty(10)
+	var collisionRadius  by FloatProperty(19)
+	var baseReloadTime   by IntProperty(20)
+	var infantryBonus    by IntProperty(24)
+	var cavarryBonus     by IntProperty(25)
+	var largeBonus       by IntProperty(26)
+	
 }
 
 
@@ -232,7 +300,7 @@ class BuildingEffect(line: String) : Rome2Object(line) {
  * building_levels
  */
 class Building(line: String) : Rome2Object(line) {
-	val name  by StringProperty(0)
+	var name  by StringProperty(0)
 	var level by IntProperty(2)
 	var turns by IntProperty(4)
 	var cost  by IntProperty(5)
@@ -241,6 +309,8 @@ class Building(line: String) : Rome2Object(line) {
 	val garrisons = ArrayList<Garrison>()
 	val extraGarrisons = ArrayList<Garrison>()
 	val extraEffects = ArrayList<BuildingEffect>()
+	val units = ArrayList<BuildingUnit>()
+	val extraUnits = ArrayList<BuildingUnit>()
 
 	val adjustedLevel = level + 1
 
@@ -262,6 +332,18 @@ class Building(line: String) : Rome2Object(line) {
 
 
 /**
+ * building_units_allowed
+ */
+class BuildingUnit(line: String) : Rome2Object(line) {
+	var id       by IntProperty(0)
+	var building by StringProperty(1)
+	var unit     by StringProperty(2)
+	constructor(id: Int, building: String, unit: String) : this(assemble(id, building, unit, 0, "", "", "false"))
+}
+
+
+
+/**
  * building_level_armed_citizenry_junctions
  */
 class Garrison(line: String) : Rome2Object(line) {
@@ -277,7 +359,7 @@ class Garrison(line: String) : Rome2Object(line) {
  * technologies
  */
 class Tech(line: String) : Rome2Object(line) {
-	val name by StringProperty(0)
+	var name by StringProperty(0)
 	var cost by IntProperty(3)
 
 	val effects = ArrayList<TechEffect>()

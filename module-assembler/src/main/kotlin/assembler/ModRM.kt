@@ -3,6 +3,9 @@ package assembler
 @JvmInline
 value class ModRM(val value: Int) {
 
+	constructor(mod: Int, reg: Int, rm: Int) : this((mod shl 6) or (reg shl 3) or rm)
+	constructor(mod: Int, reg: Register, rm: Register) : this(mod, reg.value, rm.value)
+
 	val mod get() = (value and 0b11_000_000) shr 6
 	val reg get() = (value and 0b00_111_000) shr 3
 	val rm get()  = (value and 0b00_000_111) shr 0

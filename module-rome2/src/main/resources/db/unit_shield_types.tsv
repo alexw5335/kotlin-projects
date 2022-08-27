@@ -1,3 +1,5 @@
+key	shield_defence_value	shield_armour_value	audio_material	missile_block_chance
+#unit_shield_types_tables;3;db/unit_shield_types_tables/unit_shield_types				
 caetra	40	5	wood	20
 caetra_cavalry	40	5	wood	10
 caetra_fast_cav	40	5	wood	25

@@ -20,6 +20,8 @@ object Units {
 	val TRIARII = unit("Rom_Triarii")
 	val VETERAN_LEGIONARIES = unit("Rom_Vet_Legionaries")
 	val VIGILES = unit("Rom_Vigiles")
+	val VELITES = unit("Rom_Velites")
+	val LEVES = unit("Rom_Leves")
 
 	val AUX_AFRICAN_ARCHERS = unit("Aux_Afr_Archers")
 	val AUX_AFRICAN_CAVALRY = unit("Aux_Afr_Cav")

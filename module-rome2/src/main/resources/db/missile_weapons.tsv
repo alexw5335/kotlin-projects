@@ -1,3 +1,5 @@
+key	precursor	default_projectile	can_fire_at_buildings
+#missile_weapons_tables;6;db/missile_weapons_tables/missile_weapons			
 dk_composite_bow_poison_elite	false	arrow_composite	false
 dk_long_bow_poison	false	arrow_normal_long	false
 fighting_tower_arrow	false	arrow_tower	false
