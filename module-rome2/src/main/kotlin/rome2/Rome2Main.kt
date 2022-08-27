@@ -5,11 +5,6 @@ import core.Core
 
 
 fun main() {
-	Units.LEVES.printFormatted()
-	Units.VELITES.printFormatted()
-	Units.AUX_CRETAN_ARCHERS.printFormatted()
-	Units.AUX_PELTASTS.printFormatted()
-	Mod3.mod()
 	applyMods()
 }
 
@@ -20,6 +15,50 @@ Modifications
  */
 
 
+/*
+	private fun table(name: String) = Table(name, Core.readResourceLines("/db/$name.tsv"))
+
+	val SHIELDS = table("unit_shield_types")
+	val ARMOURS = table("unit_armour_types")
+	val WEAPONS = table("melee_weapons")
+	val LAND_UNITS = table("land_units")
+	val MAIN_UNITS = table("main_units")
+	val BUILDING_EFFECTS = table("building_effects_junction")
+	val BUILDING_LEVELS = table("building_levels")
+	val GARRISONS = table("building_level_armed_citizenry_junctions")
+	val TECHS = table("technologies")
+	val TECH_EFFECTS = table("technology_effects_junction")
+	val MISSILE_WEAPONS = table("missile_weapons")
+	val PROJECTILES = table("projectiles")
+	val BUILDING_UNITS = table("building_units_allowed")
+ */
+
+val tableMap = mapOf(
+	Shield::class.java to Tables.SHIELDS,
+	Armour::class.java to Tables.ARMOURS,
+	Weapon::class.java to Tables.WEAPONS,
+	Unit::class.java to Tables.LAND_UNITS,
+	BuildingEffect::class.java to Tables.BUILDING_EFFECTS,
+	Building::class.java to Tables.BUILDING_LEVELS,
+	Garrison::class.java to Tables.GARRISONS,
+	Tech::class.java to Tables.TECHS,
+	TechEffect::class.java to Tables.TECH_EFFECTS,
+	MissileWeapon::class.java to Tables.MISSILE_WEAPONS,
+	Projectile::class.java to Tables.PROJECTILES,
+	BuildingUnit::class.java to Tables.BUILDING_UNITS,
+)
+
+inline fun <reified T : Rome2Object> T.modify(block: T.() -> kotlin.Unit) {
+	block(this)
+	modifiedObjects.getOrPut(T::class.java, ::HashSet).add(this)
+}
+inline fun <reified T : Rome2Object> modify(value: Rome2Object) {
+	modifiedObjects.getOrPut(T::class.java, ::HashSet).add(value)
+}
+
+val modifiedObjects = HashMap<Class<*>, HashSet<Rome2Object>>()
+
+fun getModifiedObjects(type: Class<*>) = modifiedObjects[type] ?: emptySet()
 
 val modifiedWeapons = HashSet<Weapon>()
 
@@ -124,8 +163,12 @@ fun Building.unit(unit: Unit) = extraBuildingUnits.add(BuildingUnit(buildingUnit
 
 
 fun applyMods() {
-	val prefix = "RIV1"
-	applyMods(prefix, Tables.ARMOURS, modifiedArmours)
+	for((type, map) in modifiedObjects) {
+		val table = tableMap[type] ?: error("Unspecified table mapping for '$type'")
+		applyMods("R1V1", table, map)
+	}
+	//applyMods(prefix, getModifiedObjects(Armour::class.java))
+	/*applyMods(prefix, Tables.ARMOURS, modifiedArmours)
 	applyMods(prefix, Tables.SHIELDS, modifiedShields)
 	applyMods(prefix, Tables.WEAPONS, modifiedWeapons)
 	applyMods(prefix, Tables.LAND_UNITS, Tables.MAIN_UNITS, modifiedUnits)
@@ -136,26 +179,35 @@ fun applyMods() {
 	applyMods(prefix, Tables.GARRISONS, modifiedGarrisons, buildings.values.flatMap { it.extraGarrisons }.map { it.assembleLine })
 	applyMods(prefix, Tables.BUILDING_UNITS, extraBuildingUnits)
 	applyMods(prefix, Tables.PROJECTILES, extraProjectiles)
-	applyMods(prefix, Tables.MISSILE_WEAPONS, extraMissileWeapons)
-	println(extraProjectiles.size)
+	applyMods(prefix, Tables.MISSILE_WEAPONS, extraMissileWeapons)*/
 }
 
 
 
-fun applyMods(
-	prefix: String,
-	table: Table,
-	mods: Collection<Rome2Object>,
-	additionalLines: List<String> = emptyList()
-) {
-	if(mods.isEmpty() && additionalLines.isEmpty()) return
+
+
+
+fun applyMods(prefix: String, table: Table, mods: Collection<Rome2Object>) {
+	if(mods.isEmpty()) return
+	val lines = ArrayList<String>()
+	lines.add(table.firstLine)
+	lines.add(table.secondLine)
+	for(m in mods) lines.add(m.assembleLine)
+	Core.writeLines(table.outputPath(prefix), lines)
+}
+
+
+
+/*inline fun <reified T : Rome2Object> applyMods(prefix: String, table: Table, type: Class<*>) {
+	if(mods.isEmpty()) return
+	@Suppress("USELESS_CAST")
+	val table = tableMap[T::class.java as (Class<*>)] ?: error("Unspecified table mapping for class: ${T::class.simpleName}")
 	val lines = ArrayList<String>()
 	lines.add(table.firstLine)
 	lines.add(table.secondLine(prefix))
 	for(mod in mods) lines.add(mod.assembleLine)
-	lines.addAll(additionalLines)
 	Core.writeLines(table.outputPath(prefix), lines)
-}
+}*/
 
 
 
