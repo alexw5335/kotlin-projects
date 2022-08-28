@@ -2,8 +2,19 @@ package binary
 
 import core.binary.Endianness
 import core.binary.LittleEndian
+import java.nio.ByteBuffer
+import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class BinaryReader(val bytes: ByteArray, var endianness: Endianness = LittleEndian) {
+
+
+	constructor(path: Path) : this(Files.readAllBytes(path))
+
+	constructor(path: String) : this(Paths.get(path))
+
 
 
 	/*
@@ -113,6 +124,8 @@ class BinaryReader(val bytes: ByteArray, var endianness: Endianness = LittleEndi
 	
 	fun f64() = endianness.f64(this)
 
+	fun u32Long() = u32().toUInt().toLong()
+
 
 
 	/*
@@ -120,6 +133,8 @@ class BinaryReader(val bytes: ByteArray, var endianness: Endianness = LittleEndi
 	 */
 
 
+
+	fun string(length: Int, encoding: Charset) = encoding.decode(ByteBuffer.wrap(bytes(length))).toString()
 
 	fun ascii(length: Int) = String(CharArray(length) { Char(u8()) }).trimEnd { it == 0.toChar() }
 
@@ -139,7 +154,7 @@ class BinaryReader(val bytes: ByteArray, var endianness: Endianness = LittleEndi
 		return count
 	}
 
-	fun asciiNT() = ascii(ntLength()).also { pos++ }
+	fun ascii() = ascii(ntLength()).also { pos++ }
 
 
 }

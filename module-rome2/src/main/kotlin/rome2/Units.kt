@@ -2,7 +2,6 @@ package rome2
 
 object Units {
 
-
 	val ARMOURED_LEGIONARIES = unit("Rom_Armour_Legionaries")
 	val EAGLE_COHORT = unit("Rom_Eagle_Cohort")
 	val EQUITES = unit("Rom_Equites")

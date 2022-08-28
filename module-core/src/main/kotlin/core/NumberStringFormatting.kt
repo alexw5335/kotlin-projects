@@ -88,3 +88,44 @@ val Byte.hex get() = toUByte().toInt().hex
 val Byte.hex8 get() = toUByte().toInt().hex8
 
 val Byte.bin233 get() = toUByte().toInt().bin233
+
+
+
+fun ByteArray.printHex() {
+	val width = when {
+		size <= 0xFF -> 2
+		size <= 0xFFFF -> 4
+		else -> 8
+	}
+	for(i in 0 until width) print(' ')
+	println("   00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F")
+	for(i in 0 until width) print(' ')
+	println("   -----------------------------------------------")
+	var ascii = ""
+	val symbols = setOf(
+		'`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+		'_', '-', '+', '=', '{', '[', '}', ']', '\\', '|', ':', ';',
+		'\'', '"', '<', ',', '.', '>', '/', '?'
+	)
+	for(i in indices) {
+		if(i % 16 == 0) {
+			when {
+				size <= 0xFF   -> print(i.hex8)
+				size <= 0xFFFF -> print(i.hex16)
+				else           -> print(i.hex32)
+			}
+			print("   ")
+		}
+		val char = this[i].toUByte().toInt().toChar()
+		ascii += if(char.isLetterOrDigit() || char in symbols) char else '.'
+		print(this[i].hex8)
+		print(' ')
+		if(i % 16 == 15) {
+			print("  ")
+			print(ascii)
+			println()
+			ascii = ""
+		}
+	}
+	if(size % 16 != 0) println()
+}

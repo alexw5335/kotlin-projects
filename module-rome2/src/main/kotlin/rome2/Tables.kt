@@ -31,5 +31,6 @@ object Tables {
 	val MISSILE_WEAPONS = table("missile_weapons")
 	val PROJECTILES = table("projectiles")
 	val BUILDING_UNITS = table("building_units_allowed")
+	val GARRISON_GROUPS = table("armed_citizenry_units_to_unit_groups_junctions")
 
 }

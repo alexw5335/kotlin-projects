@@ -1,0 +1,2165 @@
+rom_barbarian_basic_horse
+	Ibe_Cav
+	Cel_Light_Horse
+	Ger_Scout_Riders
+	Bri_Scout_Riders
+	Ill_Cav
+	Thr_Cav
+	Dac_Spear_Horsemen
+	Ste_Horse_Archers
+
+rom_barbarian_bowmen
+	Dac_Heavy_Bowmen
+	Ibe_Skirm
+	Cel_Slingers
+	Bri_Skirm
+	Ger_Longbow_Hunters
+	Ill_Slave_Javelinmen
+	Thr_Bowmen
+	Dac_Bowmen
+	Ste_Archers
+
+rom_barbarian_elite_melee
+	Bri_Painted_Ones
+	Thr_Warriors
+	Ibe_Scutarii
+	Dac_Spear_Warriors
+	Cel_Sword_Followers
+	Ibe_Vet_Shield_Warriors
+	Ill_Hoplites
+	Cel_Axe_Warriors
+	Cel_Galatian_Spears
+	Cel_Fierce_Swords
+	Dac_Armoured_Spears
+	Cel_Chosen_Sword
+	Ger_Wodanaz_Spears
+	Ste_Noble_Horse_Archers
+
+rom_barbarian_fixed_defence_ballista
+	Ibe_Ballista_Bastion
+	Cel_Ballista_Bastion
+	Bri_Ballista_Bastion
+	Ger_Ballista_Bastion
+	Dac_Ballista_Bastion
+	Gre_Ballista_Bastion
+	Ste_Ballista_Bastion
+
+rom_barbarian_fixed_defence_onager
+	Ibe_Onager_Bastion
+	Cel_Onager_Bastion
+	Bri_Onager_Bastion
+	Ger_Onager_Bastion
+	Dac_Onager_Bastion
+	Gre_Onager_Bastion
+
+rom_barbarian_fixed_defence_scorpion
+	Ibe_Scorpion_Bastion
+	Cel_Scorpion_Bastion
+	Bri_Scorpion_Bastion
+	Ger_Scorpion_Bastion
+	Dac_Scorpion_Bastion
+	Gre_Scorpion_Bastion
+
+rom_barbarian_foreign_hellenic_garrison
+	Car_Mob
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+
+rom_barbarian_hunters
+	Ibe_Guerilla_Warriors
+	Bri_Ambushers
+	Ger_Night_Hunters
+
+rom_barbarian_medium_horse
+	Cel_Mighty_Horse
+	Cel_Galatian_Raiders
+	Cel_Raiding_Horsemen
+	Thr_Horsemen
+	Ill_Cav
+	Ibe_Celtiberian_Cav
+	Ger_Scout_Riders
+	Ibe_Scutarii_Cav
+	Cel_Heavy_Horse
+	Dac_Bow_Horsemen
+	Ste_Armoured_Lancers
+	Bri_Veteran_Riders
+
+rom_barbarian_medium_melee
+	Ger_Hex_Bearers
+	Dac_Heavy_Spears
+	Ibe_Sword
+	Cel_Warriors
+	Ger_Bloodsworn
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Spears
+	Ste_Spear
+
+rom_barbarian_minor_settlement_lvl1_allgarrison
+	Thr_Warriors
+	Dac_Heavy_Skirm
+	Dac_Heavy_Skirm
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Bri_Farmers
+	Ger_Tribesmen
+	CiG_Cel_Skirm
+
+rom_barbarian_minor_settlement_lvl2_allgarrison
+	Thr_Warriors
+	Ger_Hex_Bearers
+	Dac_Heavy_Skirm
+	Dac_Heavy_Skirm
+	Dac_Heavy_Skirm
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ger_Tribesmen
+	Bri_Farmers
+	CiG_Cel_Skirm
+
+rom_barbarian_minor_settlement_lvl3_allgarrison
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Thr_Warriors
+	Ger_Hex_Bearers
+	Dac_Heavy_Skirm
+	Dac_Heavy_Skirm
+	Dac_Heavy_Skirm
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Leves
+	Ita_Levy_Slingers
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Ger_Tribesmen
+	Bri_Farmers
+	CiG_Cel_Skirm
+	CiG_Cel_Warriors
+
+rom_barbarian_minor_settlement_lvl4_allgarrison
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Thr_Warriors
+	Ger_Hex_Bearers
+	Dac_Heavy_Bowmen
+	Dac_Heavy_Skirm
+	Dac_Heavy_Skirm
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Leves
+	Ita_Levy_Slingers
+	Ibe_Slingers
+	Cel_Slingers
+	Bri_Skirm
+	Ger_Longbow_Hunters
+	Ill_Slave_Javelinmen
+	Thr_Bowmen
+	Dac_Bowmen
+	Ste_Archers
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	CiG_Cel_Skirm
+	CiG_Cel_Warriors
+
+rom_barbarian_naval_basic
+	Ibe_Tribesmen_Raider
+	Cel_Freemen_Raider
+	Ger_Spear_Raider
+	Cel_Tribesmen_Raider
+	Thr_Warriors_Raider
+	Dac_Spears_Raider
+	Ste_Tribesmen_Raider
+	Ill_Javelinmen_One_Halfer
+	Gre_Javelinmen_One_Halfer
+
+rom_barbarian_naval_fishing_advanced
+	Ibe_Tribesmen_Raider
+	Cel_Freemen_Raider
+	Ger_Spear_Raider
+	Cel_Tribesmen_Raider
+	Thr_Warriors_Raider
+	Dac_Spears_Raider
+	Ste_Tribesmen_Raider
+	Ill_Javelinmen_Two_Halfer
+	Gre_Javelinmen_Two_Halfer
+
+rom_barbarian_naval_lvl2
+	Ibe_Slingers_Raider
+	Cel_Slingers_Raider
+	Bri_Slingers_Raider
+	Ger_Slingers_Raider
+	Ill_Slingers_Three
+	Thr_Skirm_Raider
+	Ste_Archers_Raider
+	Cel_Skirm_Raider
+	Dac_Skirm_Raider
+	Gre_Slingers_Three
+
+rom_barbarian_naval_lvl3
+	Ibe_Sword_Medium_Raider
+	Cel_Warriors_Medium_Raider
+	Bri_Sword_Medium_Raider
+	Ger_Club_Medium_Raider
+	Ste_Axes_Medium_Raider
+	Ill_Slingers_Five
+	Thr_Warriors_Medium_Raider
+	Gre_Slingers_Five
+	Dac_Heavy_Spears_Raider
+
+rom_barbarian_naval_lvl4
+	Ibe_Lusitani_Nobles_Raider
+	Ibe_Noble_Fighters_Raider
+	Cel_Oathsworn_Heavy_Raider
+	Bri_Painted_Heavy_Raider
+	Ger_Sword_Heavy_Raider
+	Ste_Spear_Heavy_Raider
+	Cel_Galatian_Heavy_Raider
+	Ill_Thureos_Six
+	Thr_Nobles_Heavy_Raider
+	Dac_Falxmen_Raider
+	Ste_Axes_Six
+
+rom_barbarian_savage_dogs
+	Cel_Savage_Dogs
+
+rom_barbarian_skirmishers
+	Ill_Slave_Javelinmen
+	Dac_Heavy_Skirm
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ibe_Skirm
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+
+rom_barbarian_strong_cav
+	Ste_Armour_Horse_Archers
+
+rom_barbarian_strong_melee
+	Ger_Hex_Bearers
+	Ger_Round_Shield_Sword
+	Cel_Fierce_Swords
+	Cel_Tribal_Warriors
+	Dac_Armoured_Spears
+	Cel_Sword_Followers
+	Cel_Chosen_Sword
+	Thr_Nobles
+	Thr_Warriors
+	Ibe_Scutarii
+	Ibe_Vet_Shield_Warriors
+	Bri_Chosen_Sword_Band
+	Cel_Galatian_Spears
+	Ill_Hoplites
+	Thr_Peltasts
+	Ste_Noble_Lancers
+	Dac_Spear_Warriors
+
+rom_barbarian_sword_band
+	Bri_Sword_Band
+
+rom_barbarian_tribesmen
+	Thr_Tribal_Garrison
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Ibe_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Cel_Tribesmen
+
+rom_barbarian_wodanaz_spears
+	Ger_Wodanaz_Spears
+
+rom_eastern_archers
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Num_Javelinmen
+
+rom_eastern_basic_cavalry
+	Eas_Persian_Cavalry
+	Ara_Camel_Spear
+	Eas_Median_Cav
+	Ara_Cav
+	Eas_Cappadocian_Cav
+	Ste_Horse_Archers
+	Afr_Skirm_Cav
+	Aet_Cav
+	Afr_Numidian_Cav
+
+rom_eastern_basic_heavy_cavalry
+	Eas_Parthian_Horse_Archers
+	Eas_Horse_Archers
+	Gre_Companion_Cav
+	dk_afr_armoured_desert_cavalry
+	dk_ara_armoured_camel_spearmen
+
+rom_eastern_basic_melee
+	Egy_Nubian_Spear
+	dk_saba_desert_spearmen
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+
+rom_eastern_elite_infantry
+	Eas_Persian_Hoplites
+	Eas_Bithynian_Infantry
+	Gre_Pike
+	Eas_Elite_Persian_Archers
+	Ara_Noble_Sword
+	Eas_Syrian_Heavy_Archers
+	Eas_Axemen
+	Num_Noble_Infantry
+	dk_nab_rekem_palace_guard
+	dk_saba_marib_royal_guard
+	dk_kush_leopard_warriors
+	dk_kush_leopard_warriors
+	dk_kush_royal_kushite_archers
+	Afr_Numidian_Noble_Cav
+
+rom_eastern_fixed_defence_ballista
+	Eas_Ballista_Bastion
+	Gre_Ballista_Bastion
+	Afr_Ballista_Bastion
+
+rom_eastern_fixed_defence_onager
+	Eas_Onager_Bastion
+	Gre_Onager_Bastion
+	Afr_Onager_Bastion
+
+rom_eastern_fixed_defence_scorpion
+	Eas_Scorpion_Bastion
+	Gre_Scorpion_Bastion
+	Afr_Scorpion_Bastion
+
+rom_eastern_foreign_hellenic_basic_melee
+	Car_Late_Libyan_Hoplites
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+
+rom_eastern_foreign_hellenic_garrison
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Spartan_Youths
+	Egy_Mob
+
+rom_eastern_horse_skirmishers
+	Eas_Horse_Skirm
+
+rom_eastern_light_infantry
+	dk_num_numidian_light_infantry
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Gre_Thureos_Spears
+	Eas_Bithynian_Infantry
+	Eas_Axemen
+	Afr_Large_Shield_Warriors
+	Aet_Sword
+
+rom_eastern_minor_settlement_lvl1_allgarrison
+	Car_Late_Libyan_Hoplites
+	Dac_Heavy_Skirm
+	Egy_Nubian_Spear
+	dk_saba_desert_spearmen
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Spartan_Youths
+	Egy_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Spartan_Youths
+	Egy_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+
+rom_eastern_minor_settlement_lvl2_allgarrison
+	Car_Late_Libyan_Hoplites
+	Dac_Heavy_Skirm
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Spartan_Youths
+	Egy_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Spartan_Youths
+	Egy_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+
+rom_eastern_minor_settlement_lvl3_allgarrison
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	dk_num_armoured_numidian_spearmen
+	dk_num_desert_legionaries
+	dk_nab_armoured_desert_hoplites
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Spartan_Youths
+	Egy_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Leves
+	Ita_Levy_Slingers
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Gre_Thureos_Spears
+	Eas_Bithynian_Infantry
+	Eas_Axemen
+	Afr_Large_Shield_Warriors
+	Aet_Sword
+
+rom_eastern_minor_settlement_lvl4_allgarrison
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	dk_num_desert_cohort
+	dk_nab_rekem_palace_guard
+	dk_nab_armoured_desert_hoplites
+	dk_saba_marib_royal_guard
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Gre_Thureos_Spears
+	Eas_Bithynian_Infantry
+	Eas_Axemen
+	Afr_Large_Shield_Warriors
+	Aet_Sword
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Spartan_Youths
+	Egy_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Rorarii
+	Ita_Spear
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+
+rom_eastern_mob_tribesmen
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+
+rom_eastern_naval_basic
+	Eas_Javelinmen_One_Halfer
+	Afr_Javelinmen_One_Halfer
+	Car_Javelin_One_Halfer
+	Gre_Peltasts_One_Halfer
+	Ara_Tribes_One_Halfer
+	dk_kush_slave_slingers_one
+	dk_num_javelinmen_one
+
+rom_eastern_naval_lvl2
+	Eas_Hillmen_Four
+	Eas_Kartli_Four
+	Afr_Spear_Two
+	Eas_Hillmen_Two
+	Ara_Spear_Two
+	dk_ara_desert_spear_two
+	dk_kush_nubian_spearmen_two
+	Num_Spear_Two
+
+rom_eastern_naval_lvl3
+	Eas_Per_Archers_Five
+	Eas_Archers_Five
+	Afr_Archers_Five
+	Ara_Slingers_Five
+	dk_kush_archers_five
+	dk_nab_light_peltasts_five
+	dk_num_heavy_skirmishers_five
+	dk_saba_archers_five
+
+rom_eastern_naval_trade_advanced
+	Eas_Slingers_Two_Halfer
+	Eas_Javelinmen_Two_Halfer
+	Afr_Javelinmen_Two_Halfer
+	Car_Javelin_Two_Halfer
+	Gre_Peltasts_Two_Halfer
+	dk_ara_desert_spear_two
+	dk_kush_nubian_spearmen_two
+	Ara_Tribes_Two_Halfer
+	dk_kush_slave_slingers_two
+
+rom_eastern_noble_infantry
+	Ara_Noble_Sword
+	Eas_Noble_Spear
+	Gre_Pike
+	Num_Noble_Infantry
+	dk_kush_leopard_warriors
+
+rom_eastern_parthian_swordsmen
+	Eas_Par_Sword
+
+rom_eastern_skirmishers
+	Eas_Hillmen
+	Ara_Levy_Skirm
+	Afr_Javelinmen
+	Num_Javelinmen
+	dk_kush_slave_slingers
+
+rom_eastern_strong_cavalry
+	Eas_Noble_Blood_Cav
+	Ara_Cav
+	Gre_Tarantine_Cav
+	Afr_Numidian_Noble_Cav
+
+rom_eastern_strong_heavy_cavalry
+	Eas_Cataphracts
+	Gre_Companion_Cav
+	Eas_Persian_Cavalry
+	dk_afr_armoured_desert_cavalry
+	dk_num_desert_legionary_cavalry
+	dk_saba_sabaean_camel_cataphracts
+
+rom_eastern_strong_melee
+	dk_num_armoured_numidian_spearmen
+	dk_nab_armoured_desert_hoplites
+	Gre_Pike
+	Eas_Par_Sword
+	Ara_Noble_Sword
+	Eas_Noble_Spear
+	Afr_Large_Shield_Warriors
+	Aet_Sword
+	Eas_Cappadocian_Cav
+
+rom_hellenic_basic_cavalry
+	Gre_Citizen_Cav
+	Car_Cav
+	Ill_Cav
+
+rom_hellenic_basic_melee
+	Car_Late_Libyan_Hoplites
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Cel_Levy_Freemen
+	Ill_Spear
+
+rom_hellenic_basic_ranged
+	Car_Libyan_Javelin
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Egy_Slingers
+
+rom_hellenic_elite_infantry
+	Gre_Pike
+	Car_Hoplites
+	Gre_Scythian_Hoplites
+	Gre_Massilian_Hoplites
+	Eas_Kartli_Axemen
+	Gre_Spartan_Pike
+
+rom_hellenic_fixed_defence_ballista
+	Gre_Ballista_Bastion
+	Car_Ballista_Bastion
+
+rom_hellenic_fixed_defence_onager
+	Gre_Onager_Bastion
+	Car_Onager_Bastion
+
+rom_hellenic_fixed_defence_scorpion
+	Gre_Scorpion_Bastion
+	Car_Scorpion_Bastion
+
+rom_hellenic_foreign_barbarian_tribesmen
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+
+rom_hellenic_foreign_eastern_archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+
+rom_hellenic_foreign_eastern_basic_melee
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+
+rom_hellenic_foreign_eastern_mob_tribesmen
+	Ara_Tribes_People
+	Afr_Tribesmen
+
+rom_hellenic_garrison
+	Ste_Tribesmen
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+
+rom_hellenic_garrison_extended
+	Car_Citizen_Militia
+	Gre_Citizen_Hoplites
+
+rom_hellenic_medium_cavalry
+	Ste_Armour_Horse_Archers
+	Gre_Tarantine_Cav
+	Bac_Noble_Horse
+	Car_Noble_Cav
+	Eas_Noble_Blood_Cav
+	Ill_Cav
+
+rom_hellenic_medium_melee
+	Car_Late_Hoplites
+	Ste_Spear
+	Eas_Hillmen
+	Eas_Axemen
+	Gre_Levy_Pike
+	Gre_Periokoi_Pike
+	Gre_Light_Hoplites
+	Egy_Pike
+	Car_Hoplites
+	Ill_Hoplites
+
+rom_hellenic_medium_ranged
+	Gre_Massilian_Thureos_Spears
+	Ste_Archers
+	Gre_Archers
+	Gre_Helot_Archers
+	Egy_Archers
+	Car_Libyan_Peltasts
+	Eas_Archers
+	Eas_Elite_Persian_Archers
+
+rom_hellenic_medium_ranged2
+	Gre_Peltasts
+	Gre_Periokoi_Peltasts
+	Car_Libyan_Peltasts
+	Eas_Pontic_Peltasts
+
+rom_hellenic_minor_settlement_lvl1_allgarrison
+	Car_Late_Libyan_Hoplites
+	Car_Late_Libyan_Hoplites
+	Dac_Heavy_Skirm
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Car_Citizen_Militia
+	Gre_Citizen_Hoplites
+	Ara_Tribes_People
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Afr_Tribesmen
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	CiG_Cel_Skirm
+
+rom_hellenic_minor_settlement_lvl2_allgarrison
+	Car_Late_Hoplites
+	Car_Late_Libyan_Hoplites
+	Car_Late_Libyan_Hoplites
+	Dac_Heavy_Skirm
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Car_Citizen_Militia
+	Gre_Citizen_Hoplites
+	Ara_Tribes_People
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Afr_Tribesmen
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Gre_Levy_Pike
+	Gre_Periokoi_Pike
+	Gre_Light_Hoplites
+	Egy_Pike
+	Car_Hoplites
+	Ill_Hoplites
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	CiG_Cel_Skirm
+
+rom_hellenic_minor_settlement_lvl3_allgarrison
+	Car_Late_Hoplites
+	Car_Late_Hoplites
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Peltasts
+	Gre_Periokoi_Peltasts
+	Car_Libyan_Peltasts
+	Eas_Pontic_Peltasts
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Gre_Levy_Pike
+	Gre_Periokoi_Pike
+	Gre_Light_Hoplites
+	Egy_Pike
+	Car_Hoplites
+	Ill_Hoplites
+	Car_Citizen_Militia
+	Gre_Citizen_Hoplites
+	Ara_Tribes_People
+	Afr_Tribesmen
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Rorarii
+	Ita_Spear
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Gre_Levy_Pike
+	Gre_Periokoi_Pike
+	Gre_Light_Hoplites
+	Egy_Pike
+	Car_Hoplites
+	Ill_Hoplites
+	CiG_Cel_Skirm
+	CiG_Cel_Warriors
+
+rom_hellenic_minor_settlement_lvl4_allgarrison
+	Car_Late_Hoplites
+	Car_Late_Hoplites
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Gre_Peltasts
+	Gre_Periokoi_Peltasts
+	Car_Libyan_Peltasts
+	Eas_Pontic_Peltasts
+	Gre_Archers
+	Gre_Helot_Archers
+	Egy_Archers
+	Car_Libyan_Peltasts
+	Eas_Archers
+	Eas_Elite_Persian_Archers
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Levy_Pike
+	Gre_Periokoi_Pike
+	Gre_Light_Hoplites
+	Egy_Pike
+	Car_Hoplites
+	Ill_Hoplites
+	Ara_Tribes_People
+	Afr_Tribesmen
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Ibe_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Rorarii
+	Ita_Spear
+	Gre_Levy_Pike
+	Gre_Periokoi_Pike
+	Gre_Light_Hoplites
+	Egy_Pike
+	Car_Hoplites
+	Ill_Hoplites
+	Gre_Archers
+	Gre_Helot_Archers
+	Egy_Archers
+	Car_Libyan_Peltasts
+	Eas_Archers
+	Eas_Elite_Persian_Archers
+	CiG_Cel_Skirm
+	CiG_Cel_Warriors
+
+rom_hellenic_naval_basic
+	Gre_Javelinmen_One_Halfer
+	Gre_Hel_Javelinmen_One_Halfer
+	Gre_Peltasts_One_Halfer
+	Eas_Javelinmen_One_Halfer
+	Egy_Javelinmen_One_Halfer
+	Car_Javelin_One_Halfer
+	Cel_Skirm_One_Halfer
+	Ill_Javelinmen_One_Halfer
+
+rom_hellenic_naval_main_lvl2
+	Eas_Hillmen_Four
+	Gre_Slingers_Five
+	Eas_Kartli_Four
+	Gre_Archers_Five
+	Gre_Hel_Archers_Five
+	Eas_Per_Archers_Five
+	Egy_Archers_Five
+	Car_Javelin_Five
+	Cel_Slingers_Five
+	Ill_Slingers_Five
+
+rom_hellenic_naval_main_lvl3
+	Eas_Per_Archers_Five
+	Gre_Scythian_Hoplites_Six
+	Ste_Axes_Six
+	Eas_Kartli_Four
+	Gre_Thorax_Six
+	Gre_Spartan_Six
+	Gre_Royal_Pel_Six
+	Gre_Axemen_Six
+	Gre_Thureos_Six
+	Egy_Karian_Six
+	Car_Sacred_Band_Six
+	Eas_Pontic_Six
+	Ger_Spear_Six
+	Ill_Thureos_Six
+
+rom_hellenic_naval_patrol_lvl2
+	Car_Late_Hoplites_Two
+	Ste_Axes_Two
+	Gre_Militia_Hop_Two
+	Gre_Peltasts_Two
+	Gre_Per_Hoplites_Two
+	Gre_Thureos_Two
+	Egy_Nubian_Two
+	Car_Hoplites_Two
+	Cel_Tribesmen_Two
+	Ill_Tribesmen_Two
+	Eas_Hillmen_Two
+
+rom_hellenic_naval_patrol_lvl3
+	Gre_Slingers_Three
+	Gre_Slingers_Three
+	Gre_Hel_Slingers_Three
+	Eas_Slingers_Three
+	Egy_Slingers_Three
+	Car_Javelin_Three
+	Eas_Archers_Three
+	Cel_Slingers_Three
+	Ill_Slingers_Three
+
+rom_hellenic_naval_patrol_lvl4
+	Car_Late_Hoplites_Four
+	Egy_Slingers_Three
+	Ste_Axes_Four
+	Gre_Thureos_Four
+	Gre_Per_Hoplites_Four
+	Gre_Hoplites_Four
+	Bac_Hillmen_Four
+	Car_Hoplites_Four
+	Eas_Hillmen_Four
+	Ger_Spear_Four
+	Ill_Spear_Four
+
+rom_hellenic_naval_trade_advanced
+	Gre_Javelinmen_Two_Halfer
+	Gre_Hel_Javelinmen_Two_Halfer
+	Gre_Peltasts_Two_Halfer
+	Eas_Javelinmen_Two_Halfer
+	Eas_Pontic_Pel_Two_Halfer
+	Egy_Javelinmen_Two_Halfer
+	Car_Javelin_Two_Halfer
+	Cel_Skirm_Two_Halfer
+	Ill_Javelinmen_Two_Halfer
+
+rom_hellenic_seleucid_medium_melee
+	Eas_Persian_Hoplites
+	Bac_Royal_Guard
+
+rom_hellenic_seleucid_medium_ranged
+	Eas_Persian_Light_Archers
+
+rom_hellenic_seleucid_strong_cav
+	Ind_War_Elephants
+
+rom_hellenic_seleucid_strong_melee
+	Gre_Silver_Shield_Sword
+
+rom_hellenic_strong_melee
+	Car_Late_Hoplites
+	Gre_Scythian_Hoplites
+	Gre_Massilian_Hoplites
+	Eas_Axemen
+	Gre_Thureos_Spears
+	Gre_Spartan_Hoplites
+	Car_Hoplites
+	Ill_Thureos_Spears
+
+rom_hellenic_strong_melee_cav
+	Bac_Royal_Cav
+	Gre_Companion_Cav
+
+rom_roman_basic_melee
+	Rom_Vigiles
+	Emp_Rom_Vigiles
+	Rom_Rorarii
+	Ita_Spear
+
+rom_roman_basic_ranged
+	Rom_Leves
+	Ita_Levy_Slingers
+
+rom_roman_elite_melee
+	Rom_Praetorians
+	Ita_Noble_Infantry
+
+rom_roman_fixed_defence_ballista
+	Rom_Ballista_Bastion
+
+rom_roman_fixed_defence_onager
+	Rom_Onager_Bastion
+
+rom_roman_fixed_defence_scorpion
+	Rom_Scorpion_Bastion
+
+rom_roman_medium_melee
+	Rom_Legionary_Cohort
+	Emp_Rom_Legionaries
+	Rom_Hastati
+	Ita_Spear
+	Rom_Legionaries
+
+rom_roman_medium_melee_sword
+	Rom_Legionary_Cohort
+	Emp_Rom_Legionaries
+	Rom_Hastati
+	Ita_Sword
+	Rom_Legionaries
+
+rom_roman_medium_ranged
+	Rom_Velites
+	Ita_Levy_Skirm
+
+rom_roman_minor_settlement_lvl1_allgarrison
+	Rom_Vigiles
+	Rom_Vigiles
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Plebs
+	Ita_Mob
+	Rom_Rorarii
+	Ita_Spear
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Rorarii
+	Ita_Spear
+	CiG_Rom_Legionaries
+	CiG_Cel_Levy_Freemen
+	CiG_Cel_Skirm
+	CiG_Cel_Skirm
+
+rom_roman_minor_settlement_lvl2_allgarrison
+	Rom_Legionaries
+	Rom_Legionary_Cohort
+	Rom_Vigiles
+	Rom_Vigiles
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Plebs
+	Ita_Mob
+	Rom_Rorarii
+	Ita_Spear
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Hastati
+	Ita_Spear
+	CiG_Rom_Legionaries
+	CiG_Rom_Legionaries
+	CiG_Cel_Levy_Freemen
+	CiG_Cel_Skirm
+	CiG_Cel_Skirm
+
+rom_roman_minor_settlement_lvl3_allgarrison
+	Rom_Legionaries
+	Rom_Legionary_Cohort
+	Rom_Legionary_Cohort
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Leves
+	Ita_Levy_Slingers
+	Rom_Velites
+	Ita_Levy_Skirm
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Hastati
+	Ita_Spear
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Hastati
+	Ita_Spear
+	CiG_Rom_Legionaries
+	CiG_Rom_Legionaries
+	CiG_Cel_Warriors
+	CiG_Cel_Skirm
+	CiG_Cel_Slingers
+	Rom_Legionaries
+
+rom_roman_minor_settlement_lvl4_allgarrison
+	Rom_Legionaries
+	Rom_Legionaries
+	Rom_Legionary_Cohort
+	Rom_Legionary_Cohort
+	Rom_Legionary_Cohort
+	Car_Late_Libyan_Hoplites
+	Rom_Vigiles
+	Rom_Vigiles
+	Dac_Heavy_Skirm
+	Rom_Plebs
+	Ita_Mob
+	Rom_Plebs
+	Ita_Mob
+	Rom_Velites
+	Ita_Levy_Skirm
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Hastati
+	Ita_Spear
+	Gre_Mob
+	Eas_Mob
+	Afr_Tribesmen
+	Ara_Tribes_People
+	Eas_Archers
+	Gre_Archers
+	Afr_Archers
+	Ara_Levy_Skirm
+	Eas_Parthian_Foot_Archers
+	Eas_Garrison_Spear
+	Eas_Spear
+	Afr_Levy_Spear
+	Ara_Levy_Spear
+	Num_Spear
+	Car_Mob
+	Ill_Tribesmen
+	Cel_Tribesmen
+	Gre_Mob
+	Gre_Spartan_Youths
+	Egy_Mob
+	Eas_Mob
+	Gre_Militia_Hoplites
+	Gre_Periokoi_Hoplites
+	Eas_Spear
+	Eas_Garrison_Spear
+	Egy_Infantry
+	Car_Libyan_Hoplites
+	Ger_Spear_Levy
+	Ill_Spear
+	Gre_Slingers
+	Gre_Helot_Slingers
+	Eas_Slingers
+	Cel_Slingers
+	Ill_Slave_Slingers
+	Ibe_Tribesmen
+	Cel_Tribesmen
+	Bri_Farmers
+	Ger_Tribesmen
+	Ill_Tribesmen
+	Dac_Tribesmen
+	Ste_Tribesmen
+	Ibe_Slingers
+	Cel_Skirm
+	Bri_Slingers
+	Ger_Youths
+	Ill_Slave_Javelinmen
+	Thr_Skirm
+	Dac_Skirm
+	Ste_Archers
+	Ibe_Sword
+	Cel_Warriors
+	Bri_Sword_Band
+	Ger_Spear_Brothers
+	Cel_Short_Swords
+	Cel_Galatian_Swords
+	Ill_Levies
+	Thr_Peltasts
+	Dac_Heavy_Spears
+	Ste_Spear
+	Rom_Rorarii
+	Ita_Spear
+	Rom_Velites
+	Ita_Levy_Skirm
+	Rom_Hastati
+	Ita_Spear
+	Rom_Hastati
+	Ita_Spear
+	CiG_Rom_Legionaries
+	CiG_Rom_Legionaries
+	CiG_Cel_Warriors
+	CiG_Cel_Skirm
+	CiG_Cel_Skirm
+	CiG_Cel_Slingers
+	Rom_Legionaries
+
+rom_roman_mobs
+	Rom_Plebs
+	Ita_Mob
+
+rom_roman_naval_basic
+	Rom_Leves_One_Halfer
+	Ita_Skirm_One_Halfer
+
+rom_roman_naval_main_lvl2
+	Rom_Velites_Five
+	Ita_Slingers_Five
+
+rom_roman_naval_main_lvl3
+	Rom_Vet_Legionaries_Six
+	Rom_Evocati_Six
+	Emp_Rom_Vet_Legionaries_Six
+	Rom_Triarii_Six
+	Ita_Sword_Six
+
+rom_roman_naval_patrol_lvl2
+	Rom_Legionaries_Two
+	Rom_Legionary_Cohort_Two
+	Emp_Rom_Legionaries_Two
+	Rom_Hastati_Two
+	Ita_Spear_Two
+
+rom_roman_naval_patrol_lvl3
+	Rom_Leves_Three
+	Ita_Levy_Three
+
+rom_roman_naval_patrol_lvl4
+	Rom_Legionaries_Four
+	Rom_Legionary_Cohort_Four
+	Emp_Rom_Legionaries_Two
+	Emp_Rom_Legionaries_Four
+	Rom_Principes_Four
+	Ita_Spear_Four
+
+rom_roman_naval_trade_advanced
+	Rom_Leves_Two_Halfer
+	Ita_Skirm_Two_Halfer
+
+rom_roman_strong_melee
+	Rom_Legionaries
+	Rom_Legionary_Cohort
+	Emp_Rom_Vet_Legionaries
+	Rom_Principes
+	Ita_Cav
+
+rom_roman_strong_melee2
+	Rom_Legionaries
+	Rom_Legionary_Cohort
+	Emp_Rom_Vet_Legionaries
+	Rom_Principes
+	Ita_Spear
+
+rom_roman_vigiles_garrison
+	Rom_Rorarii
+	Emp_Rom_Vigiles
+	Rom_Vigiles
+	Ita_Spear

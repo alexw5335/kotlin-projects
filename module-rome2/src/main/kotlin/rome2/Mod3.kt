@@ -33,32 +33,28 @@ object Mod3 {
 		armour("segmentata").mod      { armour = 65 }
 		armour("segmentata_arm").mod  { armour = 75 }
 
-		val cretanArrow = Projectile(projectile("arrow_composite").assembleLine).apply {
-			extraProjectiles.add(this)
+		val cretanArrow = Projectile(projectile("arrow_composite").assembleLine).mod {
 			name = "cretan_arrow"
 			damage = 60 // 45 + 15
 			apDamage = 15 // 4 + 11
 			effectiveRange = 200 // 150 + 50
 		}
 
-		val cretanBow = MissileWeapon(missileWeapon("rome_composite_bow_elite").assembleLine).apply {
-			extraMissileWeapons.add(this)
+		val cretanBow = MissileWeapon(missileWeapon("rome_composite_bow_elite").assembleLine).mod {
 			name = "cretan_bow"
 			projectile = cretanArrow
 		}
 
-		val peltastJavelin = Projectile(projectile("javelin_normal").assembleLine).apply {
-			extraProjectiles.add(this)
+		val peltastJavelin = Projectile(projectile("javelin_normal").assembleLine).mod {
 			name = "peltast_javelin"
 			damage = 30 // 20 + 10
 			apDamage = 20 // 12 + 8
 			effectiveRange = 100 // 80 + 20
 		}
 
-		val peltastJavelinWeapon = MissileWeapon(missileWeapon("rome_javelin").assembleLine).apply {
-			extraMissileWeapons.add(this)
-			name = "peltast_javelin_weapon"
-			projectile = peltastJavelin
+		val peltastJavelinWeapon = MissileWeapon(missileWeapon("rome_javelin").assembleLine).mod {
+			//name = "peltast_javelin_weapon"
+			//projectile = peltastJavelin
 		}
 
 		Units.LEVES.mod {
@@ -297,25 +293,25 @@ object Mod3 {
 		}
 
 		RomanTechs.IRON_TOOLS.apply {
-			effect("rom_tech_civil_economy_agriculture_gdp_mod", 10)
-			effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+			effect(ROME_AGRI_GDP_MOD, 10)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
 		}
 		
 		RomanTechs.DOUBLE_CROPPING.apply {
-			effect("rom_tech_civil_economy_agriculture_gdp_mod", 10)
-			effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+			effect(ROME_AGRI_GDP_MOD, 10)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
 		}
 		RomanTechs.IMPROVED_IRRIGATION.apply {
-			effect("rom_tech_civil_economy_agriculture_gdp_mod", 10)
-			effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+			effect(ROME_AGRI_GDP_MOD, 10)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
 		}
 		RomanTechs.LAND_RECLAMATION.apply {
-			effect("rom_tech_civil_economy_agriculture_gdp_mod", 15)
-			effect("rom_tech_civil_economy_agriculture_building_cost_mod", -5)
+			effect(ROME_AGRI_GDP_MOD, 15)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
 		}
 		RomanTechs.SEED_SELECTION.apply {
-			effect("rom_tech_civil_economy_agriculture_gdp_mod", 15)
-			effect("rom_tech_civil_economy_agriculture_building_cost_mod", -10)
+			effect(ROME_AGRI_GDP_MOD, 15)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -10)
 		}
 
 		RomanTechs.COMMON_WEIGHTS_AND_MEASURES.apply {

@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "CanBeParameter")
 
 package rome2
 
@@ -54,33 +54,6 @@ class StringProperty(private val parts: MutableList<String>, private val index: 
 
 
 
-abstract class Property<T>(private val parts: MutableList<String>, private val index: Int) {
-	abstract var cached: T
-	abstract fun set(): String
-	abstract fun get(string: String): T
-
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = cached
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) { cached = value; set() }
-}
-
-class TestProperty(parts: MutableList<String>, index: Int) : Property<Int>(parts, index) {
-	override var cached = get(parts[index])
-	override fun get(string: String) = string.toInt()
-	override fun set() = cached.toString()
-}
-
-
-class IntProperties(private vararg val components: IntProperty) {
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = components[0].getValue(thisRef, property)
-}
-class StringProperties(private vararg val components: StringProperty) {
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = components[0].getValue(thisRef, property)
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) = components.forEach {
-		it.setValue(thisRef, property, value)
-	}
-}
-
-
 class ObjectProperty<T>(
 	private val parts: MutableList<String>,
 	private val index: Int,
@@ -112,7 +85,9 @@ abstract class Rome2Object(line: String) {
 
 
 
-abstract class Rome2CompoundObject(val components: List<Rome2Object>)
+interface Rome2CompoundObject {
+	fun addMod()
+}
 
 
 
@@ -122,7 +97,7 @@ Printing
 
 
 
-fun LandUnitCompound.printFormatted() {
+fun LandUnit.printFormatted() {
 	var string = """
 		$name:
 			attack:   $attack
@@ -194,7 +169,7 @@ Types
 /**
  * main_units
  */
-class MainUnit(line: String) : Rome2Object(line) {
+class MainUnitData(line: String) : Rome2Object(line) {
 	var name by StringProperty(0)
 }
 
@@ -203,33 +178,46 @@ class MainUnit(line: String) : Rome2Object(line) {
 /**
  * land_units
  */
-class LandUnit(line: String) : Rome2Object(line) {
+class LandUnitData(line: String) : Rome2Object(line) {
 	var name by StringProperty(0)
 }
 
 
 
-class LandUnitCompound(val mainUnit: MainUnit, val landUnit: LandUnit) : Rome2CompoundObject(listOf(mainUnit, landUnit)) {
-	var name    by StringProperties(landUnit.StringProperty(0), mainUnit.StringProperty(0))
-	var attack  by landUnit.IntProperty(14)
-	var defence by landUnit.IntProperty(15)
-	var morale  by landUnit.IntProperty(16)
-	var bonusHp by landUnit.IntProperty(17)
-	var charge  by landUnit.IntProperty(6)
-	var level   by landUnit.ObjectProperty(30, TrainingLevel::get, TrainingLevel::string)
-	var armour  by landUnit.ObjectProperty(3, { armour(it) }, Armour::name)
-	var weapon  by landUnit.ObjectProperty(22, { weapon(it) }, Weapon::name)
-	var shield  by landUnit.ObjectProperty(25, { shield(it) }, Shield::name)
-	var cost    by mainUnit.IntProperty(15)
-	var upkeep  by mainUnit.IntProperty(18)
+class LandUnit(
+	private val landUnitData: LandUnitData,
+	private val mainUnitData: MainUnitData
+) : Rome2CompoundObject {
 
-	var missileWeapon by landUnit.ObjectProperty(23, { missileWeapons[it] }, { it?.name ?: ""} )
-	var accuracy      by landUnit.IntProperty(1)
-	var reload        by landUnit.IntProperty(44)
-	var ammo          by landUnit.IntProperty(2)
+	override fun addMod() { landUnitData.addMod(); mainUnitData.addMod() }
+
+	private var landUnitName by landUnitData::name
+	private var mainUnitName by mainUnitData::name
+
+	var name
+		get() = landUnitName
+		set(value) { landUnitName = value; mainUnitName = value }
+
+	var attack  by landUnitData.IntProperty(14)
+	var defence by landUnitData.IntProperty(15)
+	var morale  by landUnitData.IntProperty(16)
+	var bonusHp by landUnitData.IntProperty(17)
+	var charge  by landUnitData.IntProperty(6)
+	var level   by landUnitData.ObjectProperty(30, TrainingLevel::get, TrainingLevel::string)
+	var armour  by landUnitData.ObjectProperty(3, { armour(it) }, Armour::name)
+	var weapon  by landUnitData.ObjectProperty(22, { weapon(it) }, Weapon::name)
+	var shield  by landUnitData.ObjectProperty(25, { shield(it) }, Shield::name)
+	var cost    by mainUnitData.IntProperty(15)
+	var upkeep  by mainUnitData.IntProperty(18)
+
+	var missileWeapon by landUnitData.ObjectProperty(23, { missileWeapons[it] }, { it?.name ?: ""} )
+	var accuracy      by landUnitData.IntProperty(1)
+	var reload        by landUnitData.IntProperty(44)
+	var ammo          by landUnitData.IntProperty(2)
 
 	val totalDefence get() = defence + shield.defence
 	val totalArmour  get() = armour.armour + shield.armour
+
 }
 
 
@@ -298,7 +286,7 @@ class Projectile(line: String) : Rome2Object(line) {
 	var collisionRadius  by FloatProperty(19)
 	var baseReloadTime   by IntProperty(20)
 	var infantryBonus    by IntProperty(24)
-	var cavarryBonus     by IntProperty(25)
+	var cavalryBonus     by IntProperty(25)
 	var largeBonus       by IntProperty(26)
 	
 }
@@ -322,18 +310,28 @@ class BuildingEffect(line: String) : Rome2Object(line) {
 /**
  * building_levels
  */
-class Building(line: String) : Rome2Object(line) {
-	var name  by StringProperty(0)
-	var level by IntProperty(2)
-	var turns by IntProperty(4)
-	var cost  by IntProperty(5)
+class BuildingData(line: String) : Rome2Object(line) {
+	var name by StringProperty(0)
+}
 
-	val effects = ArrayList<BuildingEffect>()
-	val garrisons = ArrayList<Garrison>()
-	val extraGarrisons = ArrayList<Garrison>()
-	val extraEffects = ArrayList<BuildingEffect>()
-	val units = ArrayList<BuildingUnit>()
-	val extraUnits = ArrayList<BuildingUnit>()
+
+
+/**
+ * building_levels
+ */
+class Building(
+	val data      : BuildingData,
+	val effects   : List<BuildingEffect>,
+	val garrisons : List<Garrison>,
+	val units     : List<BuildingUnit>
+) : Rome2CompoundObject {
+
+	override fun addMod() { data.addMod() }
+
+	var name  by data.StringProperty(0)
+	var level by data.IntProperty(2)
+	var turns by data.IntProperty(4)
+	var cost  by data.IntProperty(5)
 
 	val adjustedLevel = level + 1
 
@@ -350,6 +348,7 @@ class Building(line: String) : Rome2Object(line) {
 		name.startsWith("barb_")  -> Culture.BARB
 		else                      -> null
 	}
+
 }
 
 
@@ -377,16 +376,25 @@ class Garrison(line: String) : Rome2Object(line) {
 }
 
 
-
 /**
  * technologies
  */
-class Tech(line: String) : Rome2Object(line) {
+class TechData(line: String) : Rome2Object(line) {
 	var name by StringProperty(0)
-	var cost by IntProperty(3)
+}
 
-	val effects = ArrayList<TechEffect>()
-	val extraEffects = ArrayList<TechEffect>()
+
+
+class Tech(
+	val data    : TechData,
+	val effects : List<TechEffect>
+) : Rome2CompoundObject {
+
+	override fun addMod() { data.addMod() }
+
+	var name by data.StringProperty(0)
+	var cost by data.IntProperty(3)
+
 }
 
 
@@ -395,11 +403,30 @@ class Tech(line: String) : Rome2Object(line) {
  * technology_effects_junction
  */
 class TechEffect(line: String) : Rome2Object(line) {
-	val tech  by StringProperty(0)
+	var tech   by StringProperty(0)
 	var effect by StringProperty(1)
 	var scope  by StringProperty(2)
 	var value  by IntProperty(3)
 	constructor(tech: String, effect: String, scope: String, value: Int) : this(assemble(tech, effect, scope, value.toString()))
+}
+
+
+
+/**
+ * armed_citizenry_units_to_unit_groups_junctions
+ */
+class GarrisonGroupEntry(line: String) : Rome2Object(line) {
+	var id       by IntProperty(0)
+	var priority by IntProperty(1)
+	var unit     by StringProperty(2)
+	var group    by StringProperty(3)
+	constructor(id: Int, priority: Int, unit: LandUnit, group: String) : this(assemble(id, priority, unit.name, group))
+}
+
+
+
+class GarrisonGroup(val name: String, val entries: List<GarrisonGroupEntry>) : Rome2CompoundObject {
+	override fun addMod() { for(e in entries) e.addMod() }
 }
 
 
