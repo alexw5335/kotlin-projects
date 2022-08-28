@@ -1,5 +1,6 @@
 package rome2
 
+import binary.BinaryReader
 import core.Core
 
 
@@ -15,6 +16,8 @@ class Table(val name: String, lines: List<String>) {
 
 
 object Tables {
+
+	val SCHEMA = readSchema(BinaryReader(Core.readResourceBytes("/schema.bin")))
 
 	private fun table(name: String) = Table(name, Core.readResourceLines("/db/$name.tsv"))
 	

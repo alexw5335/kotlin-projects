@@ -1,19 +1,10 @@
 package rome2
 
-import binary.BinaryReader
 import core.Core
 import core.associateFlatMap
-import java.nio.file.Files
-import java.nio.file.Paths
 
 fun main() {
-	val rome2Files = readRome2DataPackInfo(BinaryReader(ROME_2_DATA_PACK_PATH))
-		.associateBy { it.path.split('\\')[1] }
 
-	val rome2Schemas = readRome2Schemas(Paths.get("master_schema.xml"), rome2Files)
-	rome2Schemas.forEach(::println)
-	//val trimmedSchema = schema.tables.filter { it.k }
-	//PackReader(BinaryReader(Core.readResourceBytes("/roman_improvements_v2.pack"))).read()
 }
 
 
@@ -127,7 +118,6 @@ Info
  */
 
 
-val schema = readSchema(BinaryReader(Core.readResourceBytes("/schema.bin")))
 
 private inline fun<reified T : Rome2Object> map(block: (String) -> T) = getTable(T::class.java).lines.map(block)
 
