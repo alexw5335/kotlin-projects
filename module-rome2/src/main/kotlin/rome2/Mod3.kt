@@ -119,7 +119,6 @@ object Mod3 {
 			upkeep  = 100
 		}
 
-
 		Units.HASTATI.mod {
 			attack  = 35  // 35
 			defence = 20  // 18 + 2

@@ -1,10 +1,13 @@
 package rome2
 
+import binary.BinaryReader
 import core.Core
 import core.associateFlatMap
 
 fun main() {
-
+	Mod4.mod()
+	//applyMods()
+	//PackReader(BinaryReader(Core.readResourceBytes("/roman_improvements_v2.pack"))).read()
 }
 
 
@@ -29,7 +32,8 @@ val tableMap = mapOf(
 	MissileWeapon::class.java to Tables.MISSILE_WEAPONS,
 	Projectile::class.java to Tables.PROJECTILES,
 	BuildingUnit::class.java to Tables.BUILDING_UNITS,
-	GarrisonGroupEntry::class.java to Tables.GARRISON_GROUPS
+	GarrisonGroupEntry::class.java to Tables.GARRISON_GROUPS,
+	TechUnitUpgrade::class.java to Tables.TECH_UNIT_UPGRADES
 )
 
 fun getTable(c: Class<*>) = tableMap[c] ?: error("Missing table mapping for '$c'")
@@ -71,6 +75,8 @@ var garrisonId = 100_000
 
 var buildingUnitId = 300_000
 
+var garrisonUnitId = 400_000
+
 fun Building.garrison(unit: String) = Garrison(arrayOf(garrisonId++, name, unit).joinToString("\t")).addMod()
 
 fun Building.garrison(unit: GarrisonUnit) = garrison(unit.string)
@@ -92,6 +98,10 @@ fun Building.setGarrison(vararg garrisons: Pair<GarrisonUnit, Int>) {
 }
 
 fun Building.unit(unit: LandUnit) = BuildingUnit(buildingUnitId++, name, unit.name).addMod()
+
+fun GarrisonGroup.unit(prev: LandUnit, new: LandUnit) = entries.first { it.unit == prev.name }.mod { unit = new.name }
+
+fun GarrisonGroup.unit(unit: LandUnit, priority: Int = 100) = GarrisonGroupEntry(garrisonUnitId++, priority, unit, name)
 
 
 
@@ -149,8 +159,10 @@ val buildings = map(::BuildingData).associate {
 
 val techEffects = map(::TechEffect).associateFlatMap { it.tech }
 
+val techUnitUpgrades = map(::TechUnitUpgrade).associateFlatMap { it.tech }
+
 val techs = map(::TechData).associate {
-	it.name to Tech(it, techEffects[it.name] ?: emptyList())
+	it.name to Tech(it, techEffects[it.name] ?: emptyList(), techUnitUpgrades[it.name] ?: emptyList())
 }
 
 val garrisonGroups = map(::GarrisonGroupEntry)

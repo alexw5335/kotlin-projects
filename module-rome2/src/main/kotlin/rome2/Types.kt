@@ -386,8 +386,9 @@ class TechData(line: String) : Rome2Object(line) {
 
 
 class Tech(
-	val data    : TechData,
-	val effects : List<TechEffect>
+	val data         : TechData,
+	val effects      : List<TechEffect>,
+	val unitUpgrades : List<TechUnitUpgrade>
 ) : Rome2CompoundObject {
 
 	override fun addMod() { data.addMod() }
@@ -427,6 +428,21 @@ class GarrisonGroupEntry(line: String) : Rome2Object(line) {
 
 class GarrisonGroup(val name: String, val entries: List<GarrisonGroupEntry>) : Rome2CompoundObject {
 	override fun addMod() { for(e in entries) e.addMod() }
+}
+
+
+
+/**
+ * technology_unit_upgrades technology	unit	cost	target_unit
+ */
+class TechUnitUpgrade(line: String) : Rome2Object(line) {
+	var tech         by StringProperty(0)
+	var unit         by StringProperty(1)
+	var cost         by IntProperty(2)
+	var upgradedUnit by StringProperty(3)
+
+	constructor(tech: Tech, unit: LandUnit, cost: Int, upgradedUnit: LandUnit) :
+		this(assemble(tech.name, unit.name, cost, upgradedUnit.name))
 }
 
 

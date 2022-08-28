@@ -1,22 +1,11 @@
 package rome2
 
 import binary.BinaryReader
-import core.printHex
 
 /**
  * https://sourceforge.net/p/packfilemanager/code/HEAD/tree/trunk/Filetypes/DB/DBFileCodec.cs#l164
  */
 class PackReader(private val reader: BinaryReader) {
-
-
-	data class PackedFileIndex(val size: Int, val path: String) {
-		var pos = 0
-	}
-
-
-
-	data class PackedFileInfo(val path: String, val guid: String?, val version: Int)
-
 
 
 	fun read() {
@@ -38,22 +27,11 @@ class PackReader(private val reader: BinaryReader) {
 			timeStamp:           $timeStamp
 		""".trimIndent())
 
-		val packedFileIndices = List(packedFileCount) {
-			val size = reader.u32()
-			val path = reader.ascii()
-			PackedFileIndex(size, path)
-		}
+		// u32 size, char* path
+		val headers = List(packedFileCount) { Pair(reader.u32(), reader.ascii()) }
 
-		var dataPos = reader.pos
-		for(p in packedFileIndices) {
-			p.pos = dataPos
-			dataPos += p.size
-		}
-
-		val dbIndices = packedFileIndices.filter { it.path.startsWith("db") }
-
-		val infos = dbIndices.map { index ->
-			reader.pos = index.pos
+		for((size, path) in headers) {
+			if(!path.startsWith("db")) break
 
 			var guid: String? = null
 			var version = 0
@@ -73,68 +51,46 @@ class PackReader(private val reader: BinaryReader) {
 				}
 			}
 
-			PackedFileInfo(index.path, guid, version)
+			val name = path.split('\\')[1]
+			val table = Tables.SCHEMA.tables[name] ?: continue
+			println(table)
+			val numEntries = reader.u32()
+			println("num entries: $numEntries")
+			for(field in table.fields)
+				field.decode()
 		}
+	}
 
-		for(p in infos)
-			println(p)
 
-/*		for(packedFileIndex in packedFileIndices) {
-			var marker = reader.u32().toUInt().toLong()
-
-			var guid: ByteArray? = null
-			var version = -1
-
-			while(marker != 1L) {
-				if(marker == 0xFF_FC_FE_FD) {
-					val length = reader.u16()
-					guid = reader.bytes(length * 2)
-				} else if(marker == 0xFF_FE_FD_FC) {
-					version = reader.u32()
-				} else {
-					reader.pos -= 3
-					break
-				}
-			}
-		}
-
-		var version = 0
-
-		println(packedFileIndices[0])
-
-		while(true) {
-			val marker = reader.u32().toUInt().toLong()
-
-			if(marker == 0xFF_FC_FE_FD) {
+	private fun SchemaField.decode() {
+		when(type) {
+			SchemaFieldType.ASCII -> {
 				val length = reader.u16()
-				val string = reader.ascii(length * 2)
-				println("GUID: $string")
-			} else if(marker == 0xFF_FE_FD_FC) {
-				version = reader.u32()
-				println("VERSION: $version")
-			} else {
-				reader.pos -= 3
-				break
+				val string = reader.ascii(length)
+				println("string $name = \"$string\"")
 			}
-		}*/
-
-/*		val entryCount = reader.u32()
-		println("entry count: $entryCount")
-		val table = schema[packedFileIndices[0].path.split('\\')[1]]!!
-		println("table: $table")
-
-		for(field in table.fields) {
-			when(field.type) {
-				SchemaFieldType.ASCII -> println("ASCII")
-				SchemaFieldType.STRING_OPTIONAL -> println("optional string")
-				SchemaFieldType.BOOLEAN -> println("boolean")
-				SchemaFieldType.STRING -> println("string")
-				SchemaFieldType.FLOAT -> println("float")
-				SchemaFieldType.ASCII_OPTIONAL -> println("optional ascii")
-				SchemaFieldType.LIST -> println("list")
-				SchemaFieldType.INT -> println("int")
+			SchemaFieldType.STRING_OPTIONAL -> TODO()
+			SchemaFieldType.BOOLEAN -> {
+				val value = reader.u8() == 1
+				println("boolean $name = $value")
 			}
-		}*/
+			SchemaFieldType.STRING -> TODO()
+			SchemaFieldType.FLOAT -> TODO()
+			SchemaFieldType.ASCII_OPTIONAL -> {
+				if(reader.u8() == 0) {
+					println("string? $name = null")
+					return
+				}
+				val length = reader.u16()
+				val string = reader.ascii(length)
+				println("string? $name = \"$string\"")
+			}
+			SchemaFieldType.LIST -> TODO()
+			SchemaFieldType.INT -> {
+				val value = reader.u32()
+				println("u32 $name = $value")
+			}
+		}
 	}
 
 
