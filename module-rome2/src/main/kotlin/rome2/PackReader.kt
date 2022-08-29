@@ -1,11 +1,16 @@
 package rome2
 
 import binary.BinaryReader
+import core.hexFull
 
 /**
  * https://sourceforge.net/p/packfilemanager/code/HEAD/tree/trunk/Filetypes/DB/DBFileCodec.cs#l164
  */
 class PackReader(private val reader: BinaryReader) {
+
+
+	class PackedFileTable(val schemaTable: SchemaTable, val entries: List<Any>)
+
 
 
 	fun read() {
@@ -30,68 +35,83 @@ class PackReader(private val reader: BinaryReader) {
 		// u32 size, char* path
 		val headers = List(packedFileCount) { Pair(reader.u32(), reader.ascii()) }
 
-		for((size, path) in headers) {
-			if(!path.startsWith("db")) break
+		var pos = reader.pos
 
-			var guid: String? = null
-			var version = 0
+		var headerCount = 0
+		for((size, path) in headers) {
+			if(!path.startsWith("db")) {
+				pos += size
+				continue
+			}
+
+			if(headerCount++ == 26) break
+
+			reader.pos = pos
 
 			while(true) {
 				when(reader.u8()) {
-					1 -> break
-					0xFD -> {
-						reader.pos += 3
-						val guidLength = reader.u16()
-						guid = reader.string(guidLength, Charsets.UTF_16LE)
-					}
-					0xFC -> {
-						reader.pos += 3
-						version = reader.u32()
-					}
+					1    -> break
+					0xFD -> { reader.pos += 3; val length = reader.u16(); reader.pos += length * 2 }
+					0xFC -> { reader.pos += 7 }
 				}
 			}
 
 			val name = path.split('\\')[1]
 			val table = Tables.SCHEMA.tables[name] ?: continue
-			println(table)
 			val numEntries = reader.u32()
-			println("num entries: $numEntries")
-			for(field in table.fields)
-				field.decode()
+			//println()
+			println("TABLE: ${table.name}, version=${table.version}, pos=${pos.hexFull}, size=$size, numEntries=$numEntries")
+			for(field in table.fields) {
+				//println("$count ${reader.pos.hexFull} ${field.type} ${field.name}: ")
+				//println("\t${field.decode()}")
+				count++
+			}
+
+			pos += size
 		}
 	}
 
 
-	private fun SchemaField.decode() {
-		when(type) {
-			SchemaFieldType.ASCII -> {
+
+	private var count = 0
+
+
+
+	private fun SchemaField.decode(): String = when(type) {
+		SchemaFieldType.ASCII -> {
+			val length = reader.u16()
+			val string = reader.ascii(length)
+			"\"$string\""
+		}
+
+		SchemaFieldType.STRING_OPTIONAL -> TODO()
+
+		SchemaFieldType.BOOLEAN -> {
+			val value = reader.u8() == 1
+			value.toString()
+		}
+
+		SchemaFieldType.STRING -> {
+			val length = reader.u16()
+			val string = reader.string(length, Charsets.UTF_8)
+			"\"$string\""
+		}
+
+		SchemaFieldType.FLOAT -> reader.f32().toString()
+
+		SchemaFieldType.ASCII_OPTIONAL -> {
+			if(reader.u8() == 0) {
+				"null"
+			} else {
 				val length = reader.u16()
 				val string = reader.ascii(length)
-				println("string $name = \"$string\"")
-			}
-			SchemaFieldType.STRING_OPTIONAL -> TODO()
-			SchemaFieldType.BOOLEAN -> {
-				val value = reader.u8() == 1
-				println("boolean $name = $value")
-			}
-			SchemaFieldType.STRING -> TODO()
-			SchemaFieldType.FLOAT -> TODO()
-			SchemaFieldType.ASCII_OPTIONAL -> {
-				if(reader.u8() == 0) {
-					println("string? $name = null")
-					return
-				}
-				val length = reader.u16()
-				val string = reader.ascii(length)
-				println("string? $name = \"$string\"")
-			}
-			SchemaFieldType.LIST -> TODO()
-			SchemaFieldType.INT -> {
-				val value = reader.u32()
-				println("u32 $name = $value")
+				"\"$string\""
 			}
 		}
-	}
 
+		SchemaFieldType.LIST -> TODO()
+
+		SchemaFieldType.INT -> reader.s32().toString()
+	}
 
 }

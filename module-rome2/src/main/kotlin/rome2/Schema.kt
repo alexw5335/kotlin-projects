@@ -111,7 +111,7 @@ fun readRome2Schemas(
 
 	class PackedFileInfo(val path: String, val guid: String?, val version: Int)
 
-	val infos = ArrayList<PackedFileInfo>()
+	val infoMap = HashMap<String, PackedFileInfo>()
 
 	for((size, path) in indices) {
 		if(!path.startsWith("db")) {
@@ -139,19 +139,20 @@ fun readRome2Schemas(
 		}
 
 		dataPos += size
-
-		infos.add(PackedFileInfo(path, guid, version))
+		val name = path.split('\\')[1]
+		infoMap[name] = PackedFileInfo(path, guid, version)
 	}
 
-	val infoMap = infos.associateBy { it.path.split('\\')[1] }
 	val schema = XmlParser.parse(masterSchemaPath)
-	val tables = ArrayList<SchemaTable>()
+	val tableMap = HashMap<String, SchemaTable>()
 
 	for(tableTag in schema.children) {
 		val name = tableTag.attrib("table_name")
 		val info = infoMap[name] ?: continue
 		val version = tableTag.attrib("table_version").toInt()
+
 		if(version != info.version) continue
+
 		val fields = tableTag.children.map {
 			SchemaField(
 				name  = it.attrib("name"),
@@ -160,8 +161,11 @@ fun readRome2Schemas(
 			)
 		}
 
-		tables.add(SchemaTable(name, version, info.guid, fields))
+		if(!tableMap.containsKey(name))
+			tableMap[name] = SchemaTable(name, version, info.guid, fields)
+		else
+			println("DUPLICATE: $name ${fields.last()}")
 	}
 
-	return Schema(tables.associateBy { it.name })
+	return Schema(tableMap)
 }

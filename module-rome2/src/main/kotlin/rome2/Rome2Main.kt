@@ -3,11 +3,15 @@ package rome2
 import binary.BinaryReader
 import core.Core
 import core.associateFlatMap
+import java.nio.file.Paths
 
 fun main() {
-	Mod4.mod()
+	//Mod4.mod()
 	//applyMods()
 	//PackReader(BinaryReader(Core.readResourceBytes("/roman_improvements_v2.pack"))).read()
+	PackReader(BinaryReader(Paths.get(ROME_2_DATA_PACK_PATH))).read()
+	//val schema = readRome2Schemas()
+	//writeSchema(Paths.get("schema.bin"), schema)
 }
 
 

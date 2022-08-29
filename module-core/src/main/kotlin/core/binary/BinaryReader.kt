@@ -156,5 +156,7 @@ class BinaryReader(val bytes: ByteArray, var endianness: Endianness = LittleEndi
 
 	fun ascii() = ascii(ntLength()).also { pos++ }
 
+	fun alignEven() { if(pos and 1 != 0) pos++ }
+
 
 }
