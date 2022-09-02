@@ -1,7 +1,6 @@
 package terraria
 
-import binary.BinaryReader
-import core.Core
+import core.binary.BinaryReader
 
 class WorldReader(private val reader: BinaryReader) {
 

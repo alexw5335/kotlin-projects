@@ -3,8 +3,9 @@ package assembler
 
 
 private const val INPUT = """
-message: 
-	db "test"
+
+add rax, modrm.rm + sib.base.inv * sib.index
+
 """
 
 

@@ -1,6 +1,6 @@
-package rome2
+package rome2.mods
 
-object Mod1 {
+/*object Mod1 {
 
 
 	fun mod() {
@@ -1042,4 +1042,4 @@ object Mod1 {
 	}
 	
 	
-}
+}*/

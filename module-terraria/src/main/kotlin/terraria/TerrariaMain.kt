@@ -1,6 +1,6 @@
 package terraria
 
-import binary.BinaryReader
+import core.binary.BinaryReader
 import core.Core
 import java.nio.file.Files
 import java.nio.file.Paths

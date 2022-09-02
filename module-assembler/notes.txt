@@ -535,3 +535,8 @@ Memory operands
 - Addressing labels always uses RIP-relative addressing
 - Can still address absolute values, e.g. [1]
 - Memory operands with displacements always use disp32
+
+- Pass 1:
+	- Parse everything into ast nodes.
+	- Nodes that declare symbols that can be resolved in stage 2 (enum, const) are stored
+	separately in a hash map.

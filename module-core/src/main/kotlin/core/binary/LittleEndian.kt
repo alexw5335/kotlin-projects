@@ -1,7 +1,5 @@
 package core.binary
 
-import binary.BinaryReader
-
 object LittleEndian : Endianness {
 
 

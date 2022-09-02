@@ -111,13 +111,58 @@ class Parser(lexResult: LexResult) {
 
 
 
+	private fun resolveIntSymbol(name: String) = (symbols[name]?.data as? IntSymbolData)?.value
+
+
+
+	private fun expect(token: SymbolToken) {
+		if(tokens[pos++] != token) error("Expecting '${token.string}', found: $prevToken")
+	}
+
+
+
+	private fun identifier() =  (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier name")
+
+
+
+	/*
+	Keywords
+	 */
+
+
+
 	private fun parseKeyword(keyword: KeywordToken) {
 		when(keyword) {
 			KeywordToken.DB -> parseDb()
-			//KeywordToken.CONST -> parseConst()
-			//KeywordToken.ENUM -> parseEnum()
+			KeywordToken.CONST -> parseConst()
+			KeywordToken.ENUM -> parseEnum()
 			else -> { }
 		}
+	}
+
+
+
+	private fun parseConst() {
+		val name = identifier()
+		expect(SymbolToken.EQUALS)
+		val value = readExpression().calculateInt(::resolveIntSymbol)
+		symbols[name] = Symbol(name, SymbolType.INT, IntSymbolData(value))
+	}
+
+
+
+	private fun parseEnum() {
+		val name = identifier()
+
+		expect(SymbolToken.LEFT_BRACE)
+
+		while(tokens[pos] != SymbolToken.RIGHT_BRACE) {
+			val entryName = identifier()
+			if(tokens[pos] != SymbolToken.COMMA) break
+			pos++
+		}
+
+		expect(SymbolToken.RIGHT_BRACE)
 	}
 
 
@@ -138,39 +183,8 @@ class Parser(lexResult: LexResult) {
 
 
 	/*
-	private fun parseEnum() {
-		val name = (tokens[pos++] as? IdToken)?.value
-			?: error("Expecting enum name, found: $prevToken")
-
-		if(tokens[pos++] != SymbolToken.LEFT_BRACE)
-			error("Expecting '{', found $prevToken")
-
-		while(true) {
-			if(tokens[pos] == SymbolToken.RIGHT_BRACE) {
-				pos++
-				break
-			}
-
-			val entryName = (tokens[pos++] as? IdToken)?.value
-				?: error("Expecting enum entry name, found: $prevToken")
-
-			var explicitValue: AstNode? = null
-
-			if(tokens[pos] == SymbolToken.EQUALS) {
-				pos++
-				explicitValue = readExpression()
-			}
-
-			if(tokens[pos] == SymbolToken.SEMICOLON) {
-				pos++
-				break
-			}
-
-			if(tokens[pos++] != SymbolToken.COMMA) error("Expected ',")
-
-			println("$name.$entryName = ${explicitValue?.printableString}")
-		}
-	}*/
+	Expressions
+	 */
 
 
 
@@ -217,6 +231,12 @@ class Parser(lexResult: LexResult) {
 
 
 
+	/*
+	Instructions
+	 */
+
+
+
 	private fun parseOperand(): AstNode {
 		var token = tokens[pos]
 		var width: Width? = null
@@ -242,10 +262,10 @@ class Parser(lexResult: LexResult) {
 
 		return when(val node = readExpression()) {
 			is RegisterNode -> node
-			is IntNode      -> ImmediateNode(node, node.value)
+			is IntNode      -> ImmediateNode(node)
 			is BinaryNode,
 			is UnaryNode,
-			is IdNode       -> ImmediateNode(node, null)
+			is IdNode       -> ImmediateNode(node)
 			else            -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}

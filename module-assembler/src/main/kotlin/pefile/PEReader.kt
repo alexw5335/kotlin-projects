@@ -1,6 +1,6 @@
 package pefile
 
-import binary.BinaryReader
+import core.binary.BinaryReader
 import core.Core
 
 class PEReader(private val reader: BinaryReader) {
@@ -76,7 +76,7 @@ class PEReader(private val reader: BinaryReader) {
 
 		val strings = ArrayList<String>()
 		while(reader.pos < startPos + length)
-			strings.add(reader.ascii())
+			strings.add(reader.asciiNt())
 
 		return strings
 	}
@@ -151,7 +151,7 @@ class PEReader(private val reader: BinaryReader) {
 			val name = if(reader.u32() == 0) {
 				val returnPos = reader.pos + 4
 				reader.pos = coffHeader.pSymbolTable + coffHeader.numSymbols * 18 + reader.u32()
-				val name = reader.ascii()
+				val name = reader.asciiNt()
 				reader.pos = returnPos
 				name
 			} else {
@@ -245,7 +245,7 @@ class PEReader(private val reader: BinaryReader) {
 			pLineNumbers,
 			relocationCount,
 			lineNumberCount,
-			characteristics,
+			SectionFlags(characteristics),
 			relocations
 		)
 	}

@@ -1,7 +1,5 @@
 package core.binary
 
-import binary.BinaryReader
-
 sealed interface Endianness {
 
 

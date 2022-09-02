@@ -1,40 +1,46 @@
 package rome2
 
-import binary.BinaryReader
-import core.Core
-
-
-
-class Table(val name: String, lines: List<String>) {
-	val firstLine = lines[0]
-	val secondLine = lines[1]
-	val lines = lines.drop(2)
-	fun secondLine(prefix: String) = secondLine.replaceAfterLast('/', "${prefix}_$name")
-	fun outputPath(prefix: String) = "db/${name}_tables/${prefix}_$name.tsv"
-}
-
-
+import core.binary.BinaryReader
+import kotlin.reflect.KClass
 
 object Tables {
 
-	val SCHEMA = readSchema(BinaryReader(Core.readResourceBytes("/schema.bin")))
+	private val map = PackReader(BinaryReader(ROME_2_DATA_PACK_PATH)).read().associateBy { it.schema.name }
 
-	private fun table(name: String) = Table(name, Core.readResourceLines("/db/$name.tsv"))
-	
-	val SHIELDS = table("unit_shield_types")
-	val ARMOURS = table("unit_armour_types")
-	val WEAPONS = table("melee_weapons")
-	val LAND_UNITS = table("land_units")
-	val MAIN_UNITS = table("main_units")
-	val BUILDING_EFFECTS = table("building_effects_junction")
-	val BUILDING_LEVELS = table("building_levels")
-	val GARRISONS = table("building_level_armed_citizenry_junctions")
-	val TECHS = table("technologies")
-	val TECH_EFFECTS = table("technology_effects_junction")
-	val MISSILE_WEAPONS = table("missile_weapons")
-	val PROJECTILES = table("projectiles")
-	val BUILDING_UNITS = table("building_units_allowed")
-	val GARRISON_GROUPS = table("armed_citizenry_units_to_unit_groups_junctions")
-	val TECH_UNIT_UPGRADES = table("technology_unit_upgrades")
+	fun get(string: String) = map[string + "_tables"] ?: error("Table not present: $string")
 
+	fun get(c: KClass<*>) = classMap[c] ?: error("No table mapping for class: ${c.simpleName}")
+
+	inline fun<reified T : EntryType> map(block: (PackEntry) -> T) = get(T::class).entries.map(block)
+
+	inline fun<reified T : NamedType> mapNamed(block: (PackEntry) -> T) = get(T::class).entries.map(block).associateBy { it.name }
+
+	fun printTable(table: PackTable) {
+		println("table ${table.schema.name}")
+		table.schema.fields.forEachIndexed { i, f ->
+			println("\t$i: ${f.type} ${f.name}" + if(f.isKey) "  (KEY)" else "")
+		}
+	}
+
+	private val classMap = mapOf(
+		Projectile::class        to get("projectiles"),
+		MissileWeapon::class     to get("missile_weapons"),
+		SiegeEngine::class       to get("battlefield_engines"),
+		LandUnitData::class      to get("land_units"),
+		MainUnitData::class      to get("main_units"),
+		Armour::class            to get("unit_armour_types"),
+		Shield::class            to get("unit_shield_types"),
+		Weapon::class            to get("melee_weapons"),
+		GarrisonGroupUnit::class to get("armed_citizenry_units_to_unit_groups_junctions"),
+		GarrisonGroupData::class to get("armed_citizenry_unit_groups"),
+		Garrison::class          to get("building_level_armed_citizenry_junctions"),
+		BuildingData::class      to get("building_levels"),
+		BuildingEffect::class    to get("building_effects_junction"),
+		TechData::class          to get("technologies"),
+		TechEffect::class        to get("technology_effects_junction"),
+		SkillData::class         to get("character_skills"),
+		SkillLevelData::class    to get("character_skill_level_details"),
+		SkillEffect::class       to get("character_skill_level_to_effects_junctions"),
+		ExperienceTier::class    to get("character_experience_skill_tiers")
+	)
 }

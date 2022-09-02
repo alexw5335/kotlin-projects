@@ -1,450 +1,391 @@
-@file:Suppress("unused", "CanBeParameter")
-
 package rome2
 
-import kotlin.reflect.KProperty
 
 
-
-/*
-Properties
- */
-
-
-
-class BooleanProperty(private val parts: MutableList<String>, private val index: Int) {
-	private var value = parts[index] == "1" || parts[index] == "true"
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
-		parts[index] = "1"
-		this.value = value
-	}
+interface EntryType {
+	val entry: PackEntry
+	fun string(index: Int) = entry.string(index)
+	fun int(index: Int) = entry.int(index)
+	fun float(index: Int) = entry.float(index)
+	fun boolean(index: Int) = entry.boolean(index)
+	fun<T> any(index: Int, getter: (String) -> T, setter: (T) -> String) = entry.any(index, getter, setter)
+	fun <T : NamedType> any(index: Int, getter: (String) -> T) = entry.any(index, getter)
+	fun booleanString(index: Int) = entry.booleanString(index)
 }
 
 
 
-class IntProperty(private val parts: MutableList<String>, private val index: Int) {
-	private var value = parts[index].toIntOrNull() ?: parts[index].toFloat().toInt()
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
-		parts[index] = value.toString()
-		this.value = value
-	}
+interface NamedType : EntryType {
+	var name: String
 }
 
 
 
-class FloatProperty(private val parts: MutableList<String>, private val index: Int) {
-	private var value = parts[index].toFloat()
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
-		parts[index] = value.toString()
-		this.value = value
-	}
-}
-
-
-
-class StringProperty(private val parts: MutableList<String>, private val index: Int) {
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = parts[index]
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
-		parts[index] = value
-	}
-}
-
-
-
-class ObjectProperty<T>(
-	private val parts: MutableList<String>,
-	private val index: Int,
-	private val getter: (String) -> T,
-	private val setter: (T) -> String
-) {
-	private var value = getter(parts[index])
-	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-		parts[index] = setter(value)
-		this.value = value
-	}
-}
-
-
-
-abstract class Rome2Object(line: String) {
-	private val parts = line.split('\t').toMutableList()
-
-	val assembleLine get() = parts.joinToString("\t")
-
-	fun IntProperty(index: Int) = IntProperty(parts, index)
-	fun FloatProperty(index: Int) = FloatProperty(parts, index)
-	fun StringProperty(index: Int) = StringProperty(parts, index)
-	fun BooleanProperty(index: Int) = BooleanProperty(parts, index)
-	fun<T> ObjectProperty(index: Int, getter: (String) -> T, setter: (T) -> String) = ObjectProperty(parts, index, getter, setter)
-
-}
-
-
-
-interface Rome2CompoundObject {
+interface CompoundType {
 	fun addMod()
 }
 
 
 
 /*
-Printing
+Units
  */
 
 
 
-fun LandUnit.printFormatted() {
-	var string = """
-		$name:
-			attack:   $attack
-			defence:  $totalDefence = $defence base + ${shield.defence} ${shield.name}
-			morale:   $morale
-			bonusHp:  $bonusHp
-			charge:   $charge
-			armour:   $totalArmour = ${armour.armour} ${armour.name} + ${shield.armour} ${shield.name}
-			damage:   ${weapon.damage}  ${weapon.name}
-			bonus:    ${weapon.cavalryBonus}/${weapon.largeBonus}/${weapon.infantryBonus}
-			cost:     $cost
-			upkeep:   $upkeep
-			level:    ${level.string}
-	""".trimIndent()
-
-	missileWeapon?.let {
-		string += """
-	ranged:
-		damage:    ${it.projectile.damage} (${it.name}, ${it.projectile.name})
-		apDamage:  ${it.projectile.apDamage}
-		range:     ${it.projectile.effectiveRange} 
-		reload:    $reload
-		accuracy:  $accuracy
-		ammo:      $ammo"""
-	}
-
-	println(string)
-	println()
+class LandUnitData(override val entry: PackEntry) : NamedType {
+	override var name by entry.string(11)
 }
 
 
 
-fun Building.printFormatted() {
-	println(buildString {
-		append("$name\n")
-		append("\tcost:  $cost\n")
-		append("\tturns: $turns\n")
-		append("\teffects:\n")
-		for(effect in effects)
-			append("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value}\n")
-		if(garrisons.isNotEmpty()) {
-			append("\tgarrison:\n")
-			for(garrison in garrisons)
-				append("\t\t${garrison.unit}\n")
-		}
-	})
+class MainUnitData(override val entry: PackEntry) : NamedType {
+	override var name by entry.string(17)
 }
 
 
 
-fun Tech.printFormatted() {
-	println(buildString {
-		append("$name\n")
-		append("\tcost: $cost\n")
-		append("\teffects:\n")
-		for(effect in effects)
-			append("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value}\n")
-	})
+class LandUnit(val landUnitData: LandUnitData, val mainUnitData: MainUnitData) : CompoundType {
+
+	var name
+		get() = landUnitData.name
+		set(value) { landUnitData.name = value; mainUnitData.name = value }
+
+	var accuracy      by landUnitData.int(0)
+	var ammo          by landUnitData.int(1)
+	var armour        by landUnitData.any(2, { armour(it) }, { it.name })
+	var movement      by landUnitData.int(3)
+	var category      by landUnitData.string(4)
+	var charge        by landUnitData.int(5)
+	var attack        by landUnitData.int(14)
+	var defence       by landUnitData.int(15)
+	var morale        by landUnitData.int(16)
+	var bonusHp       by landUnitData.int(17)
+	var weapon        by landUnitData.any(22, { weapon(it) }, { it.name })
+	var missileWeapon by landUnitData.any(23, { missileWeapons[it] }, { it?.name ?: "" })
+	var shield        by landUnitData.any(25, { shield(it) }, { it.name })
+	var siegeEngine   by landUnitData.any(34, { siegeEngines[it] }, { it?.name ?: "" })
+	var reload        by landUnitData.int(44)
+	var cost          by mainUnitData.int(14)
+	var upkeep        by mainUnitData.int(18)
+
+	val totalArmour get() = armour.armour + shield.armour
+	val totalDefence get() = defence + shield.defence
+
+	override fun addMod() { landUnitData.addMod(); mainUnitData.addMod() }
+
+}
+
+
+
+val LandUnit.formattedString get() = buildString {
+	appendLine(name)
+	appendLine("\tattack:   $attack")
+	appendLine("\tdefence:  $totalDefence = $defence (base) + ${shield.defence} (${shield.name})")
+	appendLine("\tmorale:   $morale")
+	appendLine("\tbonusHp:  $bonusHp")
+	appendLine("\tcharge:   $charge")
+	appendLine("\tarmour:   $totalArmour = ${armour.armour} (${armour.name}) + ${shield.defence} (${shield.name})")
+	appendLine("\tdamage:   ${weapon.damage}/${weapon.apDamage} (${weapon.name})")
+	appendLine("\tcost:     $cost")
+	appendLine("\tupkeep:   $upkeep")
+
+	val rangedWeapon = missileWeapon ?: siegeEngine?.weapon ?: return@buildString
+
+	if(missileWeapon != null)
+		appendLine("\tranged (${rangedWeapon.name}, ${rangedWeapon.projectile.name})")
+	else
+		appendLine("\tsiege (${siegeEngine!!.name}, ${rangedWeapon.name}, ${rangedWeapon.projectile.name})")
+
+	appendLine("\t\tdamage:    ${rangedWeapon.projectile.damage}")
+	appendLine("\t\tapDamage:  ${rangedWeapon.projectile.apDamage}")
+	appendLine("\t\trange:     ${rangedWeapon.projectile.range}")
+	appendLine("\t\treload:    $reload")
+	appendLine("\t\taccuracy:  $accuracy")
+	appendLine("\t\tammo:      $ammo")
+
 }
 
 
 
 /*
-Types
+Equipment
  */
 
 
 
-/**
- * main_units
- */
-class MainUnitData(line: String) : Rome2Object(line) {
-	var name by StringProperty(0)
+class Shield(override val entry: PackEntry) : NamedType {
+	override var name by string(0)
+	var defence       by int(1)
+	var armour        by int(2)
+	var blockChance   by int(4)
 }
 
 
 
-/**
- * land_units
- */
-class LandUnitData(line: String) : Rome2Object(line) {
-	var name by StringProperty(0)
+class Armour(override val entry: PackEntry) : NamedType {
+	override var name   by string(2)
+	var armour          by int(0)
+	var bonusVsMissiles by booleanString(1)
+	var weakVsMissiles  by booleanString(3)
 }
 
 
 
-class LandUnit(
-	private val landUnitData: LandUnitData,
-	private val mainUnitData: MainUnitData
-) : Rome2CompoundObject {
-
-	override fun addMod() { landUnitData.addMod(); mainUnitData.addMod() }
-
-	private var landUnitName by landUnitData::name
-	private var mainUnitName by mainUnitData::name
-
-	var name
-		get() = landUnitName
-		set(value) { landUnitName = value; mainUnitName = value }
-
-	var attack  by landUnitData.IntProperty(14)
-	var defence by landUnitData.IntProperty(15)
-	var morale  by landUnitData.IntProperty(16)
-	var bonusHp by landUnitData.IntProperty(17)
-	var charge  by landUnitData.IntProperty(6)
-	var level   by landUnitData.ObjectProperty(30, TrainingLevel::get, TrainingLevel::string)
-	var armour  by landUnitData.ObjectProperty(3, { armour(it) }, Armour::name)
-	var weapon  by landUnitData.ObjectProperty(22, { weapon(it) }, Weapon::name)
-	var shield  by landUnitData.ObjectProperty(25, { shield(it) }, Shield::name)
-	var cost    by mainUnitData.IntProperty(15)
-	var upkeep  by mainUnitData.IntProperty(18)
-
-	var missileWeapon by landUnitData.ObjectProperty(23, { missileWeapons[it] }, { it?.name ?: ""} )
-	var accuracy      by landUnitData.IntProperty(1)
-	var reload        by landUnitData.IntProperty(44)
-	var ammo          by landUnitData.IntProperty(2)
-
-	val totalDefence get() = defence + shield.defence
-	val totalArmour  get() = armour.armour + shield.armour
-
+class Weapon(override val entry: PackEntry) : NamedType {
+	override var name     by string(5)
+	var cavalryBonus      by int(2)
+	var largeBonus        by int(3)
+	var infantryBonus     by int(4)
+	var damage            by int(6)
+	var apDamage          by int(7)
+	var firstStrike       by int(8)
+	var shieldPiercing    by boolean(9)
+	var armourPenetrating by boolean(0)
+	var armourPiercing    by boolean(1)
 }
 
 
 
-/**
- * unit_armour_types
- */
-class Armour(line: String) : Rome2Object(line) {
-	var name            by StringProperty(0)
-	var armour          by IntProperty(1)
-	var bonusVsMissiles by IntProperty(2)
-	var weakVsMissiles  by BooleanProperty(3)
+class Projectile(override val entry: PackEntry) : NamedType {
+	override
+	var name     by entry.string(0)
+	var range    by entry.int(7)
+	var damage   by entry.int(13)
+	var apDamage by entry.int(14)
 }
 
 
 
-/**
- * unit_shield_types
- */
-class Shield(line: String) : Rome2Object(line) {
-	var name     by StringProperty(0)
-	var defence  by IntProperty(1)
-	var armour   by IntProperty(2)
-	var block    by IntProperty(4)
+class MissileWeapon(override val entry: PackEntry) : NamedType {
+	override
+	var name       by entry.string(0)
+	var projectile by entry.any(2, { projectile(it) }, { it.name })
 }
 
 
 
-/**
- * melee_weapons
- */
-class Weapon(line: String) : Rome2Object(line) {
-	var name           by StringProperty(0)
-	var armourPiercing by BooleanProperty(2)
-	var cavalryBonus   by IntProperty(3)
-	var largeBonus     by IntProperty(4)
-	var infantryBonus  by IntProperty(5)
-	var damage         by IntProperty(6)
-	var apDamage       by IntProperty(7)
+class SiegeEngine(override val entry: PackEntry) : NamedType {
+	override
+	var name   by entry.string(4)
+	var type   by entry.string(2)
+	var weapon by entry.any(5, ::missileWeapon)
 }
 
 
 
-/**
- * missile_weapons
+/*
+Garrisons
  */
-class MissileWeapon(line: String) : Rome2Object(line) {
-	var name         by StringProperty(0)
-	var projectile   by ObjectProperty(2, { projectile(it) }, Projectile::name)
+
+
+
+class GarrisonGroupUnit(override val entry: PackEntry) : EntryType {
+	var id       by int(0)
+	var priority by int(2)
+	var unit     by string(3)
+	var group    by string(4)
 }
 
 
 
-/**
- * projectiles
- */
-class Projectile(line: String) : Rome2Object(line) {
-	var name             by StringProperty(0)
-	var effectiveRange   by IntProperty(7)
-	var minimumRange     by IntProperty(8)
-	var damage           by IntProperty(13)
-	var apDamage         by IntProperty(14)
-	var penetration      by StringProperty(15)
-	var bonus            by StringProperty(11)
-	var muzzleVelocity   by IntProperty(10)
-	var collisionRadius  by FloatProperty(19)
-	var baseReloadTime   by IntProperty(20)
-	var infantryBonus    by IntProperty(24)
-	var cavalryBonus     by IntProperty(25)
-	var largeBonus       by IntProperty(26)
-	
+class GarrisonGroupData(override val entry: PackEntry) : NamedType {
+	override var name by string(0)
 }
 
 
 
-/**
- * building_effects_junction
- */
-class BuildingEffect(line: String) : Rome2Object(line) {
-	val building     by StringProperty(0)
-	val effect       by StringProperty(1)
-	var scope        by StringProperty(2)
-	var value        by IntProperty(3)
-	var valueDamaged by IntProperty(4)
-	var valueRuined  by IntProperty(5)
-}
-
-
-
-/**
- * building_levels
- */
-class BuildingData(line: String) : Rome2Object(line) {
-	var name by StringProperty(0)
-}
-
-
-
-/**
- * building_levels
- */
-class Building(
-	val data      : BuildingData,
-	val effects   : List<BuildingEffect>,
-	val garrisons : List<Garrison>,
-	val units     : List<BuildingUnit>
-) : Rome2CompoundObject {
-
+class GarrisonGroup(val data: GarrisonGroupData, val units: List<GarrisonGroupUnit>) : CompoundType {
+	var name by data::name
 	override fun addMod() { data.addMod() }
+}
 
-	var name  by data.StringProperty(0)
-	var level by data.IntProperty(2)
-	var turns by data.IntProperty(4)
-	var cost  by data.IntProperty(5)
 
-	val adjustedLevel = level + 1
 
-	val isLevel1 get() = level == 0
-	val isLevel2 get() = level == 1
-	val isLevel3 get() = level == 2
-	val isLevel4 get() = level == 3
-	val isLevel5 get() = level == 4
+val GarrisonGroup.formattedString get() = buildString {
+	appendLine(name)
+	for(u in units)
+		appendLine("\t${u.unit} : ${u.priority} : ${u.id}")
+}
 
-	val culture = when {
-		name.startsWith("rome_")  -> Culture.ROME
-		name.startsWith("east_")  -> Culture.EAST
-		name.startsWith("greek_") -> Culture.GREEK
-		name.startsWith("barb_")  -> Culture.BARB
-		else                      -> null
+
+
+/*
+Buildings
+ */
+
+
+
+class Garrison(override val entry: PackEntry) : EntryType {
+	var building by string(0)
+	var id       by int(1)
+	var group    by string(3)
+}
+
+
+
+class BuildingData(override val entry: PackEntry) : NamedType {
+	override var name by string(0)
+}
+
+
+
+class BuildingEffect(override val entry: PackEntry) : EntryType {
+	var building     by string(0)
+	var effect       by string(1)
+	var scope        by string(2)
+	var value        by float(3)
+	var damagedValue by float(4)
+	var ruinedValue  by float(5)
+
+	constructor(building: Building, effect: BuildingEffectType, scope: EffectScope, value: Int) : this(PackEntry(listOf(
+		PackFieldString(building.name),
+		PackFieldString(effect.string),
+		PackFieldString(scope.string),
+		PackFieldFloat(value.toFloat()),
+		PackFieldFloat(value.toFloat()),
+		PackFieldFloat(value.toFloat())
+	)))
+}
+
+
+
+class Building(val data: BuildingData, val effects: List<BuildingEffect>, val garrisons: List<Garrison>) : CompoundType {
+	var name  by data::name
+	var level by data.int(2)
+	var turns by data.int(4)
+	var cost  by data.int(5)
+	override fun addMod() { data.addMod() }
+}
+
+
+
+val Building.formattedString get() = buildString {
+	appendLine(name)
+	appendLine("\tcost:   $cost")
+	appendLine("\tturns:  $turns")
+
+	appendLine("\teffects:")
+	for(effect in effects)
+		appendLine("\t\t${effect.effect} : ${effect.scope} : ${effect.value.toString().dropLast(2)}")
+
+	appendLine("\tgarrisons:")
+	for(garrison in garrisons)
+		appendLine("\t\t${garrison.group}")
+}
+
+
+
+/*
+Techs
+ */
+
+
+
+class TechData(override val entry: PackEntry) : NamedType {
+	override var name by string(0)
+}
+
+
+
+class TechEffect(override val entry: PackEntry) : EntryType {
+	var tech   by string(0)
+	var effect by string(1)
+	var scope  by string(2)
+	var value  by float(3)
+
+	constructor(tech: Tech, effect: TechEffectType, scope: EffectScope, value: Int) : this(PackEntry(listOf(
+		PackFieldString(tech.name),
+		PackFieldString(effect.string),
+		PackFieldString(scope.string),
+		PackFieldFloat(value.toFloat())
+	)))
+}
+
+
+
+class Tech(val data: TechData, val effects: List<TechEffect>) : CompoundType {
+	var name by data::name
+	var cost by data.int(3)
+	override fun addMod() { data.addMod() }
+}
+
+
+
+val Tech.formattedString get() = buildString {
+	appendLine(name)
+	appendLine("\tcost: $cost")
+	appendLine("\teffects:")
+	for(effect in effects)
+		appendLine("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value}")
+}
+
+
+
+/*
+Skills
+ */
+
+
+
+class ExperienceTier(override val entry: PackEntry) : EntryType {
+	var agent       by string(0)
+	var experience  by int(1)
+	var skillPoints by int(2)
+	var rank        by int(3)
+	var forArmy     by boolean(5)
+	var forNavy     by boolean(6)
+}
+
+
+
+class SkillData(override val entry: PackEntry) : NamedType {
+	override var name by string(1)
+	var unlockRank by int(5)
+}
+
+
+
+class SkillLevelData(override val entry: PackEntry) : EntryType {
+	var skill by string(4)
+	var level by int(3)
+	var unlockRank by int(6)
+}
+
+
+
+class SkillEffect(override val entry: PackEntry) : EntryType {
+	var skill by string(0)
+	var effect by string(1)
+	var scope by string(2)
+	var level by int(3)
+	var value by float(4)
+}
+
+
+
+class SkillLevel(val data: SkillLevelData, val effects: List<SkillEffect>) : CompoundType {
+	var level by data::level
+	var unlockRank by data::unlockRank
+	override fun addMod() { data.addMod() }
+}
+
+
+
+class Skill(val data: SkillData, val level1: SkillLevel, val level2: SkillLevel, val level3: SkillLevel) : CompoundType {
+	var name by data::name
+	var unlockRank by data::unlockRank
+	override fun addMod() { data.addMod() }
+}
+
+
+
+val Skill.formattedString get() = buildString {
+	appendLine(name)
+	appendLine("\tunlockRank: $unlockRank")
+	for(level in listOf(level1, level2, level3)) {
+		appendLine("\tlevel ${level.level} (${level.unlockRank}):")
+		for(effect in level.effects)
+			appendLine("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value.toString().dropLast(2)}")
 	}
-
 }
-
-
-
-/**
- * building_units_allowed
- */
-class BuildingUnit(line: String) : Rome2Object(line) {
-	var id       by IntProperty(0)
-	var building by StringProperty(1)
-	var unit     by StringProperty(2)
-	constructor(id: Int, building: String, unit: String) : this(assemble(id, building, unit, 0, "", "", "false"))
-}
-
-
-
-/**
- * building_level_armed_citizenry_junctions
- */
-class Garrison(line: String) : Rome2Object(line) {
-	val id       by IntProperty(0)
-	val building by StringProperty(1)
-	var unit     by StringProperty(2)
-	constructor(id: Int, building: String, unit: String) : this(assemble(id, building, unit))
-}
-
-
-/**
- * technologies
- */
-class TechData(line: String) : Rome2Object(line) {
-	var name by StringProperty(0)
-}
-
-
-
-class Tech(
-	val data         : TechData,
-	val effects      : List<TechEffect>,
-	val unitUpgrades : List<TechUnitUpgrade>
-) : Rome2CompoundObject {
-
-	override fun addMod() { data.addMod() }
-
-	var name by data.StringProperty(0)
-	var cost by data.IntProperty(3)
-
-}
-
-
-
-/**
- * technology_effects_junction
- */
-class TechEffect(line: String) : Rome2Object(line) {
-	var tech   by StringProperty(0)
-	var effect by StringProperty(1)
-	var scope  by StringProperty(2)
-	var value  by IntProperty(3)
-	constructor(tech: String, effect: String, scope: String, value: Int) : this(assemble(tech, effect, scope, value.toString()))
-}
-
-
-
-/**
- * armed_citizenry_units_to_unit_groups_junctions
- */
-class GarrisonGroupEntry(line: String) : Rome2Object(line) {
-	var id       by IntProperty(0)
-	var priority by IntProperty(1)
-	var unit     by StringProperty(2)
-	var group    by StringProperty(3)
-	constructor(id: Int, priority: Int, unit: LandUnit, group: String) : this(assemble(id, priority, unit.name, group))
-}
-
-
-
-class GarrisonGroup(val name: String, val entries: List<GarrisonGroupEntry>) : Rome2CompoundObject {
-	override fun addMod() { for(e in entries) e.addMod() }
-}
-
-
-
-/**
- * technology_unit_upgrades technology	unit	cost	target_unit
- */
-class TechUnitUpgrade(line: String) : Rome2Object(line) {
-	var tech         by StringProperty(0)
-	var unit         by StringProperty(1)
-	var cost         by IntProperty(2)
-	var upgradedUnit by StringProperty(3)
-
-	constructor(tech: Tech, unit: LandUnit, cost: Int, upgradedUnit: LandUnit) :
-		this(assemble(tech.name, unit.name, cost, upgradedUnit.name))
-}
-
-
-
-private fun assemble(vararg parts: Any) = parts.joinToString("\t")

@@ -5,8 +5,8 @@ object Units {
 	val ROMAN_ALL = ArrayList<LandUnit>()
 	val AUX_ALL = ArrayList<LandUnit>()
 	
-	private fun romanUnit(name: String) = landUnit(name).also(ROMAN_ALL::add)
-	private fun auxUnit(name: String) = landUnit(name).also(AUX_ALL::add)
+	private fun romanUnit(name: String) = unit(name).also(ROMAN_ALL::add)
+	private fun auxUnit(name: String) = unit(name).also(AUX_ALL::add)
 	
 	val ARMOURED_LEGIONARIES = romanUnit("Rom_Armour_Legionaries")
 	val EAGLE_COHORT = romanUnit("Rom_Eagle_Cohort")

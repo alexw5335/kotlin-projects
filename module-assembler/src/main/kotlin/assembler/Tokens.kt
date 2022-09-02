@@ -91,6 +91,7 @@ enum class SymbolToken(
 	LEFT_BRACKET  ("["),
 	RIGHT_BRACKET ("]"),
 	LEFT_BRACE    ("{"),
-	RIGHT_BRACE   ("}");
+	RIGHT_BRACE   ("}"),
+	PERIOD        (".", binaryOp = BinaryOp.DOT);
 
 }

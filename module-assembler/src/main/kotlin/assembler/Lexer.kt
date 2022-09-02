@@ -130,6 +130,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 		']' -> SymbolToken.RIGHT_BRACKET
 		'{' -> SymbolToken.LEFT_BRACE
 		'}' -> SymbolToken.RIGHT_BRACE
+		'.' -> SymbolToken.PERIOD
 		'<' -> if(chars[pos] == '<') SymbolToken.LEFT_SHIFT.adv() else SymbolToken.LEFT_ANGLE
 		'>' -> if(chars[pos] == '>') SymbolToken.RIGHT_SHIFT.adv() else SymbolToken.RIGHT_ANGLE
 		else -> null

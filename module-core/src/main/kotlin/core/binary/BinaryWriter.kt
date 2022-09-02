@@ -1,5 +1,6 @@
 package core.binary
 
+import java.nio.charset.Charset
 import java.util.*
 
 class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
@@ -375,16 +376,28 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 
 
 
-	fun ascii(pos: Int, string: String) {
+	fun stringu8(string: String) {
+		ensureCapacity(string.length)
 		for(i in string.indices)
-			u8(pos + i, string[i].code)
-
+			u8(pos++, string[i].code)
 	}
+
+
+
+	fun stringu16(string: String) {
+		ensureCapacity(string.length * 2)
+		for(i in string.indices) {
+			u16(pos, string[i].code)
+			pos += 2
+		}
+	}
+
+
 
 	fun ascii(string: String) {
 		ensureCapacity(string.length)
-		ascii(pos, string)
-		pos += string.length
+		for(i in string.indices)
+			u8(pos++, string[i].code)
 	}
 
 

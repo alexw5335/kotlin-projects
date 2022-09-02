@@ -22,7 +22,7 @@ fun AstNode.calculateIntOrNull(resolver: (String) -> Long? = { null }): Long? = 
 
 
 val AstNode.printableString: String get() = when(this) {
-	is BinaryNode      -> "(${left.printableString} ${op.symbol} ${right.printableString})"//"$op(${left.printableString}, ${right.printableString})"
+	is BinaryNode      -> printableString
 	is IdNode          -> value
 	is IntNode         -> value.toString()
 	is RegisterNode    -> value.string
@@ -32,9 +32,20 @@ val AstNode.printableString: String get() = when(this) {
 	is ImmediateNode   -> value.printableString
 	is DefineNode      -> "db ${components.joinToString { it.printableString }}"
 	is StringNode      -> "\"$value\""
-	//is ConstNode       -> "const $name = ${value.printableString}"
 	is LabelNode       -> "$name:"
-	//else               -> "No printable string for AST node: ${this::class.simpleName}"
+}
+
+
+
+val BinaryNode.printableString get() = buildString {
+	append('(')
+	append(left.printableString)
+	if(op == BinaryOp.DOT)
+		append('.')
+	else
+		append(" ${op.symbol} ")
+	append(right.printableString)
+	append(')')
 }
 
 
@@ -114,7 +125,7 @@ class MemoryNode(
 
 
 
-class ImmediateNode(val value: AstNode, val constValue: Long?) : AstNode
+class ImmediateNode(val value: AstNode) : AstNode
 
 
 

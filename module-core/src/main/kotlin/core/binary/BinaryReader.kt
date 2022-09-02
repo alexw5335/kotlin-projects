@@ -1,7 +1,5 @@
-package binary
+package core.binary
 
-import core.binary.Endianness
-import core.binary.LittleEndian
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.nio.file.Files
@@ -154,7 +152,7 @@ class BinaryReader(val bytes: ByteArray, var endianness: Endianness = LittleEndi
 		return count
 	}
 
-	fun ascii() = ascii(ntLength()).also { pos++ }
+	fun asciiNt() = ascii(ntLength()).also { pos++ }
 
 	fun alignEven() { if(pos and 1 != 0) pos++ }
 

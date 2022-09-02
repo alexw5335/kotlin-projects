@@ -1,9 +1,10 @@
-package rome2
+package rome2.mods
 
-import rome2.GarrisonUnit.*
+/*import rome2.GarrisonUnit.*
 import rome2.BuildingEffectType.*
+import rome2.TechEffectType.*
 
-object Mod2 {
+object Mod3 {
 
 
 	fun mod() {
@@ -11,7 +12,6 @@ object Mod2 {
 		modifyGarrisons()
 		modifyBuildings()
 		modifyTechs()
-		modifyUnits()
 	}
 
 
@@ -25,7 +25,7 @@ object Mod2 {
 
 		shield("scutum").mod           { defence = 30; armour = 35; block = 50 }
 		shield("scutum_marian").mod    { defence = 40; armour = 40; block = 60 }
-		shield("scutum_imperial").mod  { defence = 59; armour = 50; block = 70 }
+		shield("scutum_imperial").mod  { defence = 50; armour = 50; block = 70 }
 
 		armour("cloth").mod           { armour = 20 }
 		armour("mail").mod            { armour = 40 }
@@ -33,23 +33,54 @@ object Mod2 {
 		armour("segmentata").mod      { armour = 65 }
 		armour("segmentata_arm").mod  { armour = 75 }
 
-		projectile("arrow_composite").mod {
-			muzzleVelocity = 60 // 45 + 15
-			damage         = 40 // 36 + 4
-			apDamage       = 10 // 4 + 6
+		val cretanArrow = Projectile(projectile("arrow_composite").assembleLine).mod {
+			name = "cretan_arrow"
+			damage = 60 // 45 + 15
+			apDamage = 15 // 4 + 11
+			effectiveRange = 200 // 150 + 50
 		}
 
-		Units.AUX_GALLIC_HUNTERS.mod {
-			attack   = 15 // 17 - 2
-			defence  = 15 // 15
-			morale   = 45 // 40 + 5
-			reload   = 35 // 30 + 5
+		val cretanBow = MissileWeapon(missileWeapon("rome_composite_bow_elite").assembleLine).mod {
+			name = "cretan_bow"
+			projectile = cretanArrow
+		}
+
+		val peltastJavelin = Projectile(projectile("javelin_normal").assembleLine).mod {
+			name = "peltast_javelin"
+			damage = 30 // 20 + 10
+			apDamage = 20 // 12 + 8
+			effectiveRange = 100 // 80 + 20
+		}
+
+		val peltastJavelinWeapon = MissileWeapon(missileWeapon("rome_javelin").assembleLine).mod {
+			//name = "peltast_javelin_weapon"
+			//projectile = peltastJavelin
+		}
+
+		Units.LEVES.mod {
+			reload = 15 // 8 + 7
 			accuracy = 10 // 5 + 5
-			bonusHp  = 10 // 5 + 5
-			level    = TrainingLevel.TRAINED // poorly_trained
+			ammo = 12 // 7 + 5
+		}
+
+		Units.VELITES.mod {
+			reload = 20 // 13 + 7
+			accuracy = 15 // 5 + 10
+			ammo = 15 // 7 + 8
+			level = TrainingLevel.TRAINED
+			cost = 500 // 340 + 160
 		}
 
 		Units.AUX_CRETAN_ARCHERS.mod {
+			level    = TrainingLevel.ELITE
+			reload   = 45 // 28 + 17
+			ammo     = 30 // 15 + 15
+			accuracy = 15 // 5 + 10
+			cost     = 1000 // 600 + 400
+			missileWeapon = cretanBow
+		}
+
+		Units.AUX_PELTASTS.mod {
 			attack   = 20 // 12 + 8
 			defence  = 20 // 14 + 6
 			morale   = 55 // 55
@@ -60,28 +91,33 @@ object Mod2 {
 			level    = TrainingLevel.ELITE // poorly_trained
 			reload   = 45 // 28 + 27
 			accuracy = 15 // 5 + 10
+			ammo     = 20 // 7 + 13
+			cost     = 1000 // 420 + 580
+			upkeep   = 100 // 90 + 10
+			missileWeapon = peltastJavelinWeapon
 		}
 
 		Units.RORARII.mod {
-			attack  = 15
-			defence = 30
+			attack  = 20
+			defence = 40
 			morale  = 40
-			bonusHp = 10
+			bonusHp = 15
 			charge  = 10
+			armour  = armour("mail")
+			shield  = shield("scutum")
 		}
 
 		Units.VIGILES.mod {
-			attack  = 25
-			defence = 40
+			attack  = 30
+			defence = 55
 			morale  = 50
 			bonusHp = 20
 			charge  = 15
-			armour  = armour("chest")
+			armour  = armour("mail_improved")
 			shield  = shield("scutum_marian")
 			cost    = 400
 			upkeep  = 100
 		}
-
 
 		Units.HASTATI.mod {
 			attack  = 35  // 35
@@ -185,9 +221,9 @@ object Mod2 {
 
 		Units.PRAETORIANS.mod {
 			attack  = 75   // 65 + 10
-			defence = 45   // 30 + 15
+			defence = 55   // 30 + 15
 			morale  = 80   // 70 + 10
-			bonusHp = 25   // 20 + 5
+			bonusHp = 40   // 20 + 5
 			charge  = 30   // 19 + 11
 			cost    = 4000 // 1280 + 2720
 			upkeep  = 400  // 200 + 200
@@ -195,9 +231,9 @@ object Mod2 {
 
 		Units.PRAETORIAN_GUARD.mod {
 			attack  = 85   // 65 + 20
-			defence = 60   // 30 + 30
+			defence = 70   // 30 + 30
 			morale  = 100  // 70 + 30
-			bonusHp = 30   // 20 + 10
+			bonusHp = 40   // 20 + 10
 			charge  = 35   // 19 + 16
 			shield  = shield("scutum_imperial")
 			cost    = 5000 // 1280 + 3720
@@ -230,16 +266,111 @@ object Mod2 {
 			morale  = 70   // 70
 			bonusHp = 30   // 20 + 10
 			charge  = 50   // 42 + 8
-			cost    = 3000 // 1250 + 2750
-			upkeep  = 300  // 200 + 100
+			cost    = 3000
+			upkeep  = 300
 		}
 	}
 
 
 
 	private fun modifyTechs() {
-		RomanTechs.PROFESSIONAL_SOLDIERY.mod {
-			cost *= 2
+		for(t in RomanTechs.ALL) t.mod {
+			t.cost = t.cost / 3
+		}
+
+		RomanTechs.TRAINING_REFORMS.apply {
+			effect(ROME_UNIT_UPKEEP_MOD, -10)
+		}
+		RomanTechs.REMUNERATION_REFORMS.apply {
+			effect(ROME_UNIT_UPKEEP_MOD, -10)
+		}
+		RomanTechs.COHORT_ORGANISATION.apply {
+			effect(ROME_UNIT_UPKEEP_MOD, -10)
+		}
+		RomanTechs.PROFESSIONAL_SOLDIERY.apply {
+			effect(ROME_UNIT_UPKEEP_MOD, -20)
+		}
+
+		RomanTechs.IRON_TOOLS.apply {
+			effect(ROME_AGRI_GDP_MOD, 10)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
+		}
+		
+		RomanTechs.DOUBLE_CROPPING.apply {
+			effect(ROME_AGRI_GDP_MOD, 10)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
+		}
+		RomanTechs.IMPROVED_IRRIGATION.apply {
+			effect(ROME_AGRI_GDP_MOD, 10)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
+		}
+		RomanTechs.LAND_RECLAMATION.apply {
+			effect(ROME_AGRI_GDP_MOD, 15)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -5)
+		}
+		RomanTechs.SEED_SELECTION.apply {
+			effect(ROME_AGRI_GDP_MOD, 15)
+			effect(ROME_AGRI_BUILDING_COST_MOD, -10)
+		}
+
+		RomanTechs.COMMON_WEIGHTS_AND_MEASURES.apply {
+			effect("rom_tech_civil_economy_trade_gdp_mod", 10)
+			effect("rom_tech_civil_economy_trade_mod", 10)
+		}
+		RomanTechs.COMMON_CURRENCY.apply {
+			effect("rom_tech_civil_economy_trade_gdp_mod", 10)
+			effect("rom_tech_civil_economy_trade_mod", 10)
+		}
+		RomanTechs.DENOMINATIONAL_SYSTEM.apply {
+			effect("rom_tech_civil_economy_trade_gdp_mod", 15)
+			effect("rom_tech_civil_economy_trade_mod", 15)
+		}
+		RomanTechs.PRODUCTION_LINES.apply {
+			effect("rom_tech_civil_economy_trade_gdp_mod", 15)
+			effect("rom_tech_civil_economy_trade_mod", 15)
+		}
+
+		RomanTechs.PHILOSOPHERS.apply {
+			effect("rom_tech_civil_economy_culture_gdp_mod", 10)
+		}
+		RomanTechs.ASTRONOMY.apply {
+			effect("rom_tech_civil_economy_culture_gdp_mod", 15)
+		}
+		RomanTechs.NATURAL_PHILOSOPHY.apply {
+			effect("rom_tech_civil_economy_culture_gdp_mod", 20)
+		}
+		RomanTechs.CULTISM.apply {
+			effect("rom_tech_civil_economy_culture_gdp_mod", 25)
+		}
+
+		RomanTechs.LEGAL_DOCUMENTATION.apply {
+			effect("rom_tech_agent_action_cost_mod", -10)
+			effect("rom_tech_civil_economy_tax_mod", 4)
+		}
+		RomanTechs.LABOUR_ORGANISATION.apply {
+			effect("rom_tech_civil_economy_tax_mod", 6)
+		}
+		RomanTechs.LEGAL_INSTITUTIONS.apply {
+			effect("rom_tech_civil_economy_tax_mod", 8)
+			effect("rom_tech_module_civil_philosophy", -10) // corruption
+		}
+		RomanTechs.CONSENSUAL_CONTRACTS.apply {
+			effect("rom_tech_agent_action_cost_mod", -20)
+			effect("rom_tech_civil_economy_tax_mod", 10)
+			effect("rom_tech_module_civil_philosophy", -15) // corruption
+		}
+
+		RomanTechs.TAX_LABOUR.apply {
+			effect("rom_tech_civil_economy_growth_mod", 3)
+		}
+		RomanTechs.FIRED_BRICK.apply {
+			effect("rom_tech_civil_economy_industry_gdp_mod", 15)
+		}
+		RomanTechs.CRANE.apply {
+			effect("rom_tech_civil_economy_growth_region_mod", 4)
+		}
+		RomanTechs.MOULDED_ARCHITECTURE.apply {
+			effect("rom_tech_civil_economy_industry_gdp_mod", 25)
 		}
 	}
 
@@ -247,31 +378,20 @@ object Mod2 {
 
 	private fun modifyBuildings() {
 		for(b in Buildings.ALL) b.mod {
-			when(b.adjustedLevel) {
-				1 -> b.turns = 1
-				2 -> b.turns = 2
-				3 -> b.turns = 3
-				4 -> b.turns = 4
-				5 -> b.turns = 8
-			}
+			b.turns = 1
 		}
-
-		for(b in Buildings.ROMAN) b.mod {
-			if(b.isLevel3) b.cost += b.cost / 4
-			if(b.isLevel4) b.cost += b.cost / 2
-		}
-
+		
 		Buildings.ROMAN_TOWN_TRADE_2.apply {
 			effect(GDP_LOCAL_TRADE, 100) // 100
-			effect(GDP_MOD_TRADE, 10) // 3 + 7
+			effect(GDP_MOD_TRADE, 0)
 		}
 		Buildings.ROMAN_TOWN_TRADE_3.apply {
 			effect(GDP_LOCAL_TRADE, 200) // 150 + 50
-			effect(GDP_MOD_TRADE, 15) // 6 + 9
+			effect(GDP_MOD_TRADE, 0)
 		}
 		Buildings.ROMAN_TOWN_TRADE_4.apply {
 			effect(GDP_LOCAL_TRADE, 300) // 200 + 100
-			effect(GDP_MOD_TRADE, 25) // 9 + 16
+			effect(GDP_MOD_TRADE, 0)
 		}
 
 		Buildings.ROMAN_TOWN_FARM_2.apply {
@@ -370,19 +490,52 @@ object Mod2 {
 			effect(GDP_CULTURE_LEARNING, 100)
 		}
 		Buildings.ROMAN_LIBRARY_3.apply {
-			effect(RESEARCH_RATE, 15)
+			effect(RESEARCH_RATE, 20)
 			effect(GDP_CULTURE_LEARNING, 150)
 		}
 		Buildings.ROMAN_LIBRARY_4.apply {
-			effect(RESEARCH_RATE, 30)
+			effect(RESEARCH_RATE, 40)
 			effect(GDP_CULTURE_LEARNING, 200)
 		}
 
+		Buildings.ROMAN_FARM_2.apply {
+			effect(FOOD_PRODUCTION, 8)
+			effect(GDP_AGRICULTURE_FARMING, 50)
+		}
+		Buildings.ROMAN_FARM_3.apply {
+			effect(FOOD_PRODUCTION, 12)
+			effect(GDP_AGRICULTURE_FARMING, 100)
+		}
+		Buildings.ROMAN_FARM_4.apply {
+			effect(FOOD_PRODUCTION, 16)
+			effect(GDP_AGRICULTURE_FARMING, 200)
+		}
+		Buildings.ROMAN_GRANARY_2.apply {
+			effect(FOOD_PRODUCTION, 4)
+			effect(GDP_AGRICULTURE_FARMING, 150)
+			effect(UNIT_REPLENISHMENT, 10)
+		}
 		Buildings.ROMAN_GRANARY_3.apply {
 			effect(FOOD_PRODUCTION, 5)
+			effect(GDP_AGRICULTURE_FARMING, 200)
+			effect(UNIT_REPLENISHMENT, 20)
 		}
 		Buildings.ROMAN_GRANARY_4.apply {
 			effect(FOOD_PRODUCTION, 6)
+			effect(GDP_AGRICULTURE_FARMING, 300)
+			effect(UNIT_REPLENISHMENT, 40)
+		}
+		Buildings.ROMAN_HERD_2.apply {
+			effect(FOOD_PRODUCTION, 6)
+			effect(GDP_AGRICULTURE_HERDING, 150)
+		}
+		Buildings.ROMAN_HERD_3.apply {
+			effect(FOOD_PRODUCTION, 8)
+			effect(GDP_AGRICULTURE_HERDING, 200)
+		}
+		Buildings.ROMAN_HERD_4.apply {
+			effect(FOOD_PRODUCTION, 10)
+			effect(GDP_AGRICULTURE_HERDING, 300)
 		}
 
 		Buildings.ROMAN_TRADER_2.apply {
@@ -407,6 +560,39 @@ object Mod2 {
 		Buildings.ROMAN_THEATRE_4.apply {
 			effect(HAPPINESS, 8)
 		}
+
+		Buildings.ROMAN_BUFF_ATTACK_2.apply {
+			effect(FOOD_CONSUMPTION, 4)
+			effect(ATTACK_BUFF, 10)
+		}
+		Buildings.ROMAN_BUFF_ATTACK_3.apply {
+			effect(FOOD_CONSUMPTION, 8)
+			effect(ATTACK_BUFF, 20)
+		}
+		Buildings.ROMAN_BUFF_DEFENCE_2.apply {
+			effect(FOOD_CONSUMPTION, 4)
+			effect(DEFENCE_BUFF, 10)
+		}
+		Buildings.ROMAN_BUFF_DEFENCE_3.apply {
+			effect(FOOD_CONSUMPTION, 8)
+			effect(DEFENCE_BUFF, 20)
+		}
+		Buildings.ROMAN_BUFF_HORSE_2.apply {
+			effect(FOOD_CONSUMPTION, 4)
+			effect(HORSE_BUFF, 10)
+		}
+		Buildings.ROMAN_BUFF_HORSE_3.apply {
+			effect(FOOD_CONSUMPTION, 8)
+			effect(HORSE_BUFF, 20)
+		}
+		Buildings.ROMAN_BUFF_RANGE_2.apply {
+			effect(FOOD_CONSUMPTION, 4)
+			effect(RANGE_BUFF, 10)
+		}
+		Buildings.ROMAN_BUFF_RANGE_3.apply {
+			effect(FOOD_CONSUMPTION, 8)
+			effect(RANGE_BUFF, 20)
+		}
 	}
 
 
@@ -423,9 +609,8 @@ object Mod2 {
 		)
 
 		Buildings.ROMAN_BARRACKS_MAIN_4.setGarrison(
-			ROMAN_MEDIUM_MELEE to 3,
-			ROMAN_STRONG_MELEE to 3,
-			ROMAN_ELITE_MELEE to 2
+			ROMAN_STRONG_MELEE to 4,
+			ROMAN_ELITE_MELEE to 4
 		)
 
 		Buildings.ROMAN_BARRACKS_AUX_2.setGarrison(
@@ -439,7 +624,7 @@ object Mod2 {
 		)
 
 		Buildings.ROMAN_BARRACKS_AUX_4.setGarrison(
-			ROMAN_STRONG_MELEE to 4,
+			ROMAN_ELITE_MELEE to 3,
 			ROMAN_MEDIUM_RANGED to 3
 		)
 
@@ -462,8 +647,8 @@ object Mod2 {
 		)
 
 		Buildings.ROMAN_CITY_CIVIL_4.setGarrison(
-			ROMAN_MEDIUM_MELEE to 8,
-			ROMAN_STRONG_MELEE to 4,
+			ROMAN_ELITE_MELEE to 2,
+			ROMAN_STRONG_MELEE to 10,
 			ROMAN_MEDIUM_RANGED to 4
 		)
 
@@ -474,14 +659,13 @@ object Mod2 {
 		)
 
 		Buildings.ROMAN_CITY_GARRISON_3.setGarrison(
-			ROMAN_STRONG_MELEE to 6,
-			ROMAN_MEDIUM_MELEE to 6,
+			ROMAN_STRONG_MELEE to 12,
 			ROMAN_MEDIUM_RANGED to 4
 		)
 
 		Buildings.ROMAN_CITY_GARRISON_4.setGarrison(
 			ROMAN_STRONG_MELEE to 10,
-			ROMAN_ELITE_MELEE to 4,
+			ROMAN_ELITE_MELEE to 6,
 			ROMAN_MEDIUM_RANGED to 4
 		)
 
@@ -492,7 +676,25 @@ object Mod2 {
 			if(building.isLevel5) building.garrison(ROMAN_ELITE_MELEE)
 		}
 
+		Buildings.ROMAN_TOWN_TRADE_2.setGarrison(
+			ROMAN_MEDIUM_MELEE to 6,
+			ROMAN_MEDIUM_RANGED to 3
+		)
+
+		Buildings.ROMAN_TOWN_TRADE_3.setGarrison(
+			ROMAN_STRONG_MELEE to 8,
+			ROMAN_MEDIUM_RANGED to 4
+		)
+
+		Buildings.ROMAN_TOWN_TRADE_4.setGarrison(
+			ROMAN_STRONG_MELEE to 8,
+			ROMAN_ELITE_MELEE to 4,
+			ROMAN_MEDIUM_RANGED to 4,
+		)
+
 		for(building in Buildings.ROMAN_TOWNS) {
+			if(building.name.startsWith("rome_town_trade_")) continue
+
 			if(building.isLevel1) building.setGarrison(
 				ROMAN_LEVY_MELEE to 4,
 				ROMAN_BASIC_RANGED to 2
@@ -511,8 +713,8 @@ object Mod2 {
 			)
 
 			if(building.isLevel4) building.setGarrison(
-				ROMAN_STRONG_MELEE to 4,
-				ROMAN_MEDIUM_MELEE to 4,
+				ROMAN_ELITE_MELEE to 2,
+				ROMAN_STRONG_MELEE to 6,
 				ROMAN_MEDIUM_RANGED to 4
 			)
 		}
@@ -567,4 +769,4 @@ object Mod2 {
 	}
 
 
-}
+}*/

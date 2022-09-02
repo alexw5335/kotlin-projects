@@ -3,20 +3,23 @@ package assembler
 enum class BinaryOp(
 	val symbol: String,
 	val precedence: Int,
-	val calculateInt: (Long, Long) -> Long
+	val canCalculateInt: Boolean,
+	val calculateInt: ((Long, Long) -> Long)
 ) {
 
-	MUL("*", 4, { a, b -> a * b }),
-	DIV("/", 4, { a, b -> a / b }),
+	DOT(".", 5, false, { _, _ -> 0 }),
 
-	ADD("+", 3, { a, b -> a + b }),
-	SUB("-", 3, { a, b -> a - b }),
+	MUL("*", 4, true, Long::times),
+	DIV("/", 4, true, Long::div),
 
-	SHL("<<", 2, { a, b -> a shl b.toInt() }),
-	SHR(">>", 2, { a, b -> a shr b.toInt() }),
+	ADD("+", 3, true, Long::plus),
+	SUB("-", 3, true, Long::minus),
 
-	AND("&", 1, { a, b -> a and b }),
-	XOR("^", 1, { a, b -> a xor b }),
-	OR("|", 1,  { a, b -> a or b });
+	SHL("<<", 2, true, { a, b -> a shl b.toInt() }),
+	SHR(">>", 2, true, { a, b -> a shr b.toInt() }),
+
+	AND("&", 1, true, Long::and),
+	XOR("^", 1, true, Long::xor),
+	OR("|", 1,  true, Long::or),
 
 }

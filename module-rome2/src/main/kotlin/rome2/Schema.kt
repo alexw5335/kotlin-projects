@@ -1,6 +1,6 @@
 package rome2
 
-import binary.BinaryReader
+import core.binary.BinaryReader
 import core.binary.BinaryWriter
 import core.xml.XmlParser
 import java.nio.file.Files
@@ -94,18 +94,33 @@ fun writeSchema(path: Path, schema: Schema) {
 const val ROME_2_DATA_PACK_PATH =
 	"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Total War Rome II\\data\\data_rome2.pack"
 
+const val MASTER_SCHEMA_PATH =
+	"C:\\Program Files\\Pack File Manager 5.2.4\\master_schema.xml"
+
+
+
+private val SCHEMA_VERSION_OVERRIDES = setOf(
+	"action_results_additional_outcomes_tables",
+	"agent_actions_tables",
+	"faction_groups_tables",
+	"historical_characters_tables",
+	"plagues_tables",
+	"political_actions_tables",
+	"unit_category_tables",
+)
+
 
 
 fun readRome2Schemas(
 	rome2DataPath: Path = Paths.get(ROME_2_DATA_PACK_PATH),
-	masterSchemaPath: Path = Paths.get("master_schema.xml")
+	masterSchemaPath: Path = Paths.get(MASTER_SCHEMA_PATH)
 ): Schema {
 	val reader = BinaryReader(rome2DataPath)
 	reader.pos += 16
 	val packedFileCount = reader.u32()
 	reader.pos += 8
 
-	val indices = List(packedFileCount) { Pair(reader.u32(), reader.ascii()) }
+	val indices = List(packedFileCount) { Pair(reader.u32(), reader.asciiNt()) }
 
 	var dataPos = reader.pos
 
@@ -161,10 +176,16 @@ fun readRome2Schemas(
 			)
 		}
 
-		if(!tableMap.containsKey(name))
-			tableMap[name] = SchemaTable(name, version, info.guid, fields)
-		else
-			println("DUPLICATE: $name ${fields.last()}")
+		if(name == "cdir_configs_tables" && fields[1].type != SchemaFieldType.ASCII_OPTIONAL)
+			continue
+
+		if(name == "diplomatic_relations_religion_tables" && fields[0].type != SchemaFieldType.ASCII)
+			continue
+
+		if(tableMap.containsKey(name) && SCHEMA_VERSION_OVERRIDES.contains(name))
+			continue
+
+		tableMap[name] = SchemaTable(name, version, info.guid, fields)
 	}
 
 	return Schema(tableMap)
