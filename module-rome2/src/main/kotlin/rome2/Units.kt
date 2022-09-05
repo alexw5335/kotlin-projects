@@ -7,7 +7,7 @@ object Units {
 	
 	private fun romanUnit(name: String) = landUnit(name).also(ROMAN_ALL::add)
 	private fun auxUnit(name: String) = landUnit(name).also(AUX_ALL::add)
-	
+
 	val ARMOURED_LEGIONARIES = romanUnit("Rom_Armour_Legionaries")
 	val EAGLE_COHORT = romanUnit("Rom_Eagle_Cohort")
 	val EQUITES = romanUnit("Rom_Equites")
@@ -27,12 +27,13 @@ object Units {
 	val VIGILES = romanUnit("Rom_Vigiles")
 	val VELITES = romanUnit("Rom_Velites")
 	val LEVES = romanUnit("Rom_Leves")
+	val LEGATUS = romanUnit("Rom_Legatus")
+
 	val BALLISTA = romanUnit("Rom_Ballista")
 	val BALLISTA_BASTION = romanUnit("Rom_Ballista_Bastion")
 	val BEEHIVE_ONAGER = romanUnit("Rom_Beehive_Onager")
 	val GIANT_BALLISTA = romanUnit("Rom_Giant_Ballista")
 	val LARGE_ONAGER = romanUnit("Rom_Large_Onager")
-	val LEGATUS = romanUnit("Rom_Legatus")
 	val ONAGER = romanUnit("Rom_Onager")
 	val ONAGER_BASTION = romanUnit("Rom_Onager_Bastion")
 	val POLYBOLOS = romanUnit("Rom_Polybolos")

@@ -60,6 +60,9 @@ object Buildings {
 	val ROMAN_BARRACKS_AUX_2 = building("rome_military_aux_2")
 	val ROMAN_BARRACKS_AUX_3 = building("rome_military_aux_3")
 	val ROMAN_BARRACKS_AUX_4 = building("rome_military_aux_4")
+	val ROMAN_SIEGE_1 = building("rome_military_siege_1")
+	val ROMAN_SIEGE_2 = building("rome_military_siege_2")
+	val ROMAN_SIEGE_3 = building("rome_military_siege_3")
 	val ROMAN_CITY_1 = building("rome_city_1")
 	val ROMAN_CITY_CIVIL_2 = building("rome_city_civil_2")
 	val ROMAN_CITY_CIVIL_3 = building("rome_city_civil_3")
@@ -67,6 +70,7 @@ object Buildings {
 	val ROMAN_CITY_GARRISON_2 = building("rome_city_garrison_2")
 	val ROMAN_CITY_GARRISON_3 = building("rome_city_garrison_3")
 	val ROMAN_CITY_GARRISON_4 = building("rome_city_garrison_4")
+	val ROMAN_TOWN_1 = building("rome_town_1")
 	val ROMAN_TOWN_CIVIL_2 = building("rome_town_civil_2")
 	val ROMAN_TOWN_CIVIL_3 = building("rome_town_civil_3")
 	val ROMAN_TOWN_CIVIL_4 = building("rome_town_civil_4")
@@ -76,8 +80,22 @@ object Buildings {
 	val ROMAN_TOWN_TRADE_2 = building("rome_town_trade_2")
 	val ROMAN_TOWN_TRADE_3 = building("rome_town_trade_3")
 	val ROMAN_TOWN_TRADE_4 = building("rome_town_trade_4")
-
-
+	val ROMAN_CIRCUS_2 = building("rome_city_centre_gladiator_2")
+	val ROMAN_CIRCUS_3 = building("rome_city_centre_gladiator_3")
+	val ROMAN_CIRCUS_4 = building("rome_city_centre_gladiator_4")
+	val ROMAN_COLOSSEUM = building("rome_city_centre_gladiator_5")
+	val ROMAN_CIRCUS_MAXIMUS = building("rome_city_centre_circus_5")
+	val ROMAN_CITY_CENTRE = building("rome_city_centre_1")
+	val ROMAN_WATER_1 = building("rome_water_1")
+	val ROMAN_SEWER_2 = building("rome_water_sewer_2")
+	val ROMAN_SEWER_3 = building("rome_water_sewer_3")
+	val ROMAN_SEWER_4 = building("rome_water_sewer_4")
+	val ROMAN_BATHS_2 = building("rome_water_baths_2")
+	val ROMAN_BATHS_3 = building("rome_water_baths_3")
+	val ROMAN_BATHS_4 = building("rome_water_baths_4")
+	val ROMAN_TANK_2 = building("rome_water_tank_2")
+	val ROMAN_TANK_3 = building("rome_water_tank_3")
+	val ROMAN_TANK_4 = building("rome_water_tank_4")
 
 	val MINES = listOf(MINE_1, MINE_2, MINE_3, MINE_4)
 
@@ -127,6 +145,10 @@ object Buildings {
 
 
 
+	val ROMAN_RESOURCE_TOWNS = towns("rome_")
+
+
+
 	val ROMAN_TOWNS = listOf(
 		ROMAN_TOWN_CIVIL_2,
 		ROMAN_TOWN_CIVIL_3,
@@ -137,7 +159,7 @@ object Buildings {
 		ROMAN_TOWN_TRADE_2,
 		ROMAN_TOWN_TRADE_3,
 		ROMAN_TOWN_TRADE_4
-	) + towns("rome_")
+	) + ROMAN_RESOURCE_TOWNS
 
 
 

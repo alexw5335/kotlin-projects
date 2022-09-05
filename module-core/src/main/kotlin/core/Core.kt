@@ -10,12 +10,12 @@ import kotlin.system.exitProcess
 object Core {
 
 
-	fun run(command: String): Boolean {
+	fun run(command: String, output: Boolean = true): Boolean {
 		val process = Runtime.getRuntime().exec(command)
 		process.waitFor()
 
 		val errorText = process.errorReader().readText()
-		if(errorText.isNotEmpty()) {
+		if(errorText.isNotEmpty() && output) {
 			print("\u001B[31m")
 			print(errorText)
 			print("\u001B[0m")
@@ -23,7 +23,7 @@ object Core {
 		}
 
 		val outputText = process.inputReader().readText()
-		if(outputText.isNotEmpty())
+		if(outputText.isNotEmpty() && output)
 			print(outputText)
 
 		return true

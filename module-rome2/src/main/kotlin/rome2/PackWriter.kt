@@ -13,7 +13,7 @@ class PackWriter(private val modMap: HashMap<KClass<*>, HashSet<EntryType>>, val
 
 		writer.ascii("PFH4")
 
-		writer.u32(2) // flags
+		writer.u32(3) // flags
 		writer.u32(0) // packFileCount
 		writer.u32(0) // packFileIndexSize
 		writer.u32(modMap.size) // packedFileCount

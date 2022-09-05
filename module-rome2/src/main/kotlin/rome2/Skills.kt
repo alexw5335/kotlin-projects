@@ -30,6 +30,7 @@ object Skills {
 		val STRATEGIST = generalSkill("general_strategist_1")
 		val TACTICIAN = generalSkill("general_strategist_2_tactician")
 		val NAVIGATOR = generalSkill("general_strategist_2_navigator")
+		val ADMINISTRATION = generalSkill("general_strategist_3_administration")
 		val COVERT_ACTION = generalSkill("general_strategist_3_covert_action")
 		val LOGISTICS = generalSkill("general_strategist_3_logistics")
 		val SIEGECRAFT = generalSkill("general_strategist_3_siegecraft")

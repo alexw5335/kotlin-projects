@@ -1,5 +1,7 @@
 package rome2
 
+import kotlin.math.roundToInt
+
 
 
 interface EntryType {
@@ -11,6 +13,7 @@ interface EntryType {
 	fun<T> any(index: Int, getter: (String) -> T, setter: (T) -> String) = entry.any(index, getter, setter)
 	fun <T : NamedType> any(index: Int, getter: (String) -> T) = entry.any(index, getter)
 	fun booleanString(index: Int) = entry.booleanString(index)
+	fun intFloat(index: Int) = entry.intFloat(index)
 }
 
 
@@ -65,12 +68,18 @@ class LandUnit(val landUnitData: LandUnitData, val mainUnitData: MainUnitData) :
 	var missileWeapon by landUnitData.any(23, { missileWeapons[it] }, { it?.name ?: "" })
 	var shield        by landUnitData.any(25, { shield(it) }, { it.name })
 	var siegeEngine   by landUnitData.any(34, { siegeEngines[it] }, { it?.name ?: "" })
+	var level         by landUnitData.any(30, { TrainingLevel.get(it) }, { it.string })
 	var reload        by landUnitData.int(44)
 	var cost          by mainUnitData.int(14)
 	var upkeep        by mainUnitData.int(18)
 
 	val totalArmour get() = armour.armour + shield.armour
 	val totalDefence get() = defence + shield.defence
+
+	// reload is a percentage reduction of reloadTime
+	val shotsPerMinute get() = (missileWeapon ?: siegeEngine?.weapon)?.let {
+		(60F / (it.projectile.reloadTime * ((100F - reload) / 100F))).roundToInt()
+	} ?: 0
 
 	override fun addMod() { landUnitData.addMod(); mainUnitData.addMod() }
 
@@ -97,12 +106,12 @@ val LandUnit.formattedString get() = buildString {
 	else
 		appendLine("\tsiege (${siegeEngine!!.name}, ${rangedWeapon.name}, ${rangedWeapon.projectile.name})")
 
-	appendLine("\t\tdamage:    ${rangedWeapon.projectile.damage}")
-	appendLine("\t\tapDamage:  ${rangedWeapon.projectile.apDamage}")
-	appendLine("\t\trange:     ${rangedWeapon.projectile.range}")
-	appendLine("\t\treload:    $reload")
-	appendLine("\t\taccuracy:  $accuracy")
-	appendLine("\t\tammo:      $ammo")
+	appendLine("\t\tdamage:     ${rangedWeapon.projectile.damage}")
+	appendLine("\t\tapDamage:   ${rangedWeapon.projectile.apDamage}")
+	appendLine("\t\trange:      ${rangedWeapon.projectile.range}")
+	appendLine("\t\tfireRate:   $shotsPerMinute (baseReload: ${rangedWeapon.projectile.reloadTime}s, reloadSkill: $reload%)")
+	appendLine("\t\taccuracy:   $accuracy")
+	appendLine("\t\tammo:       $ammo")
 
 }
 
@@ -149,10 +158,11 @@ class Weapon(override val entry: PackEntry) : NamedType {
 
 class Projectile(override val entry: PackEntry) : NamedType {
 	override
-	var name     by entry.string(0)
-	var range    by entry.int(7)
-	var damage   by entry.int(13)
-	var apDamage by entry.int(14)
+	var name       by entry.string(0)
+	var range      by entry.int(7)
+	var damage     by entry.int(13)
+	var apDamage   by entry.int(14)
+	var reloadTime by entry.intFloat(20)
 }
 
 
@@ -185,12 +195,21 @@ class GarrisonGroupUnit(override val entry: PackEntry) : EntryType {
 	var priority by int(2)
 	var unit     by string(3)
 	var group    by string(4)
+
+	constructor(group: String, unit: LandUnit, id: Int, priority: Int) : this(PackEntry(listOf(
+		PackFieldInt(id),
+		PackFieldInt(0),
+		PackFieldInt(priority),
+		PackFieldString(unit.name),
+		PackFieldString(group)
+	)))
 }
 
 
 
 class GarrisonGroupData(override val entry: PackEntry) : NamedType {
 	override var name by string(0)
+	constructor(name: String) : this(PackEntry(listOf(PackFieldString(name))))
 }
 
 
@@ -220,6 +239,32 @@ class Garrison(override val entry: PackEntry) : EntryType {
 	var building by string(0)
 	var id       by int(1)
 	var group    by string(3)
+
+	constructor(building: Building, id: Int, group: GarrisonGroup) : this(PackEntry(listOf(
+		PackFieldString(building.name),
+		PackFieldInt(id),
+		PackFieldInt(0),
+		PackFieldString(group.name)
+	)))
+}
+
+
+
+class BuildingUnit(override val entry: PackEntry) : EntryType {
+	var building by string(0)
+	var unit by string(1)
+	var id by int(4)
+
+	constructor(building: String, unit: String, id: Int) : this(PackEntry(listOf(
+		PackFieldString(building),
+		PackFieldString(unit),
+		PackFieldInt(0),
+		PackFieldString(""),
+		PackFieldInt(id),
+		PackFieldInt(0),
+		PackFieldString(""),
+		PackFieldBoolean(false)
+	)))
 }
 
 
@@ -250,11 +295,27 @@ class BuildingEffect(override val entry: PackEntry) : EntryType {
 
 
 
-class Building(val data: BuildingData, val effects: List<BuildingEffect>, val garrisons: List<Garrison>) : CompoundType {
+class Building(
+	val data      : BuildingData,
+	val effects   : List<BuildingEffect>,
+	val garrisons : List<Garrison>,
+	val units     : List<BuildingUnit>
+) : CompoundType {
 	var name  by data::name
 	var level by data.int(2)
 	var turns by data.int(4)
 	var cost  by data.int(5)
+
+	val adjustedLevel get() = level + 1
+
+	val culture get() = when {
+		name.startsWith("rome_") -> Culture.ROME
+		name.startsWith("greek_") -> Culture.GREEK
+		name.startsWith("east_") -> Culture.EAST
+		name.startsWith("barb_") -> Culture.BARB
+		else -> null
+	}
+
 	override fun addMod() { data.addMod() }
 }
 
@@ -265,13 +326,23 @@ val Building.formattedString get() = buildString {
 	appendLine("\tcost:   $cost")
 	appendLine("\tturns:  $turns")
 
-	appendLine("\teffects:")
-	for(effect in effects)
-		appendLine("\t\t${effect.effect} : ${effect.scope} : ${effect.value.toString().dropLast(2)}")
+	if(effects.isNotEmpty()) {
+		appendLine("\teffects:")
+		for(effect in effects)
+			appendLine("\t\t${effect.effect} : ${effect.scope} : ${effect.value.toString().dropLast(2)}")
+	}
 
-	appendLine("\tgarrisons:")
-	for(garrison in garrisons)
-		appendLine("\t\t${garrison.group}")
+	if(garrisons.isNotEmpty()) {
+		appendLine("\tgarrisons:")
+		for(garrison in garrisons)
+			appendLine("\t\t${garrison.group}")
+	}
+
+	if(units.isNotEmpty()) {
+		appendLine("\tunits:")
+		for(unit in units)
+			appendLine("\t\t${unit.unit} :: ${unit.id}")
+	}
 }
 
 
@@ -304,7 +375,16 @@ class TechEffect(override val entry: PackEntry) : EntryType {
 
 
 
-class Tech(val data: TechData, val effects: List<TechEffect>) : CompoundType {
+class TechUnitUpgrade(override val entry: PackEntry) : EntryType {
+	var cost by int(0)
+	var new  by string(1)
+	var tech by string(2)
+	var prev by string(3)
+}
+
+
+
+class Tech(val data: TechData, val effects: List<TechEffect>, val unitUpgrades: List<TechUnitUpgrade>) : CompoundType {
 	var name by data::name
 	var cost by data.int(3)
 	override fun addMod() { data.addMod() }
@@ -315,9 +395,18 @@ class Tech(val data: TechData, val effects: List<TechEffect>) : CompoundType {
 val Tech.formattedString get() = buildString {
 	appendLine(name)
 	appendLine("\tcost: $cost")
-	appendLine("\teffects:")
-	for(effect in effects)
-		appendLine("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value}")
+
+	if(effects.isNotEmpty()) {
+		appendLine("\teffects:")
+		for(effect in effects)
+			appendLine("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value}")
+	}
+
+	if(unitUpgrades.isNotEmpty()) {
+		appendLine("\tunitUpgrades:")
+		for(u in unitUpgrades)
+			appendLine("\t\t${u.prev} -> ${u.new} ($cost)")
+	}
 }
 
 
@@ -388,4 +477,175 @@ val Skill.formattedString get() = buildString {
 		for(effect in level.effects)
 			appendLine("\t\t${effect.effect} :: ${effect.scope} :: ${effect.value.toString().dropLast(2)}")
 	}
+}
+
+
+
+/*
+Events
+ */
+
+
+
+class Mission(override val entry: PackEntry) : NamedType {
+	override var name by string(1)
+	var enabled by boolean(0)
+	var description by string(2)
+	var title by string(3)
+	var type by string(4)
+	var prioritised by boolean(7)
+}
+
+
+
+class Dilemma(override var entry: PackEntry) : NamedType {
+	override var name by string(1)
+	var enabled by boolean(0)
+	var description by string(2)
+	var title by string(3)
+	var prioritised by boolean(6)
+}
+
+
+
+class Incident(override var entry: PackEntry) : NamedType {
+	override var name by string(1)
+	var enabled by boolean(0)
+	var prioritised by boolean(4)
+}
+
+
+
+/*
+Other
+ */
+
+
+
+class DifficultyEffect(override val entry: PackEntry) : EntryType {
+	var difficulty by int(0)
+	var isHuman by boolean(1)
+	var effect by string(2)
+	var scope by string(3)
+	var value by float(4)
+}
+
+
+
+class CampaignVariable(override val entry: PackEntry) : NamedType {
+	override var name by string(0)
+	var value by float(1)
+}
+
+
+
+class MessageEvent(override val entry: PackEntry) : NamedType {
+	override var name    by string(0)
+	var instantOpen      by boolean(1)
+	var layout           by string(2)
+	var requiresResponse by boolean(3)
+	var priority         by int(4)
+}
+
+
+
+class BudgetAllocation(override val entry: PackEntry) : NamedType {
+	override var name by string(16)
+	var agentFundingCap by int(0)
+	var agentFundingAllocationPercentage by int (1)
+	var agentPercentageOfPoolToSaveOnFail by int(2)
+	var agentTurnOfInactivityUntilCap by int(3)
+	var armyFundingCap by int(4)
+	var armyFundsAllocationPercentage by int(5)
+	var armyPercentageOfPoolToSaveOnFail by int(6)
+	var armyTurnsOfInactivityUntilCap by int(7)
+	var constructionFundingCap by int(8)
+	var constructionFundsAllocationPercentage by int(9)
+	var constructionPercentageOfPoolToSaveOnFail by int(10)
+	var constructionTurnsOfInactivityUntilCap by int(11)
+	var diplomacyFundingCap by int(12)
+	var diplomacyFundsAllocationPercentage by int(13)
+	var diplomacyPercentageOfPoolToSaveOnFail by int(14)
+	var diplomacyTurnsOfInactivityUntilCap by int(15)
+	var navyFundingCap by int(17)
+	var navyFundsAllocationPercentage by int(18)
+	var navyPercentageOfPoolToSaveOnFail by int(19)
+	var navyTurnsOfInactivityUntilCap by int(20)
+	var minimumSettableTaxLevel by string(21)
+	var maximumSettableTaxLevel by string(22)
+	var technologyFundsAllocationPercentage by int(23)
+	var technologyTurnsOfInactivityUntilCap by int(24)
+	var technologyFundingCap by int(25)
+	var technologyPercentageOfPoolToSaveOnFail by int(26)
+}
+
+
+
+class DealEvalComponent(override val entry: PackEntry) : EntryType {
+	var deal by string(2)
+	var personality by string(5)
+	var bestFriendsValue by float(0)
+	var bitterEnemiesValue by float(1)
+	var friendlyValue by float(3)
+	var neutralValue by float(4)
+	var totalWarFactor by float(6)
+	var lastStandFactor by float(7)
+	var unfriendlyValue by float(8)
+	var veryFriendlyValue by float(9)
+	var veryUnfriendlyValue by float(10)
+	var warFactor by float(11)
+	var tensionFactor by float(12)
+	var peaceFactor by float(13)
+	var treacheryValue by float(14)
+}
+
+
+
+class DealGenPriority(override val entry: PackEntry) : NamedType {
+	override var name by string(1)
+	var lastStandPriority by float(2)
+	var peacePriority by float(7)
+	var tensionPriority by float(8)
+	var totalWarPriority by float(9)
+	var warPriority by float(10)
+	var failureTimeout by int(11)
+	var minPaymentCap by int(12)
+	var maxPaymentCap by int(13)
+	var maxPaymentPercent by float(14)
+}
+
+
+
+/*
+EffectBundle
+ */
+
+
+
+class EffectBundleEffect(override val entry: PackEntry) : EntryType {
+	var bundle by string(0)
+	var effect by string(1)
+	var scope by string(2)
+	var value by float(3)
+
+	constructor(bundle: String, effect: String, scope: String, value: Float) : this(PackEntry(listOf(
+		PackFieldString(bundle),
+		PackFieldString(effect),
+		PackFieldString(scope),
+		PackFieldFloat(value),
+		PackFieldString("")
+	)))
+}
+
+
+
+class EffectBundleData(override val entry: PackEntry) : NamedType {
+	override var name by string(0)
+}
+
+
+
+class EffectBundle(val data: EffectBundleData, val effects: List<EffectBundleEffect>) : CompoundType {
+	var name by data::name
+	override fun addMod() { data.addMod() }
 }
