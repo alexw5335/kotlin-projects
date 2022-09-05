@@ -28,4 +28,9 @@ allprojects {
 
 		plugin("org.jetbrains.kotlin.jvm")
 	}
+
+	dependencies {
+		if(name != "module-core")
+			implementation(project(":module-core"))
+	}
 }

@@ -6,6 +6,7 @@ enum class EffectScope(val string: String) {
 	REGION("this_region"),
 	REGIONS_IN_PROVINCE("regions_in_this_province"),
 	BUILDING("this_building"),
-	FACTION("this_faction")
+	FACTION("this_faction"),
+	ALL_PROVINCES("in_all_your_provinces");
 
 }

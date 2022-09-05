@@ -9,13 +9,15 @@ object Skills {
 	val SPY = ArrayList<Skill>()
 	val DIGNITARY = ArrayList<Skill>()
 	val CHAMPION = ArrayList<Skill>()
+	val ARMY = skills.values.filter { it.name.startsWith("army_") }
+	val NAVY = skills.values.filter { it.name.startsWith("navy_") }
 
 	private fun generalSkill(name: String) = skill(name).also { ALL.add(it); GENERAL.add(it) }
 	private fun spySkill(name: String) = skill(name).also { ALL.add(it); SPY.add(it) }
 	private fun dignitarySkill(name: String) = skill(name).also { ALL.add(it); DIGNITARY.add(it) }
 	private fun championSkill(name: String) = skill(name).also { ALL.add(it); CHAMPION.add(it) }
 
-	init { General; Spy; Dignitary; Champion }
+	init { General; Spy; Dignitary; Champion; ALL += ARMY; ALL += NAVY }
 
 
 

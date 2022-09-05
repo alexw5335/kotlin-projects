@@ -9,9 +9,13 @@ import kotlin.reflect.KClass
 
 
 fun main() {
-	Mod2.mod()
-	applyMods()
-	runRome2()
+	Units.LEVES.formattedString.let(::println)
+	Units.VELITES.formattedString.let(::println)
+	Units.AUX_PELTASTS.formattedString.let(::println)
+	Units.AUX_CRETAN_ARCHERS.formattedString.let(::println)
+	//CurrentMod.mod()
+	//applyMods()
+	//runRome2()
 }
 
 
@@ -28,6 +32,11 @@ private var buildingUnitId = 300_000
 
 private var garrisonUnitId = 300_000
 
+fun Difficulty.effect(effect: String, value: Int) = effects
+	.first { it.effect == effect }
+	.takeIf { it.value != value.toFloat() }
+	?.mod { this.value = value.toFloat() }
+
 fun EffectBundle.effect(effect: String, value: Int) = effects
 	.first { it.effect == effect }
 	.takeIf { it.value != value.toFloat() }
@@ -42,6 +51,9 @@ fun Building.effect(effect: BuildingEffectType, value: Int) = effects
 	.first { it.effect == effect.string }
 	.takeIf { it.value != value.toFloat() }
 	?.mod { this.value = value.toFloat() }
+
+fun Difficulty.addEffect(effect: String, scope: EffectScope, value: Float, isHuman: Boolean = false) =
+	DifficultyEffect(level, isHuman, effect, scope.string, value)
 
 fun Tech.addEffect(effect: TechEffectType, scope: EffectScope, value: Int) =
 	TechEffect(this, effect, scope, value).addMod()
@@ -220,6 +232,7 @@ val effectBundleEffects = Tables.map(::EffectBundleEffect).associateFlatMap { it
 val effectBundlesData = Tables.mapNamed(::EffectBundleData)
 val dealEvalComponents = Tables.map(::DealEvalComponent)
 val dealGenPriorities = Tables.mapNamed(::DealGenPriority)
+val occupationPriorities = Tables.mapNamed(::OccupationPriority)
 
 
 
@@ -257,6 +270,8 @@ val skills = skillsData.filter { skillLevelsData.containsKey(it.key) }.mapValues
 
 val effectBundles = effectBundlesData
 	.mapValues { (name, data) -> EffectBundle(data, effectBundleEffects[name] ?: emptyList()) }
+
+val difficulties = difficultyEffects.mapValues { (level, effects) -> Difficulty(level, effects.toMutableList()) }
 
 
 

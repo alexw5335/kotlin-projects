@@ -1,7 +1,3 @@
-dependencies {
-	implementation(project(":module-core"))
-}
-
 sourceSets {
 	kotlin.sourceSets.create("testing")
 }

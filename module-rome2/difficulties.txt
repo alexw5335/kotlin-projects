@@ -1,0 +1,144 @@
+easy (-1)
+	rom_agent_action_cost_mod  ::  all_agents  ::  50.0
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  2.0
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  0.0
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  3.0
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  3.0
+	rom_building_research_cost_mod  ::  this_faction  ::  -50.0
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  10.0
+	rom_force_campaign_mod_replenishment_rate  ::  in_all_your_regions  ::  5.0
+	rom_tech_agent_champion_success_mod  ::  all_agents  ::  -15.0
+	rom_tech_agent_cost_mod  ::  in_all_your_provinces  ::  50.0
+	rom_tech_agent_dignitary_success_mod  ::  all_agents  ::  -15.0
+	rom_tech_agent_scout_success_mod  ::  all_agents  ::  -15.0
+	rom_tech_civil_economy_administration_cost_mod  ::  this_faction  ::  45.0
+	rom_tech_civil_economy_tax_mod  ::  this_faction  ::  10.0
+	rom_tech_military_management_mercenary_upkeep  ::  in_all_your_forces  ::  -5.0
+	rom_tech_military_management_upkeep_mod  ::  in_all_your_forces  ::  0.0
+
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  -2.0  (human)
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  -12.0  (human)
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  3.0  (human)
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  3.0  (human)
+	rom_building_research_points  ::  this_faction  ::  0.0  (human)
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0  (human)
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0  (human)
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  2.0  (human)
+	rom_force_campaign_mod_line_of_sight  ::  all_your_generals  ::  100.0  (human)
+
+
+
+normal (0)
+	rom_agent_action_cost_mod  ::  all_agents  ::  50.0
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  0.0
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  -8.0
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  3.0
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  3.0
+	rom_building_research_cost_mod  ::  this_faction  ::  -50.0
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  14.0
+	rom_force_campaign_mod_replenishment_rate  ::  in_all_your_regions  ::  5.0
+	rom_tech_agent_champion_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_cost_mod  ::  in_all_your_provinces  ::  50.0
+	rom_tech_agent_dignitary_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_scout_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_civil_economy_administration_cost_mod  ::  this_faction  ::  60.0
+	rom_tech_civil_economy_tax_mod  ::  this_faction  ::  15.0
+	rom_tech_military_management_mercenary_upkeep  ::  in_all_your_forces  ::  -10.0
+	rom_tech_military_management_upkeep_mod  ::  in_all_your_forces  ::  -5.0
+
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  -4.0  (human)
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  -14.0  (human)
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  3.0  (human)
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  3.0  (human)
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0  (human)
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0  (human)
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  5.0  (human)
+	rom_force_campaign_mod_line_of_sight  ::  all_your_generals  ::  100.0  (human)
+
+
+
+hard (1)
+	rom_agent_action_cost_mod  ::  all_agents  ::  50.0
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  -2.0
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  -12.0
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  3.0
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  3.0
+	rom_building_research_cost_mod  ::  this_faction  ::  -50.0
+	rom_building_research_points  ::  this_faction  ::  10.0
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  16.0
+	rom_force_campaign_mod_replenishment_rate  ::  in_all_your_regions  ::  5.0
+	rom_tech_agent_champion_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_cost_mod  ::  this_faction  ::  25.0
+	rom_tech_agent_dignitary_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_scout_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_civil_economy_administration_cost_mod  ::  this_faction  ::  90.0
+	rom_tech_civil_economy_tax_mod  ::  this_faction  ::  25.0
+	rom_tech_military_management_mercenary_upkeep  ::  in_all_your_forces  ::  -15.0
+	rom_tech_military_management_upkeep_mod  ::  in_all_your_forces  ::  -10.0
+
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  -6.0  (human)
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  -15.0  (human)
+	rom_any_corruption_mod_global  ::  this_faction  ::  -30.0  (human)
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  3.0  (human)
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  3.0  (human)
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0  (human)
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0  (human)
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  10.0  (human)
+	rom_force_campaign_mod_line_of_sight  ::  all_your_generals  ::  100.0  (human)
+	rom_general_force_mod_resistance_to_occupation  ::  this_faction  ::  -30.0  (human)
+	rom_tech_military_management_mercenary_upkeep  ::  in_all_your_forces  ::  -10.0  (human)
+	rom_tech_military_management_upkeep_mod  ::  in_all_your_forces  ::  -10.0  (human)
+	
+	
+
+very hard (2)
+	rom_agent_action_cost_mod  ::  all_agents  ::  50.0
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  -4.0
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  -14.0
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  4.0
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  4.0
+	rom_building_research_cost_mod  ::  this_faction  ::  -50.0
+	rom_building_research_points  ::  this_faction  ::  20.0
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  18.0
+	rom_force_campaign_mod_replenishment_rate  ::  in_all_your_regions  ::  7.0
+	rom_tech_agent_champion_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_cost_mod  ::  in_all_your_provinces  ::  12.0
+	rom_tech_agent_dignitary_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_scout_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_civil_economy_administration_cost_mod  ::  this_faction  ::  100.0
+	rom_tech_civil_economy_tax_mod  ::  this_faction  ::  35.0
+	rom_tech_military_management_mercenary_cost  ::  this_faction  ::  -10.0
+	rom_tech_military_management_mercenary_upkeep  ::  in_all_your_forces  ::  -20.0
+	rom_tech_military_management_unit_cost_mod  ::  in_all_your_provinces  ::  -10.0
+	rom_tech_military_management_upkeep_mod  ::  in_all_your_forces  ::  -15.0
+
+
+
+legendary (3)
+	rom_agent_action_success_chance_critical_mod_hinder_character  ::  all_agents  ::  -6.0
+	rom_agent_action_success_chance_mod_hinder_character  ::  all_agents  ::  -15.0
+	rom_building_recruitment_points  ::  in_all_your_provinces  ::  5.0
+	rom_building_recruitment_points_naval  ::  in_all_your_sea_regions  ::  5.0
+	rom_building_research_cost_mod  ::  this_faction  ::  -50.0
+	rom_building_research_points  ::  this_faction  ::  20.0
+	rom_building_spy_availibility  ::  in_all_your_provinces  ::  1.0
+	rom_building_trade_route_sea_cap  ::  in_all_your_regions  ::  500.0
+	rom_faction_public_order_difficulty_level  ::  in_all_your_provinces  ::  22.0
+	rom_force_campaign_mod_replenishment_rate  ::  in_all_your_regions  ::  9.0
+	rom_tech_agent_champion_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_dignitary_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_agent_scout_success_mod  ::  all_agents  ::  -10.0
+	rom_tech_civil_economy_administration_cost_mod  ::  this_faction  ::  100.0
+	rom_tech_civil_economy_tax_mod  ::  this_faction  ::  50.0
+	rom_tech_military_management_mercenary_cost  ::  this_faction  ::  -20.0
+	rom_tech_military_management_mercenary_upkeep  ::  in_all_your_forces  ::  -25.0
+	rom_tech_military_management_unit_cost_mod  ::  in_all_your_provinces  ::  -20.0
+	rom_tech_military_management_upkeep_mod  ::  in_all_your_forces  ::  -25.0

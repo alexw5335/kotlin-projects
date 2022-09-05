@@ -3,7 +3,6 @@ package assembler
 
 
 class Symbol(
-	val namespace: Namespace,
 	val name: String,
 	val type: SymbolType,
 	var data: SymbolData? = null

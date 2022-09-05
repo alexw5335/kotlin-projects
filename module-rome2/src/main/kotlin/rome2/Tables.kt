@@ -15,14 +15,14 @@ object Tables {
 
 	inline fun<reified T : NamedType> mapNamed(block: (PackEntry) -> T) = get(T::class).entries.map(block).associateBy { it.name }
 
-	fun printTable(table: PackTable) {
+	fun print(table: PackTable) {
 		println("table ${table.schema.name}")
 		table.schema.fields.forEachIndexed { i, f ->
 			println("\t$i: ${f.type} ${f.name}" + if(f.isKey) "  (KEY)" else "")
 		}
 	}
 
-	fun printTable(name: String) = printTable(get(name))
+	fun print(name: String) = print(get(name))
 
 	private val classMap = mapOf(
 		Projectile::class         to get("projectiles"),
@@ -56,7 +56,8 @@ object Tables {
 		EffectBundleEffect::class to get("effect_bundles_to_effects_junctions"),
 		EffectBundleData::class   to get("effect_bundles"),
 		DealEvalComponent::class  to get("cai_personality_deal_evaluation_deal_component_values"),
-		DealGenPriority::class    to get("cai_personality_deal_generation_generator_priorities")
+		DealGenPriority::class    to get("cai_personality_deal_generation_generator_priorities"),
+		OccupationPriority::class to get("cai_personality_occupation_decision_priorities")
 	)
 
 }

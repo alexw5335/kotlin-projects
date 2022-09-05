@@ -1,0 +1,27 @@
+Key	army funding	c2	d2	navy funding
+last_stand_diplomat	50	5	30	10
+last_stand_generic	65	5	10	15
+last_stand_generic_extra_research	65	5	10	5
+last_stand_naval	50	5	10	30
+last_stand_naval_extra_research	50	5	10	20
+peace_diplomat	25	50	10	10
+peace_generic	30	50	5	10
+peace_generic_extra_research	30	35	5	0
+peace_naval	25	50	5	15
+peace_naval_extra_research	20	35	5	10
+pel_naval	15	25	4	45
+tension_diplomat	25	35	15	10
+tension_generic	35	35	5	10
+tension_generic_extra_research	35	30	5	0
+tension_naval	25	35	5	20
+tension_naval_extra_research	25	30	5	15
+total_war_diplomat	30	15	25	15
+total_war_generic	45	15	10	15
+total_war_generic_extra_research	45	15	10	5
+total_war_naval	35	15	10	25
+total_war_naval_extra_research	35	15	10	15
+war_diplomat	30	25	20	10
+war_generic	40	25	10	15
+war_generic_extra_research	40	25	5	5
+war_naval	30	25	10	25
+war_naval_extra_research	30	25	10	15

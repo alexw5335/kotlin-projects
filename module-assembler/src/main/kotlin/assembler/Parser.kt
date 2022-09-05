@@ -22,7 +22,7 @@ class Parser(lexResult: LexResult) {
 
 	private val nodes = ArrayList<AstNode>()
 
-	private val symbols = HashMap<String, Symbol>()
+	private val symbols = HashMap<Namespace, Symbol>()
 
 
 
@@ -111,7 +111,7 @@ class Parser(lexResult: LexResult) {
 
 
 
-	private fun resolveIntSymbol(name: String) = (symbols[name]?.data as? IntSymbolData)?.value
+	private fun resolveIntSymbol(namespace: Namespace) = (symbols[name]?.data as? IntSymbolData)?.value
 
 
 

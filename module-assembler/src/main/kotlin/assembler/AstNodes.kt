@@ -2,17 +2,40 @@ package assembler
 
 
 
-fun AstNode.calculateInt(resolver: (String) -> Long? = { null }): Long = when(this) {
+fun AstNode.calculateInt(resolver: (Namespace) -> Long = { error("Undefined symbol: $it") }): Long = when(this) {
 	is IntNode    -> value
 	is UnaryNode  -> op.calculate(node.calculateInt(resolver))
-	is BinaryNode -> op.calculateInt(left.calculateInt(resolver), right.calculateInt(resolver))
-	is IdNode     -> resolver(value) ?: error("Undefined integer symbol: $value")
+	is BinaryNode -> {
+		if(op == BinaryOp.DOT)
+			resolver(Namespace(ArrayList<String>().also { namespace(it) }))
+		else
+			op.calculateInt(left.calculateInt(resolver), right.calculateInt(resolver))
+	}
+	is IdNode     -> resolver(Namespace(listOf(value)))
 	else          -> error("Cannot perform integer arithmetic on node: $this")
 }
 
 
 
-fun AstNode.calculateIntOrNull(resolver: (String) -> Long? = { null }): Long? = try {
+fun BinaryNode.namespace(components: MutableList<String>) {
+	if(op != BinaryOp.DOT) error("Invalid binary op $op for dot operator")
+
+	when(left) {
+		is BinaryNode -> left.namespace(components)
+		is IdNode     -> components.add(left.value)
+		else          -> error("Invalid ast node $left for namespace operator")
+	}
+
+	when(right) {
+		is BinaryNode -> right.namespace(components)
+		is IdNode -> components.add(right.value)
+		else -> error("Invalid ast node $right for namespace operator")
+	}
+}
+
+
+
+fun AstNode.calculateIntOrNull(resolver: (Namespace) -> Long = { error("Undefined symbol: $it") }): Long? = try {
 	calculateInt(resolver)
 } catch(e: Exception) {
 	null

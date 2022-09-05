@@ -186,7 +186,7 @@ class PEReader(private val reader: BinaryReader) {
 				)
 			}
 
-			symbols.add(Symbol(name, value, sectionNumber, type, StorageClass.map[storageClass]!!, auxSymbols))
+			symbols.add(Symbol(name, value, sectionNumber, type, StorageClass.get(storageClass), auxSymbols))
 		}
 
 		return symbols

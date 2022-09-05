@@ -2,7 +2,7 @@ package rome2
 
 import rome2.TrainingLevel.*
 
-object Mod2 {
+object CurrentMod {
 
 	
 	fun mod() {
@@ -16,12 +16,6 @@ object Mod2 {
 
 
 
-	/**
-	 * - Increase trade route income
-	 * - Remove unnecessary missions/incidents
-	 * - Stop unnecessary popups
-	 * - Disable AI agent recruitment
-	 */
 	private fun modOthers() {
 		campaignVariables["trade_route_value_combined_gdp_proportion"]!!.value = 2F
 
@@ -51,28 +45,28 @@ object Mod2 {
 		"military_tech_advance".disable()
 
 		for(b in budgetAllocations.values) b.mod {
-			agentFundingCap = 0
-			agentFundingAllocationPercentage = 0
-			armyFundingCap = 1000000
-			navyFundingCap = 1000000
-			constructionFundingCap = 1000000
-			technologyFundingCap = 1000000
+			b.agentFundingCap = 0
+			b.agentFundingAllocationPercentage = 0
+			b.agentTurnOfInactivityUntilCap = 0
+			b.agentPercentageOfPoolToSaveOnFail = 0
+			b.armyFundingCap = 400000
+			b.constructionFundingCap = 30000
+			b.diplomacyFundingCap = 10000
 		}
 
-		effectBundle("govt_type_republic").effect("rom_faction_political_party_loyalty", 30)
-		effectBundle("govt_type_elected_monarchy").effect("rom_faction_political_party_loyalty", 15)
-		effectBundle("govt_type_empire").effect("rom_faction_political_party_loyalty", 45)
+		effectBundle("govt_type_republic").effect("rom_faction_political_party_loyalty", 15)
+		effectBundle("govt_type_empire").effect("rom_faction_political_party_loyalty", 30)
 
 		for(d in dealEvalComponents) {
 			if(d.deal == "WAR") {
 				d.addMod()
-				d.bestFriendsValue += 20F
-				d.bitterEnemiesValue += 30F
-				d.friendlyValue += 20F
-				d.neutralValue += 20F
-				d.unfriendlyValue += 30F
-				d.veryFriendlyValue += 20F
-				d.veryUnfriendlyValue += 30F
+				d.bestFriendsValue += 40F
+				d.bitterEnemiesValue += 60F
+				d.friendlyValue += 40F
+				d.neutralValue += 40F
+				d.unfriendlyValue += 60F
+				d.veryFriendlyValue += 40F
+				d.veryUnfriendlyValue += 60F
 			} else if(d.deal == "PEACE") {
 				d.addMod()
 				d.bestFriendsValue -= 20F
@@ -91,25 +85,39 @@ object Mod2 {
 			when(d.name) {
 				"PEACE" -> {
 					d.lastStandPriority -= 100
-					d.warPriority -= 50
+					d.warPriority -= 100
 				}
 
 				"DECLARE_WAR_ON_FACTIONS_I_DISLIKE" -> {
-					d.peacePriority += 30
-					d.tensionPriority += 30
-					d.warPriority += 30
-					d.totalWarPriority += 30
+					d.peacePriority += 60
+					d.tensionPriority += 60
+					d.warPriority += 60
+					d.totalWarPriority += 60
 				}
 
 				else -> {
-					d.peacePriority -= 100
-					d.failureTimeout = 15
-					d.tensionPriority -= 50
-					d.warPriority -= 50
-					d.totalWarPriority -= 50
+					d.peacePriority -= 300
+					d.failureTimeout = 100
+					d.tensionPriority -= 300
+					d.warPriority -= 300
+					d.totalWarPriority -= 300
 				}
 			}
 		}
+
+		effectBundle("rom_stance_army_forced_march").effect("rom_force_campaign_mod_movement_range", 0)
+		effectBundle("rom_stance_navy_double_time").effect("rom_force_campaign_mod_movement_range", 0)
+
+		occupationPriorities["occupation_decision_occupy"]!!.mod {
+			lastStandPriority = 15
+			peacePriority = 15
+			tensionPriority = 15
+			warPriority = 15
+			totalWarPriority = 15
+		}
+
+		for(d in difficulties.values)
+			d.addEffect("rom_payload_food", EffectScope.ALL_PROVINCES, 25F)
 	}
 
 
@@ -230,11 +238,12 @@ object Mod2 {
 			mediumMelee to 4
 		)
 		Buildings.ROMAN_BARRACKS_MAIN_3.setGarrison(
-			strongMelee to 4
+			strongMelee to 4,
+			eliteMelee to 1,
 		)
 		Buildings.ROMAN_BARRACKS_MAIN_4.setGarrison(
-			strongMelee to 4,
-			eliteMelee to 2
+			strongMelee to 3,
+			eliteMelee to 3
 		)
 
 		Buildings.ROMAN_BARRACKS_AUX_2.setGarrison(
@@ -305,50 +314,58 @@ object Mod2 {
 
 		Armours.MAIL.mod            { armour = 40 } // 40
 		Armours.MAIL_IMPROVED.mod   { armour = 50 } // 45 + 5
-		Armours.SEGMENTATA.mod      { armour = 65 } // 50 + 15
+		Armours.SEGMENTATA.mod      { armour = 60 } // 50 + 15
 		Armours.SEGMENTATA_ARM.mod  { armour = 80 } // 55 + 25
 
 		Units.POLYBOLOS.mod {
-			accuracy = 10   // 5
-			reload   = 10   // 4
+			accuracy = 15   // 5
+			reload   = 40   // 4
 			ammo     = 100  // 60
 			cost     = 1500 // 620
 			upkeep   = 150  // 120
 			level    = WELL_TRAINED
+			cap      = 10
 
 			newProjectile {
-				damage     = 40 // 35
-				apDamage   = 60 // 50
-				range      = 275 // 260
-				reloadTime = 5 // 5
+				damage      = 40 // 35
+				apDamage    = 60 // 50
+				range       = 300 // 260
+				reloadTime  = 5 // 5
+				penetration = "medium" // low
+				velocity    = 120F
 			}
 		}
 
 		Units.SCORPION.mod {
-			accuracy = 20  // 5
-			ammo     = 80  // 40
-			reload   = 20  // 4
+			accuracy = 25   // 5
+			ammo     = 120  // 40
+			reload   = 60   // 4
 			cost     = 2500
 			upkeep   = 250
 			level    = ELITE
+			cap      = 10
 
 			newProjectile {
-				damage     = 60  // 50
-				apDamage   = 80  // 70
-				range      = 400 // 350
-				reloadTime = 8   // 10
+				damage       = 40  // 50
+				apDamage     = 60  // 70
+				range        = 400 // 350
+				reloadTime   = 4   // 10
+				penetration  = "medium" // low
+				collision    = 0.1F // 0.1
+				marksmanship = 40F // 30
+				velocity     = 150F // 90
 			}
 		}
 
 		Units.LEVES.mod {
 			reload   = 10  // 8 + 2
-			accuracy = 5   // 5
+			accuracy = 10  // 5 + 5
 			ammo     = 10  // 7 + 3
 		}
 
 		Units.VELITES.mod {
 			reload   = 20  // 13 + 7
-			accuracy = 8   // 5 + 3
+			accuracy = 15  // 5 + 10
 			ammo     = 12  // 7 + 5
 			cost     = 400 // 340
 			level    = TRAINED
@@ -360,10 +377,8 @@ object Mod2 {
 			morale   = 55   // 55
 			bonusHp  = 15   // 15
 			charge   = 5    // 6 - 1
-			cost     = 1000 // 600 + 400
-			upkeep   = 150  // 130 + 20
 			reload   = 30   // 28 + 2
-			accuracy = 15   // 5 + 10
+			accuracy = 20   // 5 + 15
 			ammo     = 15   // 7 + 8
 			cost     = 1000 // 420 + 580
 			upkeep   = 100  // 90 + 10
@@ -373,21 +388,23 @@ object Mod2 {
 				damage   = 25 // 20 + 5
 				apDamage = 15 // 12 + 3
 				range    = 100 // 80 + 20
+				velocity = 50F // 35
 			}
 		}
 
 		Units.AUX_CRETAN_ARCHERS.mod {
-			reload   = 30    // 28 + 2
-			ammo     = 25    // 15 + 10
-			accuracy = 15    // 5 + 10
+			reload   = 40    // 28 + 12
+			ammo     = 30    // 15 + 15
+			accuracy = 30    // 5 + 25
 			cost     = 2000  // 600 + 1400
 			upkeep   = 200   // 130 + 70
 			level    = ELITE // poorly_trained
 
 			newProjectile {
 				damage   = 35 // 36 - 1
-				apDamage = 4 // 4 + 1
-				range    = 175 // 150 + 25
+				apDamage = 5 // 4 + 1
+				range    = 200 // 150 + 50
+				velocity = 60F // 45 + 15
 			}
 		}
 
@@ -423,7 +440,7 @@ object Mod2 {
 			bonusHp = 10  // 10
 			charge  = 15  // 12 + 3
 			cost    = 350 // 350 + 50
-			upkeep  = 70 // 90
+			upkeep  = 70  // 90
 			level   = TRAINED // trained
 		}
 
@@ -446,7 +463,7 @@ object Mod2 {
 			charge  = 25   // 24 + 1
 			cost    = 1200 // 800
 			upkeep  = 150  // 140
-			level   = ELITE // elite
+			level   = WELL_TRAINED // elite
 		}
 
 		Units.LEGIONARIES.mod {
@@ -479,7 +496,8 @@ object Mod2 {
 			charge  = 25   // 12 + 13
 			cost    = 2000 // 910 + 1090
 			upkeep  = 250  // 180 + 70
-			level   = ELITE // trained
+			level   = WELL_TRAINED // trained
+			cap     = 20
 		}
 
 		Units.PRAETORIANS.mod {
@@ -491,6 +509,7 @@ object Mod2 {
 			cost    = 4000 // 1280 + 2720
 			upkeep  = 400  // 200 + 200
 			level   = ELITE
+			cap     = 20
 		}
 
 		Units.LEGIONARY_COHORT.mod {
@@ -523,19 +542,21 @@ object Mod2 {
 			charge  = 30   // 12 + 18     + 5
 			cost    = 2500 // 930
 			upkeep  = 250  // 180
-			level   = ELITE
+			level   = WELL_TRAINED
+			cap     = 20
 		}
 
 		Units.PRAETORIAN_GUARD.mod {
-			attack  = 75   // 65 + 10     + 10
-			defence = 60   // 30 + 30     + 10
-			morale  = 95   // 70 + 30     + 10
-			bonusHp = 45   // 20 + 25     + 10
-			charge  = 30   // 19 + 11     + 5
+			attack  = 70   // 65 + 10     + 5
+			defence = 55   // 30 + 30     + 5
+			morale  = 95   // 70 + 25     + 10
+			bonusHp = 40   // 20 + 25     + 5
+			charge  = 25   // 19 + 11     + 5
 			shield  = shield("scutum_imperial")
 			cost    = 5000 // 1280 + 3720
 			upkeep  = 500  // 200 + 300
 			level   = ELITE
+			cap     = 20
 		}
 
 		Units.EQUITES.mod {
@@ -571,13 +592,9 @@ object Mod2 {
 			level   = ELITE
 		}
 
-		for(u in landUnits.values) {
-			if(u.category == "artillery" && !u.name.startsWith("Rom_") && !u.name.startsWith("3c_")) {
-				u.mod {
-					cost = 100_000_000
-				}
-			}
-		}
+		for(u in landUnits.values)
+			if(u.category == "artillery" && !u.name.startsWith("Rom_") && !u.name.startsWith("3c_"))
+				u.mod { cap = 1 }
 
 		Techs.COHORT_ORGANISATION.unitUpgrade(Units.TRIARII, Units.FIRST_COHORT)
 		Techs.PROFESSIONAL_SOLDIERY.unitUpgrade(Units.TRIARII, Units.EAGLE_COHORT)
@@ -918,6 +935,9 @@ object Mod2 {
 
 
 	private fun modTechs() {
+		for(t in techs.values)
+			t.mod { cost = 0 }
+
 		Techs.TRAINING_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
 		Techs.REMUNERATION_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
 		Techs.COHORT_ORGANISATION.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
@@ -933,6 +953,11 @@ object Mod2 {
 		Techs.LAND_RECLAMATION.effect(TechEffectType.ROME_AGRI_BUILDING_COST_MOD, -5)
 		Techs.SEED_SELECTION.effect(TechEffectType.ROME_AGRI_GDP_MOD, 20)
 		Techs.SEED_SELECTION.effect(TechEffectType.ROME_AGRI_BUILDING_COST_MOD, -5)
+
+		Techs.LEGAL_DOCUMENTATION.effect(TechEffectType.ROME_TAX_MOD, 5) // 2
+		Techs.LABOUR_ORGANISATION.effect(TechEffectType.ROME_TAX_MOD, 5) // 3
+		Techs.LEGAL_INSTITUTIONS.effect(TechEffectType.ROME_TAX_MOD, 5) // 4
+		Techs.CONSENSUAL_CONTRACTS.effect(TechEffectType.ROME_TAX_MOD, 10) // 6
 
 		Techs.PHILOSOPHERS.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 5)
 		Techs.ASTRONOMY.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 10)

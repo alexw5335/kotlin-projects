@@ -72,6 +72,9 @@ class LandUnit(val landUnitData: LandUnitData, val mainUnitData: MainUnitData) :
 	var reload        by landUnitData.int(44)
 	var cost          by mainUnitData.int(14)
 	var upkeep        by mainUnitData.int(18)
+	var cap           by mainUnitData.int(1)
+	var spacing       by landUnitData.string(27)
+	var numGuns       by landUnitData.int(31)
 
 	val totalArmour get() = armour.armour + shield.armour
 	val totalDefence get() = defence + shield.defence
@@ -106,13 +109,24 @@ val LandUnit.formattedString get() = buildString {
 	else
 		appendLine("\tsiege (${siegeEngine!!.name}, ${rangedWeapon.name}, ${rangedWeapon.projectile.name})")
 
-	appendLine("\t\tdamage:     ${rangedWeapon.projectile.damage}")
-	appendLine("\t\tapDamage:   ${rangedWeapon.projectile.apDamage}")
-	appendLine("\t\trange:      ${rangedWeapon.projectile.range}")
-	appendLine("\t\tfireRate:   $shotsPerMinute (baseReload: ${rangedWeapon.projectile.reloadTime}s, reloadSkill: $reload%)")
-	appendLine("\t\taccuracy:   $accuracy")
-	appendLine("\t\tammo:       $ammo")
+	val proj = rangedWeapon.projectile
+	appendLine("\t\tdamage:       ${proj.damage}")
+	appendLine("\t\tapDamage:     ${proj.apDamage}")
+	appendLine("\t\trange:        ${proj.range}")
+	appendLine("\t\tfireRate:     $shotsPerMinute (baseReload: ${proj.reloadTime}s, reloadSkill: $reload%)")
+	appendLine("\t\taccuracy:     $accuracy")
+	appendLine("\t\tammo:         $ammo")
+	appendLine("\t\tmarksmanship: ${proj.marksmanship}")
+	appendLine("\t\tvelocity:     ${proj.velocity}")
 
+	if(siegeEngine != null) {
+		appendLine("\t\tpenetration:  ${proj.penetration}")
+		appendLine("\t\tmarksmanship: ${proj.marksmanship}")
+		appendLine("\t\tcollision:    ${proj.collision}")
+		appendLine("\t\tshockwave:    ${proj.shockwave}")
+		appendLine("\t\tvelocity:     ${proj.velocity}")
+		appendLine("\t\tspread:       ${proj.spread}")
+	}
 }
 
 
@@ -158,12 +172,20 @@ class Weapon(override val entry: PackEntry) : NamedType {
 
 class Projectile(override val entry: PackEntry) : NamedType {
 	override
-	var name       by entry.string(0)
-	var range      by entry.int(7)
-	var damage     by entry.int(13)
-	var apDamage   by entry.int(14)
-	var reloadTime by entry.intFloat(20)
+	var name          by string(0)
+	var range         by int(7)
+	var damage        by int(13)
+	var apDamage      by int(14)
+	var reloadTime    by intFloat(20)
+	var category      by string(1)
+	var marksmanship  by float(11)
+	var spread        by float(12)
+	var velocity      by float(10)
+	var penetration   by string(15)
+	var collision     by float(19)
+	var shockwave     by float(30)
 }
+
 
 
 
@@ -517,7 +539,7 @@ class Incident(override var entry: PackEntry) : NamedType {
 
 
 /*
-Other
+Difficulty
  */
 
 
@@ -528,10 +550,45 @@ class DifficultyEffect(override val entry: PackEntry) : EntryType {
 	var effect by string(2)
 	var scope by string(3)
 	var value by float(4)
+
+	constructor(difficulty: Int, isHuman: Boolean, effect: String, scope: String, value: Float) : this(PackEntry(listOf(
+		PackFieldInt(difficulty),
+		PackFieldBoolean(isHuman),
+		PackFieldString(effect),
+		PackFieldString(scope),
+		PackFieldFloat(value)
+	)))
 }
 
 
 
+class Difficulty(val level: Int, val effects: MutableList<DifficultyEffect>)
+
+
+
+val Difficulty.formattedString get() = buildString {
+	val name = when(level) {
+		-1   -> "easy (-1)"
+		0    -> "normal (0)"
+		1    -> "hard (1)"
+		2    -> "very hard (2)"
+		3    -> "legendary (3)"
+		else -> "other (${level})"
+	}
+
+	appendLine(name)
+	for(e in effects) {
+		append("\t${e.effect}  ::  ${e.scope}  ::  ${e.value}")
+		if(e.isHuman) append("  (human)")
+		append('\n')
+	}
+}
+
+
+
+	/*
+	Other
+	 */
 class CampaignVariable(override val entry: PackEntry) : NamedType {
 	override var name by string(0)
 	var value by float(1)
@@ -616,6 +673,17 @@ class DealGenPriority(override val entry: PackEntry) : NamedType {
 
 
 
+class OccupationPriority(override val entry: PackEntry) : NamedType {
+	override var name by string(2)
+	var lastStandPriority by intFloat(1)
+	var peacePriority by intFloat(3)
+	var tensionPriority by intFloat(4)
+	var totalWarPriority by intFloat(5)
+	var warPriority by intFloat(6)
+}
+
+
+
 /*
 EffectBundle
  */
@@ -648,4 +716,12 @@ class EffectBundleData(override val entry: PackEntry) : NamedType {
 class EffectBundle(val data: EffectBundleData, val effects: List<EffectBundleEffect>) : CompoundType {
 	var name by data::name
 	override fun addMod() { data.addMod() }
+}
+
+
+
+val EffectBundle.formattedString get() = buildString {
+	appendLine(name)
+	for(effect in effects)
+		appendLine("\t${effect.effect}  ::  ${effect.scope}  ::  ${effect.value}")
 }
