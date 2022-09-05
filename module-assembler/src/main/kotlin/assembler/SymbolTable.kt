@@ -41,7 +41,7 @@ class SymbolTable(private val root: HashMap<String, Node> = HashMap()) {
 
 		for(component in namespace.components) {
 			map = map.getOrPut()
-		}
+		}//
 	}*/
 
 
