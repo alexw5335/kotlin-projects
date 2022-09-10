@@ -22,8 +22,8 @@ class Assembler(parseResult: ParseResult) {
 		var modrm = ModRM(0)
 		var sib = SIB(0)
 		var rex = REX(0)
-		lateinit var width: Width
-		lateinit var operands: Operands
+		var width = Width.BIT32
+		var operands = Operands.RM8_R8
 		var cannotHaveRex = false
 		var oso = false
 		var hasModRM = false
@@ -206,7 +206,7 @@ class Assembler(parseResult: ParseResult) {
 
 
 	private fun encodeMem(operand: MemoryNode) {
-		val disp = operand.disp?.calculateInt(::resolveIntSymbol)
+		/*val disp = operand.disp?.calculateInt(::resolveIntSymbol)
 
 		if(disp != null) {
 			context.modrm = context.modrm.withMod(0b10) // + disp32
@@ -234,7 +234,7 @@ class Assembler(parseResult: ParseResult) {
 			val scale = operand.scale.countLeadingZeroBits()
 			if(scale > 3) error("Invalid scale: ${operand.scale}")
 			context.sib = context.sib.withScale(scale)
-		}
+		}*/
 	}
 
 

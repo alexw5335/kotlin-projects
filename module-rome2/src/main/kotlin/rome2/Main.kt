@@ -9,13 +9,7 @@ import kotlin.reflect.KClass
 
 
 fun main() {
-	Units.LEVES.formattedString.let(::println)
-	Units.VELITES.formattedString.let(::println)
-	Units.AUX_PELTASTS.formattedString.let(::println)
-	Units.AUX_CRETAN_ARCHERS.formattedString.let(::println)
-	//CurrentMod.mod()
-	//applyMods()
-	//runRome2()
+	CurrentMod.mod(); applyMods(); runRome2()
 }
 
 
@@ -31,6 +25,8 @@ private var garrisonId = 300_000
 private var buildingUnitId = 300_000
 
 private var garrisonUnitId = 300_000
+
+private var newProjectileId = 0
 
 fun Difficulty.effect(effect: String, value: Int) = effects
 	.first { it.effect == effect }
@@ -89,9 +85,16 @@ fun Building.setGarrison(vararg garrisons: Pair<GarrisonGroup, Int>, keepArtille
 	}
 }
 
+fun Tech.removeUnitUpgrade(prev: LandUnit) = unitUpgrades
+	.first { it.prev == prev.name }
+	.mod { new = prev.name }
+
 fun Tech.unitUpgrade(prev: LandUnit, new: LandUnit, cost: Int? = null) = unitUpgrades
 	.first { it.prev == prev.name }
 	.mod { this.new = new.name; this.cost = cost ?: this.cost }
+
+fun Tech.addUnitUpgrade(prev: LandUnit, new: LandUnit, cost: Int? = null) =
+	TechUnitUpgrade(cost ?: 500, new.name, name, prev.name).addMod()
 
 fun Tech.modifyUnitUpgradeCosts() {
 	for(upgrade in unitUpgrades) {
@@ -117,12 +120,12 @@ fun newGarrisonGroup(name: String, priorities: Int, vararg units: LandUnit): Gar
 
 fun LandUnit.newProjectile(block: Projectile.() -> Unit) {
 	val prevRangedWeapon = missileWeapon ?: siegeEngine?.weapon ?: error("No ranged weapon for unit $name")
-	val projectile = Projectile(prevRangedWeapon.projectile.entry)
+	val projectile = Projectile(prevRangedWeapon.projectile.entry.clone())
 	block(projectile)
-	projectile.name += "_new"
+	projectile.name += "_new${newProjectileId}"
 	projectile.addMod()
-	val rangedWeapon = MissileWeapon(prevRangedWeapon.entry)
-	rangedWeapon.name += "_new"
+	val rangedWeapon = MissileWeapon(prevRangedWeapon.entry.clone())
+	rangedWeapon.name += "_new${newProjectileId++}"
 	rangedWeapon.projectile = projectile
 	rangedWeapon.addMod()
 	if(missileWeapon != null)
@@ -132,11 +135,11 @@ fun LandUnit.newProjectile(block: Projectile.() -> Unit) {
 	addMod()
 }
 
-fun Building.removeUnitUpgrade(unit: LandUnit) = units
+fun Building.removeUnit(unit: LandUnit) = units
 	.first { it.unit == unit.name }
 	.mod { this.unit = units.first { it.unit != unit.name }.unit }
 
-fun Building.unitUpgrade(unit: LandUnit) = BuildingUnit(name, unit.name, buildingUnitId++).addMod()
+fun Building.unit(unit: LandUnit) = BuildingUnit(name, unit.name, buildingUnitId++).addMod()
 
 fun GarrisonGroup.unit(prev: LandUnit, new: LandUnit, priority: Int? = null) = units
 	.first { it.unit == prev.name }
@@ -233,6 +236,11 @@ val effectBundlesData = Tables.mapNamed(::EffectBundleData)
 val dealEvalComponents = Tables.map(::DealEvalComponent)
 val dealGenPriorities = Tables.mapNamed(::DealGenPriority)
 val occupationPriorities = Tables.mapNamed(::OccupationPriority)
+val commanderUnits = Tables.map(::CommanderUnit)
+val navalUnits = Tables.mapNamed(::NavalUnit)
+val unitPermissions = Tables.map(::UnitPermission).associateFlatMap { it.unit }
+val unitExclusives = Tables.map(::UnitExclusive)
+val techBuildings = Tables.map(::TechBuilding).associateFlatMap { it.building }
 
 
 
@@ -294,3 +302,4 @@ fun tech(name: String) = techs[name] ?: error("No tech with name: $name")
 fun skill(name: String) = skills[name] ?: error("No skill with name: $name")
 fun messageEvent(name: String) = messageEvents[name] ?: error("No message event with name: $name")
 fun effectBundle(name: String) = effectBundles[name] ?: error("No effect bundle with name: $name")
+fun navalUnit(name: String) = navalUnits[name] ?: error("No naval unit with name: $name")

@@ -57,7 +57,12 @@ object Tables {
 		EffectBundleData::class   to get("effect_bundles"),
 		DealEvalComponent::class  to get("cai_personality_deal_evaluation_deal_component_values"),
 		DealGenPriority::class    to get("cai_personality_deal_generation_generator_priorities"),
-		OccupationPriority::class to get("cai_personality_occupation_decision_priorities")
+		OccupationPriority::class to get("cai_personality_occupation_decision_priorities"),
+		CommanderUnit::class      to get("commander_unit_permissions"),
+		NavalUnit::class          to get("naval_units"),
+		UnitPermission::class     to get("units_to_groupings_military_permissions"),
+		UnitExclusive::class      to get("units_to_exclusive_faction_permissions"),
+		TechBuilding::class       to get("building_level_required_technology_junctions")
 	)
 
 }

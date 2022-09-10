@@ -37,13 +37,26 @@ Units
 
 
 class LandUnitData(override val entry: PackEntry) : NamedType {
-	override var name by entry.string(11)
+	override var name by string(11)
+}
+
+
+
+class NavalUnit(override val entry: PackEntry) : NamedType {
+	override var name by string(4)
+	var category by string(1)
+	var type by string(2)
 }
 
 
 
 class MainUnitData(override val entry: PackEntry) : NamedType {
-	override var name by entry.string(17)
+	override var name by string(17)
+	var isNaval by boolean(4)
+	var landUnit by string(5)
+	var navalUnit by string(9)
+	var worldLeaderOnly by boolean(22)
+	var additionalBuildingRequirement by string(0)
 }
 
 
@@ -73,6 +86,7 @@ class LandUnit(val landUnitData: LandUnitData, val mainUnitData: MainUnitData) :
 	var cost          by mainUnitData.int(14)
 	var upkeep        by mainUnitData.int(18)
 	var cap           by mainUnitData.int(1)
+	var navalUnit     by mainUnitData.string(9)
 	var spacing       by landUnitData.string(27)
 	var numGuns       by landUnitData.int(31)
 
@@ -402,6 +416,13 @@ class TechUnitUpgrade(override val entry: PackEntry) : EntryType {
 	var new  by string(1)
 	var tech by string(2)
 	var prev by string(3)
+
+	constructor(cost: Int, new: String, tech: String, prev: String) : this(PackEntry(listOf(
+		PackFieldInt(cost),
+		PackFieldString(new),
+		PackFieldString(tech),
+		PackFieldString(prev)
+	)))
 }
 
 
@@ -446,6 +467,16 @@ class ExperienceTier(override val entry: PackEntry) : EntryType {
 	var rank        by int(3)
 	var forArmy     by boolean(5)
 	var forNavy     by boolean(6)
+
+	constructor(agent: String, experience: Int, skillPoints: Int, rank: Int, forArmy: Boolean, forNavy: Boolean) : this(PackEntry(listOf(
+		PackFieldString(agent),
+		PackFieldInt(experience),
+		PackFieldInt(skillPoints),
+		PackFieldInt(rank),
+		PackFieldString(""),
+		PackFieldBoolean(forArmy),
+		PackFieldBoolean(forNavy)
+	)))
 }
 
 
@@ -680,6 +711,50 @@ class OccupationPriority(override val entry: PackEntry) : NamedType {
 	var tensionPriority by intFloat(4)
 	var totalWarPriority by intFloat(5)
 	var warPriority by intFloat(6)
+}
+
+
+
+class CommanderUnit(override val entry: PackEntry) : EntryType {
+	var culture by string(0)
+	var faction by string(1)
+	var subculture by string(2)
+	var unit by string(3)
+
+	constructor(faction: String, unit: String) : this(PackEntry(listOf(
+		PackFieldString(""),
+		PackFieldString(faction),
+		PackFieldString(""),
+		PackFieldString(unit)
+	)))
+}
+
+
+
+class UnitPermission(override val entry: PackEntry) : EntryType {
+	var unit by string(0)
+	var group by string(1)
+}
+
+
+
+class UnitExclusive(override val entry: PackEntry) : EntryType {
+	var unit by string(0)
+	var faction by string(1)
+	var allowed by boolean(2)
+
+	constructor(unit: String, faction: String, allowed: Boolean) : this(PackEntry(listOf(
+		PackFieldString(unit),
+		PackFieldString(faction),
+		PackFieldBoolean(allowed)
+	)))
+}
+
+
+
+class TechBuilding(override val entry: PackEntry) : EntryType {
+	var building by string(0)
+	var tech by string(1)
 }
 
 

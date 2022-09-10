@@ -49,5 +49,8 @@ object Units {
 	val AUX_LONGBOW_HUNTERS = auxUnit("Aux_Ger_Longbow_Hunters")
 	val AUX_PELTASTS = auxUnit("Aux_Gre_Peltasts")
 	val AUX_CRETAN_ARCHERS = auxUnit("Aux_Gre_Cretan_Archers")
+	val AUX_SYRIAN_ARCHERS = auxUnit("Aux_Syrian_Archers")
+	val AUX_CAVALRY = auxUnit("Aux_Cav")
+	val AUX_SHOCK_CAVALRY = auxUnit("Aux_Ita_Socii_Equites_Extraordinarii")
 
 }

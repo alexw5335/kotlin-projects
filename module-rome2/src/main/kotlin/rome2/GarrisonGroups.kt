@@ -13,6 +13,12 @@ object GarrisonGroups {
 	val ROMAN_BASTION_BALLISTA = garrisonGroup("rom_roman_fixed_defence_ballista")
 	val ROMAN_BASTION_ONAGER = garrisonGroup("rom_roman_fixed_defence_onager")
 	val ROMAN_BASTION_SCORPION = garrisonGroup("rom_roman_fixed_defence_scorpion")
+	val ROMAN_NAVAL_BASIC = garrisonGroup("rom_roman_naval_basic")
+	val ROMAN_NAVAL_MAIN_2 = garrisonGroup("rom_roman_naval_main_lvl2")
+	val ROMAN_NAVAL_MAIN_3 = garrisonGroup("rom_roman_naval_main_lvl3")
+	val ROMAN_NAVAL_PATROL_2 = garrisonGroup("rom_roman_naval_patrol_lvl2")
+	val ROMAN_NAVAL_PATROL_3 = garrisonGroup("rom_roman_naval_patrol_lvl3")
+	val ROMAN_NAVAL_PATROL_4 = garrisonGroup("rom_roman_naval_patrol_lvl4")
 
 	val EASTERN_BASIC_MELEE = garrisonGroup("rom_eastern_basic_melee")
 	val EASTERN_STRONG_MELEE = garrisonGroup("rom_eastern_strong_melee")

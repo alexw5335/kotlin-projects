@@ -1,46 +1,10 @@
-package assembler
+package asm
 
 
 
-fun AstNode.calculateInt(resolver: (AstNode) -> Long = { error("Undefined symbol: $it") }): Long = when(this) {
-	is IntNode    -> value
-	is UnaryNode  -> op.calculate(node.calculateInt(resolver))
-	is BinaryNode -> {
-		if(op == BinaryOp.DOT)
-			resolver(this)
-		else
-			op.calculateInt(left.calculateInt(resolver), right.calculateInt(resolver))
-	}
-	is IdNode     -> resolver(this)
-	else          -> error("Cannot perform integer arithmetic on node: $this")
-}
-
-
-
-fun BinaryNode.namespace(components: MutableList<String>) {
-	if(op != BinaryOp.DOT) error("Invalid binary op $op for dot operator")
-
-	when(left) {
-		is BinaryNode -> left.namespace(components)
-		is IdNode     -> components.add(left.value)
-		else          -> error("Invalid ast node $left for namespace operator")
-	}
-
-	when(right) {
-		is BinaryNode -> right.namespace(components)
-		is IdNode -> components.add(right.value)
-		else -> error("Invalid ast node $right for namespace operator")
-	}
-}
-
-
-
-fun AstNode.calculateIntOrNull(resolver: (AstNode) -> Long = { error("Undefined symbol: $it") }): Long? = try {
-	calculateInt(resolver)
-} catch(e: Exception) {
-	null
-}
-
+/*
+Formatted printing
+ */
 
 
 
@@ -50,7 +14,7 @@ val AstNode.printableString: String get() = when(this) {
 	is IntNode         -> value.toString()
 	is RegisterNode    -> value.string
 	is MemoryNode      -> printableString
-	is UnaryNode       -> "${op.symbol}(${node.printableString})"//"$op(${node.printableString})"
+	is UnaryNode       -> "${op.symbol}(${node.printableString})"
 	is InstructionNode -> printableString
 	is ImmediateNode   -> value.printableString
 	is DefineNode      -> "db ${components.joinToString { it.printableString }}"
@@ -101,6 +65,12 @@ val InstructionNode.printableString get() = buildString {
 
 
 
+/*
+Node classes
+ */
+
+
+
 sealed interface AstNode
 
 
@@ -137,18 +107,17 @@ class RegisterNode(val value: Register) : AstNode
 
 
 
+class ImmediateNode(val value: AstNode) : AstNode
+
+
+
 class MemoryNode(
 	val width  : Width?,
-	val rel    : Boolean,
 	val base   : Register?,
 	val index  : Register?,
 	val scale  : Int,
 	val disp   : AstNode?
 ) : AstNode
-
-
-
-class ImmediateNode(val value: AstNode) : AstNode
 
 
 

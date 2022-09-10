@@ -4,28 +4,34 @@ import kotlin.reflect.KProperty
 
 
 
-sealed interface PackField
+sealed interface PackField {
+	fun clone(): PackField
+}
 
 
 
 data class PackFieldString(var value: String) : PackField {
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) { this.value = value; }
+	override fun clone() = PackFieldString(value)
 }
 
 data class PackFieldInt(var value: Int) : PackField {
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) { this.value = value }
+	override fun clone() = PackFieldInt(value)
 }
 
 data class PackFieldFloat(var value: Float) : PackField {
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) { this.value = value }
+	override fun clone() = PackFieldFloat(value)
 }
 
 data class PackFieldBoolean(var value: Boolean) : PackField {
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) { this.value = value }
+	override fun clone() = PackFieldBoolean(value)
 }
 
 data class PackFieldAny<T>(var reference: PackFieldString, var value: T, val setter: (T) -> String) : PackField {
@@ -34,24 +40,30 @@ data class PackFieldAny<T>(var reference: PackFieldString, var value: T, val set
 		this.value = value
 		reference.value = setter(value)
 	}
+	override fun clone() = PackFieldAny(reference, value, setter)
 }
 
-class PackFieldBooleanString(private var reference: PackFieldString) {
+class PackFieldBooleanString(private var reference: PackFieldString): PackField {
 	private var value = reference.value == "1" || reference.value == "true"
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
 		this.value = value
 		reference.value = "1"
 	}
+	override fun clone() = PackFieldBooleanString(reference)
 }
 
-class PackFieldIntFloat(private var reference: PackFieldFloat) {
+class PackFieldIntFloat(private var reference: PackFieldFloat): PackField{
 	operator fun getValue(thisRef: Any?, property: KProperty<*>) = reference.value.toInt()
 	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) { reference.value = value.toFloat() }
+	override fun clone() = PackFieldIntFloat(reference)
 }
 
 
-class PackEntry(val fields: List<PackField>)
+
+class PackEntry(val fields: List<PackField>) {
+	fun clone() = PackEntry(fields.map(PackField::clone))
+}
 
 class PackTable(val entries: List<PackEntry>, val schema: SchemaTable)
 
