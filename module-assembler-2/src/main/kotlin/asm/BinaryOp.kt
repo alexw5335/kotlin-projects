@@ -1,10 +1,10 @@
 package asm
 
 enum class BinaryOp(
-	val symbol: String,
-	val precedence: Int,
-	val canCalculateInt: Boolean,
-	val calculateInt: ((Long, Long) -> Long)
+	val symbol          : String,
+	val precedence      : Int,
+	val canCalculateInt : Boolean,
+	val calculateInt    : ((Long, Long) -> Long)
 ) {
 
 	DOT(".", 5, false, { _, _ -> 0 }),

@@ -22,6 +22,8 @@ class Assembler(
 
 	private lateinit var operands: Operands
 
+	private lateinit var group: InstructionGroup
+
 	private lateinit var encoding: Instruction
 
 	private lateinit var width: Width
@@ -81,11 +83,11 @@ class Assembler(
 		if(modrm.present) writer.u8(modrm.value)
 		if(sib.present) writer.u8(sib.value)
 		if(hasImmediate) when(immediateWidth) {
-			Width.BIT8 -> writer.s8(immediate.toInt())
+			Width.BIT8  -> writer.s8(immediate.toInt())
 			Width.BIT16 -> writer.s16(immediate.toInt())
 			Width.BIT32 -> writer.s32(immediate.toInt())
 			Width.BIT64 -> writer.s64(immediate)
-			else -> error()
+			else        -> error()
 		}
 	}
 
@@ -114,14 +116,31 @@ class Assembler(
 
 
 
-	private fun writePrefixesAndOpcode(group: InstructionGroup, operands: Operands) {
-		if(group.operandsFlags and operands.bit == 0) error()
-		val encoding = group.instructions[(group.operandsFlags and (operands.bit - 1)).countOneBits()]
-		if(width.is64) rex.w = 1
+	private fun encode(operands: Operands, width: Width, rex: Int, modrm: Int) {
+		if(group.operandsFlags and operands.bit == 0)
+			error()
 
-		if(encoding.extension >= 0) {
-			modrm.rm = encoding.extension
-			if(!modrm.present) modrm.present = true
+		val encoding = group.instructions[(group.operandsFlags and (operands.bit - 1)).countOneBits()]
+
+
+		if(width.is64) {
+			writer.u8(rex or 0b0100_1000)
+		} else {
+			if(width.is16) writer.u8(0x66)
+			if(rex != 0) writer.u8(rex or 0b0100_000)
+		}
+
+		writer.u32(writer.pos, encoding.opcode)
+		writer.pos += encoding.opcodeLength
+
+		if(modrm >= 0) {
+			if(encoding.extension >= 0)
+				writer.u8(modrm or encoding.extension)
+			else
+				writer.u8(modrm)
+		} else {
+			if(encoding.extension >= 0)
+				writer.u8(encoding.extension)
 		}
 	}
 
@@ -139,22 +158,24 @@ class Assembler(
 		immediate = resolveInt(op2.value)
 		width = op1.width
 
-		operands = when {
+		when {
 			Specifier.RM_IMM8.inFlags(group.specifierFlags) && immediate in Byte.MIN_VALUE..Byte.MAX_VALUE -> {
-				immediateWidth = Width.BIT8
-				modrm.rm = op1.value
-				rex.b = op1.rex
-				if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8
+				encode(if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8)
+				operands = if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8
+				writer.u8(0b11_000_000 and op1.value)
+				writer.u8(resolveInt(op2.value).toInt())
 			}
 
 			Specifier.RM_ONE.inFlags(group.specifierFlags) && immediate == 1L -> {
-				hasImmediate = false
-				modrm.rm = op1.value
+				operands = if(op1.width.is8) Operands.RM8_ONE else Operands.RM_ONE
+				width = op1.width
 				rex.b = op1.rex
-				if(op1.width.is8) Operands.RM8_ONE else Operands.RM_ONE
+				writer.u8(0b11_000_000 and op1.value)
 			}
 
 			Specifier.A_IMM.inFlags(group.specifierFlags) && op1.value == 0 -> {
+				operands = if(op1.width.is8) Operands.AL_IMM8 else Operands.A_IMM
+
 				immediateWidth = op1.width
 				modrm.present = false
 				if(op1.width.is8) Operands.AL_IMM8 else Operands.A_IMM
