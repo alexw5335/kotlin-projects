@@ -110,8 +110,16 @@ fun Tech.modifyUnitUpgradeCosts() {
 	}
 }
 
-fun newGarrisonGroup(name: String, priorities: Int, vararg units: LandUnit): GarrisonGroup {
+fun newGarrisonGroup(name: String, priorities: Int, vararg units: String): GarrisonGroup {
 	val entries = units.map { GarrisonGroupUnit(name, it, garrisonUnitId++, priorities) }
+	val group = GarrisonGroup(GarrisonGroupData(name), entries)
+	for(e in entries) e.addMod()
+	group.addMod()
+	return group
+}
+
+fun newGarrisonGroup(name: String, priorities: Int, vararg units: LandUnit): GarrisonGroup {
+	val entries = units.map { GarrisonGroupUnit(name, it.name, garrisonUnitId++, priorities) }
 	val group = GarrisonGroup(GarrisonGroupData(name), entries)
 	for(e in entries) e.addMod()
 	group.addMod()
@@ -145,7 +153,7 @@ fun GarrisonGroup.unit(prev: LandUnit, new: LandUnit, priority: Int? = null) = u
 	.first { it.unit == prev.name }
 	.mod { unit = new.name; this.priority = priority ?: this.priority }
 
-fun GarrisonGroup.unit(new: LandUnit, priority: Int? = null) = GarrisonGroupUnit(name, new, garrisonUnitId++, priority ?: 200).addMod()
+fun GarrisonGroup.unit(new: LandUnit, priority: Int? = null) = GarrisonGroupUnit(name, new.name, garrisonUnitId++, priority ?: 200).addMod()
 
 fun GarrisonGroup.priority(unit: LandUnit, priority: Int) = units
 	.first { it.unit == unit.name }

@@ -83,7 +83,13 @@ class InstructionGroup(
 	val instructions: List<Instruction>,
 	val operandsFlags: Int,
 	val specifierFlags: Int
-)
+) {
+
+	operator fun get(operands: Operands) = instructions[(operandsFlags and (operands.bit - 1)).countOneBits()]
+	operator fun contains(operands: Operands) = operandsFlags and operands.bit != 0
+	operator fun contains(specifier: Specifier) = specifierFlags and specifier.bit != 0
+
+}
 
 
 

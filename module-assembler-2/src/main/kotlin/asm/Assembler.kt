@@ -1,6 +1,9 @@
 package asm
 
+import core.bin
+import core.bin233
 import core.binary.BinaryWriter
+import core.hexFull
 
 class Assembler(
 	private val nodes: List<AstNode>,
@@ -15,36 +18,12 @@ class Assembler(
 
 
 	/*
-	Context
-	 */
-
-
-
-	private lateinit var operands: Operands
-
-	private lateinit var group: InstructionGroup
-
-	private lateinit var encoding: Instruction
-
-	private lateinit var width: Width
-
-	private var rex = Rex()
-
-	private var modrm = ModRM()
-
-	private var sib = Sib()
-
-	private var immediate = 0L
-
-	private var hasImmediate = false
-
-	private lateinit var immediateWidth: Width
-
-
-
-	/*
 	Assembly
 	 */
+
+
+
+	private lateinit var group: InstructionGroup
 
 
 
@@ -59,45 +38,22 @@ class Assembler(
 
 
 	private fun assemble(node: InstructionNode) {
-		val group = mnemonicsToInstructions[node.mnemonic]!!
+		group = mnemonicsToInstructions[node.mnemonic]!!
 
 		when {
 			node.op1 == null -> error()
 			node.op2 == null -> error()
-			node.op3 == null -> operands2(group, node)
-		}
-
-		if(group.operandsFlags and operands.bit == 0) error()
-		val encoding = group.instructions[(group.operandsFlags and (operands.bit - 1)).countOneBits()]
-		if(width.is64) rex.w = 1
-
-		if(encoding.extension >= 0) {
-			modrm.rm = encoding.extension
-			if(!modrm.present) modrm.present = true
-		}
-
-		if(width.is16) writer.u8(0x66)
-		if(rex.present) writer.u8(rex.finalValue)
-		writer.u8(writer.pos, encoding.opcode)
-		writer.pos += encoding.opcodeLength
-		if(modrm.present) writer.u8(modrm.value)
-		if(sib.present) writer.u8(sib.value)
-		if(hasImmediate) when(immediateWidth) {
-			Width.BIT8  -> writer.s8(immediate.toInt())
-			Width.BIT16 -> writer.s16(immediate.toInt())
-			Width.BIT32 -> writer.s32(immediate.toInt())
-			Width.BIT64 -> writer.s64(immediate)
-			else        -> error()
+			node.op3 == null -> operands2(node)
 		}
 	}
 
 
 
-	private fun operands2(group: InstructionGroup, node: InstructionNode) {
+	private fun operands2(node: InstructionNode) {
 		when(node.op1) {
-			is RegisterNode -> when(node.op2) {
-				is RegisterNode -> operands2RR(group, node.op1.value, node.op2.value)
-				is ImmediateNode -> operands2RI(group, node.op1.value, node.op2)
+			is RegisterNode      -> when(node.op2) {
+				is RegisterNode  -> operands2RR(node.op1.value, node.op2.value)
+				is ImmediateNode -> operands2RI(node.op1.value, node.op2)
 				else -> error()
 			}
 			else -> error()
@@ -117,20 +73,17 @@ class Assembler(
 
 
 	private fun encode(operands: Operands, width: Width, rex: Int, modrm: Int) {
-		if(group.operandsFlags and operands.bit == 0)
-			error()
-
-		val encoding = group.instructions[(group.operandsFlags and (operands.bit - 1)).countOneBits()]
-
+		if(operands !in group) error()
+		val encoding = group[operands]
 
 		if(width.is64) {
 			writer.u8(rex or 0b0100_1000)
 		} else {
 			if(width.is16) writer.u8(0x66)
-			if(rex != 0) writer.u8(rex or 0b0100_000)
+			if(rex != 0) writer.u8(rex or 0b0100_0000)
 		}
 
-		writer.u32(writer.pos, encoding.opcode)
+		writer.u8(writer.pos, encoding.opcode)
 		writer.pos += encoding.opcodeLength
 
 		if(modrm >= 0) {
@@ -138,85 +91,96 @@ class Assembler(
 				writer.u8(modrm or encoding.extension)
 			else
 				writer.u8(modrm)
-		} else {
-			if(encoding.extension >= 0)
-				writer.u8(encoding.extension)
+		} else if(encoding.extension >= 0) {
+			writer.u8(encoding.extension)
 		}
 	}
 
 
 
-	private fun operands2RI(group: InstructionGroup, op1: Register, op2: ImmediateNode) {
-		width = op1.width
+	private fun imm(width: Width, immediate: Int) {
+		when(width) {
+			Width.BIT8  -> writer.s8(immediate)
+			Width.BIT16 -> writer.s16(immediate)
+			Width.BIT32 -> writer.s32(immediate)
+			Width.BIT64 -> writer.s64(immediate.toLong())
+			else        -> error()
+		}
+	}
 
-		rex.b = op1.rex
 
-		modrm.mod = 0b11
-		modrm.present = true
 
-		hasImmediate = true
-		immediate = resolveInt(op2.value)
-		width = op1.width
+	private fun operands2RM(op1: Register, op2: MemoryNode) {
+
+	}
+
+
+
+	private fun operands2RI(op1: Register, op2: ImmediateNode) {
+		val immediate = resolveInt(op2.value)
 
 		when {
-			Specifier.RM_IMM8.inFlags(group.specifierFlags) && immediate in Byte.MIN_VALUE..Byte.MAX_VALUE -> {
-				encode(if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8)
-				operands = if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8
-				writer.u8(0b11_000_000 and op1.value)
-				writer.u8(resolveInt(op2.value).toInt())
+			Specifier.RM_IMM8 in group && immediate in Byte.MIN_VALUE..Byte.MAX_VALUE && (Specifier.A_IMM !in group || op1 != Register.AL) -> {
+				encode(
+					operands = if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8,
+					width    = op1.width,
+					rex      = op1.rex,
+					modrm    = 0b11_000_000 or op1.value
+				)
+				writer.u8(immediate.toInt())
 			}
 
-			Specifier.RM_ONE.inFlags(group.specifierFlags) && immediate == 1L -> {
-				operands = if(op1.width.is8) Operands.RM8_ONE else Operands.RM_ONE
-				width = op1.width
-				rex.b = op1.rex
-				writer.u8(0b11_000_000 and op1.value)
+			Specifier.RM_ONE in group && immediate == 1L -> {
+				encode(
+					operands = if(op1.width.is8) Operands.RM8_ONE else Operands.RM_ONE,
+					width    = op1.width,
+					rex      = op1.rex,
+					modrm    = 0b11_000_000 or op1.value
+				)
 			}
 
-			Specifier.A_IMM.inFlags(group.specifierFlags) && op1.value == 0 -> {
-				operands = if(op1.width.is8) Operands.AL_IMM8 else Operands.A_IMM
-
-				immediateWidth = op1.width
-				modrm.present = false
-				if(op1.width.is8) Operands.AL_IMM8 else Operands.A_IMM
+			Specifier.A_IMM in group && op1.value == 0 -> {
+				encode(
+					operands = if(op1.width.is8) Operands.AL_IMM8 else Operands.A_IMM,
+					width    = op1.width,
+					rex      = 0,
+					modrm    = -1
+				)
+				imm(op1.width, immediate.toInt())
 			}
 
 			else -> {
-				hasImmediate = true
-				immediateWidth = op1.width
-				modrm.rm = op1.value
-				rex.b = op1.rex
-				if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM
+				encode(
+					operands = if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM,
+					width    = op1.width,
+					rex      = op1.rex,
+					modrm    = 0b11_000_000 or op1.value
+				)
+				imm(op1.width, immediate.toInt())
 			}
 		}
 	}
 
 
 
-	private fun operands2RR(group: InstructionGroup, op1: Register, op2: Register) {
-		width = op1.width
-		modrm.present = true
-
-		rex.b = op1.rex
-		rex.r = op2.rex
-
-		modrm.mod = 0b11
-		modrm.reg = op2.value
-		modrm.rm = op1.value
-
-		operands = when {
-			Specifier.RM_CL.inFlags(group.specifierFlags) && op1 == Register.CL -> {
-				if(op1.width.is8) Operands.RM8_CL else Operands.RM_CL
-			}
-
-			width.is8 -> {
-				if(op1.width != op2.width) error()
-				Operands.RM8_R8
+	private fun operands2RR(op1: Register, op2: Register) {
+		when {
+			Specifier.RM_CL in group && op1 == Register.CL -> {
+				encode(
+					operands = if(op1.width.is8) Operands.RM8_CL else Operands.RM_CL,
+					width    = op1.width,
+					rex      = op1.rex,
+					modrm    = 0b11_000_000 or op1.value
+				)
 			}
 
 			else -> {
-				if(op1.width != op2.width) error()
-				Operands.RM_R
+				encode(
+					operands = if(op1.width.is8) Operands.RM8_R8 else Operands.RM_R,
+					width    = op1.width,
+					rex      = op1.rex or (op2.rex shl 2),
+					modrm    = 0b11_000_000 or (op2.value shl 3) or op1.value
+				)
 			}
 		}
 	}

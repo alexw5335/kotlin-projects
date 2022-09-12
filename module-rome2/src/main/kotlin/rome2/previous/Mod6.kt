@@ -1,8 +1,8 @@
-package rome2
+package rome2.previous
 
-import rome2.TrainingLevel.*
+/*import rome2.TrainingLevel.*
 
-object CurrentMod {
+object Mod6 {
 
 	
 	fun mod() {
@@ -86,17 +86,16 @@ object CurrentMod {
 
 
 	private fun modGarrisons() {
-		val levyMelee     = newGarrisonGroup("ROMAN_MODDED_levy_melee",     100, Units.RORARII, Units.VIGILES)
-		val basicMelee    = newGarrisonGroup("ROMAN_MODDED_basic_melee",    300, Units.HASTATI, Units.LEGIONARIES, Units.LEGIONARY_COHORT)
-		val mediumMelee   = newGarrisonGroup("ROMAN_MODDED_strong_melee",   200, Units.PRINCIPES, Units.FIRST_COHORT, Units.EAGLE_COHORT)
-		val eliteMelee    = newGarrisonGroup("ROMAN_MODDED_elite_melee",    100, Units.TRIARII, Units.PRAETORIANS, Units.PRAETORIAN_GUARD)
-		val basicRanged   = newGarrisonGroup("ROMAN_MODDED_basic_ranged",   300, Units.LEVES)
-		val mediumRanged  = newGarrisonGroup("ROMAN_MODDED_medium_ranged",  300, Units.VELITES)
-		val eliteRanged   = newGarrisonGroup("ROMAN_MODDED_strong_ranged",  100, Units.AUX_PELTASTS)
-		val basicCavalry  = newGarrisonGroup("ROMAN_MODDED_basic_cavalry",  200, Units.EQUITES, Units.LEGIONARY_CAVALRY)
-		val eliteCavalry  = newGarrisonGroup("ROMAN_MODDED_elite_cavalry",  100, Units.PRAETORIAN_CAVALRY)
-		val basicNaval    = newGarrisonGroup("ROMAN_MODDED_basic_naval",    400, "Rom_Leves_Three")
-		val mediumNaval   = newGarrisonGroup("ROMAN_MODDED_medium_naval",   300, "Rom_Velites_Five")
+		val levyMelee     = newGarrisonGroup("roman_levy", 100, Units.RORARII, Units.VIGILES)
+		val basicMelee    = newGarrisonGroup("ROMAN_MODDED_basic_melee", 300, Units.HASTATI, Units.LEGIONARIES, Units.LEGIONARY_COHORT)
+		val mediumMelee   = newGarrisonGroup("ROMAN_MODDED_strong_melee", 200, Units.PRINCIPES, Units.FIRST_COHORT, Units.EAGLE_COHORT)
+		val eliteMelee    = newGarrisonGroup("ROMAN_MODDED_elite_melee", 100, Units.TRIARII, Units.PRAETORIANS, Units.PRAETORIAN_GUARD)
+		val basicRanged   = newGarrisonGroup("ROMAN_MODDED_basic_ranged", 300, Units.LEVES)
+		val mediumRanged  = newGarrisonGroup("ROMAN_MODDED_medium_ranged", 300, Units.VELITES)
+		val eliteRanged   = newGarrisonGroup("ROMAN_MODDED_strong_ranged", 100, Units.AUX_PELTASTS)
+		val mediumCavalry = newGarrisonGroup("ROMAN_MODDED_medium_cavalry", 200, Units.EQUITES, Units.LEGIONARY_CAVALRY)
+		val eliteCavalry  = newGarrisonGroup("ROMAN_MODDED_elite_cavalry", 100, Units.PRAETORIAN_CAVALRY)
+		val artillery     = newGarrisonGroup("ROMAN_MODDED_artillery", 100, Units.POLYBOLOS)
 
 		val civil1 = arrayOf(
 			levyMelee to 6,
@@ -104,39 +103,44 @@ object CurrentMod {
 		)
 
 		val civil2 = arrayOf(
-			levyMelee to 8,
+			levyMelee to 5,
 			basicMelee to 2,
-			basicRanged to 3
+			basicRanged to 2,
+			mediumRanged to 1,
 		)
 		val civil3 = arrayOf(
-			levyMelee to 6,
+			levyMelee to 4,
 			basicMelee to 4,
-			mediumRanged to 3
+			mediumRanged to 3,
+			mediumCavalry to 1
 		)
 		val civil4 = arrayOf(
 			levyMelee to 4,
 			basicMelee to 4,
 			mediumMelee to 2,
-			mediumRanged to 4
+			mediumRanged to 4,
+			mediumCavalry to 2
 		)
 
 		val garrison2 = arrayOf(
-			basicMelee to 3,
-			mediumMelee to 3,
-			mediumRanged to 3,
-			basicCavalry to 1
+			basicMelee to 5,
+			mediumMelee to 2,
+			mediumRanged to 3
 		)
 		val garrison3 = arrayOf(
 			basicMelee to 4,
 			mediumMelee to 4,
-			mediumRanged to 4,
-			basicCavalry to 2
+			eliteRanged to 4,
+			mediumCavalry to 2,
+			artillery to 2
 		)
 		val garrison4 = arrayOf(
-			mediumMelee to 8,
+			basicMelee to 4,
+			mediumMelee to 4,
 			eliteMelee to 2,
 			eliteRanged to 4,
-			eliteCavalry to 2
+			eliteCavalry to 2,
+			artillery to 2
 		)
 
 		Buildings.ROMAN_CITY_1.setGarrison(*civil1)
@@ -187,7 +191,7 @@ object CurrentMod {
 		Buildings.ROMAN_BARRACKS_AUX_3.setGarrison(
 			mediumMelee to 2,
 			eliteRanged to 2,
-			basicCavalry to 2
+			mediumCavalry to 2
 		)
 		Buildings.ROMAN_BARRACKS_AUX_4.setGarrison(
 			mediumMelee to 2,
@@ -203,26 +207,6 @@ object CurrentMod {
 				5 -> temple.setGarrison(eliteMelee to 2)
 			}
 		}
-
-		Buildings.ROMAN_PORT_TRADE_2.setGarrison(
-			basicNaval to 2
-		)
-		Buildings.ROMAN_PORT_TRADE_3.setGarrison(
-			mediumNaval to 2
-		)
-		Buildings.ROMAN_PORT_TRADE_4.setGarrison(
-			mediumNaval to 2
-		)
-
-		Buildings.ROMAN_PORT_FISH_2.setGarrison(
-			basicNaval to 2
-		)
-		Buildings.ROMAN_PORT_FISH_3.setGarrison(
-			mediumNaval to 2
-		)
-		Buildings.ROMAN_PORT_FISH_4.setGarrison(
-			mediumNaval to 2
-		)
 
 		for(town in Buildings.NON_ROMAN_TOWNS) {
 			val culture = town.culture!!
@@ -252,8 +236,8 @@ object CurrentMod {
 
 
 	private fun modUnits() {
-		Weapons.GLADIUS.mod           { damage = 30 }                // 30  5
-		Weapons.GLADIUS_MARIAN.mod    { damage = 35 }                // 30  5
+		Weapons.GLADIUS.mod           { damage = 35 }                // 30  5
+		Weapons.GLADIUS_MARIAN.mod    { damage = 40 }                // 30  5
 		Weapons.GLADIUS_IMPERIAL.mod  { damage = 40 }                // 30  5
 		Weapons.GLADIUS_ELITE.mod     { damage = 45; apDamage = 10 } // 34  5
 		Weapons.SPEAR_CAV_ELITE.mod   { damage = 30; apDamage = 10 } // 24  5
@@ -316,9 +300,9 @@ object CurrentMod {
 		Units.AUX_PELTASTS.mod {
 			reload   = 40   // 28
 			accuracy = 30   // 5
-			ammo     = 20   // 7
-			cost     = 1500 // 420
-			upkeep   = 150  // 90
+			ammo     = 25   // 7
+			cost     = 1000 // 420
+			upkeep   = 100  // 90
 			level    = ELITE // poorly_trained
 
 			newProjectile {
@@ -595,7 +579,7 @@ object CurrentMod {
 			cost = 20000 // 12600
 		}
 
-/*		Buildings.ROMAN_CITY_GARRISON_2.mod {
+		Buildings.ROMAN_CITY_GARRISON_2.mod {
 			cost = 3000 // 2000
 		}
 		Buildings.ROMAN_CITY_GARRISON_3.mod {
@@ -624,7 +608,7 @@ object CurrentMod {
 					4 -> cost = 7000 // ~3800
 				}
 			}
-		}*/
+		}
 
 		Buildings.ROMAN_TOWN_TRADE_2.apply {
 			effect(BuildingEffectType.GDP_LOCAL_TRADE, 150)
@@ -728,18 +712,18 @@ object CurrentMod {
 
 
 		Buildings.ROMAN_TEMPLE_MINERVA_2.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 8)
-			effect(BuildingEffectType.GDP_MOD_CULTURE, 8)
+			effect(BuildingEffectType.RESEARCH_RATE, 10)
+			effect(BuildingEffectType.GDP_MOD_CULTURE, 10)
 			effect(BuildingEffectType.LATIN_INFLUENCE, 2)
 		}
 		Buildings.ROMAN_TEMPLE_MINERVA_3.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 16)
-			effect(BuildingEffectType.GDP_MOD_CULTURE, 16)
+			effect(BuildingEffectType.RESEARCH_RATE, 20)
+			effect(BuildingEffectType.GDP_MOD_CULTURE, 20)
 			effect(BuildingEffectType.LATIN_INFLUENCE, 3)
 		}
 		Buildings.ROMAN_TEMPLE_MINERVA_4.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 24)
-			effect(BuildingEffectType.GDP_MOD_CULTURE, 32)
+			effect(BuildingEffectType.RESEARCH_RATE, 40)
+			effect(BuildingEffectType.GDP_MOD_CULTURE, 40)
 			effect(BuildingEffectType.LATIN_INFLUENCE, 4)
 		}
 
@@ -759,15 +743,15 @@ object CurrentMod {
 
 
 		Buildings.ROMAN_LIBRARY_2.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 10) // 6
+			effect(BuildingEffectType.RESEARCH_RATE, 15) // 6
 			effect(BuildingEffectType.GDP_CULTURE_LEARNING, 100) // 70
 		}
 		Buildings.ROMAN_LIBRARY_3.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 20) // 12
+			effect(BuildingEffectType.RESEARCH_RATE, 30) // 12
 			effect(BuildingEffectType.GDP_CULTURE_LEARNING, 150) // 100
 		}
 		Buildings.ROMAN_LIBRARY_4.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 40) // 24
+			effect(BuildingEffectType.RESEARCH_RATE, 60) // 24
 			effect(BuildingEffectType.GDP_CULTURE_LEARNING, 200) // 150
 		}
 
@@ -775,50 +759,50 @@ object CurrentMod {
 		Buildings.ROMAN_FARM_2.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 8) // 7 + 1
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 60) // 60
-			effect(BuildingEffectType.SQUALOR, -1) // -1
+			effect(BuildingEffectType.SQUALOR, 1) // 1
 		}
 		Buildings.ROMAN_FARM_3.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 12) // 11 + 1
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 80) // 80
-			effect(BuildingEffectType.SQUALOR, -4) // -3
+			effect(BuildingEffectType.SQUALOR, 4) // 3
 		}
 		Buildings.ROMAN_FARM_4.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 16) // 15 + 1
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 100) // 100
-			effect(BuildingEffectType.SQUALOR, -8) // -6
+			effect(BuildingEffectType.SQUALOR, 8) // 6
 		}
 		Buildings.ROMAN_GRANARY_2.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 4) // 4
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 100) // 100
-			effect(BuildingEffectType.UNIT_REPLENISHMENT, 10) // 3
+			effect(BuildingEffectType.UNIT_REPLENISHMENT, 10) // 3 + 7
 			addEffect(BuildingEffectType.SANITATION, EffectScope.PROVINCE, 2)
 		}
 		Buildings.ROMAN_GRANARY_3.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 4) // 4
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 150) // 150
-			effect(BuildingEffectType.UNIT_REPLENISHMENT, 15) // 6
+			effect(BuildingEffectType.UNIT_REPLENISHMENT, 20) // 6 + 14
 			addEffect(BuildingEffectType.SANITATION, EffectScope.PROVINCE, 3)
 		}
 		Buildings.ROMAN_GRANARY_4.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 5) // 4
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 200) // 200
-			effect(BuildingEffectType.UNIT_REPLENISHMENT, 20) // 9
+			effect(BuildingEffectType.UNIT_REPLENISHMENT, 30) // 9 + 21
 			addEffect(BuildingEffectType.SANITATION, EffectScope.PROVINCE, 4)
 		}
 		Buildings.ROMAN_HERD_2.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 4) // 5
 			effect(BuildingEffectType.GDP_AGRICULTURE_HERDING, 100) // 100
-			effect(BuildingEffectType.SQUALOR, -1) // -1
+			effect(BuildingEffectType.SQUALOR, 1) // 1
 		}
 		Buildings.ROMAN_HERD_3.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 6) // 7
 			effect(BuildingEffectType.GDP_AGRICULTURE_HERDING, 175) // 175
-			effect(BuildingEffectType.SQUALOR, -4) // -3
+			effect(BuildingEffectType.SQUALOR, 4) // 3
 		}
 		Buildings.ROMAN_HERD_4.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 8) // 9
 			effect(BuildingEffectType.GDP_AGRICULTURE_HERDING, 250) // 250
-			effect(BuildingEffectType.SQUALOR, -8) // -6
+			effect(BuildingEffectType.SQUALOR, 8) // 6
 		}
 
 
@@ -912,10 +896,7 @@ object CurrentMod {
 
 	private fun modTechs() {
 		for(t in techs.values)
-			if(!t.name.startsWith("rom_roman"))
-				t.mod { cost = 0 }
-
-		Techs.PROFESSIONAL_SOLDIERY.mod { cost += cost / 2 }
+			t.mod { cost = 0 }
 
 		Techs.TRAINING_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
 		Techs.REMUNERATION_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
@@ -970,14 +951,6 @@ object CurrentMod {
 			experience = if(tier.agent.isNotEmpty()) agentXp(rank + 1) else armyXp(rank + 1)
 		}
 
-		for(skill in Skills.ALL) {
-			skill.addMod()
-			skill.unlockRank = 1
-			skill.level1.mod { unlockRank = 1 }
-			skill.level2.mod { unlockRank = 1 }
-			skill.level3.mod { unlockRank = 1 }
-		}
-
 		for(i in 9.. 17) {
 			val agentXp = agentXp(i + 1)
 			val armyXp = armyXp(i + 1)
@@ -991,4 +964,4 @@ object CurrentMod {
 	}
 
 
-}
+}*/

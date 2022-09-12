@@ -8,12 +8,17 @@ import java.util.LinkedList
 
 fun main() {
 	val nodes = listOf(
-		//InstructionNode(Mnemonic.ADD, RegisterNode(Register.R8D), RegisterNode(Register.R9D), null, null)
-		InstructionNode(Mnemonic.ADD, RegisterNode(Register.R9D), ImmediateNode(IntNode(10000)), null, null)
+		InstructionNode(
+			Mnemonic.ADD,
+			RegisterNode(Register.AL),
+			ImmediateNode(IntNode(1)),
+			null,
+			null
+		)
 	)
 
 	val bytes = Assembler(nodes, emptyMap()).assemble()
 	Files.write(Paths.get("test.bin"), bytes)
 	Core.run("ndisasm test.bin -b64")
-	Core.nasmPrint("add r9d, 10000")
+	Core.nasmPrint("add al, 1")
 }

@@ -232,11 +232,11 @@ class GarrisonGroupUnit(override val entry: PackEntry) : EntryType {
 	var unit     by string(3)
 	var group    by string(4)
 
-	constructor(group: String, unit: LandUnit, id: Int, priority: Int) : this(PackEntry(listOf(
+	constructor(group: String, unit: String, id: Int, priority: Int) : this(PackEntry(listOf(
 		PackFieldInt(id),
 		PackFieldInt(0),
 		PackFieldInt(priority),
-		PackFieldString(unit.name),
+		PackFieldString(unit),
 		PackFieldString(group)
 	)))
 }
