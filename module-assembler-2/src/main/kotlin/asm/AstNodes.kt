@@ -2,6 +2,24 @@ package asm
 
 
 
+fun AstNode.calculateInt(resolver: (AstNode) -> Long): Long = when(this) {
+	is UnaryNode  -> node.calculateInt(resolver)
+	is BinaryNode -> op.calculateInt(left.calculateInt(resolver), right.calculateInt(resolver))
+	is IntNode    -> value
+	else          -> resolver(this)
+}
+
+
+
+fun AstNode.hasLabel(): Boolean = when(this) {
+	is UnaryNode  -> node.hasLabel()
+	is BinaryNode -> left.hasLabel() || right.hasLabel()
+	is LabelNode  -> true
+	else          -> false
+}
+
+
+
 /*
 Formatted printing
  */
@@ -10,7 +28,7 @@ Formatted printing
 
 val AstNode.printableString: String get() = when(this) {
 	is BinaryNode      -> printableString
-	is IdNode          -> value
+	is IdNode          -> name
 	is IntNode         -> value.toString()
 	is RegisterNode    -> value.string
 	is MemoryNode      -> printableString
@@ -79,7 +97,7 @@ class LabelNode(val name: String) : AstNode
 
 
 
-class IdNode(val value: String) : AstNode
+class IdNode(val name: String) : AstNode
 
 
 
@@ -113,6 +131,7 @@ class ImmediateNode(val value: AstNode) : AstNode
 
 class MemoryNode(
 	val width  : Width?,
+	val rel    : Boolean,
 	val base   : Register?,
 	val index  : Register?,
 	val scale  : Int,

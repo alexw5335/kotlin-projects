@@ -1,9 +1,6 @@
 package asm
 
-import core.bin
-import core.bin233
 import core.binary.BinaryWriter
-import core.hexFull
 
 class Assembler(
 	private val nodes: List<AstNode>,
@@ -15,6 +12,63 @@ class Assembler(
 
 	private fun error(): Nothing = error("Invalid encoding")
 
+	data class Relocation(val pos: Int, val width: Width?, val value: AstNode)
+
+	private val relocations = ArrayList<Relocation>()
+
+
+
+	/*
+	Context
+	 */
+
+
+
+	private lateinit var operands: Operands
+
+	private lateinit var group: InstructionGroup
+
+	private lateinit var encoding: Instruction
+
+	private lateinit var width: Width
+
+	private lateinit var immediateWidth: Width
+
+
+
+	private var modrm = ModRM()
+
+	private var sib = Sib()
+
+	private var rex = Rex()
+
+	private var immediate = 0L
+
+	private var disp = 0
+
+	private var hasModrm = false
+
+	private var hasSib = false
+
+	private var hasImmediate = false
+
+	private var hasDisp = false
+
+	private var dispNode: AstNode? = null
+
+
+
+	private fun clearContext() {
+		modrm.value  = 0
+		sib.value    = 0
+		rex.value    = 0
+		hasModrm     = false
+		hasSib       = false
+		hasImmediate = false
+		hasDisp      = false
+		dispNode     = null
+	}
+
 
 
 	/*
@@ -23,21 +77,41 @@ class Assembler(
 
 
 
-	private lateinit var group: InstructionGroup
-
-
-
 	fun assemble(): ByteArray {
-		for(node in nodes)
-			if(node is InstructionNode)
-				assemble(node)
+		for(node in nodes) {
+			when(node) {
+				is InstructionNode -> assemble(node)
+				is LabelNode       -> resolveLabel(node)
+				else               -> { }
+			}
+		}
+
+		for(relocation in relocations) {
+			val value = resolveInt(relocation.value)
+
+			when(relocation.width) {
+				Width.BIT8 -> writer.s8(relocation.pos, value.toInt())
+				Width.BIT16 -> writer.s16(relocation.pos, value.toInt())
+				Width.BIT32 -> writer.s32(relocation.pos, value.toInt())
+				Width.BIT64 -> writer.s64(relocation.pos, value)
+				else -> error()
+			}
+		}
 
 		return writer.trimmedBytes()
 	}
 
 
 
+	private fun resolveLabel(node: LabelNode) {
+		symbols[node.name]!!.data = LabelSymbolData(writer.pos)
+	}
+
+
+
 	private fun assemble(node: InstructionNode) {
+		clearContext()
+
 		group = mnemonicsToInstructions[node.mnemonic]!!
 
 		when {
@@ -45,18 +119,46 @@ class Assembler(
 			node.op2 == null -> error()
 			node.op3 == null -> operands2(node)
 		}
-	}
 
+		if(operands !in group) error()
+		encoding = group[operands]
 
+		if(width.is64) rex.w = 1
+		else if(width.is16) writer.u8(0x66)
+		if(rex.value != 0) writer.u8(rex.value or 0b0100_0000)
 
-	private fun operands2(node: InstructionNode) {
-		when(node.op1) {
-			is RegisterNode      -> when(node.op2) {
-				is RegisterNode  -> operands2RR(node.op1.value, node.op2.value)
-				is ImmediateNode -> operands2RI(node.op1.value, node.op2)
-				else -> error()
-			}
-			else -> error()
+		writer.u8(writer.pos, encoding.opcode)
+		writer.pos += encoding.opcodeLength
+
+		if(encoding.extension >= 0) {
+			modrm.value = modrm.value or encoding.extension
+			hasModrm = true
+		}
+
+		if(hasModrm) writer.u8(modrm.value)
+
+		if(hasSib) writer.u8(sib.value)
+
+		if(hasDisp) {
+			if(dispNode != null)
+				relocations.add(Relocation(
+					writer.pos,
+					if(modrm.mod == 0b01) Width.BIT8 else Width.BIT32,
+					dispNode!!
+				))
+
+			if(modrm.mod == 0b01)
+				writer.s8(disp)
+			else
+				writer.s32(disp)
+		}
+
+		if(hasImmediate) when(immediateWidth) {
+			Width.BIT8  -> writer.s8(immediate.toInt())
+			Width.BIT16 -> writer.s16(immediate.toInt())
+			Width.BIT32 -> writer.s32(immediate.toInt())
+			Width.BIT64 -> writer.s32(immediate.toInt())
+			else        -> error()
 		}
 	}
 
@@ -66,97 +168,187 @@ class Assembler(
 		is UnaryNode  -> resolveInt(node.node)
 		is BinaryNode -> node.op.calculateInt(resolveInt(node.left), resolveInt(node.right))
 		is IntNode    -> node.value
-		is IdNode     -> (symbols[node.value]?.data as? IntSymbolData)?.value ?: error("Unresolved symbol: '${node.value}'")
+		is IdNode     -> (symbols[node.name]?.data as? IntSymbolData)?.value ?: error("Unresolved symbol: '${node.name}'")
+		is LabelNode  -> (symbols[node.name]?.data as? LabelSymbolData)?.value?.toLong() ?: error("Unresolved symbol: '${node.name}'")
 		else          -> error("Cannot determine constant int value from ast node '$node'")
 	}
 
 
 
-	private fun encode(operands: Operands, width: Width, rex: Int, modrm: Int) {
-		if(operands !in group) error()
-		val encoding = group[operands]
+	private fun hasLabel(node: AstNode): Boolean = when(node) {
+		is UnaryNode  -> hasLabel(node.node)
+		is BinaryNode -> hasLabel(node.left) || hasLabel(node.right)
+		is LabelNode  -> true
+		else          -> false
+	}
 
-		if(width.is64) {
-			writer.u8(rex or 0b0100_1000)
-		} else {
-			if(width.is16) writer.u8(0x66)
-			if(rex != 0) writer.u8(rex or 0b0100_0000)
+
+
+	private fun memoryOperand(operand: MemoryNode) {
+		if(operand.disp != null) {
+			hasDisp = true
+
+			if(hasLabel(operand.disp)) {
+				dispNode = operand.disp
+				disp = 0
+			} else {
+				disp = resolveInt(operand.disp).toInt()
+			}
 		}
 
-		writer.u8(writer.pos, encoding.opcode)
-		writer.pos += encoding.opcodeLength
-
-		if(modrm >= 0) {
-			if(encoding.extension >= 0)
-				writer.u8(modrm or encoding.extension)
+		if(hasDisp) {
+			if(disp in Byte.MIN_VALUE..Byte.MAX_VALUE)
+				modrm.mod = 0b01
 			else
-				writer.u8(modrm)
-		} else if(encoding.extension >= 0) {
-			writer.u8(encoding.extension)
+				modrm.mod = 0b10
+		}
+
+		// RIP-relative addressing
+		if(operand.rel) {
+			modrm.mod = 0b00
+			modrm.rm = 0b101
+			return
+		}
+
+		// SIB addressing, e.g. [rax + rcx * 2 + 10]
+		if(operand.index != null) {
+			hasSib = true
+			modrm.rm = 0b100
+			sib.index = operand.index.value
+			rex.x = operand.index.rex
+
+			if(operand.base != null) {
+				sib.base = operand.base.value
+				rex.b = operand.base.rex
+			} else {
+				sib.base = 0b101
+			}
+
+			if(operand.scale.countOneBits() != 1) error()
+			sib.scale = operand.scale.countTrailingZeroBits()
+			return
+		}
+
+		// Absolute displacement, e.g. [10]
+		if(operand.base == null) {
+			if(!hasDisp) error()
+			modrm.mod = 0b00
+			modrm.rm = 0b100
+			hasSib = true
+			sib.base = 0b101
+			sib.index = 0b100
+			return
+		}
+
+		// indirect addressing, e.g. [rax], [rax + 10]
+		rex.b = operand.base.rex
+		modrm.rm = operand.base.value
+	}
+
+
+
+	/*
+	Two Operands
+	 */
+
+
+
+	private fun operands2(node: InstructionNode) {
+		when(val op1 = node.op1) {
+			is RegisterNode      -> when(val op2 = node.op2) {
+				is RegisterNode  -> operands2RR(op1.value, op2.value)
+				is ImmediateNode -> operands2RI(op1.value, op2)
+				is MemoryNode    -> operands2RM(op1.value, op2)
+				else             -> error()
+			}
+			is MemoryNode        -> when(val op2 = node.op2) {
+				is RegisterNode  -> operands2MR(op1, op2.value)
+				is ImmediateNode -> operands2MI(op1, op2)
+				else             -> error()
+			}
+			else                 -> error()
 		}
 	}
 
 
 
-	private fun imm(width: Width, immediate: Int) {
-		when(width) {
-			Width.BIT8  -> writer.s8(immediate)
-			Width.BIT16 -> writer.s16(immediate)
-			Width.BIT32 -> writer.s32(immediate)
-			Width.BIT64 -> writer.s64(immediate.toLong())
-			else        -> error()
+	private fun operands2MR(op1: MemoryNode, op2: Register) {
+		hasModrm = true
+		modrm.reg = op2.value
+		rex.r = op2.rex
+		width = op2.width
+
+		if(op1.width != null && op1.width != op2.width) error()
+
+		operands = if(width.is8) Operands.RM8_R8 else Operands.RM_R
+
+		memoryOperand(op1)
+	}
+
+
+
+	private fun operands2MI(op1: MemoryNode, op2: ImmediateNode) {
+		hasModrm = true
+		hasImmediate = true
+		immediate = resolveInt(op2.value)
+		width = op1.width ?: error()
+		immediateWidth = width
+
+		memoryOperand(op1)
+
+		when {
+			else -> {
+				operands = if(width.is8) Operands.RM8_IMM8 else Operands.RM_IMM
+			}
 		}
 	}
 
 
 
 	private fun operands2RM(op1: Register, op2: MemoryNode) {
+		hasModrm = true
+		modrm.reg = op1.value
+		rex.r = op1.rex
+		width = op1.width
 
+		if(op2.width != null && op1.width != op2.width) error()
+
+		operands = if(width.is8) Operands.R8_RM8 else Operands.R_RM
+
+		memoryOperand(op2)
 	}
 
 
 
 	private fun operands2RI(op1: Register, op2: ImmediateNode) {
-		val immediate = resolveInt(op2.value)
+		modrm.mod = 0b11
+		modrm.rm = op1.value
+		hasModrm = true
+		hasImmediate = true
+		immediate = resolveInt(op2.value)
+		rex.b = op1.rex
+		width = op1.width
 
 		when {
 			Specifier.RM_IMM8 in group && immediate in Byte.MIN_VALUE..Byte.MAX_VALUE && (Specifier.A_IMM !in group || op1 != Register.AL) -> {
-				encode(
-					operands = if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8,
-					width    = op1.width,
-					rex      = op1.rex,
-					modrm    = 0b11_000_000 or op1.value
-				)
-				writer.u8(immediate.toInt())
+				operands = if(width.is8) Operands.RM8_IMM8 else Operands.RM_IMM8
+				immediateWidth = Width.BIT8
 			}
 
 			Specifier.RM_ONE in group && immediate == 1L -> {
-				encode(
-					operands = if(op1.width.is8) Operands.RM8_ONE else Operands.RM_ONE,
-					width    = op1.width,
-					rex      = op1.rex,
-					modrm    = 0b11_000_000 or op1.value
-				)
+				operands = if(width.is8) Operands.RM8_ONE else Operands.RM_ONE
+				hasImmediate = false
 			}
 
 			Specifier.A_IMM in group && op1.value == 0 -> {
-				encode(
-					operands = if(op1.width.is8) Operands.AL_IMM8 else Operands.A_IMM,
-					width    = op1.width,
-					rex      = 0,
-					modrm    = -1
-				)
-				imm(op1.width, immediate.toInt())
+				operands = if(width.is8) Operands.AL_IMM8 else Operands.A_IMM
+				hasModrm = false
+				immediateWidth = width
 			}
 
 			else -> {
-				encode(
-					operands = if(op1.width.is8) Operands.RM8_IMM8 else Operands.RM_IMM,
-					width    = op1.width,
-					rex      = op1.rex,
-					modrm    = 0b11_000_000 or op1.value
-				)
-				imm(op1.width, immediate.toInt())
+				operands = if(width.is8) Operands.RM8_IMM8 else Operands.RM_IMM
+				immediateWidth = width
 			}
 		}
 	}
@@ -164,23 +356,21 @@ class Assembler(
 
 
 	private fun operands2RR(op1: Register, op2: Register) {
+		hasModrm = true
+		modrm.rm = op1.value
+		modrm.mod = 0b11
+		rex.b = op1.rex
+		width = op1.width
+
 		when {
 			Specifier.RM_CL in group && op1 == Register.CL -> {
-				encode(
-					operands = if(op1.width.is8) Operands.RM8_CL else Operands.RM_CL,
-					width    = op1.width,
-					rex      = op1.rex,
-					modrm    = 0b11_000_000 or op1.value
-				)
+				operands = if(width.is8) Operands.RM8_CL else Operands.RM_CL
 			}
 
 			else -> {
-				encode(
-					operands = if(op1.width.is8) Operands.RM8_R8 else Operands.RM_R,
-					width    = op1.width,
-					rex      = op1.rex or (op2.rex shl 2),
-					modrm    = 0b11_000_000 or (op2.value shl 3) or op1.value
-				)
+				operands = if(width.is8) Operands.RM8_R8 else Operands.RM_R
+				rex.r = op2.rex
+				modrm.reg = op2.value
 			}
 		}
 	}

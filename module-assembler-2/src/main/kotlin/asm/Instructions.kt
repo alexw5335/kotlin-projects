@@ -11,7 +11,6 @@ enum class Specifier {
 	RM_ONE;
 
 	val bit = 1 shl (ordinal - 1)
-	fun inFlags(flags: Int) = flags and bit != 0
 
 }
 
@@ -35,7 +34,6 @@ enum class Operands(val specifier: Specifier = Specifier.NONE) {
 	A_IMM(Specifier.A_IMM);
 
 	val bit = 1 shl ordinal
-	fun inFlags(flags: Int) = flags and bit != 0
 
 }
 

@@ -23,4 +23,4 @@ sealed interface SymbolData
 
 class IntSymbolData(val value: Long) : SymbolData
 
-class LabelSymbolData(val value: Long) : SymbolData
+class LabelSymbolData(val value: Int) : SymbolData

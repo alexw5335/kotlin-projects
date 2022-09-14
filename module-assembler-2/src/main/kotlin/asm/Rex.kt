@@ -1,10 +1,18 @@
 package asm
 
+/**
+ * - W: Specifies 64-bit operand size
+ * - R: Extends ModRM reg
+ * - X: Extends SIB index
+ * - B: Extends ModRM rm, SIB base, or opcode reg
+ */
 class Rex {
 
 	var value = 0
-	val present get() = value != 0
-	val finalValue get() = value or 0b0100_0000
+
+	fun set(w: Int, r: Int, x: Int, b: Int) {
+		value = value or (w shl 3) or (r shl 2) or (x shl 1) or b
+	}
 
 	var w
 		get() = (value and 0b0000_1000) shr 3

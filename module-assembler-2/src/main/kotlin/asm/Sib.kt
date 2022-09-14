@@ -3,7 +3,10 @@ package asm
 class Sib {
 
 	var value = 0
-	var present = false
+
+	fun set(scale: Int, index: Int, base: Int) {
+		value = value or (scale shl 6) or (index shl 3) or base
+	}
 
 	var scale
 		get() = (value and 0b11_000_000) shr 6
