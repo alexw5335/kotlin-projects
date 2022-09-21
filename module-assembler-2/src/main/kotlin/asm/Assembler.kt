@@ -253,6 +253,34 @@ class Assembler(
 
 
 
+	private fun manualInstruction(mnemonic: Mnemonic) {
+		when(mnemonic) {
+			Mnemonic.CBW  -> writer.u16(0x66_98)
+			Mnemonic.CWDE -> writer.u8(0x98)
+			Mnemonic.CDQE -> writer.u16(0x48_F8)
+			Mnemonic.CLC  -> writer.u8(0xF8)
+			Mnemonic.CLD  -> writer.u8(0xFC)
+			Mnemonic.CLI  -> writer.u8(0xFA)
+			Mnemonic.CLTS -> writer.u16(0x0F_06)
+			Mnemonic.CMC  -> writer.u8(0xF5)
+			else          -> { }
+		}
+	}
+
+
+
+	private fun instructionBSWAP(node: InstructionNode) {
+		val reg = (node.op1 as? RegisterNode)?.value ?: error()
+		if(reg.width == Width.BIT16) error()
+		else if(reg.width == Width.BIT64) rex.w = 1
+		val opcode = 0x0F_C8 + reg.value
+		rex.b = reg.rex
+		if(rex.value != 0) writer.u8(rex.value and 0b0100_000)
+		writer.u16(opcode)
+	}
+
+
+
 	private fun operands2(node: InstructionNode) {
 		when(val op1 = node.op1) {
 			is RegisterNode      -> when(val op2 = node.op2) {

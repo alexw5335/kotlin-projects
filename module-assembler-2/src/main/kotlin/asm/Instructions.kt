@@ -56,7 +56,16 @@ enum class Mnemonic {
 	RCR,
 	SHL,
 	SHR,
-	SAR;
+	SAR,
+
+	CBW,
+	CWDE,
+	CDQE,
+	CLC,
+	CLD,
+	CLI,
+	CLTS,
+	CMC;
 
 	val string = name.lowercase()
 

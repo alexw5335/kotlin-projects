@@ -1,11 +1,13 @@
 package asm
 
+import core.bin233
+
 class ModRM {
 
 	var value = 0
 
 	fun set(mod: Int, reg: Int, rm: Int) {
-		value = value or (mod shl 6) or (reg shl 3) or rm
+		value = (mod shl 6) or (reg shl 3) or rm
 	}
 
 	var mod
@@ -19,5 +21,7 @@ class ModRM {
 	var rm
 		get() = (value and 0b000_000_111)
 		set(rm) { value = value or rm }
+
+	override fun toString() = value.bin233
 
 }

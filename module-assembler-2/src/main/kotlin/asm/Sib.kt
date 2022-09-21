@@ -5,7 +5,7 @@ class Sib {
 	var value = 0
 
 	fun set(scale: Int, index: Int, base: Int) {
-		value = value or (scale shl 6) or (index shl 3) or base
+		value = (scale shl 6) or (index shl 3) or base
 	}
 
 	var scale

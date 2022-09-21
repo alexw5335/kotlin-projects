@@ -540,3 +540,6 @@ Memory operands
 	- Parse everything into ast nodes.
 	- Nodes that declare symbols that can be resolved in stage 2 (enum, const) are stored
 	separately in a hash map.
+
+Expressions
+- If next is not a binary node and there is no newline, then throw an error.

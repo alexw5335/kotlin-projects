@@ -73,8 +73,7 @@ object Core {
 	}
 
 
-
-	fun nasmRun(directory: String, fileName: String) {
+	fun nasmBuild(directory: String, fileName: String) {
 		val outDir = Paths.get("$directory/out")
 
 		if(!outDir.exists()) outDir.createDirectory()
@@ -89,28 +88,42 @@ object Core {
 			.also { it.add(srcDir.toString()) }
 			.joinToString(separator = " -I ", prefix = "-I ")
 
-		nasmRun("$directory/src/$fileName", "$directory/out/$fileName", includes)
+		nasmBuild("$directory/src/$fileName", "$directory/out/$fileName", includes)
+	}
+
+
+
+	fun nasmRun(directory: String, fileName: String) {
+		nasmBuild(directory, fileName)
+		runOrExit("./out.exe")
+	}
+
+
+
+	fun nasmAssemble(code: String): ByteArray {
+		fun ByteArray.int32(pos: Int) =
+			this[pos].toInt() or
+				(this[pos + 1].toInt() shl 8) or
+				(this[pos + 2].toInt() shl 16) or
+				(this[pos + 3].toInt() shl 24)
+
+		val temp = Files.createFile(Paths.get("nasmTemp.asm"))
+		temp.writeText(code)
+		try {
+			runOrExit("nasm -fwin64 nasmTemp.asm -o nasmTemp.obj")
+		} finally {
+			Files.delete(temp)
+		}
+		val path = Paths.get("nasmTemp.obj")
+		val bytes = Files.readAllBytes(path)
+		Files.delete(path)
+		return bytes.copyOfRange(bytes.int32(40), bytes.int32(40) + bytes.int32(36))
 	}
 
 
 
 	fun nasmPrint(code: String) {
-		fun ByteArray.int32(pos: Int) =
-			this[pos].toInt() or
-			(this[pos + 1].toInt() shl 8) or
-			(this[pos + 2].toInt() shl 16) or
-			(this[pos + 3].toInt() shl 24)
-
-		val temp = Files.createFile(Paths.get("nasmTemp.asm"))
-		temp.writeText(code)
-		val succeeded = run("nasm -fwin64 nasmTemp.asm -o nasmTemp.obj")
-		Files.delete(temp)
-		if(!succeeded) return
-		val path = Paths.get("nasmTemp.obj")
-		val bytes = Files.readAllBytes(path)
-		val data = bytes.copyOfRange(bytes.int32(40), bytes.int32(40) + bytes.int32(36))
-		data.forEach { println("${it.hex8}  ${it.bin233}") }
-		Files.delete(path)
+		nasmAssemble(code).forEach { println("${it.hex8}  ${it.bin233}") }
 	}
 
 

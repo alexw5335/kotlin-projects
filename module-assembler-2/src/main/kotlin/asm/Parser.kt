@@ -26,6 +26,8 @@ class Parser(lexResult: LexResult) {
 
 
 
+	private fun atNewline() = newlines[pos]
+
 	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos]
 
 	private val prevToken get() = tokens[pos - 1]
@@ -43,11 +45,12 @@ class Parser(lexResult: LexResult) {
 	fun parse(): ParseResult {
 		while(true) {
 			when(val token = tokens[pos++]) {
-				is MnemonicToken    -> nodes.add(parseInstruction(token.value))
-				is KeywordToken     -> parseKeyword(token)
-				is EndToken         -> break
-				is IdToken          -> parseId(token)
-				else                -> error("Invalid token: $token")
+				is MnemonicToken      -> nodes.add(parseInstruction(token.value))
+				is KeywordToken       -> parseKeyword(token)
+				is EndToken           -> break
+				is IdToken            -> parseId(token)
+				SymbolToken.SEMICOLON -> continue
+				else                  -> error("Invalid token: $token")
 			}
 		}
 
@@ -137,18 +140,10 @@ class Parser(lexResult: LexResult) {
 
 
 
-	private fun resolveInt(node: AstNode) = when(node) {
-		is IdNode -> (symbols[node.name]?.data as? IntSymbolData)?.value ?: error("Invalid symbol: ${node.name}")
-		else      -> error("Invalid AST node for int calculation: $node")
-	}
-
-
-
 	private fun parseConst() {
 		val name = identifier()
 		expect(SymbolToken.EQUALS)
-		val value = readExpression().calculateInt(::resolveInt)
-		symbols[name] = Symbol(name, SymbolType.INT, IntSymbolData(value))
+		nodes.add(ConstNode(name, readExpression()))
 	}
 
 
@@ -203,13 +198,21 @@ class Parser(lexResult: LexResult) {
 	private fun readExpression(precedence: Int = 0): AstNode {
 		var result = readAtom()
 
-		while(pos < tokens.size && !atStatementEnd()) {
-			val symbol = tokens[pos] as? SymbolToken ?: error("Expected symbol, found: ${tokens[pos]}")
-			val op = symbol.binaryOp ?: break
+		while(true) {
+			val token = tokens[pos]
+
+			if(token is EndToken || token == SymbolToken.SEMICOLON) break
+
+			if(token !is SymbolToken) {
+				if(!atNewline())
+					error("Separate expressions on the same line with a semicolon")
+				break
+			}
+
+			val op = token.binaryOp ?: break
 			if(op.precedence < precedence) break
 			pos++
-			val right = readExpression(op.precedence + 1)
-			result = BinaryNode(op, result, right)
+			result = BinaryNode(op, result, readExpression(op.precedence + 1))
 		}
 
 		return result
@@ -239,7 +242,7 @@ class Parser(lexResult: LexResult) {
 			indexScale = 0
 			val disp = parseMemoryOperand(readExpression())
 			if(tokens[pos++] != SymbolToken.RIGHT_BRACKET) error("Expecting ']', found $prevToken")
-			return MemoryNode(width, true, baseReg, indexReg, indexScale, disp)
+			return MemoryNode(width, false, baseReg, indexReg, indexScale, disp)
 		}
 
 		if(width != null)

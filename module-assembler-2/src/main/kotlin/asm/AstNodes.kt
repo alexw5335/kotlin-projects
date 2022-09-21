@@ -2,24 +2,6 @@ package asm
 
 
 
-fun AstNode.calculateInt(resolver: (AstNode) -> Long): Long = when(this) {
-	is UnaryNode  -> node.calculateInt(resolver)
-	is BinaryNode -> op.calculateInt(left.calculateInt(resolver), right.calculateInt(resolver))
-	is IntNode    -> value
-	else          -> resolver(this)
-}
-
-
-
-fun AstNode.hasLabel(): Boolean = when(this) {
-	is UnaryNode  -> node.hasLabel()
-	is BinaryNode -> left.hasLabel() || right.hasLabel()
-	is LabelNode  -> true
-	else          -> false
-}
-
-
-
 /*
 Formatted printing
  */
@@ -38,6 +20,7 @@ val AstNode.printableString: String get() = when(this) {
 	is DefineNode      -> "db ${components.joinToString { it.printableString }}"
 	is StringNode      -> "\"$value\""
 	is LabelNode       -> "$name:"
+	is ConstNode       -> "val $name = ${value.printableString}"
 }
 
 
@@ -126,6 +109,10 @@ class RegisterNode(val value: Register) : AstNode
 
 
 class ImmediateNode(val value: AstNode) : AstNode
+
+
+
+class ConstNode(val name: String, val value: AstNode) : AstNode
 
 
 

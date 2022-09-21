@@ -1,11 +1,11 @@
 package asm
 
-enum class Width(val string: String) {
+enum class Width(val string: String, val rex: Int = 0) {
 
 	BIT8("byte"),
 	BIT16("word"),
 	BIT32("dword"),
-	BIT64("qword"),
+	BIT64("qword", rex = 1),
 	BIT128("128-bit"),
 	BIT256("256-bit"),
 	BIT512("512-bit");

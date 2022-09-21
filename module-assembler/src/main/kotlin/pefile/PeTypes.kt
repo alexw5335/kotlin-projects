@@ -472,7 +472,7 @@ enum class StorageClass(val value: Int) {
 
 	companion object {
 		val values = values()
-		fun get(value: Int) = values().first { it.value == value }
+		fun get(value: Int) = values.first { it.value == value }
 	}
 
 }

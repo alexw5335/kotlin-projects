@@ -1,8 +1,8 @@
-package rome2
+package rome2.previous
 
-import rome2.TrainingLevel.*
+/*import rome2.TrainingLevel.*
 
-object CurrentMod {
+object Mod7 {
 
 	
 	fun mod() {
@@ -79,43 +79,6 @@ object CurrentMod {
 			totalWarPriority  = 15
 		}
 
-		for(d in dealEvalComponents) {
-			if(d.deal == "WAR") d.mod {
-				addMod()
-				bestFriendsValue += 40F
-				bitterEnemiesValue += 60F
-				friendlyValue += 40F
-				neutralValue += 40F
-				unfriendlyValue += 60F
-				veryFriendlyValue += 40F
-				veryUnfriendlyValue += 60F
-			} else if(d.deal == "PEACE") d.mod {
-				bestFriendsValue -= 50F
-				bitterEnemiesValue -= 100F
-				friendlyValue -= 75F
-				neutralValue -= 100F
-				unfriendlyValue -= 100F
-				veryFriendlyValue -= -50F
-				veryUnfriendlyValue -= 100F
-			}
-		}
-
-		for(d in dealGenPriorities.values) {
-			when(d.name) {
-				"PEACE" -> d.mod {
-					lastStandPriority -= 100
-					warPriority -= 100
-				}
-
-				"DECLARE_WAR_ON_FACTIONS_I_DISLIKE" -> d.mod {
-					peacePriority += 100F
-					tensionPriority += 100F
-					warPriority += 100F
-					totalWarPriority += 100F
-				}
-			}
-		}
-
 		for(d in difficulties.values)
 			d.addEffect("rom_payload_food", EffectScope.ALL_PROVINCES, 1000F)
 	}
@@ -123,62 +86,57 @@ object CurrentMod {
 
 
 	private fun modGarrisons() {
-		val levyMelee     = newGarrisonGroup("ROMAN_MODDED_levy_melee",      100, Units.RORARII, Units.VIGILES)
-		val basicMelee    = newGarrisonGroup("ROMAN_MODDED_basic_melee",     300, Units.HASTATI, Units.LEGIONARIES, Units.LEGIONARY_COHORT)
-		val mediumMelee   = newGarrisonGroup("ROMAN_MODDED_strong_melee",    200, Units.PRINCIPES, Units.FIRST_COHORT, Units.EAGLE_COHORT)
-		val eliteMelee    = newGarrisonGroup("ROMAN_MODDED_elite_melee",     100, Units.TRIARII, Units.PRAETORIANS, Units.PRAETORIAN_GUARD)
-		val basicRanged   = newGarrisonGroup("ROMAN_MODDED_basic_ranged",    300, Units.LEVES)
-		val mediumRanged  = newGarrisonGroup("ROMAN_MODDED_medium_ranged",   300, Units.VELITES)
-		val strongRanged  = newGarrisonGroup("ROMAN_MODDED_strong_ranged",   100, Units.AUX_PELTASTS)
-		val eliteRanged   = newGarrisonGroup("ROMAN_MODDED_elite_ranged",    100, Units.AUX_CRETAN_ARCHERS)
-		val artillery     = newGarrisonGroup("ROMAN_MODDED_elite_artillery", 100, Units.SCORPION)
-		val basicCavalry  = newGarrisonGroup("ROMAN_MODDED_basic_cavalry",   200, Units.EQUITES, Units.LEGIONARY_CAVALRY)
-		val eliteCavalry  = newGarrisonGroup("ROMAN_MODDED_elite_cavalry",   100, Units.PRAETORIAN_CAVALRY)
-		val basicNaval    = newGarrisonGroup("ROMAN_MODDED_basic_naval",     600, "Rom_Leves_Three")
-		val mediumNaval   = newGarrisonGroup("ROMAN_MODDED_medium_naval",    600, "Rom_Velites_Five")
-		val strongNaval   = newGarrisonGroup("ROMAN_MODDED_strong_naval",    600, "Rom_Triarii_Six")
+		val levyMelee     = newGarrisonGroup("ROMAN_MODDED_levy_melee",     100, Units.RORARII, Units.VIGILES)
+		val basicMelee    = newGarrisonGroup("ROMAN_MODDED_basic_melee",    300, Units.HASTATI, Units.LEGIONARIES, Units.LEGIONARY_COHORT)
+		val mediumMelee   = newGarrisonGroup("ROMAN_MODDED_strong_melee",   200, Units.PRINCIPES, Units.FIRST_COHORT, Units.EAGLE_COHORT)
+		val eliteMelee    = newGarrisonGroup("ROMAN_MODDED_elite_melee",    100, Units.TRIARII, Units.PRAETORIANS, Units.PRAETORIAN_GUARD)
+		val basicRanged   = newGarrisonGroup("ROMAN_MODDED_basic_ranged",   300, Units.LEVES)
+		val mediumRanged  = newGarrisonGroup("ROMAN_MODDED_medium_ranged",  300, Units.VELITES)
+		val eliteRanged   = newGarrisonGroup("ROMAN_MODDED_strong_ranged",  100, Units.AUX_PELTASTS)
+		val basicCavalry  = newGarrisonGroup("ROMAN_MODDED_basic_cavalry",  200, Units.EQUITES, Units.LEGIONARY_CAVALRY)
+		val eliteCavalry  = newGarrisonGroup("ROMAN_MODDED_elite_cavalry",  100, Units.PRAETORIAN_CAVALRY)
+		val basicNaval    = newGarrisonGroup("ROMAN_MODDED_basic_naval",    400, "Rom_Leves_Three")
+		val mediumNaval   = newGarrisonGroup("ROMAN_MODDED_medium_naval",   300, "Rom_Velites_Five")
 
 		val civil1 = arrayOf(
 			levyMelee to 6,
 			basicRanged to 2
 		)
+
 		val civil2 = arrayOf(
 			levyMelee to 8,
 			basicMelee to 2,
-			basicRanged to 2
+			basicRanged to 3
 		)
 		val civil3 = arrayOf(
 			levyMelee to 6,
-			basicMelee to 6,
-			mediumRanged to 3,
-			basicCavalry to 1
+			basicMelee to 4,
+			mediumRanged to 3
 		)
 		val civil4 = arrayOf(
 			levyMelee to 4,
+			basicMelee to 4,
+			mediumMelee to 2,
+			mediumRanged to 4
+		)
+
+		val garrison2 = arrayOf(
+			basicMelee to 3,
+			mediumMelee to 3,
+			mediumRanged to 3,
+			basicCavalry to 1
+		)
+		val garrison3 = arrayOf(
 			basicMelee to 4,
 			mediumMelee to 4,
 			mediumRanged to 4,
 			basicCavalry to 2
 		)
-		val garrison2 = arrayOf(
-			basicMelee to 10,
-			mediumRanged to 3,
-			basicCavalry to 1
-		)
-		val garrison3 = arrayOf(
-			basicMelee to 5,
-			mediumMelee to 5,
-			strongRanged to 4,
-			basicCavalry to 2
-		)
 		val garrison4 = arrayOf(
-			basicMelee to 4,
-			mediumMelee to 4,
+			mediumMelee to 8,
 			eliteMelee to 2,
-			strongRanged to 2,
-			eliteRanged to 2,
-			eliteCavalry to 2,
-			artillery to 1
+			eliteRanged to 4,
+			eliteCavalry to 2
 		)
 
 		Buildings.ROMAN_CITY_1.setGarrison(*civil1)
@@ -228,7 +186,7 @@ object CurrentMod {
 		)
 		Buildings.ROMAN_BARRACKS_AUX_3.setGarrison(
 			mediumMelee to 2,
-			strongRanged to 2,
+			eliteRanged to 2,
 			basicCavalry to 2
 		)
 		Buildings.ROMAN_BARRACKS_AUX_4.setGarrison(
@@ -246,17 +204,25 @@ object CurrentMod {
 			}
 		}
 
-		Buildings.ROMAN_PORT_TRADE_2.setGarrison(basicNaval to 2)
-		Buildings.ROMAN_PORT_TRADE_3.setGarrison(mediumNaval to 2)
-		Buildings.ROMAN_PORT_TRADE_4.setGarrison(mediumNaval to 2)
+		Buildings.ROMAN_PORT_TRADE_2.setGarrison(
+			basicNaval to 2
+		)
+		Buildings.ROMAN_PORT_TRADE_3.setGarrison(
+			mediumNaval to 2
+		)
+		Buildings.ROMAN_PORT_TRADE_4.setGarrison(
+			mediumNaval to 2
+		)
 
-		Buildings.ROMAN_PORT_FISH_2.setGarrison(basicNaval to 2)
-		Buildings.ROMAN_PORT_FISH_3.setGarrison(mediumNaval to 2)
-		Buildings.ROMAN_PORT_FISH_4.setGarrison(mediumNaval to 2)
-
-		Buildings.ROMAN_PORT_MILITARY_2.setGarrison(strongNaval to 3)
-		Buildings.ROMAN_PORT_MILITARY_3.setGarrison(strongNaval to 3)
-		Buildings.ROMAN_PORT_MILITARY_4.setGarrison(strongNaval to 3)
+		Buildings.ROMAN_PORT_FISH_2.setGarrison(
+			basicNaval to 2
+		)
+		Buildings.ROMAN_PORT_FISH_3.setGarrison(
+			mediumNaval to 2
+		)
+		Buildings.ROMAN_PORT_FISH_4.setGarrison(
+			mediumNaval to 2
+		)
 
 		for(town in Buildings.NON_ROMAN_TOWNS) {
 			val culture = town.culture!!
@@ -293,8 +259,8 @@ object CurrentMod {
 		Weapons.SPEAR_CAV_ELITE.mod   { damage = 30; apDamage = 10 } // 24  5
 
 		Shields.SCUTUM.mod           { defence = 30; armour = 40; blockChance = 60 } // 30  35  50
-		Shields.SCUTUM_MARIAN.mod    { defence = 35; armour = 50; blockChance = 65 } // 25  40  50
-		Shields.SCUTUM_IMPERIAL.mod  { defence = 40; armour = 60; blockChance = 70 } // 25  40  50
+		Shields.SCUTUM_MARIAN.mod    { defence = 35; armour = 45; blockChance = 65 } // 25  40  50
+		Shields.SCUTUM_IMPERIAL.mod  { defence = 40; armour = 50; blockChance = 70 } // 25  40  50
 
 		Armours.MAIL.mod            { armour = 40 } // 40
 		Armours.MAIL_IMPROVED.mod   { armour = 50 } // 45
@@ -302,20 +268,20 @@ object CurrentMod {
 		Armours.SEGMENTATA_ARM.mod  { armour = 70 } // 55
 
 		Units.SCORPION.mod {
-			accuracy = 50   // 5
-			ammo     = 150  // 40
+			accuracy = 40   // 5
+			ammo     = 100  // 40
 			reload   = 50   // 4
-			cost     = 3000
-			upkeep   = 300
+			cost     = 2500
+			upkeep   = 250
 			level    = ELITE
 			spacing  = "missile_cav" // artillery
-			numGuns  = 12 // 4
+			numGuns  = 8 // 4
 
 			newProjectile {
-				damage       = 40    // 50
-				apDamage     = 40    // 70
-				range        = 500   // 350
-				reloadTime   = 4     // 10
+				damage       = 50    // 50
+				apDamage     = 60    // 70
+				range        = 450   // 350
+				reloadTime   = 5     // 10
 				penetration  = "low" // low
 			}
 		}
@@ -350,7 +316,7 @@ object CurrentMod {
 		Units.AUX_PELTASTS.mod {
 			reload   = 40   // 28
 			accuracy = 30   // 5
-			ammo     = 25   // 7
+			ammo     = 20   // 7
 			cost     = 1500 // 420
 			upkeep   = 150  // 90
 			level    = ELITE // poorly_trained
@@ -363,17 +329,17 @@ object CurrentMod {
 		}
 
 		Units.AUX_CRETAN_ARCHERS.mod {
-			reload   = 50    // 28
-			ammo     = 50    // 15
-			accuracy = 40    // 5
+			reload   = 40    // 28
+			ammo     = 40    // 15
+			accuracy = 30    // 5
 			cost     = 1500  // 600
 			upkeep   = 150   // 130
 			level    = ELITE // poorly_trained
 
 			newProjectile {
 				damage   = 35 // 36
-				apDamage = 10 // 4
-				range    = 175 // 150
+				apDamage = 5 // 4
+				range    = 200 // 150
 			}
 		}
 
@@ -384,7 +350,7 @@ object CurrentMod {
 			bonusHp = 10  // 5
 			charge  = 10  // 11
 			cost    = 200 // 200
-			upkeep  = 60  // 60
+			upkeep  = 30  // 60
 			armour  = armour("mail") // cloth
 			level   = POORLY_TRAINED // poorly_trained
 		}
@@ -396,51 +362,51 @@ object CurrentMod {
 			bonusHp = 15  // 5
 			charge  = 15  // 11
 			cost    = 200 // 200
-			upkeep  = 60  // 60
+			upkeep  = 30  // 60
 			armour  = armour("mail_improved") // cloth
 			shield  = shield("scutum_marian") // scutum
 			level   = TRAINED // poorly_trained
 		}
 
 		Units.HASTATI.mod {
-			attack  = 40  // 35
-			defence = 25  // 18
+			attack  = 35  // 35
+			defence = 20  // 18
 			morale  = 45  // 45
-			bonusHp = 15  // 10
+			bonusHp = 10  // 10
 			charge  = 15  // 12
 			cost    = 350 // 350
-			upkeep  = 90  // 90
+			upkeep  = 60  // 90
 			level   = TRAINED // trained
 		}
 
 		Units.PRINCIPES.mod {
 			attack  = 50  // 47
-			defence = 30  // 23
+			defence = 25  // 23
 			morale  = 55  // 55
-			bonusHp = 20  // 15
-			charge  = 20  // 14
+			bonusHp = 15  // 15
+			charge  = 15  // 14
 			cost    = 700 // 680
-			upkeep  = 120  // 120
+			upkeep  = 90  // 120
 			level   = WELL_TRAINED // trained
 		}
 
 		Units.TRIARII.mod {
-			attack  = 50   // 31
-			defence = 50   // 34
+			attack  = 40   // 31
+			defence = 40   // 34
 			morale  = 65   // 65
 			bonusHp = 25   // 20
 			charge  = 25   // 24
 			cost    = 1500 // 800
-			upkeep  = 140  // 140
+			upkeep  = 120  // 140
 			level   = WELL_TRAINED // elite
 		}
 
 		Units.LEGIONARIES.mod {
-			attack  = 50   // 47
-			defence = 30   // 23
+			attack  = 45   // 47
+			defence = 25   // 23
 			morale  = 55   // 55
-			bonusHp = 20   // 15
-			charge  = 20   // 15
+			bonusHp = 15   // 15
+			charge  = 15   // 15
 			cost    = 1000 // 660
 			upkeep  = 150  // 140
 			level   = TRAINED // trained
@@ -450,8 +416,8 @@ object CurrentMod {
 			attack  = 55   // 47
 			defence = 35   // 33
 			morale  = 65   // 65
-			bonusHp = 25   // 20
-			charge  = 25   // 12
+			bonusHp = 20   // 20
+			charge  = 20   // 12
 			cost    = 1500 // 910
 			upkeep  = 200  // 180
 			level   = WELL_TRAINED // trained
@@ -459,21 +425,21 @@ object CurrentMod {
 
 		Units.PRAETORIANS.mod {
 			attack  = 65   // 65
-			defence = 45   // 30
+			defence = 40   // 30
 			morale  = 75   // 70
-			bonusHp = 35   // 20
-			charge  = 35   // 19
+			bonusHp = 25   // 20
+			charge  = 25   // 19
 			cost    = 4000 // 1280
 			upkeep  = 400  // 200
 			level   = ELITE
 		}
 
 		Units.LEGIONARY_COHORT.mod {
-			attack  = 55   // 47
-			defence = 35   // 23
+			attack  = 50   // 47
+			defence = 25   // 23
 			morale  = 65   // 55
-			bonusHp = 25   // 15
-			charge  = 25   // 14
+			bonusHp = 20   // 15
+			charge  = 20   // 14
 			cost    = 1500 // 700
 			upkeep  = 150  // 140
 			level   = TRAINED
@@ -481,10 +447,10 @@ object CurrentMod {
 
 		Units.EAGLE_COHORT.mod {
 			attack  = 60   // 47
-			defence = 40   // 35
+			defence = 35   // 35
 			morale  = 75   // 65
-			bonusHp = 30   // 20
-			charge  = 30   // 12
+			bonusHp = 25   // 20
+			charge  = 25   // 12
 			cost    = 2000 // 930
 			upkeep  = 200  // 180
 			level   = WELL_TRAINED
@@ -492,10 +458,10 @@ object CurrentMod {
 
 		Units.PRAETORIAN_GUARD.mod {
 			attack  = 75   // 65
-			defence = 50   // 30
+			defence = 45   // 30
 			morale  = 85   // 70
-			bonusHp = 40   // 20
-			charge  = 40   // 19
+			bonusHp = 30   // 20
+			charge  = 30   // 19
 			shield  = shield("scutum_imperial")
 			cost    = 5000 // 1280
 			upkeep  = 500  // 200
@@ -513,13 +479,13 @@ object CurrentMod {
 		}
 
 		Units.AUX_SHOCK_CAVALRY.mod {
-			attack  = 40 // 34
+			attack  = 34 // 34
 			defence = 15 // 11
 			morale  = 55 // 55
 			bonusHp = 25 // 20
 			charge  = 70 // 57
-			cost    = 1000 // 840
-			upkeep  = 160 // 140
+			cost    = 840 // 840
+			upkeep  = 140 // 140
 		}
 
 		Units.EQUITES.mod {
@@ -534,13 +500,13 @@ object CurrentMod {
 		}
 
 		Units.LEGIONARY_CAVALRY.mod {
-			attack  = 45   // 33
-			defence = 25   // 10
+			attack  = 40   // 33
+			defence = 20   // 10
 			morale  = 50   // 45
 			bonusHp = 25   // 15
 			charge  = 35   // 29
-			cost    = 1000 // 620
-			upkeep  = 150  // 120
+			cost    = 700  // 620
+			upkeep  = 120  // 120
 			level   = WELL_TRAINED
 		}
 
@@ -571,6 +537,16 @@ object CurrentMod {
 			charge  = Units.EAGLE_COHORT.charge
 		}
 
+		for(c in commanderUnits) {
+			if(c.unit == "Rom_Vet_Legionaries") {
+				c.addMod()
+				c.unit = Units.FIRST_COHORT.name
+			} else if(c.unit == "Rom_Evocati_Cohort") {
+				c.addMod()
+				c.unit = Units.EAGLE_COHORT.name
+			}
+		}
+
 		for(unit in landUnits.values) {
 			if(unit.category != "artillery" || unit.name.startsWith("Rom_")) continue
 
@@ -596,6 +572,7 @@ object CurrentMod {
 		Techs.COHORT_ORGANISATION.modifyUnitUpgradeCosts()
 		Techs.PROFESSIONAL_SOLDIERY.modifyUnitUpgradeCosts()
 
+		Buildings.ROMAN_SIEGE_2.removeUnit(Units.POLYBOLOS)
 		Buildings.ROMAN_BARRACKS_MAIN_4.removeUnit(Units.ARMOURED_LEGIONARIES)
 		Buildings.ROMAN_BARRACKS_MAIN_3.removeUnit(Units.FIRST_COHORT)
 		Buildings.ROMAN_BARRACKS_MAIN_4.removeUnit(Units.FIRST_COHORT)
@@ -618,6 +595,37 @@ object CurrentMod {
 			cost = 20000 // 12600
 		}
 
+/*		Buildings.ROMAN_CITY_GARRISON_2.mod {
+			cost = 3000 // 2000
+		}
+		Buildings.ROMAN_CITY_GARRISON_3.mod {
+			cost = 5000 // 3000
+		}
+		Buildings.ROMAN_CITY_GARRISON_4.mod {
+			cost = 10000 // 6000
+		}
+
+		Buildings.ROMAN_CITY_CIVIL_2.mod {
+			cost = 3000 // 2700
+		}
+		Buildings.ROMAN_CITY_CIVIL_3.mod {
+			cost = 5000 // 4400
+		}
+		Buildings.ROMAN_CITY_CIVIL_4.mod {
+			cost = 10000 // 7100
+		}
+
+		for(b in Buildings.ROMAN_TOWNS) {
+			b.mod {
+				when(b.adjustedLevel) {
+					1 -> cost = 1500 // 1200
+					2 -> cost = 2500 // ~1900
+					3 -> cost = 4000 // ~2700
+					4 -> cost = 7000 // ~3800
+				}
+			}
+		}*/
+
 		Buildings.ROMAN_TOWN_TRADE_2.apply {
 			effect(BuildingEffectType.GDP_LOCAL_TRADE, 150)
 			effect(BuildingEffectType.GDP_MOD_TRADE, 10) // 3
@@ -634,41 +642,41 @@ object CurrentMod {
 			addEffect(BuildingEffectType.HAPPINESS, EffectScope.PROVINCE, 6)
 		}
 		Buildings.ROMAN_TOWN_FARM_2.apply {
-			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 200) // 100
+			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 150) // 100
 			effect(BuildingEffectType.GDP_MOD_AGRICULTURE, 10) // 3 + 7
 			effect(BuildingEffectType.GROWTH, 2) // 2
 		}
 		Buildings.ROMAN_TOWN_FARM_3.apply {
-			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 300) // 150
+			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 200) // 150
 			effect(BuildingEffectType.GDP_MOD_AGRICULTURE, 15) // 6 + 14
 			effect(BuildingEffectType.GROWTH, 4) // 3 + 1
 		}
 		Buildings.ROMAN_TOWN_FARM_4.apply {
-			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 400) // 200
+			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 250) // 200
 			effect(BuildingEffectType.GDP_MOD_AGRICULTURE, 30) // 9
 			effect(BuildingEffectType.GROWTH, 8) // 4 + 4
 		}
 		Buildings.ROMAN_TOWN_CIVIL_2.apply {
-			effect(BuildingEffectType.GDP_SUBSISTENCE, 200) // 100
+			effect(BuildingEffectType.GDP_SUBSISTENCE, 150) // 100
 			effect(BuildingEffectType.GDP_MOD_ALL, 4) // 2
 		}
 		Buildings.ROMAN_TOWN_CIVIL_3.apply {
-			effect(BuildingEffectType.GDP_SUBSISTENCE, 300) // 150
+			effect(BuildingEffectType.GDP_SUBSISTENCE, 200) // 150
 			effect(BuildingEffectType.GDP_MOD_ALL, 8) // 4
 		}
 		Buildings.ROMAN_TOWN_CIVIL_4.apply {
-			effect(BuildingEffectType.GDP_SUBSISTENCE, 400) // 200
+			effect(BuildingEffectType.GDP_SUBSISTENCE, 250) // 200
 			effect(BuildingEffectType.GDP_MOD_ALL, 12) // 6
 		}
 
 
 		Buildings.ROMAN_CITY_CIVIL_2.apply {
-			effect(BuildingEffectType.GDP_SUBSISTENCE, 400) // 300
+			effect(BuildingEffectType.GDP_SUBSISTENCE, 350) // 300
 			effect(BuildingEffectType.GDP_MOD_ALL, 10) // 8
 			effect(BuildingEffectType.GROWTH, 6) // 5
 		}
 		Buildings.ROMAN_CITY_CIVIL_3.apply {
-			effect(BuildingEffectType.GDP_SUBSISTENCE, 500) // 400
+			effect(BuildingEffectType.GDP_SUBSISTENCE, 450) // 400
 			effect(BuildingEffectType.GDP_MOD_ALL, 15) // 10
 			effect(BuildingEffectType.GROWTH, 8) // 7
 		}
@@ -766,17 +774,17 @@ object CurrentMod {
 
 		Buildings.ROMAN_FARM_2.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 8) // 7 + 1
-			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 50) // 60
+			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 60) // 60
 			effect(BuildingEffectType.SQUALOR, -1) // -1
 		}
 		Buildings.ROMAN_FARM_3.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 12) // 11 + 1
-			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 100) // 80
+			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 80) // 80
 			effect(BuildingEffectType.SQUALOR, -4) // -3
 		}
 		Buildings.ROMAN_FARM_4.apply {
 			effect(BuildingEffectType.FOOD_PRODUCTION, 16) // 15 + 1
-			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 150) // 100
+			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 100) // 100
 			effect(BuildingEffectType.SQUALOR, -8) // -6
 		}
 		Buildings.ROMAN_GRANARY_2.apply {
@@ -786,29 +794,29 @@ object CurrentMod {
 			addEffect(BuildingEffectType.SANITATION, EffectScope.PROVINCE, 2)
 		}
 		Buildings.ROMAN_GRANARY_3.apply {
-			effect(BuildingEffectType.FOOD_PRODUCTION, 5) // 4
+			effect(BuildingEffectType.FOOD_PRODUCTION, 4) // 4
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 150) // 150
 			effect(BuildingEffectType.UNIT_REPLENISHMENT, 15) // 6
 			addEffect(BuildingEffectType.SANITATION, EffectScope.PROVINCE, 3)
 		}
 		Buildings.ROMAN_GRANARY_4.apply {
-			effect(BuildingEffectType.FOOD_PRODUCTION, 6) // 4
+			effect(BuildingEffectType.FOOD_PRODUCTION, 5) // 4
 			effect(BuildingEffectType.GDP_AGRICULTURE_FARMING, 200) // 200
 			effect(BuildingEffectType.UNIT_REPLENISHMENT, 20) // 9
 			addEffect(BuildingEffectType.SANITATION, EffectScope.PROVINCE, 4)
 		}
 		Buildings.ROMAN_HERD_2.apply {
-			effect(BuildingEffectType.FOOD_PRODUCTION, 6) // 5
+			effect(BuildingEffectType.FOOD_PRODUCTION, 4) // 5
 			effect(BuildingEffectType.GDP_AGRICULTURE_HERDING, 100) // 100
 			effect(BuildingEffectType.SQUALOR, -1) // -1
 		}
 		Buildings.ROMAN_HERD_3.apply {
-			effect(BuildingEffectType.FOOD_PRODUCTION, 8) // 7
+			effect(BuildingEffectType.FOOD_PRODUCTION, 6) // 7
 			effect(BuildingEffectType.GDP_AGRICULTURE_HERDING, 175) // 175
 			effect(BuildingEffectType.SQUALOR, -4) // -3
 		}
 		Buildings.ROMAN_HERD_4.apply {
-			effect(BuildingEffectType.FOOD_PRODUCTION, 10) // 9
+			effect(BuildingEffectType.FOOD_PRODUCTION, 8) // 9
 			effect(BuildingEffectType.GDP_AGRICULTURE_HERDING, 250) // 250
 			effect(BuildingEffectType.SQUALOR, -8) // -6
 		}
@@ -827,15 +835,15 @@ object CurrentMod {
 			effect(BuildingEffectType.GDP_LOCAL_TRADE, 400)
 		}
 		Buildings.ROMAN_THEATRE_2.apply {
-			effect(BuildingEffectType.HAPPINESS, 4) // 2
+			effect(BuildingEffectType.HAPPINESS, 4) // 2 + 2
 			effect(BuildingEffectType.GDP_CULTURE_ENTERTAINMENT, 80) // 80
 		}
 		Buildings.ROMAN_THEATRE_3.apply {
-			effect(BuildingEffectType.HAPPINESS, 8) // 4
+			effect(BuildingEffectType.HAPPINESS, 8) // 4 + 4
 			effect(BuildingEffectType.GDP_CULTURE_ENTERTAINMENT, 160) // 160
 		}
 		Buildings.ROMAN_THEATRE_4.apply {
-			effect(BuildingEffectType.HAPPINESS, 12) // 6
+			effect(BuildingEffectType.HAPPINESS, 12) // 6 + 6
 			effect(BuildingEffectType.GDP_CULTURE_ENTERTAINMENT, 240) // 240
 		}
 
@@ -904,7 +912,10 @@ object CurrentMod {
 
 	private fun modTechs() {
 		for(t in techs.values)
-			t.mod { cost = 0 }
+			if(!t.name.startsWith("rom_roman"))
+				t.mod { cost = 0 }
+
+		Techs.PROFESSIONAL_SOLDIERY.mod { cost += cost / 2 }
 
 		Techs.TRAINING_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
 		Techs.REMUNERATION_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
@@ -941,8 +952,8 @@ object CurrentMod {
 		Techs.PRODUCTION_LINES.effect(TechEffectType.ROME_TRADE_GDP_MOD, 15)
 		Techs.PRODUCTION_LINES.effect(TechEffectType.ROME_TARIFF_MOD, 15)
 
-		Techs.TAX_LABOUR.effect(TechEffectType.ROME_GROWTH_PROVINCE, 5) // 1
-		Techs.WATER_SLUICING.effect(TechEffectType.ROME_GROWTH_PROVINCE, 5) // 3
+		Techs.TAX_LABOUR.effect(TechEffectType.ROME_GROWTH_PROVINCE, 4) // 1
+		Techs.WATER_SLUICING.effect(TechEffectType.ROME_GROWTH_PROVINCE, 4) // 3
 		Techs.WATER_SLUICING.effect(TechEffectType.ROME_INDUSTRY_GDP_MOD, 10) // 3
 		Techs.FIRED_BRICK.effect(TechEffectType.ROME_INDUSTRY_GDP_MOD, 15)
 		Techs.MOULDED_ARCHITECTURE.effect(TechEffectType.ROME_INDUSTRY_GDP_MOD, 25)
@@ -951,8 +962,8 @@ object CurrentMod {
 
 
 	private fun modSkills() {
-		fun agentXp(i: Int) = i * 8 + 4 * i * (i + 1) / 2
-		fun armyXp(i: Int) = i * 12 + 4 * i * (i + 1) / 2
+		fun agentXp(i: Int) = i * 10 + 4 * i * (i + 1) / 2
+		fun armyXp(i: Int) = i * 15 + 8 * i * (i + 1) / 2
 
 		for(tier in experienceTiers) tier.mod {
 			skillPoints = 2
@@ -967,7 +978,7 @@ object CurrentMod {
 			skill.level3.mod { unlockRank = 1 }
 		}
 
-		for(i in 9.. 14) {
+		for(i in 9.. 17) {
 			val agentXp = agentXp(i + 1)
 			val armyXp = armyXp(i + 1)
 			ExperienceTier("champion", agentXp, 2, i, false, false).addMod()
@@ -980,4 +991,4 @@ object CurrentMod {
 	}
 
 
-}
+}*/
