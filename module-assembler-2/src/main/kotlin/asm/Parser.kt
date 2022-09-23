@@ -261,24 +261,34 @@ class Parser(lexResult: LexResult) {
 
 
 	private fun parseInstruction(mnemonic: Mnemonic): InstructionNode {
-		if(atStatementEnd()) return InstructionNode(mnemonic, null, null, null, null)
+		if(mnemonic.stringWidth != null && tokens[pos] == SymbolToken.COLON) {
+			pos++
+			val prefix = when(val string = (tokens[pos++] as? IdToken)?.value) {
+				"rep", "repe", "repz" -> 0xF3
+				"repne", "repnz"      -> 0xF2
+				else                  -> error("Invalid string prefix: $string")
+			}
+			return InstructionNode(prefix, mnemonic, null, null, null, null)
+		}
+
+		if(atStatementEnd()) return InstructionNode(0, mnemonic, null, null, null, null)
 		val operand1 = parseOperand()
 
-		if(atStatementEnd()) return InstructionNode(mnemonic, operand1, null, null, null)
+		if(atStatementEnd()) return InstructionNode(0, mnemonic, operand1, null, null, null)
 		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand2 = parseOperand()
 
-		if(atStatementEnd()) return InstructionNode(mnemonic, operand1, operand2, null, null)
+		if(atStatementEnd()) return InstructionNode(0, mnemonic, operand1, operand2, null, null)
 		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand3 = parseOperand()
 
-		if(atStatementEnd()) return InstructionNode(mnemonic, operand1, operand2, operand3, null)
+		if(atStatementEnd()) return InstructionNode(0, mnemonic, operand1, operand2, operand3, null)
 		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand4 = parseOperand()
 
 		if(!atStatementEnd()) error("unexpected token: ${tokens[pos]}")
 
-		return InstructionNode(mnemonic, operand1, operand2, operand3, operand4)
+		return InstructionNode(0, mnemonic, operand1, operand2, operand3, operand4)
 	}
 
 

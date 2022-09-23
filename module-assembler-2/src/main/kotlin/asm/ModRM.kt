@@ -10,6 +10,14 @@ class ModRM {
 		value = (mod shl 6) or (reg shl 3) or rm
 	}
 
+	val hasSib get() = rm == 0b100 && mod != 0b11
+
+	val hasDisp8 get() = mod == 0b01
+
+	val hasDisp32 get() = mod == 0b10
+
+	val hasRipRelative get() = mod == 0b00 && rm == 0b101
+
 	var mod
 		get() = (value and 0b11_000_000) shr 6
 		set(mod) { value = value or (mod shl 6) }

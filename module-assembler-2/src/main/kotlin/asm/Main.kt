@@ -9,7 +9,7 @@ import java.nio.file.Paths
 
 
 fun main() {
-	assemble("add eax, [rax + rax * 2 + (10 + 15) * 2 - 15]")
+	assemble("nop")
 }
 
 

@@ -32,7 +32,7 @@ object Core {
 
 
 	fun runOrExit(command: String) {
-		if(!run(command)) exitProcess(1)
+		if(!run(command)) error("Process failed")
 	}
 
 

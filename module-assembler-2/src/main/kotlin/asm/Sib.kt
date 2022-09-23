@@ -8,6 +8,8 @@ class Sib {
 		value = (scale shl 6) or (index shl 3) or base
 	}
 
+	//val hasDisp32 get() = index ==
+
 	var scale
 		get() = (value and 0b11_000_000) shr 6
 		set(scale) { value = value or (scale shl 6) }

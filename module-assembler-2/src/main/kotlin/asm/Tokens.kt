@@ -48,7 +48,7 @@ data class MnemonicToken(val value: Mnemonic) : Token
 
 
 
-enum class KeywordToken(val width: Width? = null) : Token {
+enum class KeywordToken(val width: Width? = null, val prefix: Int = 0) : Token {
 
 	BYTE(width = Width.BIT8),
 	WORD(width = Width.BIT16),

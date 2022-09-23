@@ -128,9 +128,10 @@ class MemoryNode(
 
 
 class InstructionNode(
-	val mnemonic: Mnemonic,
-	val op1: AstNode?,
-	val op2: AstNode?,
-	val op3: AstNode?,
-	val op4: AstNode?
+	val prefix       : Int,
+	val mnemonic     : Mnemonic,
+	val op1          : AstNode?,
+	val op2          : AstNode?,
+	val op3          : AstNode?,
+	val op4          : AstNode?
 ) : AstNode
