@@ -61,7 +61,7 @@ data class Section(
 	val pLineNumbers	: Int = 0,
 	val relocationCount	: Int = 0,
 	val lineNumberCount	: Int = 0,
-	val characteristics	: SectionFlags     = SectionFlags(0),
+	val characteristics	: SectionFlags = SectionFlags(0),
 	val relocations     : List<Relocation> = emptyList()
 )
 

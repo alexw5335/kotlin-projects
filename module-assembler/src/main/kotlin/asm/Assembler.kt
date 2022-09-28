@@ -3,7 +3,7 @@ package asm
 import core.binary.BinaryWriter
 import java.util.*
 
-class Assembler2(parseResult: ParseResult) {
+class Assembler(parseResult: ParseResult) {
 
 
 	private val nodes = parseResult.nodes

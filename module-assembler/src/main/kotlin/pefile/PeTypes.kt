@@ -6,7 +6,7 @@ inline fun DllFlags(block: DllFlags.Companion.() -> DllFlags) = block(DllFlags)
 
 inline fun CoffFlags(block: CoffFlags.Companion.() -> CoffFlags) = block(CoffFlags)
 
-inline fun SectionFlags(block: SectionFlags.Companion.() -> SectionFlags) = block(SectionFlags.Companion)
+inline fun SectionFlags(block: SectionFlags.Companion.() -> SectionFlags) = block(SectionFlags)
 
 
 
