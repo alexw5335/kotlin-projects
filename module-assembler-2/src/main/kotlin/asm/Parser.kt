@@ -65,6 +65,15 @@ class Parser(lexResult: LexResult) {
 
 
 
+	private fun expectStatementEnd() {
+		if(atNewline()) return
+		val token = tokens[pos++]
+		if(token == EndToken || token == SymbolToken.SEMICOLON) return
+		error("Expecting statement end, found: $token")
+	}
+
+
+
 	private fun identifier() =  (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier name")
 
 
@@ -106,7 +115,12 @@ class Parser(lexResult: LexResult) {
 		val right = parseMemoryOperand(node.right, regValid && node.op == BinaryOp.ADD)
 
 		return when {
-			left  == null -> right // also handles case where both are null
+			left  == null -> when {
+				right == null -> null
+				node.op == BinaryOp.SUB -> UnaryNode(UnaryOp.NEG, right)
+				node.op == BinaryOp.ADD -> right
+				else                    -> error()
+			}
 			right == null -> left
 			left  == node.left && right == node.right -> node
 			else -> BinaryNode(node.op, left, right)
@@ -134,8 +148,17 @@ class Parser(lexResult: LexResult) {
 		when(keyword) {
 			KeywordToken.DB -> parseDb()
 			KeywordToken.CONST -> parseConst()
+			KeywordToken.EXTERN -> parseExtern()
 			else -> { }
 		}
+	}
+
+
+
+	private fun parseExtern() {
+		val name = identifier()
+		symbols[name] = Symbol(name, SymbolType.EXTERN)
+		expectStatementEnd()
 	}
 
 
@@ -155,10 +178,9 @@ class Parser(lexResult: LexResult) {
 			components.add(readExpression())
 			if(tokens[pos++] != SymbolToken.COMMA)
 				break
-			pos++
 		}
 
-		nodes.add(DefineNode(components))
+		nodes.add(DbNode(components))
 	}
 
 
@@ -185,6 +207,8 @@ class Parser(lexResult: LexResult) {
 		is IntToken -> IntNode(token.value)
 
 		is RegisterToken -> RegisterNode(token.value)
+
+		is SRegisterToken -> SRegisterNode(token.value)
 
 		is IdToken -> IdNode(token.value)
 

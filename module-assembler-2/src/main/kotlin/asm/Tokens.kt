@@ -3,15 +3,16 @@ package asm
 
 
 val Token.printableString get() = when(this) {
-	is SymbolToken   -> "SYMBOL    $string"
-	is IdToken       -> "ID        $value"
-	is IntToken      -> "INT       $value"
-	is MnemonicToken -> "MNEMONIC  ${value.string}"
-	is RegisterToken -> "REGISTER  ${value.string}"
-	is KeywordToken  -> "KEYWORD   $string"
-	is EndToken      -> "END OF STREAM"
-	is CharToken     -> "CHAR      $value"
-	is StringToken   -> "STRING    $value"
+	is SymbolToken    -> "SYMBOL    $string"
+	is IdToken        -> "ID        $value"
+	is IntToken       -> "INT       $value"
+	is MnemonicToken  -> "MNEMONIC  ${value.string}"
+	is RegisterToken  -> "REGISTER  ${value.string}"
+	is KeywordToken   -> "KEYWORD   $string"
+	is EndToken       -> "END OF STREAM"
+	is CharToken      -> "CHAR      $value"
+	is StringToken    -> "STRING    $value"
+	is SRegisterToken -> "SREG:     $value"
 }
 
 
@@ -44,6 +45,10 @@ data class RegisterToken(val value: Register) : Token
 
 
 
+data class SRegisterToken(val value: SRegister) : Token
+
+
+
 data class MnemonicToken(val value: Mnemonic) : Token
 
 
@@ -56,7 +61,8 @@ enum class KeywordToken(val width: Width? = null, val prefix: Int = 0) : Token {
 	QWORD(width = Width.BIT64),
 	CONST,
 	ENUM,
-	DB;
+	DB,
+	EXTERN;
 
 	val string = name.lowercase()
 

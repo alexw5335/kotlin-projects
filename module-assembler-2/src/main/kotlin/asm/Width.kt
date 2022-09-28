@@ -2,14 +2,14 @@ package asm
 
 enum class Width(
 	val string       : String,
-	val rex          : Int = 0,
-	val rexFull      : Int = 0
+	val opcodeOffset : Int = 0,
+	val rex          : Int = 0
 ) {
 
-	BIT8("byte"),
-	BIT16("word"),
-	BIT32("dword"),
-	BIT64("qword", rex = 1, rexFull = 0b1000),
+	BIT8("byte", opcodeOffset = 0),
+	BIT16("word", opcodeOffset = 1),
+	BIT32("dword", opcodeOffset = 1),
+	BIT64("qword", opcodeOffset = 1, rex = 1),
 	BIT128("128-bit"),
 	BIT256("256-bit"),
 	BIT512("512-bit");
@@ -23,5 +23,7 @@ enum class Width(
 	val isNot16 get() = this != BIT16
 	val isNot32 get() = this != BIT32
 	val isNot64 get() = this != BIT64
+
+	val bit = 1 shl ordinal
 
 }

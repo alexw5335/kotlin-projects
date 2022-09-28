@@ -10,12 +10,9 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 	companion object {
 
-
 		fun lex(string: String) = Lexer(CharArray(string.length + 8).also(string::toCharArray)).lex()
 
 		fun lex(path: Path) = lex(Files.readString(path))
-
-
 
 		private val Char.isIdStartChar get() = isLetter() || this == '_'
 
@@ -23,19 +20,30 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 		private val keywordMap = HashMap<String, Token>()
 
-
-
 		init {
-			for(r in Register.values())
-				keywordMap[r.string] = RegisterToken(r)
+			for(r in Register.values()) {
+				val token = RegisterToken(r)
+				keywordMap[r.string] = token
+				keywordMap[r.name] = token
+			}
 
-			for(m in Mnemonic.values())
-				keywordMap[m.string] = MnemonicToken(m)
+			for(m in Mnemonic.values()) {
+				val token = MnemonicToken(m)
+				keywordMap[m.string] = token
+				keywordMap[m.name] = token
+			}
 
-			for(k in KeywordToken.values())
+			for(k in KeywordToken.values()) {
 				keywordMap[k.string] = k
-		}
+				keywordMap[k.name] = k
+			}
 
+			for(r in SRegister.values()) {
+				val token = SRegisterToken(r)
+				keywordMap[r.string] = token
+				keywordMap[r.name] = token
+			}
+		}
 
 	}
 

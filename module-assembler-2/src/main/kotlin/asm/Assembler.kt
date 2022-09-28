@@ -222,10 +222,7 @@ class Assembler(parseResult: ParseResult) {
 		if(hasModRm) {
 			if(extension >= 0) modrm.reg = extension
 			writer.u8(modrm.value)
-			if(modrm.hasSib) {
-				writer.u8(sib.value)
-				if(modrm.mod == 0 && sib.base == )
-			}
+			if(modrm.hasSib) writer.u8(sib.value)
 			if(hasDisp) if(modrm.mod == 0b01) writer.s8(disp) else writer.s32(disp)
 		}
 	}
@@ -257,13 +254,13 @@ class Assembler(parseResult: ParseResult) {
 
 	private fun assemble0(node: InstructionNode) {
 		when(node.mnemonic) {
-			Mnemonic.CBW  -> writer.u16(0x98_66)
-			Mnemonic.CWDE -> writer.u8(0x98)
-			Mnemonic.CDQE -> writer.u16(0x98_48)
+			Mnemonic.CBW   -> writer.u16(0x98_66)
+			Mnemonic.CWDE  -> writer.u8(0x98)
+			Mnemonic.CDQE  -> writer.u16(0x98_48)
 
-			Mnemonic.CWD -> writer.u16(0x99_66)
-			Mnemonic.CDQ -> writer.u8(0x99)
-			Mnemonic.CQO -> writer.u16(0x99_48)
+			Mnemonic.CWD   -> writer.u16(0x99_66)
+			Mnemonic.CDQ   -> writer.u8(0x99)
+			Mnemonic.CQO   -> writer.u16(0x99_48)
 
 			Mnemonic.MOVSB -> assembleString(node, 0xA4)
 			Mnemonic.MOVSW -> assembleString(node, 0xA5)
@@ -290,9 +287,9 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.SCASD -> assembleString(node, 0xAF)
 			Mnemonic.SCASQ -> assembleString(node, 0xAF)
 
-			Mnemonic.INSB -> assembleString(node, 0x6C)
-			Mnemonic.INSW -> assembleString(node, 0x6D)
-			Mnemonic.INSD -> assembleString(node, 0x6D)
+			Mnemonic.INSB  -> assembleString(node, 0x6C)
+			Mnemonic.INSW  -> assembleString(node, 0x6D)
+			Mnemonic.INSD  -> assembleString(node, 0x6D)
 
 			Mnemonic.OUTSB -> assembleString(node, 0x6E)
 			Mnemonic.OUTSW -> assembleString(node, 0x6E)
@@ -300,8 +297,8 @@ class Assembler(parseResult: ParseResult) {
 
 			Mnemonic.CPUID -> writer.u16(0xA2_0F)
 
-			Mnemonic.RET -> writer.u8(0xC3)
-			Mnemonic.RETF -> writer.u8(0xCB)
+			Mnemonic.RET   -> writer.u8(0xC3)
+			Mnemonic.RETF  -> writer.u8(0xCB)
 
 			Mnemonic.INT1  -> writer.u8(0xF1)
 			Mnemonic.INT3  -> writer.u8(0xCC)
@@ -316,7 +313,7 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.CLD   -> writer.u8(0xFC)
 			Mnemonic.STD   -> writer.u8(0xFD)
 
-			Mnemonic.CLTS -> writer.u16(0x06_0F)
+			Mnemonic.CLTS   -> writer.u16(0x06_0F)
 
 			Mnemonic.PUSHF  -> writer.u16(0x9C_66)
 			Mnemonic.PUSHFQ -> writer.u8(0x9C)

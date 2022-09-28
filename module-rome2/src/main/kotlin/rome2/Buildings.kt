@@ -109,6 +109,11 @@ object Buildings {
 	val ROMAN_PORT_TRADE_2 = building("rome_port_trade_2")
 	val ROMAN_PORT_TRADE_3 = building("rome_port_trade_3")
 	val ROMAN_PORT_TRADE_4 = building("rome_port_trade_4")
+	val ROMAN_TOWN_ARMOUR_2 = building("rome_iron_armour_2")
+	val ROMAN_TOWN_ARMOUR_3 = building("rome_iron_armour_3")
+	val ROMAN_TOWN_WEAPON_2 = building("rome_iron_weapon_2")
+	val ROMAN_TOWN_WEAPON_3 = building("rome_iron_weapon_3")
+	val ROMAN_TOWN_IRON_1 = building("rome_iron_1")
 
 	val MINES = listOf(MINE_1, MINE_2, MINE_3, MINE_4)
 

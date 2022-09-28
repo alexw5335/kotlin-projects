@@ -13,7 +13,8 @@ class Symbol(
 enum class SymbolType {
 
 	LABEL,
-	INT;
+	INT,
+	EXTERN;
 
 }
 

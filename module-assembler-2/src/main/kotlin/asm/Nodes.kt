@@ -17,10 +17,11 @@ val AstNode.printableString: String get() = when(this) {
 	is UnaryNode       -> "${op.symbol}(${node.printableString})"
 	is InstructionNode -> printableString
 	is ImmediateNode   -> value.printableString
-	is DefineNode      -> "db ${components.joinToString { it.printableString }}"
+	is DbNode      -> "db ${components.joinToString { it.printableString }}"
 	is StringNode      -> "\"$value\""
 	is LabelNode       -> "$name:"
 	is ConstNode       -> "val $name = ${value.printableString}"
+	is SRegisterNode   -> value.string
 }
 
 
@@ -100,11 +101,15 @@ class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstN
 
 
 
-class DefineNode(val components: List<AstNode>) : AstNode
+class DbNode(val components: List<AstNode>) : AstNode
 
 
 
 class RegisterNode(val value: Register) : AstNode
+
+
+
+class SRegisterNode(val value: SRegister) : AstNode
 
 
 
