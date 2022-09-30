@@ -34,14 +34,6 @@ class Parser(lexResult: LexResult) {
 
 
 
-	private var baseReg: Register? = null
-
-	private var indexReg: Register? = null
-
-	private var indexScale = 0
-
-
-
 	fun parse(): ParseResult {
 		while(true) {
 			when(val token = tokens[pos++]) {
@@ -78,57 +70,6 @@ class Parser(lexResult: LexResult) {
 
 
 
-	private fun parseMemoryOperand(node: AstNode, regValid: Boolean = true): AstNode? {
-		fun error(): Nothing = error("Invalid memory operand")
-
-		if(node is RegisterNode) {
-			if(!regValid) error()
-
-			if(baseReg != null) {
-				if(indexReg != null) error()
-				indexReg = node.value
-				indexScale = 1
-			} else {
-				baseReg = node.value
-			}
-
-			return null
-		}
-
-		if(node !is BinaryNode) return node
-
-		if(node.op == BinaryOp.MUL) {
-			if(node.left is RegisterNode && node.right is IntNode) {
-				if(indexReg != null) error()
-				indexReg = node.left.value
-				indexScale = node.right.value.toInt()
-				return null
-			} else if(node.left is IntNode && node.right is RegisterNode) {
-				if(indexReg != null) error()
-				indexReg = node.right.value
-				indexScale = node.left.value.toInt()
-				return null
-			}
-		}
-
-		val left = parseMemoryOperand(node.left, regValid && (node.op == BinaryOp.ADD || node.op == BinaryOp.SUB))
-		val right = parseMemoryOperand(node.right, regValid && node.op == BinaryOp.ADD)
-
-		return when {
-			left  == null -> when {
-				right == null -> null
-				node.op == BinaryOp.SUB -> UnaryNode(UnaryOp.NEG, right)
-				node.op == BinaryOp.ADD -> right
-				else                    -> error()
-			}
-			right == null -> left
-			left  == node.left && right == node.right -> node
-			else -> BinaryNode(node.op, left, right)
-		}
-	}
-
-
-
 	/*
 	Keywords
 	 */
@@ -138,8 +79,9 @@ class Parser(lexResult: LexResult) {
 	private fun parseId(id: IdToken) {
 		if(tokens[pos++] != SymbolToken.COLON)
 			error("Expecting colon after identifier")
-		nodes.add(LabelNode(id.value))
-		symbols[id.value] = Symbol(id.value, SymbolType.LABEL)
+		val symbol = Symbol(id.value, SymbolType.LABEL)
+		symbols[symbol.name] = symbol
+		nodes.add(LabelNode(symbol))
 	}
 
 
@@ -229,7 +171,7 @@ class Parser(lexResult: LexResult) {
 
 			if(token !is SymbolToken) {
 				if(!atNewline())
-					error("Separate expressions on the same line with a semicolon")
+					error("Use a semicolon to separate expressions that are on the same line.")
 				break
 			}
 
@@ -261,12 +203,9 @@ class Parser(lexResult: LexResult) {
 
 		if(token == SymbolToken.LEFT_BRACKET) {
 			pos++
-			baseReg = null
-			indexReg = null
-			indexScale = 0
-			val disp = parseMemoryOperand(readExpression())
+			val value = readExpression()
 			if(tokens[pos++] != SymbolToken.RIGHT_BRACKET) error("Expecting ']', found $prevToken")
-			return MemoryNode(width, false, baseReg, indexReg, indexScale, disp)
+			return MemNode(width, value)
 		}
 
 		if(width != null)

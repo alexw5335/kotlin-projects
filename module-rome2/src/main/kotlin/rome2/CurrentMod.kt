@@ -975,10 +975,11 @@ object CurrentMod {
 		for(i in 9.. 14) {
 			val agentXp = agentXp(i + 1)
 			val armyXp = armyXp(i + 1)
-			ExperienceTier("champion", agentXp, 2, i, false, false).addMod()
-			ExperienceTier("dignitary", agentXp, 2, i, false, false).addMod()
-			ExperienceTier("general", agentXp, 2, i, false, false).addMod()
-			ExperienceTier("spy", agentXp, 2, i, false, false).addMod()
+			val agentPoints = if(i == 14) 1 else 2
+			ExperienceTier("champion", agentXp, agentPoints, i, false, false).addMod()
+			ExperienceTier("dignitary", agentXp, agentPoints, i, false, false).addMod()
+			ExperienceTier("general", agentXp, agentPoints, i, false, false).addMod()
+			ExperienceTier("spy", agentXp, agentPoints, i, false, false).addMod()
 			ExperienceTier("", armyXp, 2, i, true, false).addMod()
 			ExperienceTier("", armyXp, 2, i, false, true).addMod()
 		}

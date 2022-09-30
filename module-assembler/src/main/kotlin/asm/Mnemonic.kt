@@ -143,11 +143,53 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	SETS,
 	SETZ,
 
-	PUSH,
-	POP,
+	JA,
+	JAE,
+	JB,
+	JBE,
+	JC,
+	JE,
+	JG,
+	JGE,
+	JL,
+	JLE,
+	JNA,
+	JNAE,
+	JNB,
+	JNBE,
+	JNC,
+	JNE,
+	JNG,
+	JNGE,
+	JNL,
+	JNLE,
+	JNO,
+	JNP,
+	JNS,
+	JNZ,
+	JO,
+	JP,
+	JPE,
+	JPO,
+	JS,
+	JZ,
+
+	JCXZ,
+	JECXZ,
+	JRCXZ,
+
+	LOOP,
+	LOOPE,
+	LOOPNE,
+
+	CALL,
+	JMP,
 
 	MOVSX,
 	MOVSXD,
+
+	PUSH,
+	POP,
 
 	INT1,
 	INT3,
@@ -188,7 +230,12 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	DIV,
 	IDIV,
 
-	MFENCE;
+	MFENCE,
+
+	LEAVE,
+	LEAVEW,
+	ENTER,
+	ENTERW;
 
 	val string = name.lowercase()
 

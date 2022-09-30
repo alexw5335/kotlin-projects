@@ -33,6 +33,53 @@ class Assembler(parseResult: ParseResult) {
 
 
 
+	fun assemble(): ByteArray {
+		for(node in nodes) {
+			when(node) {
+				is InstructionNode -> assemble(node)
+				is DbNode          -> handleDb(node)
+				is LabelNode       -> handleLabel(node)
+				else               -> error()
+			}
+		}
+
+		for(r in relocations) {
+			var disp = r.disp + (r.symbol.data as LabelSymbolData).value
+			if(r.symbol2 != null) disp -= (r.symbol2.data as LabelSymbolData).value
+			when(r.width) {
+				Width.BIT32 -> writer.u32(r.position, disp)
+				else -> error()
+			}
+		}
+
+		return writer.trimmedBytes()
+	}
+
+
+
+	private fun handleDb(dbNode: DbNode) {
+		for(node in dbNode.components) {
+			when(node) {
+				is StringNode -> {
+					for(c in node.value)
+						writer.u8(c.code)
+				}
+				else -> {
+					val value = resolveImm(node)
+					if(value > 0) writer.u8(value.toInt()) else writer.s8(value.toInt())
+				}
+			}
+		}
+	}
+
+
+
+	private fun handleLabel(label: LabelNode) {
+		label.symbol.data = LabelSymbolData(writer.pos)
+	}
+
+
+
 	/*
 	Node traversal
 	 */
@@ -48,111 +95,62 @@ class Assembler(parseResult: ParseResult) {
 
 
 
-	private class LabelDiff(val first: Symbol, val second: Symbol)
+	private fun resolveImm(root: AstNode, isRel: Boolean = false): Long {
+		var label: Symbol? = null
+		var negLabel: Symbol? = null
 
-	private var label: Symbol? = null
+		fun rec(node: AstNode, positivity: Int): Long {
+			if(node is IntNode) 
+				return node.value
+			
+			if(node is UnaryNode)
+				return node.op.calculate(rec(node.node, positivity * node.op.positivity))
+			
+			if(node is BinaryNode) 
+				return node.op.calculate(
+					rec(node.left, positivity * node.op.leftPositivity), 
+					rec(node.right, positivity * node.op.rightPositivity)
+				)
 
-	private var diff: LabelDiff? = null
+			if(node is IdNode) {
+				val symbol = symbols[node.name] ?: error()
 
-	private var stop: Boolean = false
-
-
-
-	private fun resolveImmediate(
-		node: AstNode,
-		isDisp: Boolean   = false,
-		isRel: Boolean    = false,
-		isRipRel: Boolean = false
-	) {
-		label = null
-		diff = null
-		stop = false
-	}
-
-
-	private val nodeStack = LinkedList<AstNode>()
-
-
-
-	private fun resolveImmediateRec(node: AstNode): Long {
-		if(node is LabelNode) {
-			if(label != null) error()
-			label = symbols[node.name]!!
-			stop = true
-			return 0
-		}
-
-		if(stop) return 0
-
-		if(node is IntNode)
-			return node.value
-
-		if(node is UnaryNode)
-			return resolveImmediateRec(node.node)
-
-	}
-
-
-
-	private fun resolveImm2Rec(node: AstNode): Long {
-		when(node) {
-			is IntNode -> return node.value
-
-			is IdNode -> {
-				val symbol = symbols[node.name] ?: error("Unrecognised symbol: ${node.name}")
-				if(symbol.data is IntSymbolData)
+				if(symbol.type == SymbolType.INT)
 					return (symbol.data as IntSymbolData).value
-				else
+
+				if(symbol.type == SymbolType.LABEL) {
+					if(positivity == 0) {
+						error()
+					} else if(positivity < 0) {
+						if(negLabel != null) error()
+						negLabel = symbol
+					} else {
+						if(label != null) error()
+						label = symbol
+					}
+				} else {
 					error()
-			}
-
-			is UnaryNode -> {
-				return node.op.calculate(resolveImm2Rec(node.node))
-			}
-
-			is BinaryNode -> {
-				if(node.left is LabelNode && node.right is LabelNode && node.op == BinaryOp.SUB) {
-					return 0
 				}
 
-				return node.op.calculateInt(resolveImm2Rec(node.left), resolveImm2Rec(node.right))
+				return 0
 			}
-
-			is LabelNode -> error("Cannot directly reference a label in an immediate operand.")
-
-			else -> error()
-		}
-	}
-
-
-
-	private fun resolveImm(node: AstNode): Long = when(node) {
-		is ImmediateNode -> resolveImm(node.value) // Root node only
-		is UnaryNode     -> node.op.calculate(resolveImm(node.node))
-		is BinaryNode    -> node.op.calculateInt(resolveImm(node.left), resolveImm(node.right))
-		is IntNode       -> node.value
-		else             -> error()
-	}
-
-
-
-	private fun hasLabel(root: AstNode): Boolean {
-		val nodeStack = LinkedList<AstNode>()
-		nodeStack.clear()
-		nodeStack.push(root)
-
-		while(nodeStack.isNotEmpty()) {
-			when(val node = nodeStack.pop()) {
-				is LabelNode  -> return true
-				is UnaryNode  -> nodeStack.add(node.node)
-				is BinaryNode -> { nodeStack.add(node.left); nodeStack.add(node.right) }
-				else          -> { }
-			}
+			
+			error()
 		}
 
-		return false
-	}
+		val imm = rec(if(root is ImmediateNode) root.value else root, 0)
 
+		if(!isRel) {
+			if(label != null) {
+				if(negLabel == null) error()
+				//relocations
+			} else if(negLabel != null) {
+				error()
+			}
+		}
+		
+		return rec(if(root is ImmediateNode) root.value else root, 0)
+	}
 
 
 
@@ -164,7 +162,7 @@ class Assembler(parseResult: ParseResult) {
 
 	private val AstNode?.asReg get() = if(this is RegisterNode) value else error()
 
-	private val AstNode?.asMem get() = if(this is MemoryNode) this else error()
+	private val AstNode?.asMem get() = if(this is MemNode) this else error()
 
 	private val Int.isImm8 get() = this in Byte.MIN_VALUE..Byte.MAX_VALUE
 
@@ -253,7 +251,7 @@ class Assembler(parseResult: ParseResult) {
 	private fun encode1M(
 		opcode    : Int,
 		extension : Int,
-		op1       : MemoryNode,
+		op1       : MemNode,
 		widths    : Widths = Widths.ALL
 	) {
 		val width = op1.width ?: error("Unspecified memory operand width")
@@ -275,7 +273,7 @@ class Assembler(parseResult: ParseResult) {
 	) {
 		if(op1 is RegisterNode)
 			encode1R(opcode, extension, op1.value, widths)
-		else if(op1 is MemoryNode)
+		else if(op1 is MemNode)
 			encode1M(opcode, extension, op1, widths)
 		else
 			error()
@@ -299,7 +297,7 @@ class Assembler(parseResult: ParseResult) {
 	/**
 	 * Encodes a register operand and a memory operand of equal width.
 	 */
-	private fun encode2RM(opcode: Int, op1: Register, op2: MemoryNode, widths: Widths = Widths.ALL) {
+	private fun encode2RM(opcode: Int, op1: Register, op2: MemNode, widths: Widths = Widths.ALL) {
 		if(op2.width != null && op2.width != op1.width) error()
 		if(op1.width.is16) writer.u8(0x66)
 		encodeMem(opcode + (op1.width.opcodeOffset and widths.bits), op2, op1.width.rex, op1.rex, op1.value)
@@ -311,7 +309,7 @@ class Assembler(parseResult: ParseResult) {
 		if(node.op2 !is RegisterNode) error()
 		when(node.op1) {
 			is RegisterNode -> encode2RR(opcode, node.op1.value, node.op2.value, widths)
-			is MemoryNode   -> encode2RM(opcode, node.op2.value, node.op1, widths)
+			is MemNode   -> encode2RM(opcode, node.op2.value, node.op1, widths)
 			else            -> error()
 		}
 	}
@@ -322,7 +320,7 @@ class Assembler(parseResult: ParseResult) {
 		if(node.op1 !is RegisterNode) error()
 		when(node.op2) {
 			is RegisterNode -> encode2RR(opcode, node.op2.value, node.op1.value, widths)
-			is MemoryNode   -> encode2RM(opcode, node.op1.value, node.op2, widths)
+			is MemNode   -> encode2RM(opcode, node.op1.value, node.op2, widths)
 			else            -> error()
 		}
 	}
@@ -339,55 +337,164 @@ class Assembler(parseResult: ParseResult) {
 
 
 
+	private val relocations = ArrayList<Relocation>()
+
+	private class Relocation(
+		val symbol: Symbol,
+		val symbol2: Symbol?,
+		val position: Int,
+		val width: Width,
+		val disp: Int
+	)
+
+
+
 	/**
 	 * Helper function for encoding instructions that have a memory operand.
 	 */
-	private fun encodeMem(opcode: Int, mem: MemoryNode, rexW: Int, rexR: Int, reg: Int) {
-		if(mem.base != null && mem.base.width.isNot64) error()
-		if(mem.index != null && mem.index.width.isNot64) error()
+	private fun encodeMem(opcode: Int, memNode: MemNode, rexW: Int, rexR: Int, reg: Int) {
+		var label: Symbol? = null
+		var negLabel: Symbol? = null
+		var baseTemp: Register? = null
+		var indexTemp: Register? = null
+		var scale = 0
 
-		var mod = 0
-		var disp = 0
+		fun rec(node: AstNode, positivity: Int): Long {
+			if(node is RegisterNode) {
+				if(positivity <= 0) error()
 
-		if(mem.disp != null) {
-			if(hasLabel(mem.disp)) error()
-			disp = resolveImm(mem.disp).toInt()
-			if(disp != 0)
-				mod = if(disp.isImm8) 0b01 else 0b10
+				if(baseTemp != null) {
+					if(indexTemp != null)
+						error()
+					indexTemp = node.value
+					scale = 1
+				} else
+					baseTemp = node.value
+
+				return 0
+			}
+
+			if(node is UnaryNode)
+				return node.op.calculate(rec(node.node, positivity * node.op.positivity))
+
+			if(node is BinaryNode) {
+				if(node.op == BinaryOp.MUL) {
+					if(node.left is RegisterNode && node.right is IntNode) {
+						if(indexTemp != null || positivity <= 0) error()
+						indexTemp = node.left.value
+						scale = node.right.value.toInt()
+						return 0
+					} else if(node.left is IntNode && node.right is RegisterNode) {
+						if(indexTemp != null || positivity <= 0) error()
+						indexTemp = node.right.value
+						scale = node.left.value.toInt()
+						return 0
+					}
+				}
+
+				return node.op.calculate(
+					rec(node.left, positivity * node.op.leftPositivity),
+					rec(node.right, positivity * node.op.rightPositivity)
+				)
+			}
+
+			if(node is IntNode)
+				return node.value
+
+			if(node is IdNode) {
+				val symbol = symbols[node.name] ?: error()
+
+				if(symbol.type == SymbolType.INT)
+					return (symbol.data as IntSymbolData).value
+
+				if(symbol.type == SymbolType.LABEL) {
+					if(positivity == 0) {
+						error()
+					} else if(positivity < 0) {
+						if(negLabel != null) error()
+						negLabel = symbol
+					} else {
+						if(label != null) error()
+						label = symbol
+					}
+				} else {
+					error()
+				}
+
+				return 0
+			}
+
+			error()
 		}
 
-		if(mem.rel) {
+		val disp = rec(memNode.value, 1).toInt()
+
+		val base = baseTemp
+		val index = indexTemp
+
+		if(base != null && base.width.isNot64) error()
+		if(index != null && index.width.isNot64) error()
+
+		// RIP-relative disp32
+		if(label != null && negLabel == null) {
+			if(base != null || index != null) error()
 			encodeRex(rexW, rexR, 0, 0)
 			encodeOpcode(opcode)
 			encodeModRM(0b00, reg, 0b101)
 			writer.s32(disp)
-		} else if(mem.index != null) {
-			if(mem.scale.countOneBits() != 1) error()
-			val scale = mem.scale.countTrailingZeroBits()
+			relocations.add(Relocation(label!!, null, writer.pos - 4, Width.BIT32, disp - writer.pos))
+			return
+		}
 
-			if(mem.base != null) {
-				encodeRex(rexW, rexR, mem.index.rex, mem.base.rex)
+		val mod = when {
+			label != null -> 2
+			disp == 0     -> 0
+			disp.isImm8   -> 1
+			else          -> 2
+		}
+
+		fun checkRelocation() {
+			if(label != null)
+				relocations.add(Relocation(label!!, negLabel, writer.pos, Width.BIT32, disp))
+		}
+
+		if(index != null) { // SIB
+			if(scale.countOneBits() != 1) error()
+			val finalScale = scale.countTrailingZeroBits()
+
+			if(base != null) {
+				encodeRex(rexW, rexR, index.rex, base.rex)
 				encodeOpcode(opcode)
 				encodeModRM(mod, reg, 0b100)
-				encodeSIB(scale, mem.index.value, mem.base.value)
+				encodeSIB(finalScale, index.value, base.value)
+				checkRelocation()
 				if(mod == 0b01) writer.s8(disp) else if(mod == 0b10) writer.s32(disp)
 			} else {
-				encodeRex(rexW, rexR, mem.index.rex, 0)
+				encodeRex(rexW, rexR, index.rex, 0)
 				encodeOpcode(opcode)
 				encodeModRM(0, reg, 0b100)
-				encodeSIB(scale, mem.index.value, 0b101)
+				encodeSIB(finalScale, index.value, 0b101)
+				checkRelocation()
 				writer.s32(disp)
 			}
-		} else if(mem.base != null) { // indirect in RM
-			encodeRex(rexW, rexR, 0, mem.base.rex)
+		} else if(base != null) { // Indirect
+			encodeRex(rexW, rexR, 0, base.rex)
 			encodeOpcode(opcode)
-			encodeModRM(mod, reg, mem.base.value)
+			encodeModRM(mod, reg, base.value)
+			checkRelocation()
 			if(mod == 0b01) writer.s8(disp) else if(mod == 0b10) writer.s32(disp)
-		} else if(mod != 0) { // absolute 32-bit
+		} else if(label != null && negLabel == null) { // RIP-relative disp32
+			encodeRex(rexW, rexR, 0, 0)
+			encodeOpcode(opcode)
+			encodeModRM(0b00, reg, 0b101)
+			checkRelocation()
+			writer.s32(disp)
+		} else if(mod != 0) { // Absolute 32-bit
 			encodeRex(rexW, rexR, 0, 0)
 			encodeOpcode(opcode)
 			encodeModRM(0b00, reg, 0b100)
 			encodeSIB(0b00, 0b100, 0b101)
+			checkRelocation()
 			writer.s32(disp)
 		} else { // Empty memory operand
 			error()
@@ -399,37 +506,6 @@ class Assembler(parseResult: ParseResult) {
 	/*
 	Assembly
 	 */
-
-
-
-	fun assemble(): ByteArray {
-		for(node in nodes) {
-			when(node) {
-				is InstructionNode -> assemble(node)
-				is DbNode -> handleDb(node)
-				else -> error()
-			}
-		}
-
-		return writer.trimmedBytes()
-	}
-
-
-
-	private fun handleDb(dbNode: DbNode) {
-		for(node in dbNode.components) {
-			when(node) {
-				is StringNode -> {
-					for(c in node.value)
-						writer.u8(c.code)
-				}
-				else -> {
-					val value = resolveImm(node)
-					if(value > 0) writer.u8(value.toInt()) else writer.s8(value.toInt())
-				}
-			}
-		}
-	}
 
 
 
@@ -522,6 +598,9 @@ class Assembler(parseResult: ParseResult) {
 
 			Mnemonic.MFENCE -> { writer.u16(0xAE_0F); writer.u8(0xF0) }
 
+			Mnemonic.LEAVE -> { writer.u8(0xC9) }
+			Mnemonic.LEAVEW -> { writer.u16(0xC9_66) }
+
 			else -> error()
 		}
 	}
@@ -578,6 +657,9 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.IMUL -> encode1RM(0xF6, 5, node.op1!!)
 			Mnemonic.DIV  -> encode1RM(0xF6, 6, node.op1!!)
 			Mnemonic.IDIV -> encode1RM(0xF6, 7, node.op1!!)
+
+			Mnemonic.ENTER -> assembleENTER(node)
+			Mnemonic.ENTERW -> assembleENTER(node)
 
 			else -> error()
 		}
@@ -651,6 +733,9 @@ class Assembler(parseResult: ParseResult) {
 
 			Mnemonic.IMUL -> encode2RRM(0xAF_0F, node, Widths.NO_8)
 
+			Mnemonic.ENTER -> assembleENTER(node)
+			Mnemonic.ENTERW -> assembleENTER(node)
+
 			else -> error()
 		}
 	}
@@ -677,17 +762,30 @@ class Assembler(parseResult: ParseResult) {
 	/*
 	MOVSXD
 	MOVSX
-	ENTER?
-	LEAVE?
 	MOV SREG and MOFFS?
 	PUSH/POP SREG?
 	FPU
 	LOOPcc
 	Jcc
-	JECXZ
 	CALL
 	JMP
 	 */
+
+
+
+	private fun assembleENTER(node: InstructionNode) {
+		if(node.mnemonic == Mnemonic.ENTERW)
+			writer.u8(0x66)
+
+		writer.u8(0xC8)
+
+		writer.s16(resolveImm(node.op1!!).toInt())
+
+		if(node.op2 != null)
+			writer.s8(resolveImm(node.op2).toInt())
+		else
+			writer.s8(0)
+	}
 
 
 
@@ -738,7 +836,7 @@ class Assembler(parseResult: ParseResult) {
 
 			if(node.op2 is RegisterNode) {
 				encode2RR(0x88, op1, node.op2.value)
-			} else if(node.op2 is MemoryNode) {
+			} else if(node.op2 is MemNode) {
 				encode2RM(0x8A, op1, node.op2)
 			} else if(node.op2 is ImmediateNode) {
 				val imm = resolveImm(node.op2)
@@ -753,7 +851,7 @@ class Assembler(parseResult: ParseResult) {
 			} else {
 				error()
 			}
-		} else if(node.op1 is MemoryNode) {
+		} else if(node.op1 is MemNode) {
 			if(node.op2 is RegisterNode) {
 				encode2RM(0xC6, node.op2.value, node.op1)
 			} else if(node.op2 is ImmediateNode) {
@@ -776,7 +874,7 @@ class Assembler(parseResult: ParseResult) {
 				if(op1.isA) encode1OpReg(0x90, op2, Widths.NO_8)
 				else if(op2.isA) encode1OpReg(0x90, op1, Widths.NO_8)
 				else encode2RR(0x86, op1, op2)
-			} else if(node.op2 is MemoryNode) {
+			} else if(node.op2 is MemNode) {
 				encode2RM(0x86, op1, node.op2)
 			} else {
 				error()
@@ -809,7 +907,7 @@ class Assembler(parseResult: ParseResult) {
 			} else {
 				error()
 			}
-		} else if(node.op1 is MemoryNode) {
+		} else if(node.op1 is MemNode) {
 			if(node.op2 is RegisterNode) {
 				encode2RM(0x84, node.op2.value, node.op1)
 			} else if(node.op2 is ImmediateNode) {
@@ -888,7 +986,7 @@ class Assembler(parseResult: ParseResult) {
 	private fun assemblePUSH(node: InstructionNode) {
 		if(node.op1 is RegisterNode) {
 			encode1OpReg(0x50, node.op1.value, Widths.NO_8_32)
-		} else if(node.op1 is MemoryNode) {
+		} else if(node.op1 is MemNode) {
 			encode1M(0xFF, 6, node.op1, Widths.NO_8_32)
 		} else if(node.op1 is ImmediateNode) {
 			val imm = resolveImm(node.op1).toInt()
@@ -916,7 +1014,7 @@ class Assembler(parseResult: ParseResult) {
 	private fun assemblePOP(node: InstructionNode) {
 		when(val op1 = node.op1) {
 			is RegisterNode  -> encode1OpReg(0x58, op1.value, Widths.NO_8_32)
-			is MemoryNode    -> encode1M(0x8F, 0, op1, Widths.NO_8_32)
+			is MemNode    -> encode1M(0x8F, 0, op1, Widths.NO_8_32)
 			else             -> error()
 		}
 	}
@@ -954,7 +1052,7 @@ class Assembler(parseResult: ParseResult) {
 
 			if(node.op2 is RegisterNode) {
 				encode2RR(startOpcode, op1, node.op2.value)
-			} else if(node.op2 is MemoryNode) {
+			} else if(node.op2 is MemNode) {
 				encode2RM(startOpcode + 2, op1, node.op2)
 			} else if(node.op2 is ImmediateNode) {
 				val imm = resolveImm(node.op2.value).toInt()
@@ -969,7 +1067,7 @@ class Assembler(parseResult: ParseResult) {
 					encodeImm(op1.width, imm)
 				}
 			}
-		} else if(node.op1 is MemoryNode) {
+		} else if(node.op1 is MemNode) {
 			if(node.op2 is RegisterNode) {
 				encode2RM(startOpcode, node.op2.value, node.op1)
 			} else if(node.op2 is ImmediateNode) {

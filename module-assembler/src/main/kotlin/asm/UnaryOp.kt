@@ -18,4 +18,10 @@ enum class UnaryOp(val symbol: String) {
 		NOT -> value.inv()
 	}
 
+	val positivity get() = when(this) {
+		POS  -> 1
+		NEG  -> -1
+		else -> 0
+	}
+
 }

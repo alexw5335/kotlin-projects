@@ -13,13 +13,13 @@ val AstNode.printableString: String get() = when(this) {
 	is IdNode          -> name
 	is IntNode         -> value.toString()
 	is RegisterNode    -> value.string
-	is MemoryNode      -> printableString
+	is MemNode      -> printableString
 	is UnaryNode       -> "${op.symbol}(${node.printableString})"
 	is InstructionNode -> printableString
 	is ImmediateNode   -> value.printableString
 	is DbNode      -> "db ${components.joinToString { it.printableString }}"
 	is StringNode      -> "\"$value\""
-	is LabelNode       -> "$name:"
+	is LabelNode       -> "${symbol.name}:"
 	is ConstNode       -> "val $name = ${value.printableString}"
 	is SRegisterNode   -> value.string
 }
@@ -39,12 +39,12 @@ val BinaryNode.printableString get() = buildString {
 
 
 
-val MemoryNode.printableString get() = buildString {
+val MemNode.printableString get() = buildString {
 	if(width != null) {
 		append(width.string)
 		append(' ')
 	}
-	append("[$base + $index * $scale + ${disp?.printableString}]")
+	append(value.printableString)
 }
 
 
@@ -77,7 +77,7 @@ sealed interface AstNode
 
 
 
-class LabelNode(val name: String) : AstNode
+class LabelNode(val symbol: Symbol) : AstNode
 
 
 
@@ -121,14 +121,7 @@ class ConstNode(val name: String, val value: AstNode) : AstNode
 
 
 
-class MemoryNode(
-	val width  : Width?,
-	val rel    : Boolean,
-	val base   : Register?,
-	val index  : Register?,
-	val scale  : Int,
-	val disp   : AstNode?
-) : AstNode
+class MemNode(val width: Width?, val value: AstNode) : AstNode
 
 
 
