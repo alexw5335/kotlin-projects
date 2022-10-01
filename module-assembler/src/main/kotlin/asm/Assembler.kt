@@ -404,7 +404,7 @@ class Assembler(parseResult: ParseResult) {
 		if(node.op2 !is RegisterNode) error()
 		when(node.op1) {
 			is RegisterNode -> encode2RR(opcode, node.op1.value, node.op2.value, widths)
-			is MemNode   -> encode2RM(opcode, node.op2.value, node.op1, widths)
+			is MemNode      -> encode2RM(opcode, node.op2.value, node.op1, widths)
 			else            -> error()
 		}
 	}
@@ -415,7 +415,7 @@ class Assembler(parseResult: ParseResult) {
 		if(node.op1 !is RegisterNode) error()
 		when(node.op2) {
 			is RegisterNode -> encode2RR(opcode, node.op2.value, node.op1.value, widths)
-			is MemNode   -> encode2RM(opcode, node.op1.value, node.op2, widths)
+			is MemNode      -> encode2RM(opcode, node.op1.value, node.op2, widths)
 			else            -> error()
 		}
 	}
@@ -696,6 +696,8 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.LEAVE -> { writer.u8(0xC9) }
 			Mnemonic.LEAVEW -> { writer.u16(0xC9_66) }
 
+			Mnemonic.RSM -> writer.u16(0xAA_0F)
+
 			else -> error()
 		}
 	}
@@ -757,25 +759,44 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.ENTERW -> assembleENTER(node)
 
 			Mnemonic.JMP -> assembleJMP(node)
+			Mnemonic.CALL -> assembleCALL(node)
+
+			Mnemonic.JA   -> assembleJCC(node, 0x77, 0x87_0F)
+			Mnemonic.JAE  -> assembleJCC(node, 0x73, 0x83_0F)
+			Mnemonic.JB   -> assembleJCC(node, 0x72, 0x82_0F)
+			Mnemonic.JBE  -> assembleJCC(node, 0x76, 0x86_0F)
+			Mnemonic.JC   -> assembleJCC(node, 0x72, 0x82_0F)
+			Mnemonic.JE   -> assembleJCC(node, 0x74, 0x84_0F)
+			Mnemonic.JG   -> assembleJCC(node, 0x7F, 0x8F_0F)
+			Mnemonic.JGE  -> assembleJCC(node, 0x7D, 0x8D_0F)
+			Mnemonic.JL   -> assembleJCC(node, 0x7C, 0x8C_0F)
+			Mnemonic.JLE  -> assembleJCC(node, 0x7E, 0x8E_0F)
+			Mnemonic.JNA  -> assembleJCC(node, 0x76, 0x86_0F)
+			Mnemonic.JNAE -> assembleJCC(node, 0x72, 0x82_0F)
+			Mnemonic.JNB  -> assembleJCC(node, 0x73, 0x83_0F)
+			Mnemonic.JNBE -> assembleJCC(node, 0x77, 0x87_0F)
+			Mnemonic.JNC  -> assembleJCC(node, 0x73, 0x83_0F)
+			Mnemonic.JNE  -> assembleJCC(node, 0x75, 0x85_0F)
+			Mnemonic.JNG  -> assembleJCC(node, 0x7E, 0x8E_0F)
+			Mnemonic.JNGE -> assembleJCC(node, 0x7C, 0x8C_0F)
+			Mnemonic.JNL  -> assembleJCC(node, 0x7D, 0x8D_0F)
+			Mnemonic.JNLE -> assembleJCC(node, 0x7F, 0x8F_0F)
+			Mnemonic.JNO  -> assembleJCC(node, 0x71, 0x81_0F)
+			Mnemonic.JNP  -> assembleJCC(node, 0x7B, 0x8B_0F)
+			Mnemonic.JNS  -> assembleJCC(node, 0x79, 0x89_0F)
+			Mnemonic.JNZ  -> assembleJCC(node, 0x75, 0x85_0F)
+			Mnemonic.JO   -> assembleJCC(node, 0x70, 0x80_0F)
+			Mnemonic.JP   -> assembleJCC(node, 0x7A, 0x8A_0F)
+			Mnemonic.JPE  -> assembleJCC(node, 0x7A, 0x8A_0F)
+			Mnemonic.JPO  -> assembleJCC(node, 0x7B, 0x8B_0F)
+			Mnemonic.JS   -> assembleJCC(node, 0x78, 0x88_0F)
+			Mnemonic.JZ   -> assembleJCC(node, 0x74, 0x84_0F)
+
+			Mnemonic.LOOP   -> assembleLOOPCC(node, 0xE2)
+			Mnemonic.LOOPE  -> assembleLOOPCC(node, 0xE1)
+			Mnemonic.LOOPNE -> assembleLOOPCC(node, 0xE0)
 
 			else -> error()
-		}
-	}
-
-
-
-	private fun assembleJMP(node: InstructionNode) {
-		if(node.op1 is ImmediateNode) {
-			val rel = resolveRel(node.op1)
-			if(!hasLabel && rel.isImm8) {
-				writer.u8(0xEB)
-				writeRel(rel, Width.BIT8)
-			} else {
-				writer.u8(0xE9)
-				writeRel(rel, Width.BIT32)
-			}
-		} else {
-			encode1RM(0xFF, 4, node, Widths.ONLY_64)
 		}
 	}
 
@@ -850,6 +871,16 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.ENTER -> assembleENTER(node)
 			Mnemonic.ENTERW -> assembleENTER(node)
 
+			Mnemonic.BT  -> assembleBT(node, 0xA3_0F, 4)
+			Mnemonic.BTS -> assembleBT(node, 0xAB_0F, 5)
+			Mnemonic.BTR -> assembleBT(node, 0xB3_0F, 6)
+			Mnemonic.BTC -> assembleBT(node, 0xBB_0F, 7)
+
+			Mnemonic.BSF -> encode2RRM(0xBC_0F, node, Widths.NO_8)
+			Mnemonic.BSR -> encode2RRM(0xBD_0F, node, Widths.NO_8)
+
+			Mnemonic.MOVNTI -> encode2RM(0xC3_0F, node.op2.asReg, node.op1.asMem, Widths.NO_8_16)
+
 			else -> error()
 		}
 	}
@@ -877,13 +908,99 @@ class Assembler(parseResult: ParseResult) {
 	MOVSXD
 	MOVSX
 	MOV SREG and MOFFS?
-	PUSH/POP SREG?
 	FPU
-	LOOPcc
-	Jcc
-	CALL
-	JMP
 	 */
+
+
+
+	/**
+	 *     0F A3    BT   RM R
+	 *     0F BA/4  BT   RM IMM8
+	 *     0F BB    BTC  RM R
+	 *     0F BA/7  BTC  RM IMM8
+	 *     0F B3    BTR  RM R
+	 *     0F BA/6  BTR  RM IMM8
+	 *     0F AB    BTS  RM R
+	 *     0F BA/5  BTS  RM IMM8
+	 */
+	private fun assembleBT(node: InstructionNode, opcode: Int, extension: Int) {
+		if(node.op2 is RegisterNode) {
+			encode2RMR(opcode, node, Widths.NO_8)
+		} else if(node.op2 is ImmediateNode) {
+			encode1RM(0xBA_0F, extension, node.op1!!, Widths.NO_8)
+			writeImm8(node.op2)
+		} else {
+			error()
+		}
+	}
+
+
+
+	private fun assembleLOOPCC(node: InstructionNode, opcode: Int) {
+		if(node.op1 !is ImmediateNode) error()
+		writer.u8(opcode)
+		writeRel(resolveRel(node.op1), Width.BIT8)
+	}
+
+
+
+	private fun assembleJCC(node: InstructionNode, rel8Opcode: Int, rel32Opcode: Int) {
+		if(node.op1 !is ImmediateNode) error()
+		
+		val rel = resolveRel(node.op1)
+
+		if(!hasLabel && (node.modifier == Modifier.SHORT || rel.isImm8)) {
+			writer.u8(rel8Opcode)
+			writeRel(rel, Width.BIT8)
+		} else {
+			writer.u16(rel32Opcode)
+			writeRel(rel, Width.BIT32)
+		}
+	}
+	
+	
+	
+	/**
+	 *     E8    CALL  REL32
+	 *     FF/2  CALL  RM64
+	 *     FF/3  CALL  M16:16/32/64  (FAR)
+	 */
+	private fun assembleCALL(node: InstructionNode) {
+		if(node.op1 is ImmediateNode) {
+			val rel = resolveRel(node.op1)
+			writer.u8(0xE8)
+			writeRel(rel, Width.BIT32)
+		} else if(node.modifier == Modifier.FAR) {
+			encode1M(0xFF, 3, node.op1.asMem, Widths.NO_8)
+		} else {
+			encode1RM(0xFF, 2, node, Widths.ONLY_64)
+		}
+	}
+
+
+
+	/**
+	 *     EB    JMP  REL8
+	 *     E9    JMP  REL32
+	 *     FF/4  JMP  RM64
+	 *     FF/5  JMP  M16:16/32/64  (FAR)
+	 */
+	private fun assembleJMP(node: InstructionNode) {
+		if(node.op1 is ImmediateNode) {
+			val rel = resolveRel(node.op1)
+			if(!hasLabel && (node.modifier == Modifier.SHORT || rel.isImm8)) {
+				writer.u8(0xEB)
+				writeRel(rel, Width.BIT8)
+			} else {
+				writer.u8(0xE9)
+				writeRel(rel, Width.BIT32)
+			}
+		} else if(node.modifier == Modifier.FAR) {
+			encode1M(0xFF, 5, node.op1.asMem, Widths.NO_8)
+		} else {
+			encode1RM(0xFF, 4, node, Widths.ONLY_64)
+		}
+	}
 
 
 
@@ -1114,6 +1231,14 @@ class Assembler(parseResult: ParseResult) {
 				writer.u8(0x68)
 				writer.s32(imm)
 			}
+		} else if(node.op1 is SRegisterNode) {
+			when(node.op1.value) {
+				SRegister.FS -> writer.u16(0xA0_0F)
+				SRegister.GS -> writer.u16(0xA8_0F)
+				else         -> error()
+			}
+		} else {
+			error()
 		}
 	}
 
@@ -1126,10 +1251,19 @@ class Assembler(parseResult: ParseResult) {
 	 * 0F A9  POP  GS  (default 64-bit, 66 for 16-bit)
 	 */
 	private fun assemblePOP(node: InstructionNode) {
-		when(val op1 = node.op1) {
-			is RegisterNode  -> encode1OpReg(0x58, op1.value, Widths.NO_8_32)
-			is MemNode       -> encode1M(0x8F, 0, op1, Widths.NO_8_32)
-			else             -> error()
+		if(node.op1 is RegisterNode) {
+			encode1OpReg(0x58, node.op1.value, Widths.NO_8_32)
+		} else if(node.op1 is MemNode) {
+			encode1M(0x8F, 0, node.op1, Widths.NO_8_32)
+		} else if(node.op1 is SRegisterNode) {
+			if(node.modifier == Modifier.O16) writer.u8(0x66)
+			when(node.op1.value) {
+				SRegister.FS -> writer.u16(0xA1_0F)
+				SRegister.GS -> writer.u16(0xA9_0F)
+				else         -> error()
+			}
+		} else {
+			error()
 		}
 	}
 
@@ -1217,12 +1351,14 @@ class Assembler(parseResult: ParseResult) {
 
 
 
-
 	/**
 	 * MOVS, CMPS, LODS, SCAS, STOS
 	 */
 	private fun assembleString(node: InstructionNode, opcode: Int) {
-		if(node.prefix != 0) writer.u8(node.prefix)
+		if(node.modifier == Modifier.REP)
+			writer.u8(0xF3)
+		else if(node.modifier == Modifier.REPNE)
+			writer.u8(0xF2)
 		if(node.mnemonic.stringWidth!!.is16) writer.u8(0x66)
 		else if(node.mnemonic.stringWidth.is64) writer.u8(0x48)
 		writer.u8(opcode)

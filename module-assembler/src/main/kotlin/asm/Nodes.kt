@@ -126,7 +126,7 @@ class MemNode(val width: Width?, val value: AstNode) : AstNode
 
 
 class InstructionNode(
-	val prefix       : Int,
+	val modifier     : Modifier?,
 	val mnemonic     : Mnemonic,
 	val op1          : AstNode?,
 	val op2          : AstNode?,

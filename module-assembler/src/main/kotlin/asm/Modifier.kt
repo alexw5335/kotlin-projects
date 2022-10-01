@@ -4,9 +4,9 @@ enum class Modifier(vararg val strings: String) {
 
 	REP("rep", "repe", "repz", "REP", "REPE", "REPZ"),
 	REPNE("repne", "repnz", "REPNE", "REPNZ"),
-	REL8("rel8", "REL8"),
-	REL32("rel32", "REL32"),
-	FAR("far", "FAR");
+	SHORT("short", "SHORT"),
+	FAR("far", "FAR"),
+	O16("o16", "O16");
 
 	companion object {
 

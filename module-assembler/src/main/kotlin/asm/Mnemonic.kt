@@ -235,7 +235,19 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	LEAVE,
 	LEAVEW,
 	ENTER,
-	ENTERW;
+	ENTERW,
+
+	BT,
+	BTC,
+	BTR,
+	BTS,
+
+	RSM,
+
+	BSF,
+	BSR,
+
+	MOVNTI;
 
 	val string = name.lowercase()
 

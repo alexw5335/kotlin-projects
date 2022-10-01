@@ -11,25 +11,18 @@ import java.nio.file.Paths
 
 
 private const val input = """
-	label1:
-		add rax, rax
-	label2:
-		jmp label1
+	MOVNTI [RAX], EAX
+	MOVNTI [RAX], RAX
 """
 
 private const val input2 = """
-	label1:
-		add rax, rax
-	label2:
-		jmp dword label1
+	
 """
 
 
+
 fun main() {
-	assembleAndCompare(input, input2)
-	//assembleAndCompare(input)
-	//assembleAndCompare("leave")
-	//assembleAndCompare(input, input2)
+	assembleAndCompare(input)
 }
 
 
