@@ -249,6 +249,7 @@ val navalUnits = Tables.mapNamed(::NavalUnit)
 val unitPermissions = Tables.map(::UnitPermission).associateFlatMap { it.unit }
 val unitExclusives = Tables.map(::UnitExclusive)
 val techBuildings = Tables.map(::TechBuilding).associateFlatMap { it.building }
+val skillLinks = Tables.map(::SkillLink).associateBy { it.child }
 
 
 

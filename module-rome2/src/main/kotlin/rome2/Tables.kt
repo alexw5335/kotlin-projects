@@ -62,7 +62,8 @@ object Tables {
 		NavalUnit::class          to get("naval_units"),
 		UnitPermission::class     to get("units_to_groupings_military_permissions"),
 		UnitExclusive::class      to get("units_to_exclusive_faction_permissions"),
-		TechBuilding::class       to get("building_level_required_technology_junctions")
+		TechBuilding::class       to get("building_level_required_technology_junctions"),
+		SkillLink::class          to get("character_skill_node_links")
 	)
 
 }

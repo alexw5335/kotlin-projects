@@ -60,9 +60,10 @@ object CurrentMod {
 			b.agentFundingAllocationPercentage = 0
 			b.agentTurnOfInactivityUntilCap = 0
 			b.agentPercentageOfPoolToSaveOnFail = 0
-			b.armyFundingCap = 400000
-			b.constructionFundingCap = 30000
-			b.diplomacyFundingCap = 10000
+			b.armyFundingCap = 1_000_000
+			b.constructionFundingCap = 1_000_000
+			b.diplomacyFundingCap = 1_000_000
+			b.navyFundingCap = 1_000_000
 		}
 
 		effectBundle("govt_type_republic").effect("rom_faction_political_party_loyalty", 20)
@@ -152,16 +153,13 @@ object CurrentMod {
 			basicMelee to 4,
 			mediumMelee to 4,
 			strongRanged to 4,
-			basicCavalry to 2
 		)
 		val garrison4 = arrayOf(
 			basicMelee to 4,
-			mediumMelee to 3,
-			eliteMelee to 1,
+			mediumMelee to 4,
+			eliteMelee to 2,
 			strongRanged to 2,
 			eliteRanged to 2,
-			eliteCavalry to 2,
-			artillery to 1,
 		)
 
 		Buildings.ROMAN_CITY_1.setGarrison(*garrison1)
@@ -209,7 +207,7 @@ object CurrentMod {
 		)
 		Buildings.ROMAN_BARRACKS_MAIN_4.setGarrison(
 			mediumMelee to 3,
-			eliteMelee to 2
+			eliteMelee to 3
 		)
 		Buildings.ROMAN_BARRACKS_AUX_2.setGarrison(
 			basicMelee to 2,
@@ -223,8 +221,7 @@ object CurrentMod {
 		Buildings.ROMAN_BARRACKS_AUX_4.setGarrison(
 			mediumMelee to 2,
 			eliteRanged to 2,
-			eliteCavalry to 2,
-			artillery to 1
+			eliteCavalry to 2
 		)
 
 		for(temple in Buildings.ROMAN_TEMPLES) {
@@ -595,14 +592,7 @@ object CurrentMod {
 
 	private fun modBuildings() {
 		for(b in Buildings.ALL) b.mod {
-			b.turns = when(b.adjustedLevel) {
-				1 -> 1
-				2 -> 2
-				3 -> 3
-				4 -> 4
-				5 -> 5
-				else -> error(".")
-			}
+			b.turns = 1
 		}
 
 		Buildings.ROMAN_CIRCUS_MAXIMUS.mod {
@@ -717,18 +707,18 @@ object CurrentMod {
 
 
 		Buildings.ROMAN_TEMPLE_MINERVA_2.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 8)
-			effect(BuildingEffectType.GDP_MOD_CULTURE, 8)
+			effect(BuildingEffectType.RESEARCH_RATE, 6)
+			effect(BuildingEffectType.GDP_MOD_CULTURE, 10)
 			effect(BuildingEffectType.LATIN_INFLUENCE, 2)
 		}
 		Buildings.ROMAN_TEMPLE_MINERVA_3.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 16)
-			effect(BuildingEffectType.GDP_MOD_CULTURE, 16)
+			effect(BuildingEffectType.RESEARCH_RATE, 12)
+			effect(BuildingEffectType.GDP_MOD_CULTURE, 20)
 			effect(BuildingEffectType.LATIN_INFLUENCE, 3)
 		}
 		Buildings.ROMAN_TEMPLE_MINERVA_4.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 32)
-			effect(BuildingEffectType.GDP_MOD_CULTURE, 32)
+			effect(BuildingEffectType.RESEARCH_RATE, 24)
+			effect(BuildingEffectType.GDP_MOD_CULTURE, 40)
 			effect(BuildingEffectType.LATIN_INFLUENCE, 4)
 		}
 
@@ -748,15 +738,15 @@ object CurrentMod {
 
 
 		Buildings.ROMAN_LIBRARY_2.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 10) // 6
+			effect(BuildingEffectType.RESEARCH_RATE, 8) // 6
 			effect(BuildingEffectType.GDP_CULTURE_LEARNING, 100) // 70
 		}
 		Buildings.ROMAN_LIBRARY_3.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 20) // 12
+			effect(BuildingEffectType.RESEARCH_RATE, 16) // 12
 			effect(BuildingEffectType.GDP_CULTURE_LEARNING, 150) // 100
 		}
 		Buildings.ROMAN_LIBRARY_4.apply {
-			effect(BuildingEffectType.RESEARCH_RATE, 40) // 24
+			effect(BuildingEffectType.RESEARCH_RATE, 32) // 24
 			effect(BuildingEffectType.GDP_CULTURE_LEARNING, 200) // 150
 		}
 
@@ -866,7 +856,7 @@ object CurrentMod {
 		}
 		Buildings.ROMAN_BUFF_ATTACK_3.apply {
 			effect(BuildingEffectType.FOOD_CONSUMPTION, 8)
-			effect(BuildingEffectType.ATTACK_BUFF, 20)
+			effect(BuildingEffectType.ATTACK_BUFF, 15)
 			effect(BuildingEffectType.ARMY_RECRUITMENT_SLOT, 2)
 		}
 		Buildings.ROMAN_BUFF_DEFENCE_2.apply {
@@ -876,7 +866,7 @@ object CurrentMod {
 		}
 		Buildings.ROMAN_BUFF_DEFENCE_3.apply {
 			effect(BuildingEffectType.FOOD_CONSUMPTION, 8)
-			effect(BuildingEffectType.DEFENCE_BUFF, 20)
+			effect(BuildingEffectType.DEFENCE_BUFF, 15)
 			effect(BuildingEffectType.ARMY_RECRUITMENT_SLOT, 2)
 		}
 		Buildings.ROMAN_BUFF_HORSE_2.apply {
@@ -886,7 +876,7 @@ object CurrentMod {
 		}
 		Buildings.ROMAN_BUFF_HORSE_3.apply {
 			effect(BuildingEffectType.FOOD_CONSUMPTION, 8)
-			effect(BuildingEffectType.HORSE_BUFF, 20)
+			effect(BuildingEffectType.HORSE_BUFF, 15)
 			effect(BuildingEffectType.ARMY_RECRUITMENT_SLOT, 2)
 		}
 		Buildings.ROMAN_BUFF_RANGE_2.apply {
@@ -896,7 +886,7 @@ object CurrentMod {
 		}
 		Buildings.ROMAN_BUFF_RANGE_3.apply {
 			effect(BuildingEffectType.FOOD_CONSUMPTION, 8)
-			effect(BuildingEffectType.RANGE_BUFF, 20)
+			effect(BuildingEffectType.RANGE_BUFF, 15)
 			effect(BuildingEffectType.ARMY_RECRUITMENT_SLOT, 2)
 		}
 	}
@@ -907,9 +897,11 @@ object CurrentMod {
 		for(t in techs.values)
 			if(!t.name.startsWith("rom_roman"))
 				t.mod { cost = 0 }
+			else
+				t.mod { cost /= 2 }
 
 		Techs.PROFESSIONAL_SOLDIERY.mod { cost *= 2 }
-		Techs.CULTISM.mod { cost /= 2 }
+		Techs.CULTISM.mod { cost = Techs.NATURAL_PHILOSOPHY.cost }
 
 		Techs.TRAINING_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
 		Techs.REMUNERATION_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
@@ -956,8 +948,8 @@ object CurrentMod {
 
 
 	private fun modSkills() {
-		fun agentXp(i: Int) = i * 8 + 4 * i * (i + 1) / 2
-		fun armyXp(i: Int) = i * 12 + 4 * i * (i + 1) / 2
+		fun agentXp(i: Int) = i * 6 + 4 * i * (i + 1) / 2
+		fun armyXp(i: Int) = i * 10 + 4 * i * (i + 1) / 2
 
 		for(tier in experienceTiers) tier.mod {
 			skillPoints = 2

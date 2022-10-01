@@ -759,6 +759,13 @@ class TechBuilding(override val entry: PackEntry) : EntryType {
 
 
 
+class SkillLink(override val entry: PackEntry) : EntryType {
+	var child by string(0)
+	var parent by string(2)
+}
+
+
+
 /*
 EffectBundle
  */

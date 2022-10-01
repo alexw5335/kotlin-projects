@@ -22,9 +22,13 @@ class Assembler(parseResult: ParseResult) {
 		NO_8_32(0b1010),
 		NO_8_64(0b0110),
 		NO_8_16(0b1100),
-		ONLY_8(0b0001);
+		ONLY_8(0b0001),
+		ONLY_64(0b1000);
 
-		/** 1 if this is 64-bit default, 0 if not. */
+		/**
+		 * 1 if this is 64-bit default, 0 if not. I.e. if 32-bit width is
+		 * allowed by this [Widths].
+		 */
 		val rexMod = (bits shr 2) and 1
 
 		operator fun contains(width: Width) = bits and width.bit != 0
@@ -47,7 +51,10 @@ class Assembler(parseResult: ParseResult) {
 			var disp = r.disp + (r.symbol.data as LabelSymbolData).value
 			if(r.symbol2 != null) disp -= (r.symbol2.data as LabelSymbolData).value
 			when(r.width) {
-				Width.BIT32 -> writer.u32(r.position, disp)
+				Width.BIT8 -> writer.s8(r.position, disp.toInt())
+				Width.BIT16 -> writer.s16(r.position, disp.toInt())
+				Width.BIT32 -> writer.u32(r.position, disp.toInt())
+				Width.BIT64 -> writer.s64(r.position, disp)
 				else -> error()
 			}
 		}
@@ -86,31 +93,128 @@ class Assembler(parseResult: ParseResult) {
 
 
 
-	/*
-	Valid label references:
-	- For RIP-relative, a single label reference, no base, no index, can have other disp nodes
-	- For REL, a single label reference and/or multiple label differences.
-	- For memory operands, any number of label differences, no direct references.
-	 */
+	private var baseReg: Register? = null
+	private var indexReg: Register? = null
+	private var indexScale = 0
+	private var posLabel: Symbol? = null
+	private var negLabel: Symbol? = null
+	private var hasLabel = false
 
 
 
-	private fun resolveImm(root: AstNode, isRel: Boolean = false): Long {
-		var label: Symbol? = null
-		var negLabel: Symbol? = null
+	private fun resolveImm(root: AstNode): Long {
+		val value = resolve(root, false)
+
+		if(posLabel != null) {
+			if(negLabel == null) error()
+		} else if(negLabel != null) error()
+
+		return value
+	}
+
+
+
+	private fun resolveRel(root: AstNode): Int {
+		val value = resolve(root, false)
+		if(negLabel != null) error()
+		return value.toInt()
+	}
+
+
+
+	private fun writeRel(value: Int, width: Width) {
+		when(width) {
+			Width.BIT8  -> writer.s8(value)
+			Width.BIT16 -> writer.s16(value)
+			Width.BIT32 -> writer.s32(value)
+			else        -> error()
+		}
+
+		if(posLabel != null)
+			relocations.add(Relocation(posLabel!!, null, writer.pos - width.bytes, width, value.toLong() - writer.pos))
+	}
+
+
+
+	private fun writeImm(root: AstNode, width: Width, isImm64: Boolean = false) {
+		val disp = resolve(root, false)
+
+		when(width) {
+			Width.BIT8  -> writer.s8(disp.toInt())
+			Width.BIT16 -> writer.s16(disp.toInt())
+			Width.BIT32 -> writer.s32(disp.toInt())
+			else        -> if(isImm64) writer.s64(disp) else writer.s32(disp.toInt())
+		}
+
+		if(posLabel != null) {
+			if(negLabel == null)
+				error()
+			relocations.add(Relocation(posLabel!!, negLabel, writer.pos - width.bytes, width, disp))
+		} else if(negLabel != null) {
+			error()
+		}
+	}
+
+
+
+	private fun writeImm8(root: AstNode) = writeImm(root, Width.BIT8)
+
+	private fun writeImm16(root: AstNode) = writeImm(root, Width.BIT16)
+
+	private fun writeImm32(root: AstNode) = writeImm(root, Width.BIT32)
+
+	private fun writeImm64(root: AstNode) = writeImm(root, Width.BIT64, true)
+
+
+
+	private fun resolve(root: AstNode, isMem: Boolean): Long {
+		baseReg = null
+		indexReg = null
+		indexScale = 0
+		posLabel = null
+		negLabel = null
 
 		fun rec(node: AstNode, positivity: Int): Long {
-			if(node is IntNode) 
-				return node.value
-			
+			if(node is RegisterNode) {
+				if(positivity <= 0 || !isMem) error()
+
+				if(baseReg != null) {
+					if(indexReg != null)
+						error()
+					indexReg = node.value
+					indexScale = 1
+				} else
+					baseReg = node.value
+
+				return 0
+			}
+
 			if(node is UnaryNode)
 				return node.op.calculate(rec(node.node, positivity * node.op.positivity))
-			
-			if(node is BinaryNode) 
+
+			if(node is BinaryNode) {
+				if(node.op == BinaryOp.MUL) {
+					if(node.left is RegisterNode && node.right is IntNode) {
+						if(indexReg != null || positivity <= 0 || !isMem) error()
+						indexReg = node.left.value
+						indexScale = node.right.value.toInt()
+						return 0
+					} else if(node.left is IntNode && node.right is RegisterNode) {
+						if(indexReg != null || positivity <= 0 || !isMem) error()
+						indexReg = node.right.value
+						indexScale = node.left.value.toInt()
+						return 0
+					}
+				}
+
 				return node.op.calculate(
-					rec(node.left, positivity * node.op.leftPositivity), 
+					rec(node.left, positivity * node.op.leftPositivity),
 					rec(node.right, positivity * node.op.rightPositivity)
 				)
+			}
+
+			if(node is IntNode)
+				return node.value
 
 			if(node is IdNode) {
 				val symbol = symbols[node.name] ?: error()
@@ -121,12 +225,12 @@ class Assembler(parseResult: ParseResult) {
 				if(symbol.type == SymbolType.LABEL) {
 					if(positivity == 0) {
 						error()
-					} else if(positivity < 0) {
+					} else if(positivity > 0) {
+						if(posLabel != null) error()
+						posLabel = symbol
+					} else {
 						if(negLabel != null) error()
 						negLabel = symbol
-					} else {
-						if(label != null) error()
-						label = symbol
 					}
 				} else {
 					error()
@@ -134,22 +238,13 @@ class Assembler(parseResult: ParseResult) {
 
 				return 0
 			}
-			
+
 			error()
 		}
 
-		val imm = rec(if(root is ImmediateNode) root.value else root, 0)
-
-		if(!isRel) {
-			if(label != null) {
-				if(negLabel == null) error()
-				//relocations
-			} else if(negLabel != null) {
-				error()
-			}
-		}
-		
-		return rec(if(root is ImmediateNode) root.value else root, 0)
+		val disp = rec(if(root is ImmediateNode) root.value else root, 1)
+		hasLabel = posLabel != null
+		return disp
 	}
 
 
@@ -339,12 +434,12 @@ class Assembler(parseResult: ParseResult) {
 
 	private val relocations = ArrayList<Relocation>()
 
-	private class Relocation(
-		val symbol: Symbol,
-		val symbol2: Symbol?,
-		val position: Int,
-		val width: Width,
-		val disp: Int
+	private data class Relocation(
+		val symbol   : Symbol,
+		val symbol2  : Symbol?,
+		val position : Int,
+		val width    : Width,
+		val disp     : Long
 	)
 
 
@@ -442,7 +537,7 @@ class Assembler(parseResult: ParseResult) {
 			encodeOpcode(opcode)
 			encodeModRM(0b00, reg, 0b101)
 			writer.s32(disp)
-			relocations.add(Relocation(label!!, null, writer.pos - 4, Width.BIT32, disp - writer.pos))
+			relocations.add(Relocation(label!!, null, writer.pos - 4, Width.BIT32, disp.toLong() - writer.pos))
 			return
 		}
 
@@ -455,7 +550,7 @@ class Assembler(parseResult: ParseResult) {
 
 		fun checkRelocation() {
 			if(label != null)
-				relocations.add(Relocation(label!!, negLabel, writer.pos, Width.BIT32, disp))
+				relocations.add(Relocation(label!!, negLabel, writer.pos, Width.BIT32, disp.toLong()))
 		}
 
 		if(index != null) { // SIB
@@ -661,7 +756,26 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.ENTER -> assembleENTER(node)
 			Mnemonic.ENTERW -> assembleENTER(node)
 
+			Mnemonic.JMP -> assembleJMP(node)
+
 			else -> error()
+		}
+	}
+
+
+
+	private fun assembleJMP(node: InstructionNode) {
+		if(node.op1 is ImmediateNode) {
+			val rel = resolveRel(node.op1)
+			if(!hasLabel && rel.isImm8) {
+				writer.u8(0xEB)
+				writeRel(rel, Width.BIT8)
+			} else {
+				writer.u8(0xE9)
+				writeRel(rel, Width.BIT32)
+			}
+		} else {
+			encode1RM(0xFF, 4, node, Widths.ONLY_64)
 		}
 	}
 
@@ -779,10 +893,10 @@ class Assembler(parseResult: ParseResult) {
 
 		writer.u8(0xC8)
 
-		writer.s16(resolveImm(node.op1!!).toInt())
+		writeImm16(node.op1!!)
 
 		if(node.op2 != null)
-			writer.s8(resolveImm(node.op2).toInt())
+			writeImm8(node.op2)
 		else
 			writer.s8(0)
 	}
@@ -1014,7 +1128,7 @@ class Assembler(parseResult: ParseResult) {
 	private fun assemblePOP(node: InstructionNode) {
 		when(val op1 = node.op1) {
 			is RegisterNode  -> encode1OpReg(0x58, op1.value, Widths.NO_8_32)
-			is MemNode    -> encode1M(0x8F, 0, op1, Widths.NO_8_32)
+			is MemNode       -> encode1M(0x8F, 0, op1, Widths.NO_8_32)
 			else             -> error()
 		}
 	}

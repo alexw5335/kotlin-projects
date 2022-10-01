@@ -28,6 +28,8 @@ object Skills {
 		val INFANTRY_COMMAND = generalSkill("general_commander_3_infantry")
 		val NAVAL_SUPPORT = generalSkill("general_commander_3_naval_support")
 		val ARTILLERY_COMMAND = generalSkill("general_commander_3_artillery")
+		val NAVAL_ASSAULT = generalSkill("general_commander_3_naval_assault")
+		val CAVALRY_COMMAND = generalSkill("general_commander_3_cavalry")
 		val GREAT_LEADER = generalSkill("general_commander_4_great_leader")
 		val STRATEGIST = generalSkill("general_strategist_1")
 		val TACTICIAN = generalSkill("general_strategist_2_tactician")

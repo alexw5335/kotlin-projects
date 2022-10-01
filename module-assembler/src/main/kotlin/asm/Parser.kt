@@ -226,6 +226,7 @@ class Parser(lexResult: LexResult) {
 	private fun parseInstruction(mnemonic: Mnemonic): InstructionNode {
 		if(mnemonic.stringWidth != null && tokens[pos] == SymbolToken.COLON) {
 			pos++
+
 			val prefix = when(val string = (tokens[pos++] as? IdToken)?.value) {
 				"rep", "repe", "repz" -> 0xF3
 				"repne", "repnz"      -> 0xF2
