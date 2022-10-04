@@ -22,7 +22,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 		init {
 			for(r in Register.values()) {
-				val token = RegisterToken(r)
+				val token = RegToken(r)
 				keywordMap[r.string] = token
 				keywordMap[r.name] = token
 			}
@@ -39,7 +39,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 			}
 
 			for(r in SRegister.values()) {
-				val token = SRegisterToken(r)
+				val token = SRegToken(r)
 				keywordMap[r.string] = token
 				keywordMap[r.name] = token
 			}

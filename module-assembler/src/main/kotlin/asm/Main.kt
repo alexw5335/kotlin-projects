@@ -11,8 +11,7 @@ import java.nio.file.Paths
 
 
 private const val input = """
-	MOVNTI [RAX], EAX
-	MOVNTI [RAX], RAX
+	fadd
 """
 
 private const val input2 = """
@@ -22,7 +21,8 @@ private const val input2 = """
 
 
 fun main() {
-	assembleAndCompare(input)
+	Core.nasmPrint("fadd st0, st1")
+	//assembleAndCompare(input, input)
 }
 
 

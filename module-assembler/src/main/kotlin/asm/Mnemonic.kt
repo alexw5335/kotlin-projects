@@ -185,6 +185,7 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	CALL,
 	JMP,
 
+	MOVZX,
 	MOVSX,
 	MOVSXD,
 
@@ -247,7 +248,9 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	BSF,
 	BSR,
 
-	MOVNTI;
+	MOVNTI,
+
+	FLD;
 
 	val string = name.lowercase()
 

@@ -7,12 +7,13 @@ val Token.printableString get() = when(this) {
 	is IdToken        -> "ID        $value"
 	is IntToken       -> "INT       $value"
 	is MnemonicToken  -> "MNEMONIC  ${value.string}"
-	is RegisterToken  -> "REGISTER  ${value.string}"
+	is RegToken  -> "REGISTER  ${value.string}"
 	is KeywordToken   -> "KEYWORD   $string"
 	is EndToken       -> "END OF STREAM"
 	is CharToken      -> "CHAR      $value"
 	is StringToken    -> "STRING    $value"
-	is SRegisterToken -> "SREG:     $value"
+	is SRegToken -> "SREG:     $value"
+	is STRegToken     -> "STREG:    $value"
 }
 
 
@@ -41,11 +42,15 @@ data class IdToken(val value: String) : Token
 
 
 
-data class RegisterToken(val value: Register) : Token
+data class RegToken(val value: Register) : Token
 
 
 
-data class SRegisterToken(val value: SRegister) : Token
+data class SRegToken(val value: SRegister) : Token
+
+
+
+data class STRegToken(val value: STRegister): Token
 
 
 
@@ -53,12 +58,13 @@ data class MnemonicToken(val value: Mnemonic) : Token
 
 
 
-enum class KeywordToken(val width: Width? = null, val prefix: Int = 0) : Token {
+enum class KeywordToken(val width: Width? = null) : Token {
 
 	BYTE(width = Width.BIT8),
 	WORD(width = Width.BIT16),
 	DWORD(width = Width.BIT32),
 	QWORD(width = Width.BIT64),
+	TWORD(width = Width.BIT80),
 	CONST,
 	ENUM,
 	DB,

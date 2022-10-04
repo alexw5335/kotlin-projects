@@ -66,8 +66,8 @@ object CurrentMod {
 			b.navyFundingCap = 1_000_000
 		}
 
-		effectBundle("govt_type_republic").effect("rom_faction_political_party_loyalty", 20)
-		effectBundle("govt_type_empire").effect("rom_faction_political_party_loyalty", 30)
+		effectBundle("govt_type_republic").effect("rom_faction_political_party_loyalty", 100)
+		effectBundle("govt_type_empire").effect("rom_faction_political_party_loyalty", 100)
 
 		effectBundle("rom_stance_army_forced_march").effect("rom_force_campaign_mod_movement_range", 0)
 		effectBundle("rom_stance_navy_double_time").effect("rom_force_campaign_mod_movement_range", 0)
@@ -153,13 +153,14 @@ object CurrentMod {
 			basicMelee to 4,
 			mediumMelee to 4,
 			strongRanged to 4,
+			artillery to 1
 		)
 		val garrison4 = arrayOf(
 			basicMelee to 4,
 			mediumMelee to 4,
-			eliteMelee to 2,
-			strongRanged to 2,
-			eliteRanged to 2,
+			eliteMelee to 4,
+			eliteRanged to 5,
+			artillery to 1
 		)
 
 		Buildings.ROMAN_CITY_1.setGarrison(*garrison1)
@@ -202,12 +203,11 @@ object CurrentMod {
 			mediumMelee to 4
 		)
 		Buildings.ROMAN_BARRACKS_MAIN_3.setGarrison(
-			mediumMelee to 4,
-			eliteMelee to 1
-		)
-		Buildings.ROMAN_BARRACKS_MAIN_4.setGarrison(
 			mediumMelee to 3,
 			eliteMelee to 3
+		)
+		Buildings.ROMAN_BARRACKS_MAIN_4.setGarrison(
+			eliteMelee to 6
 		)
 		Buildings.ROMAN_BARRACKS_AUX_2.setGarrison(
 			basicMelee to 2,
@@ -219,7 +219,7 @@ object CurrentMod {
 			basicCavalry to 2
 		)
 		Buildings.ROMAN_BARRACKS_AUX_4.setGarrison(
-			mediumMelee to 2,
+			eliteMelee to 2,
 			eliteRanged to 2,
 			eliteCavalry to 2
 		)
@@ -275,13 +275,13 @@ object CurrentMod {
 	private fun modUnits() {
 		Weapons.GLADIUS.mod           { damage = 30 }                // 30  5
 		Weapons.GLADIUS_MARIAN.mod    { damage = 35 }                // 30  5
-		Weapons.GLADIUS_IMPERIAL.mod  { damage = 40 }                // 30  5
-		Weapons.GLADIUS_ELITE.mod     { damage = 45; apDamage = 10 } // 34  5
-		Weapons.SPEAR_CAV_ELITE.mod   { damage = 30; apDamage = 10 } // 24  5
+		Weapons.GLADIUS_IMPERIAL.mod  { damage = 40; apDamage = 10 } // 30  5
+		Weapons.GLADIUS_ELITE.mod     { damage = 45; apDamage = 15 } // 34  5
+		Weapons.SPEAR_CAV_ELITE.mod   { damage = 35; apDamage = 15 } // 24  5
 
-		Shields.SCUTUM.mod           { defence = 30; armour = 40; blockChance = 60 } // 30  35  50
-		Shields.SCUTUM_MARIAN.mod    { defence = 35; armour = 50; blockChance = 65 } // 25  40  50
-		Shields.SCUTUM_IMPERIAL.mod  { defence = 40; armour = 60; blockChance = 70 } // 25  40  50
+		Shields.SCUTUM.mod           { defence = 30; armour = 40; blockChance = 70 } // 30  35  50
+		Shields.SCUTUM_MARIAN.mod    { defence = 40; armour = 50; blockChance = 80 } // 25  40  50
+		Shields.SCUTUM_IMPERIAL.mod  { defence = 50; armour = 60; blockChance = 90 } // 25  40  50
 
 		Armours.MAIL.mod            { armour = 40 } // 40
 		Armours.MAIL_IMPROVED.mod   { armour = 50 } // 45
@@ -337,7 +337,7 @@ object CurrentMod {
 		Units.AUX_PELTASTS.mod {
 			reload   = 40   // 28
 			accuracy = 30   // 5
-			ammo     = 25   // 7
+			ammo     = 35   // 7
 			cost     = 1500 // 420
 			upkeep   = 150  // 90
 			level    = ELITE // poorly_trained
@@ -368,7 +368,7 @@ object CurrentMod {
 			attack  = 15  // 13
 			defence = 30  // 24
 			morale  = 35  // 30
-			bonusHp = 10  // 5
+			bonusHp = 15  // 5
 			charge  = 10  // 11
 			cost    = 200 // 200
 			upkeep  = 50  // 60
@@ -380,7 +380,7 @@ object CurrentMod {
 			attack  = 25  // 13
 			defence = 40  // 24
 			morale  = 45  // 30
-			bonusHp = 15  // 5
+			bonusHp = 20  // 5
 			charge  = 15  // 11
 			cost    = 200 // 200
 			upkeep  = 50  // 60
@@ -393,7 +393,7 @@ object CurrentMod {
 			attack  = 40  // 35
 			defence = 25  // 18
 			morale  = 45  // 45
-			bonusHp = 15  // 10
+			bonusHp = 20  // 10
 			charge  = 15  // 12
 			cost    = 350 // 350
 			upkeep  = 70  // 90
@@ -404,7 +404,7 @@ object CurrentMod {
 			attack  = 50  // 47
 			defence = 30  // 23
 			morale  = 55  // 55
-			bonusHp = 20  // 15
+			bonusHp = 25  // 15
 			charge  = 20  // 14
 			cost    = 700 // 680
 			upkeep  = 100  // 120
@@ -415,7 +415,7 @@ object CurrentMod {
 			attack  = 50   // 31
 			defence = 50   // 34
 			morale  = 65   // 65
-			bonusHp = 25   // 20
+			bonusHp = 30   // 20
 			charge  = 25   // 24
 			cost    = 1400 // 800
 			upkeep  = 130  // 140
@@ -426,7 +426,7 @@ object CurrentMod {
 			attack  = 50   // 47
 			defence = 30   // 23
 			morale  = 55   // 55
-			bonusHp = 20   // 15
+			bonusHp = 25   // 15
 			charge  = 20   // 15
 			cost    = 1000 // 660
 			upkeep  = 150  // 140
@@ -437,7 +437,7 @@ object CurrentMod {
 			attack  = 55   // 47
 			defence = 35   // 33
 			morale  = 65   // 65
-			bonusHp = 25   // 20
+			bonusHp = 30   // 20
 			charge  = 25   // 12
 			cost    = 1500 // 910
 			upkeep  = 200  // 180
@@ -448,7 +448,7 @@ object CurrentMod {
 			attack  = 65   // 65
 			defence = 45   // 30
 			morale  = 75   // 70
-			bonusHp = 35   // 20
+			bonusHp = 40   // 20
 			charge  = 35   // 19
 			cost    = 4000 // 1280
 			upkeep  = 400  // 200
@@ -459,7 +459,7 @@ object CurrentMod {
 			attack  = 55   // 47
 			defence = 35   // 23
 			morale  = 65   // 55
-			bonusHp = 25   // 15
+			bonusHp = 30   // 15
 			charge  = 25   // 14
 			cost    = 1500 // 700
 			upkeep  = 150  // 140
@@ -470,7 +470,7 @@ object CurrentMod {
 			attack  = 60   // 47
 			defence = 40   // 35
 			morale  = 75   // 65
-			bonusHp = 30   // 20
+			bonusHp = 35   // 20
 			charge  = 30   // 12
 			cost    = 2000 // 930
 			upkeep  = 200  // 180
@@ -481,7 +481,7 @@ object CurrentMod {
 			attack  = 75   // 65
 			defence = 50   // 30
 			morale  = 85   // 70
-			bonusHp = 40   // 20
+			bonusHp = 50   // 20
 			charge  = 40   // 19
 			shield  = shield("scutum_imperial")
 			cost    = 5000 // 1280
@@ -493,7 +493,7 @@ object CurrentMod {
 			attack  = 40 // 40
 			defence = 20 // 17
 			morale  = 55 // 55
-			bonusHp = 15 // 10
+			bonusHp = 20 // 10
 			charge  = 40 // 37
 			cost    = 800 // 800
 			upkeep  = 140 // 140
@@ -503,7 +503,7 @@ object CurrentMod {
 			attack  = 40 // 34
 			defence = 15 // 11
 			morale  = 55 // 55
-			bonusHp = 25 // 20
+			bonusHp = 30 // 20
 			charge  = 70 // 57
 			cost    = 1000 // 840
 			upkeep  = 160 // 140
@@ -513,7 +513,7 @@ object CurrentMod {
 			attack  = 35  // 33
 			defence = 15  // 12
 			morale  = 40  // 40
-			bonusHp = 10  // 10
+			bonusHp = 15  // 10
 			charge  = 30  // 29
 			cost    = 500 // 500
 			upkeep  = 80  // 100
@@ -524,7 +524,7 @@ object CurrentMod {
 			attack  = 45   // 33
 			defence = 25   // 10
 			morale  = 50   // 45
-			bonusHp = 25   // 15
+			bonusHp = 30   // 15
 			charge  = 35   // 29
 			cost    = 1500 // 620
 			upkeep  = 150  // 120
@@ -535,7 +535,7 @@ object CurrentMod {
 			attack  = 60   // 49
 			defence = 35   // 22
 			morale  = 70   // 70
-			bonusHp = 35   // 20
+			bonusHp = 40   // 20
 			charge  = 50   // 42
 			cost    = 4000 // 1250
 			upkeep  = 400  // 200

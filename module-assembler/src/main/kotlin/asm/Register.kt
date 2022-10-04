@@ -91,3 +91,115 @@ enum class Register(
 	val string = name.lowercase()
 
 }
+
+
+
+enum class SRegister {
+
+	CS,
+	SS,
+	DS,
+	ES,
+	FS,
+	GS;
+
+	val string = name.lowercase()
+	val value = ordinal
+
+}
+
+
+
+enum class STRegister {
+
+	ST0,
+	ST1,
+	ST2,
+	ST3,
+	ST4,
+	ST5,
+	ST6,
+	ST7;
+
+	val string = name.lowercase()
+	val value = ordinal
+
+}
+
+
+
+enum class DRRegister {
+
+	DR0,
+	DR1,
+	DR2,
+	DR3,
+	DR4,
+	DR5,
+	DR6,
+	DR7;
+
+	val string = name.lowercase()
+	val value = ordinal
+
+}
+
+
+
+enum class CRRegister {
+	CR0,
+	CR1,
+	CR2,
+	CR3,
+	CR4,
+	CR5,
+	CR6,
+	CR7;
+
+	val string = name.lowercase()
+	val value = ordinal
+
+}
+
+
+
+enum class MMRegister {
+	MM0,
+	MM1,
+	MM2,
+	MM3,
+	MM4,
+	MM5,
+	MM6,
+	MM7;
+
+	val string = name.lowercase()
+	val value = ordinal
+
+}
+
+
+
+enum class XMMRegister {
+
+	XMM0,
+	XMM1,
+	XMM2,
+	XMM3,
+	XMM4,
+	XMM5,
+	XMM6,
+	XMM7,
+	XMM8,
+	XMM9,
+	XMM10,
+	XMM11,
+	XMM12,
+	XMM13,
+	XMM14,
+	XMM15;
+
+	val string = name.lowercase()
+	val value = ordinal
+
+}

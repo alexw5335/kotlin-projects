@@ -146,14 +146,11 @@ class Parser(lexResult: LexResult) {
 			UnaryNode(unaryOp, readAtom())
 		}
 
-		is IntToken -> IntNode(token.value)
-
-		is RegisterToken -> RegisterNode(token.value)
-
-		is SRegisterToken -> SRegisterNode(token.value)
-
-		is IdToken -> IdNode(token.value)
-
+		is IntToken    -> IntNode(token.value)
+		is RegToken    -> RegNode(token.value)
+		is SRegToken   -> SRegNode(token.value)
+		is STRegToken  -> STRegNode(token.value)
+		is IdToken     -> IdNode(token.value)
 		is StringToken -> StringNode(token.value)
 
 		else -> error("Invalid expression operand token: $token")
@@ -212,12 +209,13 @@ class Parser(lexResult: LexResult) {
 			error("Unexpected width specifier")
 
 		return when(val node = readExpression()) {
-			is RegisterNode  -> node
-			is IntNode       -> ImmediateNode(node)
+			is RegNode       -> node
+			is IntNode       -> ImmNode(node)
 			is BinaryNode,
 			is UnaryNode,
-			is IdNode        -> ImmediateNode(node)
-			is SRegisterNode -> node
+			is IdNode        -> ImmNode(node)
+			is SRegNode      -> node
+			is STRegNode     -> node
 			else             -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
 	}
