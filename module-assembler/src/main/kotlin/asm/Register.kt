@@ -7,7 +7,8 @@ enum class Register(
 	val value : Int,
 	val width : Width,
 	val rex   : Int = 0,
-	val isA   : Boolean = false
+	val isA   : Boolean = false,
+	val isSP  : Boolean = false
 ) {
 
 	// 64-bit
@@ -15,7 +16,7 @@ enum class Register(
 	RCX(1, Width.BIT64),
 	RDX(2, Width.BIT64),
 	RBX(3, Width.BIT64),
-	RSP(4, Width.BIT64),
+	RSP(4, Width.BIT64, isSP = true),
 	RBP(5, Width.BIT64),
 	RSI(6, Width.BIT64),
 	RDI(7, Width.BIT64),
@@ -33,7 +34,7 @@ enum class Register(
 	ECX(1, Width.BIT32),
 	EDX(2, Width.BIT32),
 	EBX(3, Width.BIT32),
-	ESP(4, Width.BIT32),
+	ESP(4, Width.BIT32, isSP = true),
 	EBP(5, Width.BIT32),
 	ESI(6, Width.BIT32),
 	EDI(7, Width.BIT32),
@@ -51,7 +52,7 @@ enum class Register(
 	CX(1, Width.BIT16),
 	DX(2, Width.BIT16),
 	BX(3, Width.BIT16),
-	SP(4, Width.BIT16),
+	SP(4, Width.BIT16, isSP = true),
 	BP(5, Width.BIT16),
 	SI(6, Width.BIT16),
 	DI(7, Width.BIT16),
@@ -83,7 +84,7 @@ enum class Register(
 	R15B(7, Width.BIT8, 1),
 
 	// 8-bit with any REX prefix
-	SPL(4, Width.BIT8),
+	SPL(4, Width.BIT8, isSP = true),
 	BPL(5, Width.BIT8),
 	SIL(6, Width.BIT8),
 	DIL(7, Width.BIT8);

@@ -65,6 +65,7 @@ enum class KeywordToken(val width: Width? = null) : Token {
 	DWORD(width = Width.BIT32),
 	QWORD(width = Width.BIT64),
 	TWORD(width = Width.BIT80),
+	OWORD(width = Width.BIT128),
 	CONST,
 	ENUM,
 	DB,

@@ -63,6 +63,8 @@ abstract class ReaderBase(val chars: CharArray) {
 			append(chars[pos++])
 	}
 
+	fun readUntilWhitespace() = readUntil { it.isWhitespace() }
+
 
 
 	/*

@@ -12,7 +12,7 @@ enum class Width(
 	BIT32("dword", 4, opcodeOffset = 1),
 	BIT64("qword", 8, opcodeOffset = 1, rex = 1),
 	BIT80("tword", 10),
-	BIT128("128-bit", 16),
+	BIT128("oword", 16),
 	BIT256("256-bit", 32),
 	BIT512("512-bit", 64);
 

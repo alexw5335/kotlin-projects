@@ -2,16 +2,20 @@
 
 package asm
 
-import core.Core
-import core.bin233
-import core.hex8
+import core.*
 import java.nio.file.Files
 import java.nio.file.Paths
 
 
 
 private const val input = """
-	fadd
+main:
+	sub rsp, 56
+	mov ecx, -11
+	lea rdx, [main]
+	mov r8d, 1
+	mov r9, [rsp + 40]
+	mov qword [rsp + 32], 0
 """
 
 private const val input2 = """
@@ -21,10 +25,13 @@ private const val input2 = """
 
 
 fun main() {
-	Core.nasmPrint("fadd st0, st1")
-	//assembleAndCompare(input, input)
+/*	val parseResult = Parser.parse(Lexer.lex(input))
+	val bytes = Assembler(parseResult).assemble()
+	Files.write(Paths.get("test.bin"), bytes)*/
+	val bytes2 = Linker(AssembleResult(ByteArray(0), emptyList())).link()
+	Files.write(Paths.get("test.exe"), bytes2)
+	//Core.run("DUMPBIN /ALL test.exe")
 }
-
 
 
 

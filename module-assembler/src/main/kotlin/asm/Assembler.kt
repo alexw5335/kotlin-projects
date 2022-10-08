@@ -98,6 +98,7 @@ class Assembler(parseResult: ParseResult) {
 	private var posLabel: Symbol? = null
 	private var negLabel: Symbol? = null // only non-null if posLabel is also non-null
 	private var hasLabel = false
+	private var aso = false
 
 
 
@@ -107,6 +108,7 @@ class Assembler(parseResult: ParseResult) {
 		indexScale = 0
 		posLabel = null
 		negLabel = null
+		aso = false
 
 		fun rec(node: AstNode, positivity: Int): Long {
 			if(node is RegNode) {
@@ -178,12 +180,43 @@ class Assembler(parseResult: ParseResult) {
 
 		val disp = rec(if(root is ImmNode) root.value else root, 1)
 		hasLabel = posLabel != null
+
+		if(isMem) {
+			if(baseReg != null) {
+				if(indexReg != null) {
+					if(baseReg!!.width != indexReg!!.width)
+						error()
+					if(baseReg!!.width.is32)
+						aso = true
+					else if(baseReg!!.width.isNot64)
+						error()
+
+					if(indexReg!!.isSP) {
+						if(indexScale != 1) error()
+						val temp = indexReg
+						indexReg = baseReg
+						baseReg = temp
+					}
+				} else {
+					if(baseReg!!.width.is32)
+						aso = true
+					else if(baseReg!!.width.isNot64)
+						error()
+				}
+			}
+		}
 		return disp
 	}
 
+	/*
+	- indirect rsp/r12 must use SIB (with or without index, with or without disp) due to SIB encoding
+	- indirect rbp/r13 must use +disp8 or +disp32 due to RIP-relative encoding
+	- rsp can never be used as an index (but r12 can be)
+	- if mod == 00, then rbp/r13 cannot be used as a base.
+		- In this case, +disp8 or +disp32 is required.
+	 */
 
-
-	private fun write(value: Long, width: Width, isImm64: Boolean = false) {
+	private fun write(value: Long, width: Width) {
 		when(width) {
 			Width.BIT8 ->
 				if(!value.isImm8)
@@ -203,13 +236,7 @@ class Assembler(parseResult: ParseResult) {
 				else
 					writer.s32(value.toInt())
 
-			else ->
-				if(isImm64)
-					writer.s64(value)
-				else if(!value.isImm32)
-					error()
-				else
-					writer.s32(value.toInt())
+			else -> writer.s64(value)
 		}
 	}
 
@@ -225,11 +252,13 @@ class Assembler(parseResult: ParseResult) {
 
 
 	private fun writeImm(imm: Long, width: Width, isImm64: Boolean = false) {
-		write(imm, width, isImm64)
+		val actualWidth = if(width.is64 && !isImm64) Width.BIT32 else width
+
+		write(imm, actualWidth)
 
 		if(posLabel != null)
 			if(negLabel != null)
-				relocations.add(Relocation(posLabel!!, negLabel, writer.pos - width.bytes, width, imm))
+				relocations.add(Relocation(posLabel!!, negLabel, writer.pos - actualWidth.bytes, actualWidth, imm))
 			else
 				error()
 	}
@@ -512,8 +541,7 @@ class Assembler(parseResult: ParseResult) {
 		val scale = indexScale
 		val label = posLabel
 
-		if(base != null && base.width.isNot64) error()
-		if(index != null && index.width.isNot64) error()
+		if(aso) writer.u8(0x67)
 
 		// RIP-relative disp32
 		if(label != null && negLabel == null) {
@@ -528,7 +556,7 @@ class Assembler(parseResult: ParseResult) {
 
 		val mod = when {
 			label != null -> 2
-			disp == 0     -> 0
+			disp == 0     -> if(base != null && base.value == 5) 1 else 0
 			disp.isImm8   -> 1
 			else          -> 2
 		}
@@ -558,6 +586,15 @@ class Assembler(parseResult: ParseResult) {
 				writer.s32(disp)
 			}
 		} else if(base != null) { // Indirect
+			if(base.isSP) {
+				encodeRex(rexW, rexR, 0, base.rex)
+				encodeOpcode(opcode)
+				encodeModRM(mod, reg, 0b100)
+				encodeSIB(0, 0b100, 0b100)
+				checkRelocation()
+				if(mod == 0b01) writer.s8(disp) else if(mod == 0b10) writer.s32(disp)
+				return
+			}
 			encodeRex(rexW, rexR, 0, base.rex)
 			encodeOpcode(opcode)
 			encodeModRM(mod, reg, base.value)
@@ -580,6 +617,10 @@ class Assembler(parseResult: ParseResult) {
 	/*
 	Assembly
 	 */
+
+
+
+	private fun BinaryWriter.u24(value: Int) { u32(value); pos-- }
 
 
 
@@ -677,6 +718,57 @@ class Assembler(parseResult: ParseResult) {
 
 			Mnemonic.RSM -> writer.u16(0xAA_0F)
 
+			Mnemonic.FADD    -> writer.u16(0xC1DC)
+			Mnemonic.FADDP   -> writer.u16(0xC1DE)
+			Mnemonic.FMUL    -> writer.u16(0xC9DC)
+			Mnemonic.FMULP   -> writer.u16(0xC9DE)
+			Mnemonic.FCOM    -> writer.u16(0xD1D8)
+			Mnemonic.FCOMP   -> writer.u16(0xD9D8)
+			Mnemonic.FCOMPP  -> writer.u16(0xD9DE)
+			Mnemonic.FSUB    -> writer.u16(0xE9DC)
+			Mnemonic.FSUBP   -> writer.u16(0xE9DE)
+			Mnemonic.FSUBR   -> writer.u16(0xE1DC)
+			Mnemonic.FSUBRP  -> writer.u16(0xE1DE)
+			Mnemonic.FDIV    -> writer.u16(0xF9DC)
+			Mnemonic.FDIVP   -> writer.u16(0xF9DE)
+			Mnemonic.FDIVR   -> writer.u16(0xF1DC)
+			Mnemonic.FDIVRP  -> writer.u16(0xF1DE)
+			Mnemonic.FXCH    -> writer.u16(0xC9D9)
+			Mnemonic.FNOP    -> writer.u16(0xD0D9)
+			Mnemonic.FCHS    -> writer.u16(0xE0D9)
+			Mnemonic.FABS    -> writer.u16(0xE1D9)
+			Mnemonic.FTST    -> writer.u16(0xE4D9)
+			Mnemonic.FXAM    -> writer.u16(0xE5D9)
+			Mnemonic.FLD1    -> writer.u16(0xE8D9)
+			Mnemonic.FLDL2T  -> writer.u16(0xE9D9)
+			Mnemonic.FLDL2E  -> writer.u16(0xEAD9)
+			Mnemonic.FLDPI   -> writer.u16(0xE8D9)
+			Mnemonic.FLDLG2  -> writer.u16(0xECD9)
+			Mnemonic.FLDLN2  -> writer.u16(0xEDD9)
+			Mnemonic.FLDZ    -> writer.u16(0xEED9)
+			Mnemonic.F2XM1   -> writer.u16(0xF0D9)
+			Mnemonic.FYL2X   -> writer.u16(0xF1D9)
+			Mnemonic.FPTAN   -> writer.u16(0xF2D9)
+			Mnemonic.FPATAN  -> writer.u16(0xF3D9)
+			Mnemonic.FXTRACT -> writer.u16(0xF4D9)
+			Mnemonic.FPREM1  -> writer.u16(0xF5D9)
+			Mnemonic.FDECSTP -> writer.u16(0xF6D9)
+			Mnemonic.FINCSTP -> writer.u16(0xF7D9)
+			Mnemonic.FPREM   -> writer.u16(0xF8D9)
+			Mnemonic.FYL2XP1 -> writer.u16(0xF9D9)
+			Mnemonic.FSQRT   -> writer.u16(0xFAD9)
+			Mnemonic.FSINCOS -> writer.u16(0xFBD9)
+			Mnemonic.FRNDINT -> writer.u16(0xFCD9)
+			Mnemonic.FSCALE  -> writer.u16(0xFDD9)
+			Mnemonic.FSIN    -> writer.u16(0xFED9)
+			Mnemonic.FCOS    -> writer.u16(0xFFD9)
+			Mnemonic.FUCOM   -> writer.u16(0xE1DD)
+			Mnemonic.FUCOMP  -> writer.u16(0xE9DD)
+			Mnemonic.FUCOMPP -> writer.u16(0xE9DA)
+			Mnemonic.FCLEX   -> writer.u24(0xE2DB9B)
+			Mnemonic.FNCLEX  -> writer.u16(0xE2DB)
+			Mnemonic.FINIT   -> writer.u24(0xE3DB9B)
+
 			else -> error()
 		}
 	}
@@ -685,43 +777,43 @@ class Assembler(parseResult: ParseResult) {
 
 	private fun assemble1(node: InstructionNode) {
 		when(node.mnemonic) {
-			Mnemonic.NOP -> encode1RM(0x1F_0F, 0, node, Widths.NO_8_64)
+			Mnemonic.NOP -> encode1RM(0x1F_0F, 0, node, Widths.NO864)
 
-			Mnemonic.SETA   -> encode1RM(0x97_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETAE  -> encode1RM(0x93_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETB   -> encode1RM(0x92_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETBE  -> encode1RM(0x96_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETC   -> encode1RM(0x92_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETE   -> encode1RM(0x94_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETG   -> encode1RM(0x9F_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETGE  -> encode1RM(0x9D_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETL   -> encode1RM(0x9C_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETLE  -> encode1RM(0x9E_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNA  -> encode1RM(0x96_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNAE -> encode1RM(0x92_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNB  -> encode1RM(0x93_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNBE -> encode1RM(0x97_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNC  -> encode1RM(0x93_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNE  -> encode1RM(0x95_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNG  -> encode1RM(0x9E_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNGE -> encode1RM(0x9C_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNL  -> encode1RM(0x9D_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNLE -> encode1RM(0x9F_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNO  -> encode1RM(0x91_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNP  -> encode1RM(0x9B_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNS  -> encode1RM(0x99_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETNZ  -> encode1RM(0x95_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETO   -> encode1RM(0x90_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETP   -> encode1RM(0x9A_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETPE  -> encode1RM(0x9A_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETPO  -> encode1RM(0x9B_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETS   -> encode1RM(0x98_0F, 0, node, Widths.ONLY_8)
-			Mnemonic.SETZ   -> encode1RM(0x94_0F, 0, node, Widths.ONLY_8)
+			Mnemonic.SETA   -> encode1RM(0x97_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETAE  -> encode1RM(0x93_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETB   -> encode1RM(0x92_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETBE  -> encode1RM(0x96_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETC   -> encode1RM(0x92_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETE   -> encode1RM(0x94_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETG   -> encode1RM(0x9F_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETGE  -> encode1RM(0x9D_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETL   -> encode1RM(0x9C_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETLE  -> encode1RM(0x9E_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNA  -> encode1RM(0x96_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNAE -> encode1RM(0x92_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNB  -> encode1RM(0x93_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNBE -> encode1RM(0x97_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNC  -> encode1RM(0x93_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNE  -> encode1RM(0x95_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNG  -> encode1RM(0x9E_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNGE -> encode1RM(0x9C_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNL  -> encode1RM(0x9D_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNLE -> encode1RM(0x9F_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNO  -> encode1RM(0x91_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNP  -> encode1RM(0x9B_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNS  -> encode1RM(0x99_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETNZ  -> encode1RM(0x95_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETO   -> encode1RM(0x90_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETP   -> encode1RM(0x9A_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETPE  -> encode1RM(0x9A_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETPO  -> encode1RM(0x9B_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETS   -> encode1RM(0x98_0F, 0, node, Widths.ONLY8)
+			Mnemonic.SETZ   -> encode1RM(0x94_0F, 0, node, Widths.ONLY8)
 
 			Mnemonic.RET   -> { writer.u8(0xC2); encodeImm16(node.op1) }
 			Mnemonic.RETF  -> { writer.u8(0xCA); encodeImm16(node.op1) }
 			Mnemonic.INT   -> { writer.u8(0xCD); encodeImm16(node.op1) }
-			Mnemonic.BSWAP -> encode1OpReg(0xC8_0F, node.op1.asReg, Widths.NO_8_16)
+			Mnemonic.BSWAP -> encode1OpReg(0xC8_0F, node.op1.asReg, Widths.NO16)
 			Mnemonic.PUSH  -> assemblePUSH(node)
 			Mnemonic.POP   -> assemblePOP(node)
 			Mnemonic.INC   -> encode1RM(0xFE, 0, node, Widths.ALL)
@@ -803,36 +895,36 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.SHR -> assembleGroup2(node, 5)
 			Mnemonic.SAR -> assembleGroup2(node, 7)
 
-			Mnemonic.CMOVA   -> encode2RRM(0x47_0F, node, Widths.NO_8)
-			Mnemonic.CMOVAE  -> encode2RRM(0x43_0F, node, Widths.NO_8)
-			Mnemonic.CMOVB   -> encode2RRM(0x42_0F, node, Widths.NO_8)
-			Mnemonic.CMOVBE  -> encode2RRM(0x46_0F, node, Widths.NO_8)
-			Mnemonic.CMOVC   -> encode2RRM(0x42_0F, node, Widths.NO_8)
-			Mnemonic.CMOVE   -> encode2RRM(0x44_0F, node, Widths.NO_8)
-			Mnemonic.CMOVG   -> encode2RRM(0x4F_0F, node, Widths.NO_8)
-			Mnemonic.CMOVGE  -> encode2RRM(0x4D_0F, node, Widths.NO_8)
-			Mnemonic.CMOVL   -> encode2RRM(0x4C_0F, node, Widths.NO_8)
-			Mnemonic.CMOVLE  -> encode2RRM(0x4E_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNA  -> encode2RRM(0x46_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNAE -> encode2RRM(0x42_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNB  -> encode2RRM(0x43_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNBE -> encode2RRM(0x47_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNC  -> encode2RRM(0x43_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNE  -> encode2RRM(0x45_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNG  -> encode2RRM(0x4E_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNGE -> encode2RRM(0x4C_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNL  -> encode2RRM(0x4D_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNLE -> encode2RRM(0x4F_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNO  -> encode2RRM(0x41_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNP  -> encode2RRM(0x4B_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNS  -> encode2RRM(0x49_0F, node, Widths.NO_8)
-			Mnemonic.CMOVNZ  -> encode2RRM(0x45_0F, node, Widths.NO_8)
-			Mnemonic.CMOVO   -> encode2RRM(0x40_0F, node, Widths.NO_8)
-			Mnemonic.CMOVP   -> encode2RRM(0x4A_0F, node, Widths.NO_8)
-			Mnemonic.CMOVPE  -> encode2RRM(0x4A_0F, node, Widths.NO_8)
-			Mnemonic.CMOVPO  -> encode2RRM(0x4B_0F, node, Widths.NO_8)
-			Mnemonic.CMOVS   -> encode2RRM(0x48_0F, node, Widths.NO_8)
-			Mnemonic.CMOVZ   -> encode2RRM(0x44_0F, node, Widths.NO_8)
+			Mnemonic.CMOVA   -> encode2RRM(0x47_0F, node, Widths.NO8)
+			Mnemonic.CMOVAE  -> encode2RRM(0x43_0F, node, Widths.NO8)
+			Mnemonic.CMOVB   -> encode2RRM(0x42_0F, node, Widths.NO8)
+			Mnemonic.CMOVBE  -> encode2RRM(0x46_0F, node, Widths.NO8)
+			Mnemonic.CMOVC   -> encode2RRM(0x42_0F, node, Widths.NO8)
+			Mnemonic.CMOVE   -> encode2RRM(0x44_0F, node, Widths.NO8)
+			Mnemonic.CMOVG   -> encode2RRM(0x4F_0F, node, Widths.NO8)
+			Mnemonic.CMOVGE  -> encode2RRM(0x4D_0F, node, Widths.NO8)
+			Mnemonic.CMOVL   -> encode2RRM(0x4C_0F, node, Widths.NO8)
+			Mnemonic.CMOVLE  -> encode2RRM(0x4E_0F, node, Widths.NO8)
+			Mnemonic.CMOVNA  -> encode2RRM(0x46_0F, node, Widths.NO8)
+			Mnemonic.CMOVNAE -> encode2RRM(0x42_0F, node, Widths.NO8)
+			Mnemonic.CMOVNB  -> encode2RRM(0x43_0F, node, Widths.NO8)
+			Mnemonic.CMOVNBE -> encode2RRM(0x47_0F, node, Widths.NO8)
+			Mnemonic.CMOVNC  -> encode2RRM(0x43_0F, node, Widths.NO8)
+			Mnemonic.CMOVNE  -> encode2RRM(0x45_0F, node, Widths.NO8)
+			Mnemonic.CMOVNG  -> encode2RRM(0x4E_0F, node, Widths.NO8)
+			Mnemonic.CMOVNGE -> encode2RRM(0x4C_0F, node, Widths.NO8)
+			Mnemonic.CMOVNL  -> encode2RRM(0x4D_0F, node, Widths.NO8)
+			Mnemonic.CMOVNLE -> encode2RRM(0x4F_0F, node, Widths.NO8)
+			Mnemonic.CMOVNO  -> encode2RRM(0x41_0F, node, Widths.NO8)
+			Mnemonic.CMOVNP  -> encode2RRM(0x4B_0F, node, Widths.NO8)
+			Mnemonic.CMOVNS  -> encode2RRM(0x49_0F, node, Widths.NO8)
+			Mnemonic.CMOVNZ  -> encode2RRM(0x45_0F, node, Widths.NO8)
+			Mnemonic.CMOVO   -> encode2RRM(0x40_0F, node, Widths.NO8)
+			Mnemonic.CMOVP   -> encode2RRM(0x4A_0F, node, Widths.NO8)
+			Mnemonic.CMOVPE  -> encode2RRM(0x4A_0F, node, Widths.NO8)
+			Mnemonic.CMOVPO  -> encode2RRM(0x4B_0F, node, Widths.NO8)
+			Mnemonic.CMOVS   -> encode2RRM(0x48_0F, node, Widths.NO8)
+			Mnemonic.CMOVZ   -> encode2RRM(0x44_0F, node, Widths.NO8)
 
 			Mnemonic.MOVZX   -> assembleMovExtend(node, 0xB6_0F, 0xB7_0F)
 			Mnemonic.MOVSX   -> assembleMovExtend(node, 0xBE_0F, 0xBF_0F)
@@ -841,7 +933,7 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.IN  -> assembleIN(node)
 			Mnemonic.OUT -> assembleOUT(node)
 
-			Mnemonic.LEA -> encode2RM(0x8D, node.op1.asReg, node.op2.asMem, Widths.NO_8)
+			Mnemonic.LEA -> encode2RM(0x8D, node.op1.asReg, node.op2.asMem, Widths.NO8)
 
 			Mnemonic.XCHG -> assembleXCHG(node)
 
@@ -849,7 +941,7 @@ class Assembler(parseResult: ParseResult) {
 
 			Mnemonic.TEST -> assembleTEST(node)
 
-			Mnemonic.IMUL -> encode2RRM(0xAF_0F, node, Widths.NO_8)
+			Mnemonic.IMUL -> encode2RRM(0xAF_0F, node, Widths.NO8)
 
 			Mnemonic.ENTER -> assembleENTER(node)
 			Mnemonic.ENTERW -> assembleENTER(node)
@@ -859,10 +951,10 @@ class Assembler(parseResult: ParseResult) {
 			Mnemonic.BTR -> assembleBT(node, 0xB3_0F, 6)
 			Mnemonic.BTC -> assembleBT(node, 0xBB_0F, 7)
 
-			Mnemonic.BSF -> encode2RRM(0xBC_0F, node, Widths.NO_8)
-			Mnemonic.BSR -> encode2RRM(0xBD_0F, node, Widths.NO_8)
+			Mnemonic.BSF -> encode2RRM(0xBC_0F, node, Widths.NO8)
+			Mnemonic.BSR -> encode2RRM(0xBD_0F, node, Widths.NO8)
 
-			Mnemonic.MOVNTI -> encode2RM(0xC3_0F, node.op2.asReg, node.op1.asMem, Widths.NO_8_16)
+			Mnemonic.MOVNTI -> encode2RM(0xC3_0F, node.op2.asReg, node.op1.asMem, Widths.NO16)
 
 			else -> error()
 		}
@@ -887,17 +979,16 @@ class Assembler(parseResult: ParseResult) {
 
 
 
-	/*
-	MOV SREG and MOFFS?
-	FPU
-	 */
+
+	private fun encodeFpu1ST(opcode: Int, op1: STRegister) {
+		writer.u16(opcode + (op1.value shl 8))
+	}
 
 
 
 	private fun assembleFLD(node: InstructionNode) {
 		if(node.op1 is STRegNode) {
-			writer.u8(0xD9)
-			writer.u8(0xC0 + node.op1.value.ordinal)
+			encodeFpu1ST(0xC0D9, node.op1.value)
 		} else if(node.op1 is MemNode) {
 			when(node.op1.width) {
 				null -> error()
@@ -926,15 +1017,15 @@ class Assembler(parseResult: ParseResult) {
 			val op2 = node.op2.value
 
 			when(op2.width) {
-				Width.BIT8  -> encodeBase2RR(opcode1, op1, op2, Widths.NO_8)
-				Width.BIT16 -> encodeBase2RR(opcode2, op1, op2, Widths.NO_8_16)
+				Width.BIT8  -> encodeBase2RR(opcode1, op1, op2, Widths.NO8)
+				Width.BIT16 -> encodeBase2RR(opcode2, op1, op2, Widths.NO16)
 				else        -> error()
 			}
 		} else if(node.op2 is MemNode) {
 			when(node.op2.width) {
 				null        -> error()
-				Width.BIT8  -> encodeBase2RM(opcode1, op1, node.op2, Widths.NO_8)
-				Width.BIT16 -> encodeBase2RM(opcode2, op1, node.op2, Widths.NO_8_16)
+				Width.BIT8  -> encodeBase2RM(opcode1, op1, node.op2, Widths.NO8)
+				Width.BIT16 -> encodeBase2RM(opcode2, op1, node.op2, Widths.NO16)
 				else        -> error()
 			}
 		} else {
@@ -959,13 +1050,13 @@ class Assembler(parseResult: ParseResult) {
 
 			if(op2.width.isNot32) error()
 
-			encodeBase2RR(0x63, op1, op2, Widths.NO_8)
+			encodeBase2RR(0x63, op1, op2, Widths.NO8)
 		} else if(node.op2 is MemNode) {
 			val width2 = node.op2.width
 
 			if(width2 != null && width2.isNot32) error()
 
-			encodeBase2RM(0x63, op1, node.op2, Widths.NO_8)
+			encodeBase2RM(0x63, op1, node.op2, Widths.NO8)
 		} else {
 			error()
 		}
@@ -985,9 +1076,9 @@ class Assembler(parseResult: ParseResult) {
 	 */
 	private fun assembleBT(node: InstructionNode, opcode: Int, extension: Int) {
 		if(node.op2 is RegNode) {
-			encode2RMR(opcode, node, Widths.NO_8)
+			encode2RMR(opcode, node, Widths.NO8)
 		} else if(node.op2 is ImmNode) {
-			encode1RM(0xBA_0F, extension, node, Widths.NO_8)
+			encode1RM(0xBA_0F, extension, node, Widths.NO8)
 			encodeImm8(node.op2)
 		} else {
 			error()
@@ -1021,9 +1112,9 @@ class Assembler(parseResult: ParseResult) {
 			writer.u8(0xE8)
 			writeRel(rel, Width.BIT32)
 		} else if(node.modifier == Modifier.FAR) {
-			encode1M(0xFF, 3, node.op1.asMem, Widths.NO_8)
+			encode1M(0xFF, 3, node.op1.asMem, Widths.NO8)
 		} else {
-			encode1RM(0xFF, 2, node, Widths.ONLY_64)
+			encode1RM(0xFF, 2, node, Widths.ONLY64)
 		}
 	}
 
@@ -1046,9 +1137,9 @@ class Assembler(parseResult: ParseResult) {
 				writeRel(rel, Width.BIT32)
 			}
 		} else if(node.modifier == Modifier.FAR) {
-			encode1M(0xFF, 5, node.op1.asMem, Widths.NO_8)
+			encode1M(0xFF, 5, node.op1.asMem, Widths.NO8)
 		} else {
-			encode1RM(0xFF, 4, node, Widths.ONLY_64)
+			encode1RM(0xFF, 4, node, Widths.ONLY64)
 		}
 	}
 
@@ -1084,10 +1175,10 @@ class Assembler(parseResult: ParseResult) {
 		val imm = resolve(node.op3)
 
 		if(imm.isImm8) {
-			encode2RRM(0x6B, node, Widths.NO_8)
+			encode2RRM(0x6B, node, Widths.NO8)
 			writeImm(imm, Width.BIT8)
 		} else {
-			encode2RRM(0x69, node, Widths.NO_8)
+			encode2RRM(0x69, node, Widths.NO8)
 			writeImm(imm, node.op1.value.width)
 		}
 	}
@@ -1147,8 +1238,8 @@ class Assembler(parseResult: ParseResult) {
 			val op1 = node.op1.value
 			if(node.op2 is RegNode) {
 				val op2 = node.op2.value
-				if(op1.isA) encode1OpReg(0x90, op2, Widths.NO_8)
-				else if(op2.isA) encode1OpReg(0x90, op1, Widths.NO_8)
+				if(op1.isA) encode1OpReg(0x90, op2, Widths.NO8)
+				else if(op2.isA) encode1OpReg(0x90, op1, Widths.NO8)
 				else encode2RR(0x86, op1, op2, Widths.ALL)
 			} else if(node.op2 is MemNode) {
 				encode2RM(0x86, op1, node.op2, Widths.ALL)
@@ -1261,9 +1352,9 @@ class Assembler(parseResult: ParseResult) {
 	 */
 	private fun assemblePUSH(node: InstructionNode) {
 		if(node.op1 is RegNode) {
-			encode1OpReg(0x50, node.op1.value, Widths.NO_8_32)
+			encode1OpReg(0x50, node.op1.value, Widths.NO832)
 		} else if(node.op1 is MemNode) {
-			encode1M(0xFF, 6, node.op1, Widths.NO_8_32)
+			encode1M(0xFF, 6, node.op1, Widths.NO832)
 		} else if(node.op1 is ImmNode) {
 			val imm = resolve(node.op1)
 			if(imm.isImm8) {
@@ -1297,9 +1388,9 @@ class Assembler(parseResult: ParseResult) {
 	 */
 	private fun assemblePOP(node: InstructionNode) {
 		if(node.op1 is RegNode) {
-			encode1OpReg(0x58, node.op1.value, Widths.NO_8_32)
+			encode1OpReg(0x58, node.op1.value, Widths.NO832)
 		} else if(node.op1 is MemNode) {
-			encode1M(0x8F, 0, node.op1, Widths.NO_8_32)
+			encode1M(0x8F, 0, node.op1, Widths.NO832)
 		} else if(node.op1 is SRegNode) {
 			if(node.modifier == Modifier.O16) writer.u8(0x66)
 			when(node.op1.value) {
@@ -1350,7 +1441,7 @@ class Assembler(parseResult: ParseResult) {
 			} else if(node.op2 is ImmNode) {
 				val imm = resolve(node.op2)
 				if(imm in Byte.MIN_VALUE..Byte.MAX_VALUE && op1.width.isNot8) {
-					encode1R(0x83, extension, op1, Widths.NO_8)
+					encode1R(0x83, extension, op1, Widths.NO8)
 					writeImm(imm, Width.BIT8)
 				} else if(op1.isA) {
 					encodeNone(startOpcode + 4, op1.width)
@@ -1367,7 +1458,7 @@ class Assembler(parseResult: ParseResult) {
 				val imm = resolve(node.op2)
 				val width = node.op1.width ?: error()
 				if(imm in Byte.MIN_VALUE..Byte.MAX_VALUE && width.isNot8) {
-					encode1M(0x83, extension, node.op1, Widths.NO_8)
+					encode1M(0x83, extension, node.op1, Widths.NO8)
 					writeImm(imm, Width.BIT8)
 				} else {
 					encode1M(0x80, extension, node.op1)
@@ -1388,9 +1479,9 @@ class Assembler(parseResult: ParseResult) {
 	private fun assembleShiftD(node: InstructionNode, startOpcode: Int) {
 		if(node.op3 is RegNode) {
 			if(node.op3.value != Register.CL) error()
-			encode2RMR(startOpcode + 1, node, Widths.NO_8)
+			encode2RMR(startOpcode + 1, node, Widths.NO8)
 		} else if(node.op3 is ImmNode) {
-			encode2RMR(startOpcode, node, Widths.NO_8)
+			encode2RMR(startOpcode, node, Widths.NO8)
 			encodeImm8(node.op3)
 		} else {
 			error()

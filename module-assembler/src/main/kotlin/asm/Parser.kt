@@ -118,8 +118,9 @@ class Parser(lexResult: LexResult) {
 
 		while(true) {
 			components.add(readExpression())
-			if(tokens[pos++] != SymbolToken.COMMA)
+			if(tokens[pos] != SymbolToken.COMMA)
 				break
+			pos++
 		}
 
 		nodes.add(DbNode(components))

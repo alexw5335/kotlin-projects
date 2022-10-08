@@ -43,6 +43,12 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 				keywordMap[r.string] = token
 				keywordMap[r.name] = token
 			}
+
+			for(r in STRegister.values()) {
+				val token = STRegToken(r)
+				keywordMap[r.string] = token
+				keywordMap[r.name] = token
+			}
 		}
 
 	}

@@ -402,6 +402,13 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 
 
 
+	fun asciiNT(string: String) {
+		ascii(string)
+		u8(0)
+	}
+
+
+
 	fun ascii8(pos: Int, string: String) {
 		for(i in string.indices)
 			u8(pos + i, string[i].code)
