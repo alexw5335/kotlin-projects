@@ -450,5 +450,7 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 
 	fun alignEven() { if(pos and 1 != 0) u8(0) }
 
+	fun align8() { zero(pos.mod(8)) }
+
 
 }

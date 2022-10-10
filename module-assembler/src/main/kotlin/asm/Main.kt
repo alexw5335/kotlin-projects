@@ -25,10 +25,7 @@ private const val input2 = """
 
 
 fun main() {
-/*	val parseResult = Parser.parse(Lexer.lex(input))
-	val bytes = Assembler(parseResult).assemble()
-	Files.write(Paths.get("test.bin"), bytes)*/
-	val bytes2 = Linker(AssembleResult(ByteArray(0), emptyList())).link()
+	val bytes2 = Linker().link()
 	Files.write(Paths.get("test.exe"), bytes2)
 	//Core.run("DUMPBIN /ALL test.exe")
 }
