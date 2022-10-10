@@ -9,6 +9,7 @@ import java.nio.file.Paths
 
 
 private const val input = """
+	import KERNEL32.dll:WriteFile
 main:
 	sub rsp, 56
 	mov ecx, -11

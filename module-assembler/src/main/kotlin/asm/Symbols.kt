@@ -14,7 +14,7 @@ enum class SymbolType {
 
 	LABEL,
 	INT,
-	EXTERN;
+	IMPORT;
 
 }
 

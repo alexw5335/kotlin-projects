@@ -7,12 +7,12 @@ val Token.printableString get() = when(this) {
 	is IdToken        -> "ID        $value"
 	is IntToken       -> "INT       $value"
 	is MnemonicToken  -> "MNEMONIC  ${value.string}"
-	is RegToken  -> "REGISTER  ${value.string}"
+	is RegToken       -> "REGISTER  ${value.string}"
 	is KeywordToken   -> "KEYWORD   $string"
 	is EndToken       -> "END OF STREAM"
 	is CharToken      -> "CHAR      $value"
 	is StringToken    -> "STRING    $value"
-	is SRegToken -> "SREG:     $value"
+	is SRegToken      -> "SREG:     $value"
 	is STRegToken     -> "STREG:    $value"
 }
 
@@ -69,7 +69,7 @@ enum class KeywordToken(val width: Width? = null) : Token {
 	CONST,
 	ENUM,
 	DB,
-	EXTERN;
+	IMPORT;
 
 	val string = name.lowercase()
 

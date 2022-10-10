@@ -1,11 +1,11 @@
 package asm
 
-class Assembler2(parseResult: ParseResult) {
+class Assembler2(parserResult: ParserResult) {
 
 
-	private val nodes = parseResult.nodes
+	private val nodes = parserResult.nodes
 
-	private val symbols = parseResult.symbols
+	private val symbols = parserResult.symbols
 
 	private fun error(): Nothing = error("Invalid encoding")
 

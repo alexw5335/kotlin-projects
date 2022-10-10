@@ -11,3 +11,13 @@ fun<E, K> List<E>.associateFlatMap(mapper: (E) -> K): Map<K, List<E>> {
 	}
 	return map
 }
+
+
+
+fun<E, K> List<E>.associateByList(mapper: (E) -> List<K>): Map<K, E> {
+	val map = HashMap<K, E>()
+	for(element in this)
+		for(key in mapper(element))
+			map[key] = element
+	return map
+}

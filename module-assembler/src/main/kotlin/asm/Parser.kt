@@ -3,12 +3,12 @@ package asm
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class Parser(lexResult: LexResult) {
+class Parser(lexerResult: LexerResult) {
 
 
 	companion object {
 
-		fun parse(lexResult: LexResult) = Parser(lexResult).parse()
+		fun parse(lexerResult: LexerResult) = Parser(lexerResult).parse()
 
 	}
 
@@ -16,9 +16,9 @@ class Parser(lexResult: LexResult) {
 
 	private var pos = 0
 
-	private val tokens = lexResult.tokens
+	private val tokens = lexerResult.tokens
 
-	private val newlines = lexResult.newlines
+	private val newlines = lexerResult.newlines
 
 	private val nodes = ArrayList<AstNode>()
 
@@ -32,9 +32,13 @@ class Parser(lexResult: LexResult) {
 
 	private val prevToken get() = tokens[pos - 1]
 
+	private fun expect(token: Token) {
+		if(tokens[pos++] != token) error("Expecting $token, found: $prevToken")
+	}
 
 
-	fun parse(): ParseResult {
+
+	fun parse(): ParserResult {
 		while(true) {
 			when(val token = tokens[pos++]) {
 				is MnemonicToken      -> nodes.add(parseInstruction(token.value))
@@ -46,7 +50,7 @@ class Parser(lexResult: LexResult) {
 			}
 		}
 
-		return ParseResult(nodes, symbols)
+		return ParserResult(nodes, symbols)
 	}
 
 
@@ -88,18 +92,20 @@ class Parser(lexResult: LexResult) {
 
 	private fun parseKeyword(keyword: KeywordToken) {
 		when(keyword) {
-			KeywordToken.DB -> parseDb()
-			KeywordToken.CONST -> parseConst()
-			KeywordToken.EXTERN -> parseExtern()
+			KeywordToken.DB     -> parseDb()
+			KeywordToken.CONST  -> parseConst()
+			KeywordToken.IMPORT -> parseImport()
 			else -> { }
 		}
 	}
 
 
 
-	private fun parseExtern() {
+	private fun parseImport() {
+		val dll = identifier()
+		expect(SymbolToken.COLON)
 		val name = identifier()
-		symbols[name] = Symbol(name, SymbolType.EXTERN)
+		symbols[name] = Symbol(name, SymbolType.IMPORT)
 		expectStatementEnd()
 	}
 

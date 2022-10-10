@@ -3,12 +3,12 @@ package asm
 import core.binary.BinaryWriter
 import java.util.*
 
-class Assembler(parseResult: ParseResult) {
+class Assembler(parserResult: ParserResult) {
 
 
-	private val nodes = parseResult.nodes
+	private val nodes = parserResult.nodes
 
-	private val symbols = parseResult.symbols
+	private val symbols = parserResult.symbols
 
 	private val writer = BinaryWriter()
 

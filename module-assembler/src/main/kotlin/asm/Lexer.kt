@@ -61,7 +61,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 
 
-	fun lex(): LexResult {
+	fun lex(): LexerResult {
 		while(true) {
 			val char = chars[pos++]
 
@@ -121,7 +121,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars) {
 
 		for(i in 0 until 4) tokens.add(EndToken)
 		newlines.ensureBitCapacity(tokens.size)
-		return LexResult(tokens, newlines)
+		return LexerResult(tokens, newlines)
 	}
 
 
