@@ -78,7 +78,7 @@ sealed interface AstNode
 
 
 
-class LabelNode(val symbol: Symbol) : AstNode
+class LabelNode(val symbol: LabelSymbol) : AstNode
 
 
 

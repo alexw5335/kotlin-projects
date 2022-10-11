@@ -1,6 +1,5 @@
 package core.binary
 
-import java.nio.charset.Charset
 import java.util.*
 
 class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
@@ -15,6 +14,23 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 
 
 	var pos = 0
+
+
+
+	inline fun retainPos(block: () -> Unit) {
+		val prevPos = pos
+		block()
+		pos = prevPos
+	}
+
+
+
+	inline fun retainPos(newPos: Int, block: () -> Unit) {
+		val prevPos = pos
+		pos = newPos
+		block()
+		pos = prevPos
+	}
 
 
 

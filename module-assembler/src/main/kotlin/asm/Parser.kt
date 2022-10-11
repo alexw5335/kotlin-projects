@@ -24,6 +24,8 @@ class Parser(lexerResult: LexerResult) {
 
 	private val symbols = HashMap<String, Symbol>()
 
+	private val imports = ArrayList<DllImport>()
+
 
 
 	private fun atNewline() = newlines[pos]
@@ -50,7 +52,7 @@ class Parser(lexerResult: LexerResult) {
 			}
 		}
 
-		return ParserResult(nodes, symbols)
+		return ParserResult(nodes, symbols, imports)
 	}
 
 
@@ -83,7 +85,7 @@ class Parser(lexerResult: LexerResult) {
 	private fun parseId(id: IdToken) {
 		if(tokens[pos++] != SymbolToken.COLON)
 			error("Expecting colon after identifier")
-		val symbol = Symbol(id.value, SymbolType.LABEL)
+		val symbol = LabelSymbol(id.value)
 		symbols[symbol.name] = symbol
 		nodes.add(LabelNode(symbol))
 	}
@@ -105,8 +107,10 @@ class Parser(lexerResult: LexerResult) {
 		val dll = identifier()
 		expect(SymbolToken.COLON)
 		val name = identifier()
-		symbols[name] = Symbol(name, SymbolType.IMPORT)
 		expectStatementEnd()
+		val symbol = ImportSymbol(name)
+		symbols[name] = symbol
+		imports.add(DllImport(dll, symbol))
 	}
 
 

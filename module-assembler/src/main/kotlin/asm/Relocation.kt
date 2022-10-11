@@ -1,8 +1,8 @@
 package asm
 
 data class Relocation(
-	val symbol   : Symbol,
-	val symbol2  : Symbol?,
+	val pos      : PosRef,
+	val neg      : PosRef,
 	val position : Int,
 	val width    : Width,
 	val disp     : Long

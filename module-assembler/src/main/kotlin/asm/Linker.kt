@@ -1,15 +1,20 @@
 package asm
 
+import core.associateFlatMap
 import core.binary.BinaryWriter
 
-class Linker {
+class Linker(assembleResult: AssembleResult) {
+
+
+	private val textBytes = assembleResult.text
+
+	private val imports: Map<String, List<DllImport>> = assembleResult.imports.associateFlatMap { it.dll }
+
+	private val relocations = assembleResult.relocations
+
 
 
 	private val writer = BinaryWriter()
-
-	private val imports = listOf(
-		"KERNEL32.dll" to listOf("WriteFile", "ExitProcess")
-	)
 
 
 
@@ -23,17 +28,15 @@ class Linker {
 
 	private val Int.byte get() = toUByte().toByte()
 
-	private val textBytes = byteArrayOf(0xC3.byte)
-
 
 
 	private val coffHeaderPos = 0x40
 
 	private val optionalHeaderPos = 0x58
 
-	private val pEntryPointPos = optionalHeaderPos + 20
+	private val pEntryPointPos = optionalHeaderPos + 16
 
-	private val sizeOfImagePos = pEntryPointPos + 40
+	private val sizeOfImagePos = optionalHeaderPos + 56
 
 	private val dataDirectoriesPos = 0xC8
 
@@ -64,7 +67,7 @@ class Linker {
 		writer.u32(0)          // sizeOfCode
 		writer.u32(0)          // sizeOfInitialisedData
 		writer.u32(0)          // sizeOfUninitialisedData
-		writer.u32(0)          // pEntryPoint
+		writer.u32(0)          // pEntryPoint        fill in later
 		writer.u32(0)          // baseOfCode
 		writer.u64(0x00_40_00_00) // imageBase
 		writer.u32(sectionAlignment) // sectionAlignment
@@ -75,7 +78,7 @@ class Linker {
 		writer.u16(3)          // majorSubsystemVersion
 		writer.u16(10)         // minorSubsystemVersion
 		writer.u32(0)          // win32VersionValue
-		writer.u32(8192)       // sizeOfImage
+		writer.u32(0)          // sizeOfImage        fill in later
 		writer.u32(0x200)      // sizeOfHeaders
 		writer.u32(0)          // checksum
 		writer.u16(3)          // subsystem
@@ -113,11 +116,27 @@ class Linker {
 		writer.zeroTo(rdataPos)
 
 		writeImportDirectory(rdataRva)
+		writer.zeroTo(rdataPos + rdataSize.roundToFileAlignment)
 
-		writer.u32(rdataHeaderPos + 8, rdataSize)
-		writer.u32(rdataHeaderPos + 16, rdataSize)
+		val rDataVirtualSize = rdataSize.roundToSectionAlignment
+
+		writer.u32(rdataHeaderPos + 8, rDataVirtualSize)
+		writer.u32(rdataHeaderPos + 16, rdataSize.roundToFileAlignment)
 		writer.u32(dataDirectoriesPos + 8, rdataRva)
 		writer.u32(dataDirectoriesPos + 12, rdataSize)
+
+		for(r in relocations) {
+			val value = r.disp + r.pos.pos - r.neg.pos
+			when(r.width) {
+				Width.BIT8  -> writer.s8(0x200 + r.position, value.toInt())
+				Width.BIT16 -> writer.s16(0x200 + r.position, value.toInt())
+				Width.BIT32 -> writer.s32(0x200 + r.position, value.toInt())
+				else        -> writer.s64(0x200 + r.position, value)
+			}
+		}
+
+		writer.u32(pEntryPointPos, sectionAlignment)
+		writer.u32(sizeOfImagePos, rdataRva + rDataVirtualSize)
 
 		return writer.trimmedBytes()
 	}
@@ -133,15 +152,15 @@ class Linker {
 
 		writer.zero(idtsSize)
 
-		for(dllIndex in imports.indices) {
-			val dll = imports[dllIndex].first
-			val imports = imports[dllIndex].second
+		for((dllIndex, pair) in imports.entries.withIndex()) {
+			val dll = pair.key
+			val imports = pair.value
 
 			val idtPos = idtsPos + dllIndex * 20
 
 			val dllNamePos = writer.pos
 
-			writer.asciiNT(dll)
+			writer.asciiNT("$dll.dll")
 			writer.align8()
 
 			val iltPos = writer.pos
@@ -156,8 +175,9 @@ class Linker {
 				writer.u32(iltPos + importIndex * 8, writer.pos - dif)
 				writer.u32(iatPos + importIndex * 8, writer.pos - dif)
 				writer.u16(0)
-				writer.asciiNT(import)
+				writer.asciiNT(import.symbol.name)
 				writer.alignEven()
+				import.symbol.pos = iatPos + importIndex * 8
 			}
 
 			writer.u32(idtPos, iltPos - dif)

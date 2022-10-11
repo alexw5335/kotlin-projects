@@ -9,7 +9,9 @@ import java.nio.file.Paths
 
 
 private const val input = """
-	import KERNEL32.dll:WriteFile
+import KERNEL32:WriteFile
+import KERNEL32:ExitProcess
+
 main:
 	sub rsp, 56
 	mov ecx, -11
@@ -17,6 +19,8 @@ main:
 	mov r8d, 1
 	mov r9, [rsp + 40]
 	mov qword [rsp + 32], 0
+	call WriteFile
+	call ExitProcess
 """
 
 private const val input2 = """
@@ -26,13 +30,14 @@ private const val input2 = """
 
 
 fun main() {
-	val bytes2 = Linker().link()
-	Files.write(Paths.get("test.exe"), bytes2)
+	val bytes = Linker(Assembler(Parser.parse(Lexer.lex(input))).assemble()).link()
+	Files.write(Paths.get("test.exe"), bytes)
 	//Core.run("DUMPBIN /ALL test.exe")
 }
 
 
 
+/*
 private fun assemble(input: String) {
 	val parseResult = Parser.parse(Lexer.lex(input))
 	val bytes = Assembler(parseResult).assemble()
@@ -52,4 +57,4 @@ private fun assembleAndCompare(input: String, input2: String = input) {
 	val nasmBytes = Core.nasmAssemble(input2)
 	if(nasmBytes.contentEquals(bytes)) println("Equal") else println("Not equal")
 	for(n in nasmBytes) println("${n.hex8}  ${n.bin233}")
-}
+}*/

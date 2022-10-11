@@ -10,6 +10,8 @@ class Assembler(parserResult: ParserResult) {
 
 	private val symbols = parserResult.symbols
 
+	private val imports = parserResult.imports
+
 	private val writer = BinaryWriter()
 
 	private fun error(): Nothing = error("Invalid encoding")
@@ -18,7 +20,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	fun assemble(): ByteArray {
+	fun assemble(): AssembleResult {
 		for(node in nodes) {
 			when(node) {
 				is InstructionNode -> assemble(node)
@@ -29,30 +31,7 @@ class Assembler(parserResult: ParserResult) {
 			}
 		}
 
-		for(r in relocations) {
-			var disp = r.disp + (r.symbol.data as LabelSymbolData).value
-			if(r.symbol2 != null) disp -= (r.symbol2.data as LabelSymbolData).value
-			when(r.width) {
-				Width.BIT8 -> {
-					if(!disp.isImm32) error()
-					writer.s8(r.position, disp.toInt())
-				}
-				Width.BIT16 -> {
-					if(!disp.isImm16) error()
-					writer.s16(r.position, disp.toInt())
-				}
-				Width.BIT32 -> {
-					if(!disp.isImm32) error()
-					writer.u32(r.position, disp.toInt())
-				}
-				Width.BIT64 -> {
-					writer.s64(r.position, disp)
-				}
-				else -> error()
-			}
-		}
-
-		return writer.trimmedBytes()
+		return AssembleResult(writer.trimmedBytes(), imports, relocations)
 	}
 
 
@@ -76,7 +55,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 	private fun handleLabel(label: LabelNode) {
-		label.symbol.data = LabelSymbolData(writer.pos)
+		label.symbol.pos = writer.pos
 	}
 
 
@@ -95,8 +74,8 @@ class Assembler(parserResult: ParserResult) {
 	private var baseReg: Register? = null
 	private var indexReg: Register? = null
 	private var indexScale = 0
-	private var posLabel: Symbol? = null
-	private var negLabel: Symbol? = null // only non-null if posLabel is also non-null
+	private var posLabel: PosRef? = null
+	private var negLabel: PosRef? = null // only non-null if posLabel is also non-null
 	private var hasLabel = false
 	private var aso = false
 
@@ -155,16 +134,17 @@ class Assembler(parserResult: ParserResult) {
 			if(node is IdNode) {
 				val symbol = symbols[node.name] ?: error()
 
-				if(symbol.type == SymbolType.INT)
-					return (symbol.data as IntSymbolData).value
+				if(symbol is IntSymbol)
+					return symbol.value
 
-				if(symbol.type == SymbolType.LABEL) {
+				if(symbol is PosRef) {
 					if(positivity == 0) {
 						error()
 					} else if(positivity > 0) {
 						if(posLabel != null) error()
 						posLabel = symbol
 					} else {
+						if(posLabel == null) error()
 						if(negLabel != null) error()
 						negLabel = symbol
 					}
@@ -216,6 +196,7 @@ class Assembler(parserResult: ParserResult) {
 		- In this case, +disp8 or +disp32 is required.
 	 */
 
+
 	private fun write(value: Long, width: Width) {
 		when(width) {
 			Width.BIT8 ->
@@ -246,7 +227,7 @@ class Assembler(parserResult: ParserResult) {
 		write(value, width)
 		if(negLabel != null) error()
 		if(posLabel != null)
-			relocations.add(Relocation(posLabel!!, null, writer.pos - width.bytes, width, value - writer.pos))
+			relocations.add(Relocation(posLabel!!, PosRef(writer.pos), writer.pos - width.bytes, width, value))
 	}
 
 
@@ -258,7 +239,7 @@ class Assembler(parserResult: ParserResult) {
 
 		if(posLabel != null)
 			if(negLabel != null)
-				relocations.add(Relocation(posLabel!!, negLabel, writer.pos - actualWidth.bytes, actualWidth, imm))
+				relocations.add(Relocation(posLabel!!, negLabel!!, writer.pos - actualWidth.bytes, actualWidth, imm))
 			else
 				error()
 	}
@@ -540,6 +521,7 @@ class Assembler(parserResult: ParserResult) {
 		val index = indexReg
 		val scale = indexScale
 		val label = posLabel
+		val negLabel = negLabel
 
 		if(aso) writer.u8(0x67)
 
@@ -550,7 +532,7 @@ class Assembler(parserResult: ParserResult) {
 			encodeOpcode(opcode)
 			encodeModRM(0b00, reg, 0b101)
 			writer.s32(disp)
-			relocations.add(Relocation(label, null, writer.pos - 4, Width.BIT32, disp.toLong() - writer.pos))
+			relocations.add(Relocation(label, PosRef(writer.pos), writer.pos - 4, Width.BIT32, disp.toLong()))
 			return
 		}
 
@@ -563,7 +545,10 @@ class Assembler(parserResult: ParserResult) {
 
 		fun checkRelocation() {
 			if(label != null)
-				relocations.add(Relocation(label, negLabel, writer.pos, Width.BIT32, disp.toLong()))
+				if(negLabel != null)
+					relocations.add(Relocation(label, negLabel, writer.pos, Width.BIT32, disp.toLong()))
+				else
+					error()
 		}
 
 		if(index != null) { // SIB

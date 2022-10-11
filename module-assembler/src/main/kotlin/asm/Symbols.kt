@@ -2,26 +2,26 @@ package asm
 
 
 
-class Symbol(
-	val name: String,
-	val type: SymbolType,
-	var data: SymbolData? = null
-)
-
-
-
-enum class SymbolType {
-
-	LABEL,
-	INT,
-	IMPORT;
-
+interface PosRef {
+	var pos: Int
 }
 
 
 
-sealed interface SymbolData
+private class PosRefImpl(override var pos: Int) : PosRef
 
-class IntSymbolData(val value: Long) : SymbolData
+fun PosRef(pos: Int = 0): PosRef = PosRefImpl(pos)
 
-class LabelSymbolData(val value: Int) : SymbolData
+
+
+interface Symbol {
+	val name: String
+}
+
+
+
+class IntSymbol(override val name: String, var value: Long = 0L) : Symbol
+
+class LabelSymbol(override val name: String, override var pos: Int = 0) : Symbol, PosRef
+
+class ImportSymbol(override val name: String, override var pos: Int = 0) : Symbol, PosRef
