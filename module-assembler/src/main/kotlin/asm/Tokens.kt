@@ -58,20 +58,33 @@ data class MnemonicToken(val value: Mnemonic) : Token
 
 
 
-enum class KeywordToken(val width: Width? = null) : Token {
+enum class KeywordToken(
+	vararg val strings: String,
+	val width: Width? = null,
+	val isModifier: Boolean = false
+) : Token {
 
-	BYTE(width = Width.BIT8),
-	WORD(width = Width.BIT16),
-	DWORD(width = Width.BIT32),
-	QWORD(width = Width.BIT64),
-	TWORD(width = Width.BIT80),
-	OWORD(width = Width.BIT128),
-	CONST,
-	ENUM,
-	DB,
-	IMPORT;
+	BYTE("byte", "BYTE", width = Width.BIT8),
+	WORD("word", "WORD", width = Width.BIT16),
+	DWORD("dword", "DWORD", width = Width.BIT32),
+	QWORD("qword", "QWORD", width = Width.BIT64),
+	TWORD("tword", "TWORD", width = Width.BIT80),
+	XWORD("xword", "XWORD", width = Width.BIT128),
+	CONST("const"),
+	ENUM("enum"),
+	DB("db", "DB"),
+	DW("dw", "DW"),
+	DD("dd", "DD"),
+	DQ("dq", "DQ"),
+	IMPORT("import"),
+	VAL("val"),
+	VAR("var"),
+	REP("rep", "repe", "repz", "REP", "REPE", "REPZ", isModifier = true),
+	REPNE("repne", "repnz", "REPNE", "REPNZ", isModifier = true),
+	SHORT("short", "SHORT"),
+	LOCK("lock", "LOCK", isModifier = true);
 
-	val string = name.lowercase()
+	val string = strings[0]
 
 }
 
@@ -107,4 +120,37 @@ enum class SymbolToken(
 	RIGHT_BRACE   ("}"),
 	PERIOD        (".", binaryOp = BinaryOp.DOT);
 
+}
+
+
+
+internal val keywordMap = HashMap<String, Token>().also { map ->
+	for(r in Register.values()) {
+		val token = RegToken(r)
+		map[r.string] = token
+		map[r.name] = token
+	}
+
+	for(m in Mnemonic.values()) {
+		val token = MnemonicToken(m)
+		map[m.string] = token
+		map[m.name] = token
+	}
+
+	for(k in KeywordToken.values()) {
+		for(s in k.strings)
+			map[s] = k
+	}
+
+	for(r in SRegister.values()) {
+		val token = SRegToken(r)
+		map[r.string] = token
+		map[r.name] = token
+	}
+
+	for(r in STRegister.values()) {
+		val token = STRegToken(r)
+		map[r.string] = token
+		map[r.name] = token
+	}
 }

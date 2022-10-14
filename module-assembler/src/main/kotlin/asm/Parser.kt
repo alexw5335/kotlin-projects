@@ -26,6 +26,8 @@ class Parser(lexerResult: LexerResult) {
 
 	private val imports = ArrayList<DllImport>()
 
+	private var shortImm = false
+
 
 
 	private fun atNewline() = newlines[pos]
@@ -43,7 +45,7 @@ class Parser(lexerResult: LexerResult) {
 	fun parse(): ParserResult {
 		while(true) {
 			when(val token = tokens[pos++]) {
-				is MnemonicToken      -> nodes.add(parseInstruction(token.value))
+				is MnemonicToken      -> nodes.add(parseInstruction(null, token.value))
 				is KeywordToken       -> parseKeyword(token)
 				is EndToken           -> break
 				is IdToken            -> parseId(token)
@@ -72,7 +74,7 @@ class Parser(lexerResult: LexerResult) {
 
 
 
-	private fun identifier() =  (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier name")
+	private fun identifier() = (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier name")
 
 
 
@@ -93,12 +95,30 @@ class Parser(lexerResult: LexerResult) {
 
 
 	private fun parseKeyword(keyword: KeywordToken) {
+		if(keyword.isModifier) {
+			val mnemonic = (tokens[pos++] as? MnemonicToken)?.value ?: error("Expecting instruction")
+			nodes.add(parseInstruction(keyword, mnemonic))
+			return
+		}
+
 		when(keyword) {
 			KeywordToken.DB     -> parseDb()
 			KeywordToken.CONST  -> parseConst()
 			KeywordToken.IMPORT -> parseImport()
+			KeywordToken.VAL    -> parseVal()
 			else -> { }
 		}
+	}
+
+
+
+	private fun parseVal() {
+		val name = identifier()
+		expect(SymbolToken.EQUALS)
+		val value = readExpression()
+		val symbol = ValSymbol(name)
+		symbols[name] = symbol
+		nodes.add(ValNode(symbol, value))
 	}
 
 
@@ -205,7 +225,11 @@ class Parser(lexerResult: LexerResult) {
 		var width: Width? = null
 
 		if(token is KeywordToken) {
-			width = token.width ?: error("Expected explicit memory width, found: $token")
+			if(token.width != null)
+				width = token.width
+			else if(token == KeywordToken.SHORT)
+				shortImm = true
+
 			token = tokens[++pos]
 		}
 
@@ -219,7 +243,7 @@ class Parser(lexerResult: LexerResult) {
 		if(width != null)
 			error("Unexpected width specifier")
 
-		return when(val node = readExpression()) {
+		val result = when(val node = readExpression()) {
 			is RegNode       -> node
 			is IntNode       -> ImmNode(node)
 			is BinaryNode,
@@ -229,41 +253,35 @@ class Parser(lexerResult: LexerResult) {
 			is STRegNode     -> node
 			else             -> error("Expecting operand, found ${tokens[pos - 1]}")
 		}
+
+		if(shortImm && result !is ImmNode) error("Unexpected immediate width specifier")
+
+		return result
 	}
 
 
 
-	private fun parseInstruction(mnemonic: Mnemonic): InstructionNode {
-		var modifier: Modifier? = null
+	private fun parseInstruction(modifier: KeywordToken?, mnemonic: Mnemonic): InstructionNode {
+		shortImm = false
 
-		if(tokens[pos] == SymbolToken.COLON) {
-			pos++
-
-			val string = (tokens[pos++] as? IdToken)?.value
-				?: error("Invalid instruction modifier: $prevToken")
-
-			modifier = Modifier.map[string]
-				?: error("Invalid instruction modifier: $string")
-		}
-
-		if(atStatementEnd()) return InstructionNode(modifier, mnemonic, null, null, null, null)
+		if(atStatementEnd()) return InstructionNode(modifier, shortImm, mnemonic, null, null, null, null)
 		val operand1 = parseOperand()
 
-		if(atStatementEnd()) return InstructionNode(modifier, mnemonic, operand1, null, null, null)
+		if(atStatementEnd()) return InstructionNode(modifier, shortImm, mnemonic, operand1, null, null, null)
 		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand2 = parseOperand()
 
-		if(atStatementEnd()) return InstructionNode(modifier, mnemonic, operand1, operand2, null, null)
+		if(atStatementEnd()) return InstructionNode(modifier, shortImm, mnemonic, operand1, operand2, null, null)
 		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand3 = parseOperand()
 
-		if(atStatementEnd()) return InstructionNode(modifier, mnemonic, operand1, operand2, operand3, null)
+		if(atStatementEnd()) return InstructionNode(modifier, shortImm, mnemonic, operand1, operand2, operand3, null)
 		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token: ${tokens[pos - 1]}")
 		val operand4 = parseOperand()
 
 		if(!atStatementEnd()) error("unexpected token: ${tokens[pos]}")
 
-		return InstructionNode(modifier, mnemonic, operand1, operand2, operand3, operand4)
+		return InstructionNode(modifier, shortImm, mnemonic, operand1, operand2, operand3, operand4)
 	}
 
 

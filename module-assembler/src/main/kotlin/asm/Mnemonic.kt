@@ -183,14 +183,18 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	LOOPNE,
 
 	CALL,
+	CALLF,
 	JMP,
+	JMPF,
 
 	MOVZX,
 	MOVSX,
 	MOVSXD,
 
 	PUSH,
+	PUSHW,
 	POP,
+	POPW,
 
 	INT1,
 	INT3,

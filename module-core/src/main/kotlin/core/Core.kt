@@ -3,6 +3,7 @@ package core
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 import kotlin.io.path.*
 import kotlin.system.exitProcess
 
@@ -10,9 +11,20 @@ import kotlin.system.exitProcess
 object Core {
 
 
-	fun run(command: String, output: Boolean = true): Boolean {
+	fun runPrint(command: String) {
 		val process = Runtime.getRuntime().exec(command)
-		process.waitFor()
+		println(process.inputReader().readText())
+	}
+
+
+
+	fun run(command: String, output: Boolean = true, timeoutSeconds: Int = -1): Boolean {
+		val process = Runtime.getRuntime().exec(command)
+
+		if(timeoutSeconds > 0)
+			process.waitFor(timeoutSeconds.toLong(), TimeUnit.SECONDS)
+		else
+			process.waitFor()
 
 		val errorText = process.errorReader().readText()
 		if(errorText.isNotEmpty() && output) {

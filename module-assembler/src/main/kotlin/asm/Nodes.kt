@@ -20,9 +20,10 @@ val AstNode.printableString: String get() = when(this) {
 	is DbNode          -> "db ${components.joinToString { it.printableString }}"
 	is StringNode      -> "\"$value\""
 	is LabelNode       -> "${symbol.name}:"
-	is ConstNode       -> "val $name = ${value.printableString}"
+	is ConstNode       -> "const $name = ${value.printableString}"
 	is SRegNode        -> value.string
 	is STRegNode       -> value.string
+	is ValNode         -> "val ${symbol.name} = ${value.printableString}"
 }
 
 
@@ -75,6 +76,10 @@ Node classes
 
 
 sealed interface AstNode
+
+
+
+class ValNode(val symbol: ValSymbol, val value: AstNode) : AstNode
 
 
 
@@ -131,10 +136,11 @@ class MemNode(val width: Width?, val value: AstNode) : AstNode
 
 
 class InstructionNode(
-	val modifier     : Modifier?,
-	val mnemonic     : Mnemonic,
-	val op1          : AstNode?,
-	val op2          : AstNode?,
-	val op3          : AstNode?,
-	val op4          : AstNode?
+	val modifier : KeywordToken?,
+	val shortImm : Boolean,
+	val mnemonic : Mnemonic,
+	val op1      : AstNode?,
+	val op2      : AstNode?,
+	val op3      : AstNode?,
+	val op4      : AstNode?
 ) : AstNode

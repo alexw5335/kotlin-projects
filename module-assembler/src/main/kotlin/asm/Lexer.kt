@@ -5,51 +5,16 @@ import core.ReaderBase
 import java.nio.file.Path
 import java.nio.file.Files
 
-class Lexer(chars: CharArray) : ReaderBase(chars) {
+class Lexer private constructor(chars: CharArray) : ReaderBase(chars) {
 
 
 	companion object {
 
 		fun lex(string: String) = Lexer(CharArray(string.length + 8).also(string::toCharArray)).lex()
 
-		fun lex(path: Path) = lex(Files.readString(path))
-
 		private val Char.isIdStartChar get() = isLetter() || this == '_'
 
 		private val Char.isIdChar get() = isLetterOrDigit() || this == '_'
-
-		private val keywordMap = HashMap<String, Token>()
-
-		init {
-			for(r in Register.values()) {
-				val token = RegToken(r)
-				keywordMap[r.string] = token
-				keywordMap[r.name] = token
-			}
-
-			for(m in Mnemonic.values()) {
-				val token = MnemonicToken(m)
-				keywordMap[m.string] = token
-				keywordMap[m.name] = token
-			}
-
-			for(k in KeywordToken.values()) {
-				keywordMap[k.string] = k
-				keywordMap[k.name] = k
-			}
-
-			for(r in SRegister.values()) {
-				val token = SRegToken(r)
-				keywordMap[r.string] = token
-				keywordMap[r.name] = token
-			}
-
-			for(r in STRegister.values()) {
-				val token = STRegToken(r)
-				keywordMap[r.string] = token
-				keywordMap[r.name] = token
-			}
-		}
 
 	}
 

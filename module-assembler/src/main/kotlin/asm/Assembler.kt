@@ -74,8 +74,8 @@ class Assembler(parserResult: ParserResult) {
 	private var baseReg: Register? = null
 	private var indexReg: Register? = null
 	private var indexScale = 0
-	private var posLabel: PosRef? = null
-	private var negLabel: PosRef? = null // only non-null if posLabel is also non-null
+	private var posLabel: Ref? = null
+	private var negLabel: Ref? = null // only non-null if posLabel is also non-null
 	private var hasLabel = false
 	private var aso = false
 
@@ -137,7 +137,7 @@ class Assembler(parserResult: ParserResult) {
 				if(symbol is IntSymbol)
 					return symbol.value
 
-				if(symbol is PosRef) {
+				if(symbol is Ref) {
 					if(positivity == 0) {
 						error()
 					} else if(positivity > 0) {
@@ -515,6 +515,17 @@ class Assembler(parserResult: ParserResult) {
 
 
 
+	private fun encodeRipRelative(opcode: Int, reg: Int, rexW: Int, rexR: Int, label: Ref?, disp: Int) {
+		encodeRex(rexW, rexR, 0, 0)
+		encodeOpcode(opcode)
+		encodeModRM(0b00, reg, 0b101)
+		writer.s32(disp)
+		if(label != null)
+			relocations.add(Relocation(label, PosRef(writer.pos), writer.pos - 4, Width.BIT32, disp.toLong()))
+	}
+
+
+
 	private fun encodeMem(opcode: Int, memNode: MemNode, rexW: Int, rexR: Int, reg: Int) {
 		val disp = resolve(memNode.value, true).toInt()
 		val base = baseReg
@@ -800,7 +811,9 @@ class Assembler(parserResult: ParserResult) {
 			Mnemonic.INT   -> { writer.u8(0xCD); encodeImm16(node.op1) }
 			Mnemonic.BSWAP -> encode1OpReg(0xC8_0F, node.op1.asReg, Widths.NO16)
 			Mnemonic.PUSH  -> assemblePUSH(node)
+			Mnemonic.PUSHW -> assemblePUSHW(node)
 			Mnemonic.POP   -> assemblePOP(node)
+			Mnemonic.POPW  -> assemblePOPW(node)
 			Mnemonic.INC   -> encode1RM(0xFE, 0, node, Widths.ALL)
 			Mnemonic.DEC   -> encode1RM(0xFE, 1, node, Widths.ALL)
 
@@ -811,11 +824,13 @@ class Assembler(parserResult: ParserResult) {
 			Mnemonic.DIV  -> encode1RM(0xF6, 6, node, Widths.ALL)
 			Mnemonic.IDIV -> encode1RM(0xF6, 7, node, Widths.ALL)
 
-			Mnemonic.ENTER -> assembleENTER(node)
+			Mnemonic.ENTER  -> assembleENTER(node)
 			Mnemonic.ENTERW -> assembleENTER(node)
 
-			Mnemonic.JMP -> assembleJMP(node)
-			Mnemonic.CALL -> assembleCALL(node)
+			Mnemonic.CALL  -> assembleCALL(node)
+			Mnemonic.CALLF -> encode1M(0xFF, 3, node.op1.asMem, Widths.NO8)
+			Mnemonic.JMP   -> assembleJMP(node)
+			Mnemonic.JMPF  -> encode1M(0xFF, 5, node.op1.asMem, Widths.NO8)
 
 			Mnemonic.JA   -> assembleJCC(node, 0x77, 0x87_0F)
 			Mnemonic.JAE  -> assembleJCC(node, 0x73, 0x83_0F)
@@ -1075,7 +1090,7 @@ class Assembler(parserResult: ParserResult) {
 	private fun assembleJCC(node: InstructionNode, rel8Opcode: Int, rel32Opcode: Int) {
 		val rel = resolve(node.op1!!)
 
-		if(!hasLabel && (node.modifier == Modifier.SHORT || rel.isImm8)) {
+		if(node.shortImm || (!hasLabel && rel.isImm8)) {
 			writer.u8(rel8Opcode)
 			writeRel(rel, Width.BIT8)
 		} else {
@@ -1096,8 +1111,6 @@ class Assembler(parserResult: ParserResult) {
 			val rel = resolve(node.op1)
 			writer.u8(0xE8)
 			writeRel(rel, Width.BIT32)
-		} else if(node.modifier == Modifier.FAR) {
-			encode1M(0xFF, 3, node.op1.asMem, Widths.NO8)
 		} else {
 			encode1RM(0xFF, 2, node, Widths.ONLY64)
 		}
@@ -1114,15 +1127,13 @@ class Assembler(parserResult: ParserResult) {
 	private fun assembleJMP(node: InstructionNode) {
 		if(node.op1 is ImmNode) {
 			val rel = resolve(node.op1)
-			if(!hasLabel && (node.modifier == Modifier.SHORT || rel.isImm8)) {
+			if(node.shortImm || (!hasLabel && rel.isImm8)) {
 				writer.u8(0xEB)
 				writeRel(rel, Width.BIT8)
 			} else {
 				writer.u8(0xE9)
 				writeRel(rel, Width.BIT32)
 			}
-		} else if(node.modifier == Modifier.FAR) {
-			encode1M(0xFF, 5, node.op1.asMem, Widths.NO8)
 		} else {
 			encode1RM(0xFF, 4, node, Widths.ONLY64)
 		}
@@ -1331,7 +1342,7 @@ class Assembler(parserResult: ParserResult) {
 	 *     FF/6   PUSH  RM
 	 *     50     PUSH  R   (OPREG)
 	 *     6A     PUSH  IMM8
-	 *     68     PUSH  IMM16/32
+	 *     68     PUSH  IMM32
 	 *     0F A0  PUSH  FS  (default 64-bit, 66 for 16-bit)
 	 *     0F A8  PUSH  GS  (default 64-bit, 66 for 16-bit)
 	 */
@@ -1342,12 +1353,9 @@ class Assembler(parserResult: ParserResult) {
 			encode1M(0xFF, 6, node.op1, Widths.NO832)
 		} else if(node.op1 is ImmNode) {
 			val imm = resolve(node.op1)
-			if(imm.isImm8) {
+			if(!hasLabel && imm.isImm8) {
 				writer.u8(0x6A)
 				writeImm(imm, Width.BIT8)
-			} else if(imm.isImm16) {
-				writer.u16(0x68_66)
-				writeImm(imm, Width.BIT16)
 			} else {
 				writer.u8(0x68)
 				writeImm(imm, Width.BIT32)
@@ -1356,6 +1364,35 @@ class Assembler(parserResult: ParserResult) {
 			when(node.op1.value) {
 				SRegister.FS -> writer.u16(0xA0_0F)
 				SRegister.GS -> writer.u16(0xA8_0F)
+				else         -> error()
+			}
+		} else {
+			error()
+		}
+	}
+
+
+
+	/**
+	 * 6A66    PUSHW  IMM8
+	 * 6866    PUSHW  IMM16
+	 * A00F66  PUSHW  FS
+	 * A00F66  PUSHW  GS
+	 */
+	private fun assemblePUSHW(node: InstructionNode) {
+		if(node.op1 is ImmNode) {
+			val imm = resolve(node.op1)
+			if(!hasLabel && imm.isImm8) {
+				writer.u16(0x6A66)
+				writeImm(imm, Width.BIT8)
+			} else {
+				writer.u16(0x6866)
+				writeImm(imm, Width.BIT16)
+			}
+		} else if(node.op1 is SRegNode) {
+			when(node.op1.value) {
+				SRegister.FS -> writer.u24(0xA0_0F_66)
+				SRegister.GS -> writer.u24(0xA8_0F_66)
 				else         -> error()
 			}
 		} else {
@@ -1377,7 +1414,6 @@ class Assembler(parserResult: ParserResult) {
 		} else if(node.op1 is MemNode) {
 			encode1M(0x8F, 0, node.op1, Widths.NO832)
 		} else if(node.op1 is SRegNode) {
-			if(node.modifier == Modifier.O16) writer.u8(0x66)
 			when(node.op1.value) {
 				SRegister.FS -> writer.u16(0xA1_0F)
 				SRegister.GS -> writer.u16(0xA9_0F)
@@ -1385,6 +1421,20 @@ class Assembler(parserResult: ParserResult) {
 			}
 		} else {
 			error()
+		}
+	}
+
+
+
+	/**
+	 * A10F66  POPW  FS
+	 * A90F66  POPW  GS
+	 */
+	private fun assemblePOPW(node: InstructionNode) {
+		when((node.op1 as? SRegNode)?.value ?: error()) {
+			SRegister.FS -> writer.u24(0xA1_0F_66)
+			SRegister.GS -> writer.u24(0xA9_0F_66)
+			else -> error()
 		}
 	}
 
@@ -1479,9 +1529,9 @@ class Assembler(parserResult: ParserResult) {
 	 * MOVS, CMPS, LODS, SCAS, STOS
 	 */
 	private fun assembleString(node: InstructionNode, opcode: Int) {
-		if(node.modifier == Modifier.REP)
+		if(node.modifier == KeywordToken.REP)
 			writer.u8(0xF3)
-		else if(node.modifier == Modifier.REPNE)
+		else if(node.modifier == KeywordToken.REPNE)
 			writer.u8(0xF2)
 
 		if(node.mnemonic.stringWidth!!.is16)

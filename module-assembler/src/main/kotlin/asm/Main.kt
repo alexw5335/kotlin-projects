@@ -30,18 +30,30 @@ private const val input2 = """
 
 
 fun main() {
-	val bytes = Linker(Assembler(Parser.parse(Lexer.lex(input))).assemble()).link()
-	Files.write(Paths.get("test.exe"), bytes)
-	//Core.run("DUMPBIN /ALL test.exe")
+	assemble(input)
+	//Core.nasmPrint("call far word [rax]")
+	//val linkResult = TestLinker().link()
+	//Files.write(Paths.get("test.exe"), linkResult)
+	//Core.runPrint("dumpbin /all test.exe")
+	//assemble(input)
 }
 
 
 
-/*
+private fun link(input: String) {
+	val linkResult = Linker(Assembler(Parser.parse(Lexer.lex(input))).assemble()).link()
+	Files.write(Paths.get("test.exe"), linkResult)
+	Core.runPrint("dumpbin /all test.exe")
+}
+
+
+
 private fun assemble(input: String) {
-	val parseResult = Parser.parse(Lexer.lex(input))
-	val bytes = Assembler(parseResult).assemble()
-	Files.write(Paths.get("test.bin"), bytes)
+	val assembleResult = Assembler(Parser.parse(Lexer.lex(input))).assemble()
+	println("relocations:")
+	for(r in assembleResult.relocations)
+		println("\t$r")
+	Files.write(Paths.get("test.bin"), assembleResult.text)
 	Core.run("ndisasm test.bin -b64")
 	Files.delete(Paths.get("test.bin"))
 }
@@ -49,12 +61,11 @@ private fun assemble(input: String) {
 
 
 private fun assembleAndCompare(input: String, input2: String = input) {
-	val parseResult = Parser.parse(Lexer.lex(input))
-	val bytes = Assembler(parseResult).assemble()
-	Files.write(Paths.get("test.bin"), bytes)
+	val assembleResult = Assembler(Parser.parse(Lexer.lex(input))).assemble()
+	Files.write(Paths.get("test.bin"), assembleResult.text)
 	Core.run("ndisasm test.bin -b64")
 	Files.delete(Paths.get("test.bin"))
 	val nasmBytes = Core.nasmAssemble(input2)
-	if(nasmBytes.contentEquals(bytes)) println("Equal") else println("Not equal")
+	if(nasmBytes.contentEquals(assembleResult.text)) println("Equal") else println("Not equal")
 	for(n in nasmBytes) println("${n.hex8}  ${n.bin233}")
-}*/
+}

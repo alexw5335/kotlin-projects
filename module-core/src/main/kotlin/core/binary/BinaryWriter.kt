@@ -98,6 +98,8 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 
 	fun bytes(pos: Int, bytes: ByteArray) = bytes(pos, bytes, 0, bytes.size)
 
+	fun bytes(vararg bytes: Int) { for(b in bytes) u8(b) }
+
 
 
 	/*
