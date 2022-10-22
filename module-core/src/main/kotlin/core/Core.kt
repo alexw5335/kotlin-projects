@@ -72,6 +72,20 @@ object Core {
 
 
 
+	fun copyResource(path: String, outPath: String) =
+		Files.write(Paths.get(outPath), readResourceBytes(path))
+
+
+
+	fun loadResource(stringPath: String) {
+		val path = Paths.get(stringPath)
+		val outPath = path.fileName
+		Files.write(outPath, readResourceBytes(stringPath))
+		System.load(outPath.toAbsolutePath().toString())
+	}
+
+
+
 	fun nasmBuild(src: String, out: String, vararg args: String) {
 		runOrExit("nasm -fwin64 $src.asm -o $out.obj ${args.joinToString(" ") }")
 		runOrExit("gcc $out.obj -o $out.exe")

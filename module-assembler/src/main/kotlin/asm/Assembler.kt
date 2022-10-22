@@ -12,11 +12,21 @@ class Assembler(parserResult: ParserResult) {
 
 	private val imports = parserResult.imports
 
-	private val writer = BinaryWriter()
+	private val textWriter = BinaryWriter()
+
+	private val dataWriter = BinaryWriter()
+
+	private var bssSize = 0
+
+	private var writer = textWriter
+
+	private var section = Section.TEXT
 
 	private fun error(): Nothing = error("Invalid encoding")
 
 	private val relocations = ArrayList<Relocation>()
+
+	private fun ref() = Ref(section, writer.pos)
 
 
 
@@ -24,9 +34,10 @@ class Assembler(parserResult: ParserResult) {
 		for(node in nodes) {
 			when(node) {
 				is InstructionNode -> assemble(node)
-				is DbNode          -> handleDb(node)
+				is DNode           -> handleD(node)
 				is LabelNode       -> handleLabel(node)
 				is ConstNode       -> { }
+				is VarResNode      -> handleVarResNode(node)
 				else               -> error()
 			}
 		}
@@ -36,16 +47,23 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun handleDb(dbNode: DbNode) {
-		for(node in dbNode.components) {
+	private fun handleVarResNode(node: VarResNode) {
+		val pos = bssSize
+	}
+
+
+
+	private fun handleD(dNode: DNode) {
+		for(node in dNode.components) {
 			when(node) {
 				is StringNode -> {
 					for(c in node.value)
 						writer.u8(c.code)
 				}
+
 				else -> {
 					val value = resolve(node, false)
-					if(hasLabel || value !in Byte.MIN_VALUE..Byte.MAX_VALUE) error()
+					if(hasReloc || value !in dNode.width) error()
 					if(value > 0) writer.u8(value.toInt()) else writer.s8(value.toInt())
 				}
 			}
@@ -74,9 +92,9 @@ class Assembler(parserResult: ParserResult) {
 	private var baseReg: Register? = null
 	private var indexReg: Register? = null
 	private var indexScale = 0
-	private var posLabel: Ref? = null
-	private var negLabel: Ref? = null // only non-null if posLabel is also non-null
-	private var hasLabel = false
+	private var posRef: Ref? = null
+	private var negRef: Ref? = null // only non-null if posLabel is also non-null
+	private var hasReloc = false
 	private var aso = false
 
 
@@ -85,8 +103,8 @@ class Assembler(parserResult: ParserResult) {
 		baseReg = null
 		indexReg = null
 		indexScale = 0
-		posLabel = null
-		negLabel = null
+		posRef = null
+		negRef = null
 		aso = false
 
 		fun rec(node: AstNode, positivity: Int): Long {
@@ -141,12 +159,12 @@ class Assembler(parserResult: ParserResult) {
 					if(positivity == 0) {
 						error()
 					} else if(positivity > 0) {
-						if(posLabel != null) error()
-						posLabel = symbol
+						if(posRef != null) error()
+						posRef = symbol
 					} else {
-						if(posLabel == null) error()
-						if(negLabel != null) error()
-						negLabel = symbol
+						if(posRef == null) error()
+						if(negRef != null) error()
+						negRef = symbol
 					}
 				} else {
 					error()
@@ -159,7 +177,7 @@ class Assembler(parserResult: ParserResult) {
 		}
 
 		val disp = rec(if(root is ImmNode) root.value else root, 1)
-		hasLabel = posLabel != null
+		hasReloc = posRef != null
 
 		if(isMem) {
 			if(baseReg != null) {
@@ -185,49 +203,18 @@ class Assembler(parserResult: ParserResult) {
 				}
 			}
 		}
+
 		return disp
-	}
-
-	/*
-	- indirect rsp/r12 must use SIB (with or without index, with or without disp) due to SIB encoding
-	- indirect rbp/r13 must use +disp8 or +disp32 due to RIP-relative encoding
-	- rsp can never be used as an index (but r12 can be)
-	- if mod == 00, then rbp/r13 cannot be used as a base.
-		- In this case, +disp8 or +disp32 is required.
-	 */
-
-
-	private fun write(value: Long, width: Width) {
-		when(width) {
-			Width.BIT8 ->
-				if(!value.isImm8)
-					error()
-				else
-					writer.s8(value.toInt())
-
-			Width.BIT16 ->
-				if(!value.isImm16)
-					error()
-				else
-					writer.s16(value.toInt())
-
-			Width.BIT32 ->
-				if(!value.isImm32)
-					error()
-				else
-					writer.s32(value.toInt())
-
-			else -> writer.s64(value)
-		}
 	}
 
 
 
 	private fun writeRel(value: Long, width: Width) {
-		write(value, width)
-		if(negLabel != null) error()
-		if(posLabel != null)
-			relocations.add(Relocation(posLabel!!, PosRef(writer.pos), writer.pos - width.bytes, width, value))
+		if(value !in width) error()
+		writer.uint(width, value)
+		if(negRef != null) error()
+		if(posRef != null)
+			relocations.add(Relocation(posRef!!, Ref(section, writer.pos), writer.pos - width.bytes, width, value))
 	}
 
 
@@ -235,11 +222,12 @@ class Assembler(parserResult: ParserResult) {
 	private fun writeImm(imm: Long, width: Width, isImm64: Boolean = false) {
 		val actualWidth = if(width.is64 && !isImm64) Width.BIT32 else width
 
-		write(imm, actualWidth)
+		if(imm !in actualWidth) error()
+		writer.uint(actualWidth, imm)
 
-		if(posLabel != null)
-			if(negLabel != null)
-				relocations.add(Relocation(posLabel!!, negLabel!!, writer.pos - actualWidth.bytes, actualWidth, imm))
+		if(posRef != null)
+			if(negRef != null)
+				relocations.add(Relocation(posRef!!, negRef!!, writer.pos - actualWidth.bytes, actualWidth, imm))
 			else
 				error()
 	}
@@ -285,16 +273,6 @@ class Assembler(parserResult: ParserResult) {
 	private val AstNode?.asReg get() = if(this is RegNode) value else error()
 
 	private val AstNode?.asMem get() = if(this is MemNode) this else error()
-
-	private val Int.isImm8 get() = this in Byte.MIN_VALUE..Byte.MAX_VALUE
-
-	private val Int.isImm16 get() = this in Short.MIN_VALUE..Short.MAX_VALUE
-
-	private val Long.isImm8 get() = this in Byte.MIN_VALUE..Byte.MAX_VALUE
-
-	private val Long.isImm16 get() = this in Short.MIN_VALUE..Short.MAX_VALUE
-
-	private val Long.isImm32 get() = this in Int.MIN_VALUE..Int.MAX_VALUE
 
 
 
@@ -521,43 +499,43 @@ class Assembler(parserResult: ParserResult) {
 		encodeModRM(0b00, reg, 0b101)
 		writer.s32(disp)
 		if(label != null)
-			relocations.add(Relocation(label, PosRef(writer.pos), writer.pos - 4, Width.BIT32, disp.toLong()))
+			relocations.add(Relocation(label, ref(), writer.pos - 4, Width.BIT32, disp.toLong()))
 	}
 
 
 
 	private fun encodeMem(opcode: Int, memNode: MemNode, rexW: Int, rexR: Int, reg: Int) {
-		val disp = resolve(memNode.value, true).toInt()
-		val base = baseReg
-		val index = indexReg
-		val scale = indexScale
-		val label = posLabel
-		val negLabel = negLabel
+		val disp   = resolve(memNode.value, true).toInt()
+		val base   = baseReg
+		val index  = indexReg
+		val scale  = indexScale
+		val ref    = posRef
+		val negRef = negRef
 
 		if(aso) writer.u8(0x67)
 
 		// RIP-relative disp32
-		if(label != null && negLabel == null) {
+		if(ref != null && negRef == null) {
 			if(base != null || index != null) error()
 			encodeRex(rexW, rexR, 0, 0)
 			encodeOpcode(opcode)
 			encodeModRM(0b00, reg, 0b101)
 			writer.s32(disp)
-			relocations.add(Relocation(label, PosRef(writer.pos), writer.pos - 4, Width.BIT32, disp.toLong()))
+			relocations.add(Relocation(ref, Ref(), writer.pos - 4, Width.BIT32, disp.toLong()))
 			return
 		}
 
 		val mod = when {
-			label != null -> 2
+			ref != null   -> 2
 			disp == 0     -> if(base != null && base.value == 5) 1 else 0
 			disp.isImm8   -> 1
 			else          -> 2
 		}
 
 		fun checkRelocation() {
-			if(label != null)
-				if(negLabel != null)
-					relocations.add(Relocation(label, negLabel, writer.pos, Width.BIT32, disp.toLong()))
+			if(ref != null)
+				if(negRef != null)
+					relocations.add(Relocation(ref, negRef, writer.pos, Width.BIT32, disp.toLong()))
 				else
 					error()
 		}
@@ -613,10 +591,6 @@ class Assembler(parserResult: ParserResult) {
 	/*
 	Assembly
 	 */
-
-
-
-	private fun BinaryWriter.u24(value: Int) { u32(value); pos-- }
 
 
 
@@ -703,7 +677,7 @@ class Assembler(parserResult: ParserResult) {
 			Mnemonic.FWAIT  -> writer.u8(0x9B)
 			Mnemonic.NOP    -> writer.u8(0x90)
 
-			Mnemonic.IRET,
+			Mnemonic.IRETW,
 			Mnemonic.IRETD  -> writer.u8(0xCF)
 			Mnemonic.IRETQ  -> writer.u16(0xCF_48)
 
@@ -1090,7 +1064,7 @@ class Assembler(parserResult: ParserResult) {
 	private fun assembleJCC(node: InstructionNode, rel8Opcode: Int, rel32Opcode: Int) {
 		val rel = resolve(node.op1!!)
 
-		if(node.shortImm || (!hasLabel && rel.isImm8)) {
+		if(node.shortImm || (!hasReloc && rel.isImm8)) {
 			writer.u8(rel8Opcode)
 			writeRel(rel, Width.BIT8)
 		} else {
@@ -1127,7 +1101,7 @@ class Assembler(parserResult: ParserResult) {
 	private fun assembleJMP(node: InstructionNode) {
 		if(node.op1 is ImmNode) {
 			val rel = resolve(node.op1)
-			if(node.shortImm || (!hasLabel && rel.isImm8)) {
+			if(node.shortImm || (!hasReloc && rel.isImm8)) {
 				writer.u8(0xEB)
 				writeRel(rel, Width.BIT8)
 			} else {
@@ -1353,7 +1327,7 @@ class Assembler(parserResult: ParserResult) {
 			encode1M(0xFF, 6, node.op1, Widths.NO832)
 		} else if(node.op1 is ImmNode) {
 			val imm = resolve(node.op1)
-			if(!hasLabel && imm.isImm8) {
+			if(!hasReloc && imm.isImm8) {
 				writer.u8(0x6A)
 				writeImm(imm, Width.BIT8)
 			} else {
@@ -1382,7 +1356,7 @@ class Assembler(parserResult: ParserResult) {
 	private fun assemblePUSHW(node: InstructionNode) {
 		if(node.op1 is ImmNode) {
 			val imm = resolve(node.op1)
-			if(!hasLabel && imm.isImm8) {
+			if(!hasReloc && imm.isImm8) {
 				writer.u16(0x6A66)
 				writeImm(imm, Width.BIT8)
 			} else {

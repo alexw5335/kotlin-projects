@@ -1,9 +1,6 @@
-package asm
+package assembler
 
 enum class Section {
-
-	/** Not yet chosen */
-	NONE,
 
 	/** .text, initialised/code */
 	TEXT,

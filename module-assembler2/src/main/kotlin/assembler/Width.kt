@@ -1,4 +1,4 @@
-package asm
+package assembler
 
 enum class Width(
 	val string       : String,

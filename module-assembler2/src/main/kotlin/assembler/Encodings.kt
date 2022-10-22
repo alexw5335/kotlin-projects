@@ -1,3 +1,175 @@
+package assembler
+
+import core.ReaderBase
+
+class EncodingReader(chars: CharArray) : ReaderBase(chars) {
+
+
+	constructor() : this(encodings.toCharArray())
+
+
+
+	private class InstructionTemp(
+		val opcode    : Int,
+		val extension : Int,
+		val prefix    : Int,
+		val operands  : Operands,
+		val widths    : Widths
+	)
+
+
+
+	private enum class CompoundOperands(vararg val components: Operands) {
+
+		R_RM(Operands.R_R, Operands.R_M),
+		RM_R(Operands.R_R, Operands.M_R),
+		RM(Operands.R, Operands.M),
+		RM_I(Operands.R_I, Operands.M_I),
+		RM_I8(Operands.R_I8, Operands.M_I8),
+		RM_1(Operands.R_1, Operands.M_1),
+		RM_CL(Operands.R_CL, Operands.M_CL);
+
+	}
+
+
+
+	private val encodingsMap = HashMap<String, ArrayList<InstructionTemp>>()
+
+	private val operandsMap = Operands.values().associateBy { it.name }
+
+	private val compoundOperandsMap = CompoundOperands.values().associateBy { it.name }
+
+	private val mnemonicMap = Mnemonic.values().associateBy { it.name }
+
+	private val missingMnemonics = ArrayList<String>()
+
+
+
+	fun read(): Map<Mnemonic, InstructionGroup> {
+		while(pos < chars.size) {
+			when(chars[pos]) {
+				'#'  -> skipLine()
+				'\r' -> pos += 2
+				'\n' -> pos++
+				' '  -> skipLine()
+				';'  -> break
+				else -> readEncoding()
+			}
+		}
+
+		val groupMap = HashMap<Mnemonic, InstructionGroup>()
+
+		for((mnemonicString, encodings) in encodingsMap) {
+			encodings.sortBy { it.operands }
+			var operandsBits = 0
+			var specifierBits = 0
+
+			for(e in encodings) {
+				operandsBits = operandsBits or e.operands.bit
+				specifierBits = specifierBits or e.operands.specifier.bit
+			}
+
+			val mnemonic = mnemonicMap[mnemonicString]
+
+			if(mnemonic == null) {
+				missingMnemonics.add(mnemonicString)
+				continue
+			}
+
+			groupMap[mnemonic] = InstructionGroup(
+				encodings.map { Instruction(it.opcode, it.extension, it.prefix, it.widths) },
+				operandsBits,
+				specifierBits
+			)
+		}
+
+		if(missingMnemonics.isNotEmpty()) {
+			for(m in missingMnemonics)
+				println("$m,")
+			error("Missing mnemonics")
+		}
+
+		return groupMap
+	}
+
+
+
+	private fun readEncoding() {
+		var opcode = 0
+		var extension = 0
+		var prefix = 0
+		var widths = Widths.ALL
+		var custom = false
+
+		while(true) {
+			val char = chars[pos++]
+
+			if(char.isWhitespace())
+				break
+
+			if(char == '/') {
+				extension = chars[pos++].digitToInt()
+				break
+			}
+
+			opcode = (opcode shl 4) or char.digitToInt(16)
+		}
+
+		when(opcode and 0xFF) {
+			0xF2, 0xF3, 0x66 -> {
+				prefix = opcode and 0xFF
+				opcode = opcode shr 8
+			}
+		}
+
+		skipSpaces()
+		val mnemonicString = readUntil { it.isWhitespace() }
+		skipSpaces()
+		val operandsString = if(atNewline) "NONE" else readUntil { it.isWhitespace() }
+
+		while(!atNewline) {
+			skipSpaces()
+
+			when(val string = readUntil { it.isWhitespace() }) {
+				"ALL"    -> widths = Widths.ALL
+				"NO8"    -> widths = Widths.NO8
+				"NO64"   -> widths = Widths.NO64
+				"NO816"  -> widths = Widths.NO816
+				"NO832"  -> widths = Widths.NO832
+				"NO864"  -> widths = Widths.NO864
+				"ONLY8"  -> widths = Widths.ONLY8
+				"ONLY16" -> widths = Widths.ONLY16
+				"ONLY64" -> widths = Widths.ONLY64
+				"CUSTOM" -> custom = true
+				else     -> error("Invalid modifier: $string")
+			}
+		}
+
+		skipLine()
+
+		if(custom) return
+
+		val list = encodingsMap.getOrPut(mnemonicString, ::ArrayList)
+
+		if(operandsMap.contains(operandsString)) {
+			list.add(InstructionTemp(opcode, extension, prefix, operandsMap[operandsString]!!, widths))
+		} else {
+			val compoundOperands = compoundOperandsMap[operandsString]
+				?: error("Invalid operands: $operandsString")
+
+			for(operands in compoundOperands.components)
+				if(list.none { it.operands == operands })
+					list.add(InstructionTemp(opcode, extension, prefix, operands, widths))
+		}
+	}
+
+
+}
+
+
+
+private const val encodings = """
+
 04    ADD  A_I    ALL
 80/0  ADD  RM_I   ALL
 83/0  ADD  RM_I8  NO8
@@ -32,7 +204,7 @@
 80/5  SUB  RM_I   ALL
 83/5  SUB  RM_I8  NO8
 28    SUB  RM_R   ALL
-2A    SUB  R_RM    LL
+2A    SUB  R_RM   ALL
 
 34    XOR  A_I    ALL
 80/6  XOR  RM_I   ALL
@@ -47,8 +219,9 @@
 3A    CMP  R_RM   ALL
 
 FF/6  PUSH   M     NO8
-50    PUSH   R     NO832, OPREG
-68    PUSH   I16
+50    PUSH   O     NO832
+6A    PUSH   I8
+6866  PUSH   I16
 68    PUSH   I32
 A00F  PUSH   FS
 A80F  PUSH   GS
@@ -57,7 +230,7 @@ A00F66  PUSHW  FS
 A80F66  PUSHW  GS
 
 8F/0  POP   M    NO8
-58    POP   R    NO832, OPREG
+58    POP   O    NO832
 A10F  POP   FS
 A90F  POP   GS
 
@@ -66,7 +239,7 @@ A90F66  POPW  GS
 
 BE0F  MOVSX   R_RM8       NO8
 BF0F  MOVSX   R_RM16      NO816
-63    MOVSXD  R64_RM32    ONLY64
+63    MOVSXD  R64_RM32    NO8
 
 6C    INSB
 6D66  INSW
@@ -143,17 +316,17 @@ A8    TEST  A_I   ALL
 F6/0  TEST  RM_I  ALL
 84    TEST  RM_R  ALL
 
-90  XCHG  A_R   NO_8  OPREG
-90  XCHG  R_A   NO_8  OPREG
+90  XCHG  A_O   NO8  CUSTOM
+90  XCHG  O_A   NO8  CUSTOM
 86  XCHG  RM_R  ALL
 86  XCHG  R_RM  ALL
 
 88  MOV  RM_R  ALL
 8A  MOV  R_RM  ALL
-B0  MOV  R_I   ALL  OPREG, I64
+B0  MOV  O_I   ALL  CUSTOM
 C6  MOV  RM_I  ALL
 
-8D  LEA  R_M
+8D  LEA  R_M  NO8
 
 90      NOP
 1F0F/0  NOP  RM  NO864
@@ -170,10 +343,9 @@ C6  MOV  RM_I  ALL
 9B  FWAIT
 
 9C66  PUSHF
-9C    PUSHFD
 9C48  PUSHFQ
 
-8F  LAHF
+9F  LAHF
 
 A4    MOVSB
 A566  MOVSW
@@ -200,45 +372,45 @@ AD66  LODSW
 AD    LODSD
 AD48  LODSQ
 
-C0/0  ROL  RM_I  ALL
-D0/0  ROL  RM_1    ALL
-D2/0  ROL  RM_CL   ALL
+C0/0  ROL  RM_I8  ALL
+D0/0  ROL  RM_1   ALL
+D2/0  ROL  RM_CL  ALL
 
-C0/1  ROR  RM_I  ALL
-D0/1  ROR  RM_1    ALL
-D2/1  ROR  RM_CL   ALL
+C0/1  ROR  RM_I8  ALL
+D0/1  ROR  RM_1   ALL
+D2/1  ROR  RM_CL  ALL
 
-C0/2  RCL  RM_I  ALL
-D0/2  RCL  RM_1    ALL
-D2/2  RCL  RM_CL   ALL
+C0/2  RCL  RM_I8  ALL
+D0/2  RCL  RM_1   ALL
+D2/2  RCL  RM_CL  ALL
 
-C0/3  RCR  RM_I  ALL
-D0/3  RCR  RM_1    ALL
-D2/3  RCR  RM_CL   ALL
+C0/3  RCR  RM_I8  ALL
+D0/3  RCR  RM_1   ALL
+D2/3  RCR  RM_CL  ALL
 
-C0/4  SAL  RM_I  ALL
-D0/4  SAL  RM_1    ALL
-D2/4  SAL  RM_CL   ALL
+C0/4  SAL  RM_I8  ALL
+D0/4  SAL  RM_1   ALL
+D2/4  SAL  RM_CL  ALL
 
-C0/4  SHL  RM_I  ALL
-D0/4  SHL  RM_1    ALL
-D2/4  SHL  RM_CL   ALL
+C0/4  SHL  RM_I8  ALL
+D0/4  SHL  RM_1   ALL
+D2/4  SHL  RM_CL  ALL
 
-C0/5  SHR  RM_I  ALL
-D0/5  SHR  RM_1    ALL
-D2/5  SHR  RM_CL   ALL
+C0/5  SHR  RM_I8  ALL
+D0/5  SHR  RM_1   ALL
+D2/5  SHR  RM_CL  ALL
 
-C0/7  SAR  RM_I  ALL
-D0/7  SAR  RM_1    ALL
-D2/7  SAR  RM_CL   ALL
+C0/7  SAR  RM_I8  ALL
+D0/7  SAR  RM_1   ALL
+D2/7  SAR  RM_CL  ALL
 
 C3  RET
 CB  RETF
 C2  RET   I16
 CA  RETF  I16
 
-C866  ENTERW  I16_I8
-C8    ENTER   I16_I8
+# C866  ENTERW  I16_I8
+# C8    ENTER   I16_I8
 
 C966  LEAVEW
 C9    LEAVE
@@ -247,7 +419,7 @@ CC  INT3
 CD  INT   I8
 F1  INT1
 
-CF66  IRET
+CF66  IRETW
 CF    IRETD
 CF48  IRETQ
 
@@ -258,11 +430,10 @@ E0  LOOPNE  REL8
 E3    JCXZ   REL8
 E348  JRCXZ  REL8
 
-E4  IN  A_I8  NO64
-EC  IN  A_DX  NO64
-
-E6  OUT  I8_A  NO64
-EE  OUT  DX_A  NO64
+E4  IN   A_I8  NO64  CUSTOM
+EC  IN   A_DX  NO64  CUSTOM
+E6  OUT  I8_A  NO64  CUSTOM
+EE  OUT  DX_A  NO64  CUSTOM
 
 F4  HLT
 F5  CMC
@@ -274,9 +445,9 @@ F6/5  IMUL  RM  ALL
 F6/6  DIV   RM  ALL
 F7/7  IDIV  RM  ALL
 
-AF0F  IMUL  R_RM     NO_8
-6B    IMUL  R_RM_I8  NO_8
-69    IMUL  R_RM_I   NO_8
+AF0F  IMUL  R_RM     NO8
+6B    IMUL  R_RM_I8  NO8  CUSTOM
+69    IMUL  R_RM_I   NO8  CUSTOM
 
 F8  CLC
 F9  STC
@@ -288,18 +459,22 @@ FD  STD
 FE/0  INC  RM  ALL
 FE/1  DEC  RM  ALL
 
-E8    CALL  REL32
-FF/2  CALL  RM     ONLY64
-FF/3  CALL  M1616
-FF/3  CALL  M1632
-FF/3  CALL  M1664
 
-EB    JMP  REL8
-E9    JMP  REL32
+
+E8    CALL  REL32  CUSTOM
+FF/2  CALL  RM     ONLY64
+FF/3  CALL  M1616  CUSTOM
+FF/3  CALL  M1632  CUSTOM
+FF/3  CALL  M1664  CUSTOM
+
+EB    JMP  REL8   CUSTOM
+E9    JMP  REL32  CUSTOM
 FF/4  JMP  RM     ONLY64
-FF/5  JMP  M1616
-FF/5  JMP  M1632
-FF/5  JMP  M1664
+FF/5  JMP  M1616  CUSTOM
+FF/5  JMP  M1632  CUSTOM
+FF/5  JMP  M1664  CUSTOM
+
+;
 
 D8/0  FADD   M32FP
 DC/0  FADD   M64FP
@@ -765,22 +940,4 @@ F1380F  MOVBE  M_R  NO8
 620F    PUNPCKLDQ  MM_MMM32
 620F66  PUNPCKLDQ  X_XM128
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""

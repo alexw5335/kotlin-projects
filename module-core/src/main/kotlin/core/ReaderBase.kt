@@ -9,6 +9,8 @@ abstract class ReaderBase(val chars: CharArray) {
 
 	var pos = 0
 
+	val atNewline get() = chars[pos] == '\n' || chars[pos] == '\r'
+
 
 
 	/*

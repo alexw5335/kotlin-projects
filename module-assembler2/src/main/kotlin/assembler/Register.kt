@@ -1,16 +1,16 @@
 @file:Suppress("Unused")
 
-package asm
+package assembler
 
 /**
  * An 8-, 16-, 32-, or 64-bit general purpose register.
  */
 enum class Register(
-	val value  : Int,
-	val width  : Width,
-	val rex    : Int = 0,
-	val isA    : Boolean = false,
-	val isSP   : Boolean = false,
+	val value : Int,
+	val width : Width,
+	val rex   : Int = 0,
+	val isA   : Boolean = false,
+	val isSP  : Boolean = false,
 	val rex8   : Boolean = false,
 	val noRex8 : Boolean = false
 ) {
@@ -74,10 +74,10 @@ enum class Register(
 	CL(1, Width.BIT8),
 	DL(2, Width.BIT8),
 	BL(3, Width.BIT8),
-	AH(4, Width.BIT8, noRex8 = false),
-	CH(5, Width.BIT8, noRex8 = false),
-	DH(6, Width.BIT8, noRex8 = false),
-	BH(7, Width.BIT8, noRex8 = false),
+	AH(4, Width.BIT8, noRex8 = true),
+	CH(5, Width.BIT8, noRex8 = true),
+	DH(6, Width.BIT8, noRex8 = true),
+	BH(7, Width.BIT8, noRex8 = true),
 	R8B(0, Width.BIT8, 1),
 	R9B(1, Width.BIT8, 1),
 	R10B(2, Width.BIT8, 1),

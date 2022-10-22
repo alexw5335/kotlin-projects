@@ -1,0 +1,1 @@
+gcc -shared "natives.c" -o "natives.dll" -I "%JAVA_HOME%/include" -I "%JAVA_HOME%/include/win32"

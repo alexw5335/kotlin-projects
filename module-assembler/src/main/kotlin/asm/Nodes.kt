@@ -3,6 +3,89 @@ package asm
 
 
 /*
+Node classes
+ */
+
+
+
+sealed interface AstNode
+
+
+
+class VarResNode(val symbol: VarSymbol, val size: Int) : AstNode
+
+
+
+class VarDNode(val symbol: VarSymbol, val width: Width, val components: List<AstNode>) : AstNode
+
+
+
+class LabelNode(val symbol: LabelSymbol) : AstNode
+
+
+
+class IdNode(val name: String) : AstNode
+
+
+
+class StringNode(val value: String) : AstNode
+
+
+
+class IntNode(val value: Long) : AstNode
+
+
+
+class UnaryNode(val op: UnaryOp, val node: AstNode) : AstNode
+
+
+
+class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstNode
+
+
+
+class DNode(val width: Width, val components: List<AstNode>) : AstNode
+
+
+
+class RegNode(val value: Register) : AstNode
+
+
+
+class SRegNode(val value: SRegister) : AstNode
+
+
+
+class STRegNode(val value: STRegister) : AstNode
+
+
+
+class ImmNode(val value: AstNode) : AstNode
+
+
+
+class ConstNode(val name: String, val value: AstNode) : AstNode
+
+
+
+class MemNode(val width: Width?, val value: AstNode) : AstNode
+
+
+
+class InstructionNode(
+	val modifier : KeywordToken?,
+	val shortImm : Boolean,
+	val mnemonic : Mnemonic,
+	val op1      : AstNode?,
+	val op2      : AstNode?,
+	val op3      : AstNode?,
+	val op4      : AstNode?
+) : AstNode
+
+
+
+
+/*
 Formatted printing
  */
 
@@ -17,13 +100,15 @@ val AstNode.printableString: String get() = when(this) {
 	is UnaryNode       -> "${op.symbol}(${node.printableString})"
 	is InstructionNode -> printableString
 	is ImmNode         -> value.printableString
-	is DbNode          -> "db ${components.joinToString { it.printableString }}"
+	is DNode          -> "db ${components.joinToString { it.printableString }}"
 	is StringNode      -> "\"$value\""
 	is LabelNode       -> "${symbol.name}:"
 	is ConstNode       -> "const $name = ${value.printableString}"
 	is SRegNode        -> value.string
 	is STRegNode       -> value.string
-	is ValNode         -> "val ${symbol.name} = ${value.printableString}"
+	is VarDNode        -> "var ${symbol.name} (${width.string}) = ${components.joinToString { it.printableString }}"
+	is VarResNode      -> "var ${symbol.name} res $size"
+	else               -> toString()
 }
 
 
@@ -69,78 +154,3 @@ val InstructionNode.printableString get() = buildString {
 
 
 
-/*
-Node classes
- */
-
-
-
-sealed interface AstNode
-
-
-
-class ValNode(val symbol: ValSymbol, val value: AstNode) : AstNode
-
-
-
-class LabelNode(val symbol: LabelSymbol) : AstNode
-
-
-
-class IdNode(val name: String) : AstNode
-
-
-
-class StringNode(val value: String) : AstNode
-
-
-
-class IntNode(val value: Long) : AstNode
-
-
-
-class UnaryNode(val op: UnaryOp, val node: AstNode) : AstNode
-
-
-
-class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstNode
-
-
-
-class DbNode(val components: List<AstNode>) : AstNode
-
-
-
-class RegNode(val value: Register) : AstNode
-
-
-
-class SRegNode(val value: SRegister) : AstNode
-
-
-
-class STRegNode(val value: STRegister) : AstNode
-
-
-
-class ImmNode(val value: AstNode) : AstNode
-
-
-
-class ConstNode(val name: String, val value: AstNode) : AstNode
-
-
-
-class MemNode(val width: Width?, val value: AstNode) : AstNode
-
-
-
-class InstructionNode(
-	val modifier : KeywordToken?,
-	val shortImm : Boolean,
-	val mnemonic : Mnemonic,
-	val op1      : AstNode?,
-	val op2      : AstNode?,
-	val op3      : AstNode?,
-	val op4      : AstNode?
-) : AstNode

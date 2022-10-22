@@ -1,17 +1,9 @@
-package asm
+package assembler
 
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class Parser(lexerResult: LexerResult) {
-
-
-	companion object {
-
-		fun parse(lexerResult: LexerResult) = Parser(lexerResult).parse()
-
-	}
-
 
 
 	private var pos = 0
@@ -83,7 +75,7 @@ class Parser(lexerResult: LexerResult) {
 	private fun parseId(id: IdToken) {
 		if(tokens[pos++] != SymbolToken.COLON)
 			error("Expecting colon after identifier")
-		val symbol = LabelSymbol(id.value)
+		val symbol = LabelSymbol(id.value, Section.TEXT)
 		symbols[symbol.name] = symbol
 		nodes.add(LabelNode(symbol))
 	}
@@ -148,7 +140,7 @@ class Parser(lexerResult: LexerResult) {
 		expect(SymbolToken.COLON)
 		val name = identifier()
 		expectStatementEnd()
-		val symbol = ImportSymbol(name)
+		val symbol = ImportSymbol(name, Section.RDATA)
 		symbols[name] = symbol
 		imports.add(DllImport(dll, symbol))
 	}
