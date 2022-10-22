@@ -3,20 +3,11 @@ package macro
 /**
  * Codes are based on WinApi codes.
  */
-enum class InputButton(
+enum class Key(
 	val code     : Int,
 	val scanCode : Int = 0,
-	val type     : Type = Type.KEY
 ) {
 
-
-	NONE(0x00),
-
-	LEFT_MOUSE(0x01,  type = Type.MOUSE),
-	RIGHT_MOUSE(0x02,  type = Type.MOUSE),
-	MIDDLE_MOUSE(0x04, type = Type.MOUSE),
-	X1_MOUSE(0x05,     type = Type.MOUSE),
-	X2_MOUSE(0x06,     type = Type.MOUSE),
 
 	BACKSPACE(0x08, 15),
 	TAB(0x09, 16),
@@ -140,7 +131,6 @@ enum class InputButton(
 	LEFT_ALT(0xA4, 60),
 	RIGHT_ALT(0xA5, 62),
 
-
 	BROWSER_BACK(0xA6),
 	BROWSER_FORWARD(0xA7),
 	BROWSER_REFRESH(0xA8),
@@ -160,58 +150,17 @@ enum class InputButton(
 	LAUNCH_APP_ONE(0xB6),
 	LAUNCH_APP_TWO(0xB7),
 
-	// ;:
-	OEM_ONE(0xBA, 40),
-	OEM_SEMICOLON(OEM_ONE.code, OEM_ONE.scanCode),
-
-	// +=
-	OEM_PLUS(0xBB, 13),
-
-	// ,<
-	OEM_COMMA(0xBC, 53),
-
-	// -_
-	OEM_MINUS(0xBD, 12),
-
-	// .>
-	OEM_PERIOD(0xBE, 54),
-
-	// /?
-	OEM_TWO(0xBF, 55),
-	OEM_FORWARD_SLASH(OEM_TWO.code, OEM_TWO.scanCode),
-
-	// tilde
-	OEM_THREE(0xC0, 1),
-	TILDE(OEM_THREE.code, OEM_THREE.scanCode),
-
-	// [{
-	OEM_FOUR(0xDB, 27),
-	LEFT_BRACKET(OEM_FOUR.code, OEM_FOUR.scanCode),
-	LEFT_BRACE(OEM_FOUR.code, OEM_FOUR.scanCode),
-
-	// \|
-	OEM_FIVE(0xDC, 29),
-	BACK_SLASH(OEM_FIVE.code, OEM_FIVE.scanCode),
-
-	// ]}
-	OEM_SIX(0xDD, 28),
-	OEM_RIGHT_BRACKET(OEM_SIX.code, OEM_SIX.scanCode),
-
-	// '"
-	OEM_SEVEN(0xDE, 41),
-	OEM_QUOTE(OEM_SEVEN.code, OEM_SEVEN.scanCode),
-
-	OEM_EIGHT(0xDF),
-
-	PACKET(0xE7),
-
-	PLAY(0xFA),
-
-	ZOOM(0xFB);
-
-
-
-	enum class Type { KEY, MOUSE; }
+	SEMICOLON(0xBA, 40),
+	PLUS(0xBB, 13),
+	COMMA(0xBC, 53),
+	MINUS(0xBD, 12),
+	PERIOD(0xBE, 54),
+	SLASH(0xBF, 55),
+	BACKTICK(0xC0, 1),
+	LEFT_BRACKET(0xDB, 27),
+	BACKSLASH(0xDC, 29),
+	RIGHT_BRACKET(0xDD, 28),
+	QUOTE(0xDE, 41);
 
 
 

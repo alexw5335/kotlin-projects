@@ -41,6 +41,8 @@ object Natives {
 
 	external fun getRawInputData(rawInput: Long, uiCommand: Int, data: Long, size: Long, sizeHeader: Int): Int
 
+	external fun mapVirtualKey(code: Int, type: Int): Int
+
 
 
 	fun createWindow() = createWindow(0, 200, 200, 200, 200)

@@ -8,27 +8,38 @@ import java.nio.file.Paths
 
 
 
-const val WM_INPUT    = 0x00FF
-const val WM_KEY_DOWN = 0x0100
-const val WM_KEY_UP   = 0x0101
-const val WM_DESTROY  = 0x0002
-const val RI_M1_DOWN = 1
-const val RI_M1_UP = 2
-const val RI_M2_DOWN = 4
-const val RI_M2_UP = 8
-const val RI_SCROLL = 0x400
+enum class MessageType(val value: Int) {
+	INPUT(0x00FF),
+	KEY_DOWN(0x0100),
+	KEY_UP(0x0101),
+	DESTROY(0x0002);
+}
 
-enum class MouseEvent(val value: Int) {
+enum class RawMouseInput(val value: Int) {
+	LEFT_DOWN(1),
+	LEFT_UP(2),
+	RIGHT_DOWN(4),
+	RIGHT_UP(8),
+	SCROLL(0x400);
+}
+
+enum class MouseEvent(val value: Int, val button: MouseButton? = null, val release: Boolean = false) {
 	MOVE(0x001),
-	LEFT_DOWN(0x002),
-	LEFT_UP(0x004),
-	RIGHT_DOWN(0x008),
-	RIGHT_UP(0x010),
-	MIDDLE_DOWN(0x020),
-	MIDDLE_UP(0x040),
-	X_DOWN(0x080),
-	X_UP(0x100),
-	SCROLL(0x800)
+	LEFT_DOWN(0x002, MouseButton.LEFT),
+	LEFT_UP(0x004, MouseButton.LEFT, true),
+	RIGHT_DOWN(0x008, MouseButton.RIGHT),
+	RIGHT_UP(0x010, MouseButton.RIGHT, true),
+	MIDDLE_DOWN(0x020, MouseButton.MIDDLE),
+	MIDDLE_UP(0x040, MouseButton.MIDDLE, true),
+	SCROLL(0x800);
+}
+
+enum class MouseButton {
+
+	LEFT,
+	RIGHT,
+	MIDDLE;
+
 }
 
 
@@ -45,9 +56,11 @@ sealed interface Action {
 	val time: Int
 }
 
-data class ButtonAction(override val time: Int, val button: InputButton, val release: Boolean) : Action
+data class KeyAction(override val time: Int, val key: Key, val release: Boolean) : Action
 
-data class MouseAction(override val time: Int, val dx: Int, val dy: Int) : Action
+data class MouseAction(override val time: Int, val event: MouseEvent) : Action
+
+data class MoveAction(override val time: Int, val dx: Int, val dy: Int) : Action
 
 data class ScrollAction(override val time: Int, val dy: Int) : Action
 
@@ -55,7 +68,7 @@ val actions = ArrayList<Action>()
 
 var startTime = 0L
 
-val pressed = HashSet<InputButton>()
+val pressed = HashSet<Int>()
 
 
 
@@ -70,32 +83,39 @@ private fun handleMessageInput(lParam: Long) {
 
 	if(rawInput.type == 1) {
 		val input = RawInputKeyboard(rawInput.address)
-		val code = input.virtualCode
-		val released = input.flags == 1
-		val button = InputButton.map[code] ?: return
-
-		println(released)
+		val released = input.flags and 1 != 0
+		val scanCode = input.scanCode
 
 		if(released)
-			pressed.remove(button)
-		else if(pressed.contains(button))
+			pressed.remove(scanCode)
+		else if(pressed.contains(scanCode))
 			return
 		else
-			pressed.add(button)
+			pressed.add(scanCode)
 
-		actions.add(ButtonAction(time, button, released))
+		println(input.scanCode)
+
+		val key = Key.codeMap[scanCode] ?: return
+		actions.add(KeyAction(time, key, released))
 	} else if(rawInput.type == 0) {
 		val input = RawInputMouse(rawInput.address)
 		if(input.flags != 0) error("Mouse input was not relative")
 		val flags = input.buttonFlags
 		val dx = input.lastX
 		val dy = input.lastY
-		if(dx != 0 && dy != 0) actions.add(MouseAction(time, dx, dy))
-		if(RI_M1_DOWN and flags != 0) actions.add(ButtonAction(time, InputButton.LEFT_MOUSE, false))
-		if(RI_M1_UP and flags != 0) actions.add(ButtonAction(time, InputButton.LEFT_MOUSE, true))
-		if(RI_M2_DOWN and flags != 0) actions.add(ButtonAction(time, InputButton.RIGHT_MOUSE, false))
-		if(RI_M2_UP and flags != 0) actions.add(ButtonAction(time, InputButton.RIGHT_MOUSE, true))
-		if(RI_SCROLL and flags != 0) actions.add(ScrollAction(time, input.buttonData))
+
+		if(dx != 0 && dy != 0)
+			actions.add(MoveAction(time, dx, dy))
+		if(RawMouseInput.LEFT_DOWN.value and flags != 0)
+			actions.add(MouseAction(time, MouseEvent.LEFT_DOWN))
+		if(RawMouseInput.LEFT_UP.value and flags != 0)
+			actions.add(MouseAction(time, MouseEvent.LEFT_UP))
+		if(RawMouseInput.RIGHT_DOWN.value and flags != 0)
+			actions.add(MouseAction(time, MouseEvent.RIGHT_DOWN))
+		if(RawMouseInput.RIGHT_UP.value and flags != 0)
+			actions.add(MouseAction(time, MouseEvent.RIGHT_UP))
+		if(RawMouseInput.SCROLL.value and flags != 0)
+			actions.add(ScrollAction(time, input.buttonData))
 	}
 }
 
@@ -103,9 +123,9 @@ private fun handleMessageInput(lParam: Long) {
 
 private fun windowProc(hwnd: Long, msg: Int, wParam: Long, lParam: Long): Boolean {
 	when(msg) {
-		WM_DESTROY -> Natives.postQuitMessage(wParam.toInt())
-		WM_INPUT   -> handleMessageInput(lParam)
-		else       -> return false
+		MessageType.DESTROY.value -> Natives.postQuitMessage(wParam.toInt())
+		MessageType.INPUT.value   -> handleMessageInput(lParam)
+		else                      -> return false
 	}
 
 	return true
@@ -136,45 +156,11 @@ private fun createDevices(hwnd: Long) {
 
 
 private fun playAction(action: Action) = when(action) {
-	is ButtonAction -> playButtonAction(action)
-	is MouseAction -> playMouseAction(action)
-	is ScrollAction -> playScrollAction(action)
-}
+	is KeyAction    -> sendKeyboardInput(action.key.scanCode, action.release)
+	is MoveAction   -> sendMouseInput(action.dx, action.dy, 0, MouseEvent.MOVE.value)
+	is ScrollAction -> sendMouseInput(0, 0, action.dy, MouseEvent.SCROLL.value)
+	is MouseAction  -> sendMouseInput(0, 0, 0, action.event.value)
 
-
-
-private fun playMouseAction(action: MouseAction) {
-	sendMouseInput(action.dx, action.dy, 0, MouseEvent.MOVE.value)
-}
-
-
-
-private fun playScrollAction(action: ScrollAction) {
-	sendMouseInput(0, 0, action.dy, MouseEvent.SCROLL.value)
-}
-
-
-
-private fun playButtonAction(action: ButtonAction) {
-	if(action.button == InputButton.LEFT_MOUSE) {
-		if(action.release)
-			sendMouseInput(0, 0, 0, MouseEvent.LEFT_UP.value)
-		else
-			sendMouseInput(0, 0, 0, MouseEvent.LEFT_DOWN.value)
-		return
-	}
-
-	if(action.button == InputButton.RIGHT_MOUSE) {
-		if(action.release)
-			sendMouseInput(0, 0, 0, MouseEvent.RIGHT_UP.value)
-		else
-			sendMouseInput(0, 0, 0, MouseEvent.RIGHT_DOWN.value)
-		return
-	}
-
-	if(action.button.scanCode == 0) error("Missing scanCode for button '${action.button}'")
-
-	sendKeyboardInput(action.button.scanCode, action.release)
 }
 
 
@@ -210,11 +196,25 @@ private fun loadActions(): List<Action> {
 	for(line in lines) {
 		val parts = line.split(' ')
 		if(parts[0] == "PRESS") {
-			actions.add(ButtonAction(parts[2].toInt(), InputButton.nameMap[parts[1]]!!, false))
+			if(parts[1] == "LEFT_MOUSE")
+				actions.add(MouseAction(parts[2].toInt(), MouseEvent.LEFT_DOWN))
+			else if(parts[1] == "RIGHT_MOUSE")
+				actions.add(MouseAction(parts[2].toInt(), MouseEvent.RIGHT_DOWN))
+			else if(parts[2] == "MIDDLE_MOUSE")
+				actions.add(MouseAction(parts[2].toInt(), MouseEvent.MIDDLE_DOWN))
+			else
+				actions.add(KeyAction(parts[2].toInt(), Key.nameMap[parts[1]]!!, false))
 		} else if(parts[0] == "RELEASE") {
-			actions.add(ButtonAction(parts[2].toInt(), InputButton.nameMap[parts[1]]!!, true))
+			if(parts[1] == "LEFT_MOUSE")
+				actions.add(MouseAction(parts[2].toInt(), MouseEvent.LEFT_UP))
+			else if(parts[1] == "RIGHT_MOUSE")
+				actions.add(MouseAction(parts[2].toInt(), MouseEvent.RIGHT_UP))
+			else if(parts[2] == "MIDDLE_MOUSE")
+				actions.add(MouseAction(parts[2].toInt(), MouseEvent.MIDDLE_UP))
+			else
+				actions.add(KeyAction(parts[2].toInt(), Key.nameMap[parts[1]]!!, true))
 		} else if(parts[0] == "MOVE") {
-			actions.add(MouseAction(parts[3].toInt(), parts[1].toInt(), parts[2].toInt()))
+			actions.add(MoveAction(parts[3].toInt(), parts[1].toInt(), parts[2].toInt()))
 		} else if(parts[0] == "SCROLL") {
 			actions.add(ScrollAction(parts[2].toInt(), parts[1].toInt()))
 		}
@@ -269,41 +269,24 @@ private fun record() {
 	val output = buildString {
 		for(action in actions) {
 			when(action) {
-				is ButtonAction -> if(action.release)
-					appendLine("RELEASE ${action.button} ${action.time}")
+				is KeyAction -> if(action.release)
+					appendLine("RELEASE ${action.key} ${action.time}")
 				else
-					appendLine("PRESS ${action.button} ${action.time}")
+					appendLine("PRESS ${action.key} ${action.time}")
 
-				is MouseAction -> appendLine("MOVE ${action.dx} ${action.dy} ${action.time}")
+				is MoveAction -> appendLine("MOVE ${action.dx} ${action.dy} ${action.time}")
 
 				is ScrollAction -> appendLine("SCROLL ${action.dy} ${action.time}")
+
+				is MouseAction -> if(action.event.release)
+					appendLine("RELEASE ${action.event.button}_MOUSE ${action.time}")
+				else
+					appendLine("PRESS ${action.event.button}_MOUSE ${action.time}")
 			}
 		}
 	}
 
 	Files.writeString(Paths.get("output.txt"), output)
+
+	println("Finished")
 }
-
-
-
-/*
-val input = KeyboardInput(Unsafe.calloc(40))
-input.type = 1
-input.scanCode = 0x1E
-input.flags = 8
-Thread.sleep(3000)
-Natives.sendInput(1, input.address, 40)
-input.flags = 10
-Thread.sleep(1000)
-Natives.sendInput(1, input.address, 40)
-
-fun sendKeyboardInput(virtualCode: Int, scanCode: Int, release: Boolean, useScanCode: Boolean) {
-	val input = KeyboardInput(calloc(SIZEOF_INPUT))
-	input.type = 1
-	input.virtualCode = virtualCode
-	input.scanCode = scanCode
-	if(release) input.flags = input.flags or 2
-	if(useScanCode) input.flags = input.flags or 8
-	Natives.sendInput(1, input.address, 40)
-}
-*/

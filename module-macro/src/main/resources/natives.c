@@ -316,3 +316,15 @@ JNIEXPORT jint JNICALL Java_macro_Natives_getRawInputData(
 ) {
 	return GetRawInputData(rawInput, uiCommand, data, size, sizeHeader);
 }
+
+
+
+JNIEXPORT jint JNICALL Java_macro_Natives_mapVirtualKey(
+	JNIEnv* env,
+	jobject obj,
+	jint code,
+	jint type
+
+) {
+	return MapVirtualKey(code, type);
+}
