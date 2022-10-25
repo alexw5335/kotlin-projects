@@ -1,8 +1,15 @@
+@file:Suppress("Unused")
+
 package assembler
 
 import core.Core
+import core.memory.Unsafe
+import core.swapEndian16
+import core.swapEndian32
+import core.swapEndian64
 import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.math.max
 
 
 
@@ -11,15 +18,34 @@ private const val input = """
 import KERNEL32:WriteFile
 import KERNEL32:ExitProcess
 
-jmp WriteFile
-call WriteFile
+main:
+	sub rsp, 56
+	mov ecx, -11
+	lea rdx, [main]
+	mov r8d, 1
+	mov r9, [rsp + 40]
+	mov qword [rsp + 32], 0
+	call WriteFile
+	call ExitProcess
 
 """
 
 
 
 fun main() {
-	assemble(input)
+	link(input)
+	//assemble(input)
+	//link(input)
+}
+
+
+
+private fun link(input: String) {
+	val lexResult = Lexer(input.toCharArray()).lex()
+	val parseResult = Parser(lexResult).parse()
+	val assemblerResult = Assembler(parseResult).assemble()
+	val linkerResult = Linker(assemblerResult).link()
+	Files.write(Paths.get("test.exe"), linkerResult)
 }
 
 

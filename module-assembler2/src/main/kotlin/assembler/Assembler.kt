@@ -1,6 +1,7 @@
 package assembler
 
 import core.binary.BinaryWriter
+import assembler.Width.*
 
 class Assembler(private val parseResult: ParserResult) {
 
@@ -37,7 +38,7 @@ class Assembler(private val parseResult: ParserResult) {
 		for(node in parseResult.nodes) {
 			when(node) {
 				is InstructionNode -> assemble(node)
-				is LabelNode       -> { }
+				is LabelNode       -> handleLabel(node)
 				else               -> error()
 			}
 		}
@@ -50,6 +51,13 @@ class Assembler(private val parseResult: ParserResult) {
 			relocations = relocations,
 			symbols     = symbols
 		)
+	}
+
+
+
+	private fun handleLabel(node: LabelNode) {
+		node.symbol.pos = writer.pos
+		node.symbol.section = Section.TEXT
 	}
 
 
@@ -210,14 +218,12 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun determineEncoding(group: InstructionGroup, operands: Operands): Instruction {
+	private fun encoding(operands: Operands) {
 		var bits = group.operandsBits
 		if(bits and operands.bit == 0) error("Invalid encoding")
 		bits = group.operandsBits and (operands.bit - 1)
 		encoding = group.instructions[bits.countOneBits()]
-		return encoding
 	}
-
 
 
 
@@ -225,15 +231,14 @@ class Assembler(private val parseResult: ParserResult) {
 		rexRequired = false
 		rexDisallowed = false
 
-		val group = groups[node.mnemonic] ?: error("No encodings for mnemonic ${node.mnemonic}")
+		group = groups[node.mnemonic] ?: error("No encodings for mnemonic ${node.mnemonic}")
 
 		val customEncoding = customEncodings[node.mnemonic]
 
-		if(customEncoding != null) {
-			customEncoding(group, node)
-		} else {
-			operands(group, node)
-		}
+		if(customEncoding != null)
+			customEncoding(node)
+		else
+			operands(node)
 	}
 
 
@@ -288,7 +293,14 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun writeMem(opcode: Int, node: AstNode, rexW: Int, rexR: Int, reg: Int, immLength: Int = 0) {
+	private fun writeMem(
+		opcode: Int,
+		node: AstNode,
+		rexW: Int,
+		rexR: Int,
+		reg: Int,
+		immLength: Int
+	) {
 		val disp   = resolve(node, true).toInt()
 		val base   = baseReg
 		val index  = indexReg
@@ -305,13 +317,7 @@ class Assembler(private val parseResult: ParserResult) {
 
 		fun relocAndDisp() {
 			if(hasReloc) {
-				relocations.add(Relocation(
-					position = writer.pos,
-					width    = Width.BIT32,
-					value    = node,
-					base     = Ref(Section.TEXT, writer.pos + 4 + immLength) // Only base for RIP
-				))
-
+				relocations.add(Relocation(writer.pos, BIT32, node, null))
 				writer.u32(0)
 			} else if(mod == 0b01)
 				writer.s8(disp)
@@ -352,7 +358,8 @@ class Assembler(private val parseResult: ParserResult) {
 			writeRex(rexW, rexR, 0, 0)
 			writeOpcode(opcode)
 			writeModRM(0b00, reg, 0b101)
-			relocAndDisp()
+			relocations.add(Relocation(writer.pos, BIT32, node, Ref(Section.TEXT, writer.pos + 4 + immLength)))
+			writer.advance(4)
 		} else if(mod != 0) { // Absolute 32-bit
 			writeRex(rexW, rexR, 0, 0)
 			writeOpcode(opcode)
@@ -368,7 +375,7 @@ class Assembler(private val parseResult: ParserResult) {
 
 	private fun writeRel8(node: ImmNode, value: Long) {
 		if(hasReloc) {
-			addReloc(node, Width.BIT8)
+			addReloc(node, BIT8)
 			writer.advance(1)
 		} else {
 			if(value !in Byte.MIN_VALUE..Byte.MAX_VALUE) error()
@@ -380,7 +387,7 @@ class Assembler(private val parseResult: ParserResult) {
 
 	private fun writeRel32(node: ImmNode, value: Long) {
 		if(hasReloc) {
-			addReloc(node, Width.BIT8)
+			addReloc(node, BIT8)
 			writer.advance(4)
 		} else {
 			if(value !in Int.MIN_VALUE..Int.MAX_VALUE) error()
@@ -390,31 +397,28 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun writeImm(node: ImmNode, width: Width, value: Long) {
+	private fun writeImmInternal(node: ImmNode, width: Width, value: Long) {
 		if(hasReloc) {
-			val immWidth = if(width.is64) Width.BIT32 else width
-			addImmReloc(node, immWidth)
-			writer.advance(immWidth.bytes)
+			addImmReloc(node, width)
+			writer.advance(width.bytes)
 			return
 		}
 
+		if(value !in width) error()
+
 		when(width) {
-			Width.BIT8 -> if(value !in Byte.MIN_VALUE..Byte.MAX_VALUE)
-				error()
-			else
-				writer.s8(value.toInt())
-
-			Width.BIT16 -> if(value !in Short.MIN_VALUE..Short.MAX_VALUE)
-				error()
-			else
-				writer.s16(value.toInt())
-
-			else -> if(value !in Int.MIN_VALUE.. Int.MAX_VALUE)
-				error()
-			else
-				writer.s32(value.toInt())
+			BIT8 ->writer.s8(value.toInt())
+			BIT16 -> writer.s16(value.toInt())
+			BIT32 -> writer.s32(value.toInt())
+			BIT64 -> writer.s64(value)
+			else  -> error()
 		}
 	}
+
+
+
+	private fun writeImm(node: ImmNode, width: Width, value: Long)
+		= writeImmInternal(node, if(width.is64) BIT32 else width, value)
 
 
 
@@ -424,23 +428,23 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun encodeNone(encoding: Instruction, width: Width) {
+/*	private fun encodeNone(width: Width) {
 		if(encoding.prefix != 0) writer.u8(encoding.prefix)
 		if(width.is16) writer.u8(0x66)
-		writeRex(width.rex, 0, 0, 0)
+		else if(width.is64) writer.u8(0x48)
 		writeOpcode(encoding.opcode + (encoding.widths.bits and width.opcodeOffset))
-	}
+	}*/
 
 
 
-	private fun encodeNone(encoding: Instruction) {
+	private fun encodeNone() {
 		if(encoding.prefix != 0) writer.u8(encoding.prefix)
 		writeOpcode(encoding.opcode)
 	}
 
 
 
-	private fun encode1O(encoding: Instruction, op1: Register) {
+	private fun encode1O(op1: Register) {
 		val width = op1.width
 		if(width !in encoding.widths) error()
 		if(width.is16) writer.u8(0x66)
@@ -455,8 +459,9 @@ class Assembler(private val parseResult: ParserResult) {
 	/**
 	 * Encodes a register in ModRM:RM
 	 */
-	private fun encode1R(encoding: Instruction, op1: Register) {
+	private fun encode1R(op1: Register) {
 		val width = op1.width
+		if(width !in encoding.widths) error()
 		if(width.is16) writer.u8(0x66)
 		rexRequired = op1.rex8
 		rexDisallowed = op1.noRex8
@@ -470,18 +475,17 @@ class Assembler(private val parseResult: ParserResult) {
 	/**
 	 * Encodes a memory operand.
 	 */
-	private fun encode1M(encoding: Instruction, op1: MemNode, immLength: Int = 0) {
+	private fun encode1M(op1: MemNode, immLength: Int) {
 		val width = op1.width ?: error()
 		if(width !in encoding.widths) error()
 		if(width.is16) writer.u8(0x66)
-
 		writeMem(
-			opcode    = encoding.opcode + (encoding.widths.bits and width.opcodeOffset),
-			node      = op1.value,
-			rexW      = width.rex and encoding.widths.rexMod,
-			rexR      = 0,
-			reg       = encoding.extension,
-			immLength = immLength
+			encoding.opcode + (encoding.widths.bits and width.opcodeOffset),
+			op1.value,
+			width.rex and encoding.widths.rexMod,
+			0,
+			encoding.extension,
+			immLength
 		)
 	}
 
@@ -490,8 +494,9 @@ class Assembler(private val parseResult: ParserResult) {
 	/**
 	 * Encodes 2 registers in ModRM:RM and ModRM:REG respectively
 	 */
-	private fun encode2RR(encoding: Instruction, op1: Register, op2: Register) {
+	private fun encode2RR(op1: Register, op2: Register) {
 		val width = op1.width
+		if(width !in encoding.widths) error()
 		if(width.is16) writer.u8(0x66)
 		rexRequired = op1.rex8 || op2.rex8
 		rexDisallowed = op1.noRex8 || op2.noRex8
@@ -505,20 +510,19 @@ class Assembler(private val parseResult: ParserResult) {
 	/**
 	 * Encodes a register operand and a memory operand in ModRM:REG and ModRM:RM respectively.
 	 */
-	private fun encode2RM(encoding: Instruction, op1: Register, op2: MemNode, immLength: Int = 0) {
+	private fun encode2RM(op1: Register, op2: MemNode, immLength: Int) {
 		val width = op1.width
 		if(width !in encoding.widths) error()
 		if(width.is16) writer.u8(0x66)
 		rexRequired = op1.rex8
 		rexDisallowed = op1.noRex8
-
 		writeMem(
-			opcode    = encoding.opcode + (width.opcodeOffset and encoding.widths.bits),
-			node      = op2.value,
-			rexW      = width.rex,
-			rexR      = op1.rex,
-			reg       = op1.value,
-			immLength = immLength
+			encoding.opcode + (encoding.widths.bits and width.opcodeOffset),
+			op2.value,
+			width.rex and encoding.widths.rexMod,
+			op1.rex,
+			op1.value,
+			immLength
 		)
 	}
 
@@ -530,11 +534,11 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun operands(group: InstructionGroup, node: InstructionNode) {
+	private fun operands(node: InstructionNode) {
 		when {
-			node.op1 == null -> operands0(group)
-			node.op2 == null -> operands1(group, node)
-			node.op3 == null -> if(node.op1 is RegNode) operands2R(group, node) else operands2M(group, node)
+			node.op1 == null -> operands0()
+			node.op2 == null -> operands1(node)
+			node.op3 == null -> if(node.op1 is RegNode) operands2R(node) else operands2M(node)
 			node.op4 == null -> error()
 			else             -> error()
 		}
@@ -542,41 +546,53 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun operands0(group: InstructionGroup) {
-		encodeNone(determineEncoding(group, Operands.NONE))
+	private fun operands0() {
+		encoding(Operands.NONE)
+		encodeNone()
 	}
 
 
 
-	private fun operands1(group: InstructionGroup, node: InstructionNode) {
+	private fun operands1(node: InstructionNode) {
 		val op1 = node.op1
 
 		if(op1 is RegNode) {
-			if(Specifier.O in group)
-				encode1O(determineEncoding(group, Operands.O), op1.value)
-			else
-				encode1R(determineEncoding(group, Operands.R), op1.value)
+			if(Specifier.O in group) {
+				encoding(Operands.O)
+				encode1O(op1.value)
+			} else {
+				encoding(Operands.R)
+				encode1R(op1.value)
+			}
 		} else if(op1 is MemNode) {
-			encode1M(determineEncoding(group, Operands.M), op1)
+			encoding(Operands.M)
+			encode1M(op1, 0)
 		} else if(op1 is ImmNode) {
 			val imm = resolve(op1)
 
-			if(Specifier.REL8 in group && ((!hasReloc && node.shortImm) || Specifier.REL32 !in group)) {
-				encodeNone(determineEncoding(group, Operands.REL8))
+			if(importSymbol != null) {
+				encoding(Operands.M)
+				encode1M(MemNode(BIT64, op1), 0)
+			} else if(Specifier.REL8 in group && ((!hasReloc && node.shortImm) || Specifier.REL32 !in group)) {
+				encoding(Operands.REL8)
+				encodeNone()
 				writeRel8(op1, imm)
 			} else if(Specifier.REL32 in group) {
-				encodeNone(determineEncoding(group, Operands.REL32))
+				encoding(Operands.REL32)
+				encodeNone()
 				writeRel32(op1, imm)
 			} else if(Specifier.I8 in group && ((!hasReloc && imm.isImm8) || (Specifier.I16 !in group && Specifier.I32 !in group))) {
-				val encoding = determineEncoding(group, Operands.I8)
-				encodeNone(encoding)
-				writeImm(op1, Width.BIT8, imm)
+				encoding(Operands.I8)
+				encodeNone()
+				writeImm(op1, BIT8, imm)
 			} else if(Specifier.I16 in group && ((!hasReloc && imm.isImm16) || Specifier.I32 !in group)) {
-				encodeNone(determineEncoding(group, Operands.I16))
-				writeImm(op1, Width.BIT16, imm)
+				encoding(Operands.I16)
+				encodeNone()
+				writeImm(op1, BIT16, imm)
 			} else {
-				encodeNone(determineEncoding(group, Operands.I32))
-				writeImm(op1, Width.BIT32, imm)
+				encoding(Operands.I32)
+				encodeNone()
+				writeImm(op1, BIT32, imm)
 			}
 		} else {
 			error()
@@ -585,7 +601,7 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun operands2R(group: InstructionGroup, node: InstructionNode) {
+	private fun operands2R(node: InstructionNode) {
 		val op1 = (node.op1 as RegNode).value
 		val op2 = node.op2
 		val width = op1.width
@@ -594,33 +610,41 @@ class Assembler(private val parseResult: ParserResult) {
 			val r2 = op2.value
 			val width2 = r2.width
 
-			if(width != width2)
-				if(Specifier.RM_CL in group && r2 == Register.CL)
-					encode1R(determineEncoding(group, Operands.RM_CL), op1)
-				else
+			if(width != width2) {
+				if(Specifier.RM_CL in group && r2 == Register.CL) {
+					encoding(Operands.RM_CL)
+					encode1R(op1)
+				} else {
 					error()
-			else
-				encode2RR(determineEncoding(group, Operands.R_R), op1, r2)
+				}
+			} else {
+				encode2RR(op1, r2)
+			}
 		} else if(op2 is MemNode) {
 			val width2 = op2.width
 
 			if(width2 != null && width2 != width)
 				error()
-			else
-				encode2RM(determineEncoding(group, Operands.R_M), op1, op2)
+
+			encoding(Operands.R_M)
+			encode2RM(op1, op2, 0)
 		} else if(op2 is ImmNode) {
 			val imm = resolve(op2)
 
 			if(Specifier.RM_I8 in group && !hasReloc && width.isNot8 && imm.isImm8) {
-				encode1R(determineEncoding(group, Operands.R_I8), op1)
-				writeImm(op2, Width.BIT8, imm)
+				encoding(Operands.R_I8)
+				encode1R(op1)
+				writeImm(op2, BIT8, imm)
 			} else if(Specifier.RM_1 in group && !hasReloc && imm == 1L) {
-				encode1R(determineEncoding(group, Operands.RM_1), op1)
+				encoding(Operands.RM_1)
+				encode1R(op1)
 			} else if(op1.isA && Specifier.A_I in group) {
-				encodeNone(determineEncoding(group, Operands.A_I), width)
+				encoding(Operands.A_I)
+				encodeNone()
 				writeImm(op2, width, imm)
 			} else {
-				encode1R(determineEncoding(group, Operands.R_I), op1)
+				encoding(Operands.R_I)
+				encode1R(op1)
 				writeImm(op2, width, imm)
 			}
 		} else {
@@ -630,28 +654,33 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private fun operands2M(group: InstructionGroup, node: InstructionNode) {
+	private fun operands2M(node: InstructionNode) {
 		val op1 = node.op1 as MemNode
 		val op2 = node.op2!!
 
 		if(op2 is RegNode) {
 			if(Specifier.RM_CL in group && op2.value == Register.CL) {
-				encode1M(determineEncoding(group, Operands.RM_CL), op1)
+				encoding(Operands.RM_CL)
+				encode1M(op1, 0)
 			} else {
 				if(op1.width != null && op1.width != op2.value.width) error()
-				encode2RM(determineEncoding(group, Operands.M_R), op2.value, op1)
+				encoding(Operands.M_R)
+				encode2RM(op2.value, op1, 0)
 			}
 		} else if(op2 is ImmNode) {
 			val width = op1.width ?: error()
 			val imm = resolve(op2)
 
 			if(Specifier.RM_I8 in group && !hasReloc && width.isNot8 && imm.isImm8) {
-				encode1M(determineEncoding(group, Operands.M_I8), op1, 1)
-				writeImm(op2, Width.BIT8, imm)
+				encoding(Operands.M_I8)
+				encode1M(op1, 1)
+				writeImm(op2, BIT8, imm)
 			} else if(Specifier.RM_1 in group && !hasReloc && imm == 1L) {
-				encode1M(determineEncoding(group, Operands.RM_1), op1)
+				encoding(Operands.RM_1)
+				encode1M(op1, 0)
 			} else {
-				encode1M(determineEncoding(group, Operands.M_I), op1, width.bytes)
+				encoding(Operands.M_I)
+				encode1M(op1, width.immLength)
 				writeImm(op2, width, imm)
 			}
 		} else {
@@ -667,12 +696,10 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	private val customEncodings = mapOf(
-		Mnemonic.CALL   to ::customEncodeCALL,
+	private val customEncodings: Map<Mnemonic, (InstructionNode) -> Unit> = mapOf(
 		Mnemonic.IMUL   to ::customEncodeIMUL,
 		Mnemonic.XCHG   to ::customEncodeXCHG,
 		Mnemonic.MOV    to ::customEncodeMOV,
-		Mnemonic.JMP    to ::customEncodeJMP,
 		Mnemonic.MOVSX  to ::customEncodeMOVSX,
 		Mnemonic.MOVZX  to ::customEncodeMOVZX,
 		Mnemonic.MOVSXD to ::customEncodeMOVSXD,
@@ -710,8 +737,7 @@ class Assembler(private val parseResult: ParserResult) {
 	 * EF66  OUT  DX_AX
 	 * EF    OUT  DX_EAX
 	 */
-	@Suppress("UNUSED_PARAMETER")
-	private fun customEncodeOUT(group: InstructionGroup, node: InstructionNode) {
+	private fun customEncodeOUT(node: InstructionNode) {
 		if(node.op3 != null) error()
 		if(node.op2 !is RegNode) error()
 		val op2 = node.op2.value
@@ -721,20 +747,20 @@ class Assembler(private val parseResult: ParserResult) {
 		if(node.op1 is RegNode) {
 			if(node.op1.value != Register.DX) error()
 			when(op2.width) {
-				Width.BIT8  -> writer.u8(0xEE)
-				Width.BIT16 -> writer.u16(0xEF66)
-				Width.BIT32 -> writer.u8(0xEF)
-				else        -> error()
+				BIT8  -> writer.u8(0xEE)
+				BIT16 -> writer.u16(0xEF66)
+				BIT32 -> writer.u8(0xEF)
+				else  -> error()
 			}
 		} else if(node.op1 is ImmNode) {
 			val imm = resolve(node.op1)
 			when(op2.width) {
-				Width.BIT8  -> writer.u8(0xE6)
-				Width.BIT16 -> writer.u16(0xE766)
-				Width.BIT32 -> writer.u8(0xE7)
-				else        -> error()
+				BIT8  -> writer.u8(0xE6)
+				BIT16 -> writer.u16(0xE766)
+				BIT32 -> writer.u8(0xE7)
+				else  -> error()
 			}
-			if(hasReloc) addImmReloc(node.op1, Width.BIT8)
+			if(hasReloc) addImmReloc(node.op1, BIT8)
 			else if(!imm.isImm8) error()
 			writer.s8(imm.toInt())
 		} else {
@@ -752,8 +778,7 @@ class Assembler(private val parseResult: ParserResult) {
 	 * ED66  IN  AX_DX
 	 * ED    IN  EAX_DX
 	 */
-	@Suppress("UNUSED_PARAMETER")
-	private fun customEncodeIN(group: InstructionGroup, node: InstructionNode) {
+	private fun customEncodeIN(node: InstructionNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
 		val op1 = node.op1.value
@@ -763,20 +788,20 @@ class Assembler(private val parseResult: ParserResult) {
 		if(node.op2 is RegNode) {
 			if(node.op2.value != Register.DX) error()
 			when(op1.width) {
-				Width.BIT8  -> writer.u8(0xEC)
-				Width.BIT16 -> writer.u16(0xED66)
-				Width.BIT32 -> writer.u8(0xED)
-				else        -> error()
+				BIT8  -> writer.u8(0xEC)
+				BIT16 -> writer.u16(0xED66)
+				BIT32 -> writer.u8(0xED)
+				else  -> error()
 			}
 		} else if(node.op2 is ImmNode) {
 			val imm = resolve(node.op2)
 			when(op1.width) {
-				Width.BIT8  -> writer.u8(0xE4)
-				Width.BIT16 -> writer.u16(0xE566)
-				Width.BIT32 -> writer.u8(0xE5)
-				else        -> error()
+				BIT8  -> writer.u8(0xE4)
+				BIT16 -> writer.u16(0xE566)
+				BIT32 -> writer.u8(0xE5)
+				else  -> error()
 			}
-			if(hasReloc) addImmReloc(node.op2, Width.BIT8)
+			if(hasReloc) addImmReloc(node.op2, BIT8)
 			else if(!imm.isImm8) error()
 			writer.s8(imm.toInt())
 		} else {
@@ -787,41 +812,29 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 	/**
-	 *     BE0F  MOVSX   R_RM8     NO8
-	 *     BF0F  MOVSX   R_RM16    NO816
+	 *     BE0F  MOVSX   R_RM8   NO8
+	 *     BF0F  MOVSX   R_RM16  NO816
 	 */
-	@Suppress("UNUSED_PARAMETER")
-	private fun customEncodeMOVSX(group: InstructionGroup, node: InstructionNode) {
+	private fun customEncodeMOVSX(node: InstructionNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
-		val op1 = node.op1.value
 
 		if(node.op2 is RegNode) {
-			val op2 = node.op2.value
-
-			if(op2.width.is8) {
-				if(op1.width.is8) error()
-				encode2RR(customEncodingMOVSX1, op1, op2)
-			} else if(op2.width.is16) {
-				if(op1.width.is8 || op2.width.is16) error()
-				encode2RR(customEncodingMOVSX2, op1, op2)
-			} else {
-				error()
+			encoding = when(node.op2.value.width) {
+				BIT8  -> customEncodingMOVSX1
+				BIT16 -> customEncodingMOVSX2
+				else  -> error()
 			}
+
+			encode2RR(node.op1.value, node.op2.value)
 		} else if(node.op2 is MemNode) {
-			val op2 = node.op2
-
-			if(op2.width == null) error()
-
-			if(op2.width.is8) {
-				if(op1.width.is8) error()
-				encode2RM(customEncodingMOVSX1, op1, op2)
-			} else if(op2.width.is16) {
-				if(op1.width.is8 || op2.width.is16) error()
-				encode2RM(customEncodingMOVSX2, op1, op2)
-			} else {
-				error()
+			when(node.op2.width) {
+				BIT8  -> customEncodingMOVSX1
+				BIT16 -> customEncodingMOVSX2
+				else  -> error()
 			}
+
+			encode2RM(node.op1.value, node.op2, 0)
 		} else {
 			error()
 		}
@@ -830,41 +843,29 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 	/**
-	 *     B60F  MOVZX   R_RM8     NO8
-	 *     B70F  MOVZX   R_RM16    NO816
+	 *     B60F  MOVZX   R_RM8   NO8
+	 *     B70F  MOVZX   R_RM16  NO816
 	 */
-	@Suppress("UNUSED_PARAMETER")
-	private fun customEncodeMOVZX(group: InstructionGroup, node: InstructionNode) {
+	private fun customEncodeMOVZX(node: InstructionNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
-		val op1 = node.op1.value
 
 		if(node.op2 is RegNode) {
-			val op2 = node.op2.value
-
-			if(op2.width.is8) {
-				if(op1.width.is8) error()
-				encode2RR(customEncodingMOVZX1, op1, op2)
-			} else if(op2.width.is16) {
-				if(op1.width.is8 || op2.width.is16) error()
-				encode2RR(customEncodingMOVZX2, op1, op2)
-			} else {
-				error()
+			encoding = when(node.op2.value.width) {
+				BIT8  -> customEncodingMOVZX1
+				BIT16 -> customEncodingMOVZX2
+				else  -> error()
 			}
+
+			encode2RR(node.op1.value, node.op2.value)
 		} else if(node.op2 is MemNode) {
-			val op2 = node.op2
-
-			if(op2.width == null) error()
-
-			if(op2.width.is8) {
-				if(op1.width.is8) error()
-				encode2RM(customEncodingMOVZX1, op1, op2)
-			} else if(op2.width.is16) {
-				if(op1.width.is8 || op2.width.is16) error()
-				encode2RM(customEncodingMOVZX2, op1, op2)
-			} else {
-				error()
+			encoding = when(node.op2.width) {
+				BIT8  -> customEncodingMOVZX1
+				BIT16 -> customEncodingMOVZX2
+				else  -> error()
 			}
+
+			encode2RM(node.op1.value, node.op2, 0)
 		} else {
 			error()
 		}
@@ -877,8 +878,7 @@ class Assembler(private val parseResult: ParserResult) {
 	 *     63    MOVSXD  R32_RM32
 	 *     63    MOVSXD  R64_RM32  REX.W
 	 */
-	@Suppress("UNUSED_PARAMETER")
-	private fun customEncodeMOVSXD(group: InstructionGroup, node: InstructionNode) {
+	private fun customEncodeMOVSXD(node: InstructionNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
 		val op1 = node.op1.value
@@ -894,7 +894,8 @@ class Assembler(private val parseResult: ParserResult) {
 				else                         -> error()
 			}
 
-			encode2RR(customEncodingMOVSXD, op1, op2)
+			encoding = customEncodingMOVSXD
+			encode2RR(op1, op2)
 		} else if(node.op2 is MemNode) {
 			val op2 = node.op2
 
@@ -906,7 +907,8 @@ class Assembler(private val parseResult: ParserResult) {
 				else                         -> error()
 			}
 
-			encode2RM(customEncodingMOVSXD, op1, op2)
+			encoding = customEncodingMOVSXD
+			encode2RM(op1, op2, 0)
 		} else {
 			error()
 		}
@@ -914,59 +916,8 @@ class Assembler(private val parseResult: ParserResult) {
 
 
 
-	/**
-	 *     EB    JMP  REL8
-	 *     E9    JMP  RE32
-	 *     FF/4  JMP  RM64
-	 */
-	private fun customEncodeJMP(group: InstructionGroup, node: InstructionNode) {
-		if(node.op2 != null) error()
-
-		if(node.op1 is ImmNode) {
-			val imm = resolve(node.op1)
-
-			if(importSymbol != null) {
-				writeMem(0xFF, node.op1, 0, 0, 4)
-			} else if((!hasReloc && imm.isImm8) || node.shortImm) {
-				writer.u8(0xEB)
-				if(hasReloc) addImmReloc(node.op1, Width.BIT8)
-				writer.s8(imm.toInt())
-			} else {
-				writer.u8(0xE9)
-				writeRel8(node.op1, imm)
-			}
-		} else {
-			operands(group, node)
-		}
-	}
-
-
-
-	/**
-	 *     E8    CALL  REL32
-	 *     FF/2  CALL  RM64
-	 */
-	private fun customEncodeCALL(group: InstructionGroup, node: InstructionNode) {
-		if(node.op2 != null) error()
-
-		if(node.op1 is ImmNode) {
-			val imm = resolve(node.op1)
-
-			if(importSymbol != null) {
-				writeMem(0xFF, node.op1, 0, 0, 2)
-			} else {
-				writer.u8(0xE8)
-				writeImm(node.op1, Width.BIT32, imm)
-			}
-		} else {
-			operands(group, node)
-		}
-	}
-
-
-
-	private fun customEncodeIMUL(group: InstructionGroup, node: InstructionNode) {
-		if(node.op2 == null || node.op3 == null) operands(group, node)
+	private fun customEncodeIMUL(node: InstructionNode) {
+		if(node.op2 == null || node.op3 == null) operands(node)
 		if(node.op4 != null) error()
 
 		if(node.op1 !is RegNode || node.op3 !is ImmNode) error()
@@ -977,59 +928,63 @@ class Assembler(private val parseResult: ParserResult) {
 			if(node.op1.value.width != node.op2.value.width) error()
 
 			if(!hasReloc && imm.isImm8) {
-				encode2RR(customEncodingIMUL1, node.op1.value, node.op2.value)
-				writeImm(node.op3, Width.BIT8, imm)
+				encoding = customEncodingIMUL1
+				encode2RR(node.op1.value, node.op2.value)
+				writeImm(node.op3, BIT8, imm)
 			} else {
-				encode2RR(customEncodingIMUL2, node.op1.value, node.op2.value)
+				encoding = customEncodingIMUL2
+				encode2RR(node.op1.value, node.op2.value)
 				writeImm(node.op3, node.op1.value.width, imm)
 			}
 		} else if(node.op2 is MemNode) {
 			if(node.op2.width != null && node.op2.width != node.op1.value.width) error()
 
 			if(!hasReloc && imm.isImm8) {
-				encode2RM(customEncodingIMUL1, node.op1.value, node.op2)
-				writeImm(node.op3, Width.BIT8, imm)
+				encoding = customEncodingIMUL1
+				encode2RM(node.op1.value, node.op2, 1)
+				writeImm(node.op3, BIT8, imm)
 			} else {
-				encode2RM(customEncodingIMUL2, node.op1.value, node.op2)
+				encoding = customEncodingIMUL2
+				encode2RM(node.op1.value, node.op2, node.op1.value.width.immLength)
 				writeImm(node.op3, node.op1.value.width, imm)
 			}
 		} else {
-			operands(group, node)
+			operands(node)
 		}
 	}
 
 	
 
-	private fun customEncodeMOV(group: InstructionGroup, node: InstructionNode) {
+	private fun customEncodeMOV(node: InstructionNode) {
 		if(node.op3 != null) error()
 
 		if(node.op1 is RegNode && node.op2 is ImmNode) {
 			val imm = resolve(node.op2)
-			val width = node.op1.value.width
-			encode1O(customEncodingMOV, node.op1.value)
-			if(hasReloc) addImmReloc(node, width)
-			else if(imm !in width) error()
-			writer.ulong(width, imm)
+			encoding = customEncodingMOV
+			encode1O(node.op1.value)
+			writeImmInternal(node.op2, node.op1.value.width, imm)
 		} else {
-			operands(group, node)
+			operands(node)
 		}
 	}
 
 
 
-	private fun customEncodeXCHG(group: InstructionGroup, node: InstructionNode) {
+	private fun customEncodeXCHG(node: InstructionNode) {
 		if(node.op3 != null) error()
 
 		if(node.op1 is RegNode && node.op2 is RegNode) {
 			if(node.op1.value.isA) {
-				encode1O(customEncodingXCHG, node.op2.value)
+				encoding = customEncodingXCHG
+				encode1O(node.op2.value)
 			} else if(node.op2.value.isA) {
-				encode1O(customEncodingXCHG, node.op1.value)
+				encoding = customEncodingXCHG
+				encode1O(node.op1.value)
 			} else {
-				operands(group, node)
+				operands(node)
 			}
 		} else {
-			operands(group, node)
+			operands(node)
 		}
 	}
 

@@ -17,6 +17,13 @@ data class InstructionGroup(
 	val specifierBits : Int
 ) {
 
+	operator fun get(operands: Operands) = if(operands !in this)
+		error("Invalid encoding")
+	else
+		instructions[(operandsBits and (operands.bit - 1)).countOneBits()]
+
+	operator fun contains(operands: Operands) = operandsBits and operands.bit != 0
+
 	operator fun contains(specifier: Specifier) = specifierBits and specifier.bit != 0
 
 }

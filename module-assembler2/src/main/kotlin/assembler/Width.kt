@@ -1,5 +1,7 @@
 package assembler
 
+import kotlin.math.min
+
 enum class Width(
 	val string       : String,
 	val bytes        : Int,
@@ -29,6 +31,8 @@ enum class Width(
 	val isNot32 get() = this != BIT32
 	val isNot64 get() = this != BIT64
 	val isNot80 get() = this != BIT80
+
+	val immLength = min(bytes, 4)
 
 	val bit = 1 shl ordinal
 

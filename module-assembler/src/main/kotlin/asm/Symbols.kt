@@ -30,7 +30,7 @@ data class IntSymbol(
 
 data class LabelSymbol(
 	override val name    : String,
-	override var section : Section = Section.NONE,
+	override var section : Section,
 	override var pos     : Int     = 0
 ) : Symbol, Ref
 
@@ -38,7 +38,7 @@ data class LabelSymbol(
 
 data class ImportSymbol(
 	override val name    : String,
-	override var section : Section = Section.NONE,
+	override var section : Section,
 	override var pos     : Int     = 0
 ) : Symbol, Ref
 
@@ -46,6 +46,6 @@ data class ImportSymbol(
 
 data class VarSymbol(
 	override val name    : String,
-	override var section : Section = Section.NONE,
+	override var section : Section,
 	override var pos     : Int     = 0
 ) : Symbol, Ref

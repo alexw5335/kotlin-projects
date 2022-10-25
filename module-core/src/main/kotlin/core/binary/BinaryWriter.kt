@@ -20,6 +20,7 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 	fun advance(count: Int) {
 		if(pos + count >= bytes.size)
 			bytes = bytes.copyOf((pos + count) shl 2)
+		pos += count
 	}
 
 
@@ -56,6 +57,10 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 
 
 	fun trimmedBytes() = bytes.copyOf(pos)
+
+
+
+	fun u32(value: Long) = u32(value.toUInt().toInt())
 
 
 
@@ -470,6 +475,10 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 	fun zero(length: Int) = fill(length, 0)
 
 	fun zeroTo(endPos: Int) = fillTo(endPos, 0)
+
+	fun alignTo(alignment: Int) {
+		pos = (pos + alignment - 1) and -alignment
+	}
 
 
 

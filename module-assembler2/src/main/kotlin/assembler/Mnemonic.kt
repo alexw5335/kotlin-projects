@@ -192,9 +192,16 @@ enum class Mnemonic {
 	MOVSXD,
 
 	PUSH,
-	PUSHW,
 	POP,
-	POPW,
+
+	POPW_FS,
+	PUSHW_FS,
+	PUSHW_GS,
+	PUSH_GS,
+	POP_FS,
+	PUSH_FS,
+	POP_GS,
+	POPW_GS,
 
 	INT1,
 	INT3,

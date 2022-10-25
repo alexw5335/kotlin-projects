@@ -148,7 +148,7 @@ class Parser(lexerResult: LexerResult) {
 		expect(SymbolToken.COLON)
 		val name = identifier()
 		expectStatementEnd()
-		val symbol = ImportSymbol(name)
+		val symbol = ImportSymbol(name, Section.RDATA)
 		symbols[name] = symbol
 		imports.add(DllImport(dll, symbol))
 	}

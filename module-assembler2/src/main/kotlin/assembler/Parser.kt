@@ -74,7 +74,7 @@ class Parser(lexerResult: LexerResult) {
 
 	private fun parseId(id: IdToken) {
 		if(tokens[pos++] != SymbolToken.COLON)
-			error("Expecting colon after identifier")
+			error("Expecting colon after identifier: ${id.value}")
 		val symbol = LabelSymbol(id.value, Section.TEXT)
 		symbols[symbol.name] = symbol
 		nodes.add(LabelNode(symbol))
