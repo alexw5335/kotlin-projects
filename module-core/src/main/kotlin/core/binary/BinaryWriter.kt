@@ -17,6 +17,13 @@ class BinaryWriter(var bytes: ByteArray, var endianness: Endianness) {
 
 
 
+	fun advance(count: Int) {
+		if(pos + count >= bytes.size)
+			bytes = bytes.copyOf((pos + count) shl 2)
+	}
+
+
+
 	inline fun retainPos(block: () -> Unit) {
 		val prevPos = pos
 		block()

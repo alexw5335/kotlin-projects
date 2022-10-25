@@ -14,10 +14,9 @@ enum class Widths(val bits: Int) {
 	ONLY64(0b1000);
 
 	/**
-	 * 1 if this is 64-bit default, 0 if not. I.e. If 32-bit is not allowed but at least two others are. MOVSXD is
-	 * not 64-bit default.
+	 * 1 if this is 64-bit default, 0 if not.
 	 */
-	val rexMod = if(bits.countOneBits() == 1) 0 else (bits shr 2) and 1
+	val rexMod = (bits shr 2) and 1
 
 	operator fun contains(width: Width) = bits and width.bit != 0
 

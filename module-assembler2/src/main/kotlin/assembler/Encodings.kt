@@ -25,9 +25,7 @@ class EncodingReader(chars: CharArray) : ReaderBase(chars) {
 		RM_R(Operands.R_R, Operands.M_R),
 		RM(Operands.R, Operands.M),
 		RM_I(Operands.R_I, Operands.M_I),
-		RM_I8(Operands.R_I8, Operands.M_I8),
-		RM_1(Operands.R_1, Operands.M_1),
-		RM_CL(Operands.R_CL, Operands.M_CL);
+		RM_I8(Operands.R_I8, Operands.M_I8);
 
 	}
 
@@ -223,23 +221,23 @@ FF/6  PUSH   M     NO8
 6A    PUSH   I8
 6866  PUSH   I16
 68    PUSH   I32
-A00F  PUSH   FS
-A80F  PUSH   GS
 
-A00F66  PUSHW  FS
-A80F66  PUSHW  GS
+A00F    PUSHFS
+A80F    PUSHGS
+A00F66  PUSHFSW
+a80F66  PUSHGSW
 
-8F/0  POP   M    NO8
-58    POP   O    NO832
-A10F  POP   FS
-A90F  POP   GS
+8F/0  POP   M  NO8
+58    POP   O  NO832
 
-A10F66  POPW  FS
-A90F66  POPW  GS
+A10F    POPFS
+A90F    POPGS
+A10F66  POPFSW
+A90F66  POPGSW
 
-BE0F  MOVSX   R_RM8       NO8
-BF0F  MOVSX   R_RM16      NO816
-63    MOVSXD  R64_RM32    NO8
+# BE0F  MOVSX   R_RM8       NO8
+# BF0F  MOVSX   R_RM16      NO816
+# 63    MOVSXD  R64_RM32    NO8
 
 6C    INSB
 6D66  INSW
@@ -459,22 +457,16 @@ FD  STD
 FE/0  INC  RM  ALL
 FE/1  DEC  RM  ALL
 
-
-
 E8    CALL  REL32  CUSTOM
 FF/2  CALL  RM     ONLY64
-FF/3  CALL  M1616  CUSTOM
-FF/3  CALL  M1632  CUSTOM
-FF/3  CALL  M1664  CUSTOM
+FF/3  CALL  M      NO8
 
 EB    JMP  REL8   CUSTOM
 E9    JMP  REL32  CUSTOM
 FF/4  JMP  RM     ONLY64
-FF/5  JMP  M1616  CUSTOM
-FF/5  JMP  M1632  CUSTOM
-FF/5  JMP  M1664  CUSTOM
+FF/5  JMP  M      NO8
 
-;
+
 
 D8/0  FADD   M32FP
 DC/0  FADD   M64FP
@@ -665,6 +657,8 @@ DB/3  FISTP  M32INT
 DF/7  FISTP  M64INT
 
 DF/6  FBSTP  M80BCD
+
+;
 
 000F/0  SLDT  M16
 000F/0  SLDT  R

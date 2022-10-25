@@ -49,11 +49,13 @@ object Natives {
 
 	var proc: (hwnd: Long, msg: Int, wparam: Long, lparam: Long) -> Boolean = { _,_,_,_ -> false}
 
-
-
 	@Suppress("unused")
 	fun windowProc(hwnd: Long, msg: Int, wparam: Long, lparam: Long) =
 		proc(hwnd, msg, wparam, lparam)
+
+	fun mapVirtualCodeToScanCode(virtualCode: Int) = mapVirtualKey(virtualCode, 0)
+
+	fun mapScanCodeToVirtualCode(scanCode: Int) = mapVirtualKey(scanCode, 1)
 
 
 }

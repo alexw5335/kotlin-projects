@@ -33,8 +33,6 @@ enum class Operands(val specifier: Specifier = Specifier.NONE) {
 	I8(Specifier.I8),
 	I16(Specifier.I16),
 	I32(Specifier.I32),
-	FS,
-	GS,
 	REL8(Specifier.REL8),
 	REL32(Specifier.REL32),
 
@@ -46,17 +44,8 @@ enum class Operands(val specifier: Specifier = Specifier.NONE) {
 	M_I,
 	M_I8(Specifier.RM_I8),
 	A_I(Specifier.A_I),
-	R_1(Specifier.RM_1),
-	M_1(Specifier.RM_1),
-	R_CL(Specifier.RM_CL),
-	M_CL(Specifier.RM_CL),
-
-	R_RM8,
-	R_RM16,
-	R64_RM32,
-
-	R_RM_I8(Specifier.RM_I8),
-	R_RM_I;
+	RM_1(Specifier.RM_1),
+	RM_CL(Specifier.RM_CL);
 
 	val bit = 1 shl ordinal
 

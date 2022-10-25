@@ -11,6 +11,7 @@ private const val input = """
 import KERNEL32:WriteFile
 import KERNEL32:ExitProcess
 
+jmp WriteFile
 call WriteFile
 
 """
