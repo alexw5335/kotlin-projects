@@ -5,7 +5,7 @@ import core.swapEndian32
 import core.swapEndian64
 import java.nio.charset.Charset
 
-@Suppress("Unused")
+@Suppress("Unused", "MemberVisibilityCanBePrivate")
 class NativeWriter {
 
 
@@ -14,6 +14,12 @@ class NativeWriter {
 	var pos = 0
 
 	fun trimmedBytes() = bytes.copyOf(pos)
+
+
+
+	/*
+	Position
+	 */
 
 
 
@@ -48,69 +54,162 @@ class NativeWriter {
 
 
 
-	fun i8(value: Int) {
-		ensureCapacity(1)
-		Unsafe.instance.putByte(bytes, pos + 16L, value.toByte())
+	/*
+	Little-endian primitives
+	 */
+
+
+
+	fun i8(pos: Int, value: Int) {
+		bytes[pos] = value.toByte()
 	}
 
-	fun i16LE(value: Int) {
-		ensureCapacity(2)
+	fun i8(value: Int) {
+		ensureCapacity(1)
+		bytes[pos++] = value.toByte()
+	}
+
+	fun i16(pos: Int, value: Int) {
 		Unsafe.instance.putShort(bytes, pos + 16L, value.toShort())
 	}
 
-	fun i32LE(value: Int) {
-		ensureCapacity(4)
+	fun i16(value: Int) {
+		ensureCapacity(2)
+		Unsafe.instance.putShort(bytes, pos + 16L, value.toShort())
+		pos += 2
+	}
+
+	fun i32(pos: Int, value: Int) {
 		Unsafe.instance.putInt(bytes, pos + 16L, value)
 	}
 
-	fun i64LE(value: Long) {
+	fun i32(value: Int) {
+		ensureCapacity(4)
+		Unsafe.instance.putInt(bytes, pos + 16L, value)
+		pos += 4
+	}
+
+	fun i64(pos: Int, value: Long) {
+		Unsafe.instance.putLong(bytes, pos + 16L, value)
+	}
+
+	fun i64(value: Long) {
 		ensureCapacity(8)
 		Unsafe.instance.putLong(bytes, pos + 16L, value)
+		pos += 8
+	}
+
+	fun f32(pos: Int, value: Float) {
+		Unsafe.instance.putFloat(bytes, pos + 16L, value)
+	}
+
+	fun f32(value: Float) {
+		ensureCapacity(4)
+		Unsafe.instance.putFloat(bytes, pos + 16L, value)
+		pos += 4
+	}
+
+	fun f64(pos: Int, value: Double) {
+		Unsafe.instance.putDouble(bytes, pos + 16L, value)
+	}
+
+	fun f64(value: Double) {
+		ensureCapacity(8)
+		Unsafe.instance.putDouble(bytes, pos + 16L, value)
+		pos += 8
+	}
+
+
+
+	/*
+	Big-endian primitives
+	 */
+
+
+
+	fun i16BE(pos: Int, value: Int) {
+		Unsafe.instance.putShort(bytes, pos + 16L, value.swapEndian16.toShort())
 	}
 
 	fun i16BE(value: Int) {
 		ensureCapacity(2)
 		Unsafe.instance.putShort(bytes, pos + 16L, value.swapEndian16.toShort())
+		pos += 2
+	}
+
+	fun i32BE(pos: Int, value: Int) {
+		Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian32)
 	}
 
 	fun i32BE(value: Int) {
 		ensureCapacity(4)
 		Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian32)
+		pos += 4
+	}
+
+	fun i64BE(pos: Int, value: Long) {
+		Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian64)
 	}
 
 	fun i64BE(value: Long) {
 		ensureCapacity(8)
 		Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian64)
+		pos += 8
 	}
 
-
-
-	fun f32LE(value: Float) {
-		ensureCapacity(4)
-		Unsafe.instance.putFloat(bytes, pos + 16L, value)
-	}
-
-	fun f64LE(value: Double) {
-		ensureCapacity(8)
-		Unsafe.instance.putDouble(bytes, pos + 16L, value)
+	fun f32BE(pos: Int, value: Float) {
+		Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian32)
 	}
 
 	fun f32BE(value: Float) {
 		ensureCapacity(4)
 		Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian32)
+		pos += 4
+	}
+
+	fun f64BE(pos: Int, value: Double) {
+		Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian64)
 	}
 
 	fun f64BE(value: Double) {
 		ensureCapacity(8)
 		Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian64)
+		pos += 8
 	}
 
 
 
-	fun bytes(bytes: ByteArray) {
-		ensureCapacity(bytes.size)
-		Unsafe.instance.copyMemory(bytes, 16L, this.bytes, pos + 16L, bytes.size.toLong())
+	/*
+	Arrays
+	 */
+
+
+
+	fun bytes(pos: Int, array: ByteArray, srcPos: Int = 0, length: Int = array.size) {
+		System.arraycopy(array, srcPos, bytes, pos, length)
 	}
+
+	fun bytes(array: ByteArray, srcPos: Int = 0, length: Int = array.size) {
+		ensureCapacity(length)
+		System.arraycopy(array, srcPos, bytes, pos, length)
+		pos += length
+	}
+
+	fun ints(pos: Int, array: IntArray, srcPos: Int = 0, length: Int = array.size) {
+		Unsafe.instance.copyMemory(array, 16L + srcPos, bytes, 16L + pos, length.toLong())
+	}
+
+	fun ints(array: IntArray, srcPos: Int = 0, length: Int = array.size) {
+		ensureCapacity(length * 4)
+		Unsafe.instance.copyMemory(array, 16L + srcPos, bytes, 16L + pos, length.toLong())
+		pos += length * 4
+	}
+
+
+
+	/*
+	Misc
+	 */
 
 
 

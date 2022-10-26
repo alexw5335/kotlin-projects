@@ -21,6 +21,9 @@ interface Symbol {
 
 
 
+/**
+ * A compile-time integer constant.
+ */
 data class IntSymbol(
 	override val name : String,
 	var value         : Long = 0L

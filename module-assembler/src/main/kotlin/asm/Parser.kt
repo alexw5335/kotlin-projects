@@ -6,6 +6,17 @@ import kotlin.collections.HashMap
 class Parser(lexerResult: LexerResult) {
 
 
+
+	private fun AstNode.resolveIntRec(): Long = when(this) {
+		is IntNode    -> value
+		is UnaryNode  -> op.calculate(node.resolveIntRec())
+		is BinaryNode -> op.calculate(left.resolveIntRec(), right.resolveIntRec())
+		is IdNode     -> (symbols[name] as? IntSymbol)?.value ?: error("Invalid symbol: $name")
+		else          -> error("Invalid node: $this")
+	}
+
+
+
 	companion object {
 
 		fun parse(lexerResult: LexerResult) = Parser(lexerResult).parse()
@@ -83,7 +94,7 @@ class Parser(lexerResult: LexerResult) {
 	private fun parseId(id: IdToken) {
 		if(tokens[pos++] != SymbolToken.COLON)
 			error("Expecting colon after identifier")
-		val symbol = LabelSymbol(id.value)
+		val symbol = LabelSymbol(id.value, Section.TEXT)
 		symbols[symbol.name] = symbol
 		nodes.add(LabelNode(symbol))
 	}

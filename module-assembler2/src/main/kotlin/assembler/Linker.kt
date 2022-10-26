@@ -6,6 +6,7 @@ import core.binary.BinaryWriter
 class Linker(private val assemblerResult: AssemblerResult) {
 
 
+
 	private val writer = BinaryWriter()
 
 	private val sectionAlignment = 0x1000
@@ -46,6 +47,15 @@ class Linker(private val assemblerResult: AssemblerResult) {
 		Section.DATA  -> dataRva
 		Section.BSS   -> dataRva
 	}
+
+	private class SectionData(
+		val name            : String,
+		val virtualSize     : Int,
+		val virtualAddress  : Int,
+		val rawDataSize     : Int,
+		val rawDataPos      : Int,
+		val characteristics : Int
+	)
 
 
 

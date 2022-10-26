@@ -3,6 +3,8 @@
 package assembler
 
 import core.Core
+import core.binary.BinaryWriter
+import core.memory.NativeWriter
 import core.memory.Unsafe
 import core.swapEndian16
 import core.swapEndian32
@@ -33,7 +35,7 @@ main:
 
 
 fun main() {
-	link(input)
+	//link(input)
 	//assemble(input)
 	//link(input)
 }
