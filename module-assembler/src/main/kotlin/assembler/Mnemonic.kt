@@ -1,6 +1,7 @@
-package asm
+package assembler
 
-enum class Mnemonic(val stringWidth: Width? = null) {
+@Suppress("unused")
+enum class Mnemonic {
 
 	ADD,
 	OR,
@@ -39,39 +40,39 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	STD,
 
 	BSWAP,
+	
+	CMPSB,
+	CMPSW,
+	CMPSD,
+	CMPSQ,
 
-	CMPSB(stringWidth = Width.BIT8),
-	CMPSW(stringWidth = Width.BIT16),
-	CMPSD(stringWidth = Width.BIT32),
-	CMPSQ(stringWidth = Width.BIT64),
+	SCASB,
+	SCASW,
+	SCASD,
+	SCASQ,
 
-	SCASB(stringWidth = Width.BIT8),
-	SCASW(stringWidth = Width.BIT16),
-	SCASD(stringWidth = Width.BIT32),
-	SCASQ(stringWidth = Width.BIT64),
+	STOSB,
+	STOSW,
+	STOSD,
+	STOSQ,
 
-	STOSB(stringWidth = Width.BIT8),
-	STOSW(stringWidth = Width.BIT16),
-	STOSD(stringWidth = Width.BIT32),
-	STOSQ(stringWidth = Width.BIT64),
+	LODSB,
+	LODSW,
+	LODSD,
+	LODSQ,
 
-	LODSB(stringWidth = Width.BIT8),
-	LODSW(stringWidth = Width.BIT16),
-	LODSD(stringWidth = Width.BIT32),
-	LODSQ(stringWidth = Width.BIT64),
+	MOVSB,
+	MOVSW,
+	MOVSD,
+	MOVSQ,
 
-	MOVSB(stringWidth = Width.BIT8),
-	MOVSW(stringWidth = Width.BIT16),
-	MOVSD(stringWidth = Width.BIT32),
-	MOVSQ(stringWidth = Width.BIT64),
+	INSB,
+	INSW,
+	INSD,
 
-	INSB(stringWidth = Width.BIT8),
-	INSW(stringWidth = Width.BIT16),
-	INSD(stringWidth = Width.BIT32),
-
-	OUTSB(stringWidth = Width.BIT8),
-	OUTSW(stringWidth = Width.BIT16),
-	OUTSD(stringWidth = Width.BIT32),
+	OUTSB,
+	OUTSW,
+	OUTSD,
 
 	CPUID,
 
@@ -192,9 +193,16 @@ enum class Mnemonic(val stringWidth: Width? = null) {
 	MOVSXD,
 
 	PUSH,
-	PUSHW,
 	POP,
-	POPW,
+
+	POPW_FS,
+	PUSHW_FS,
+	PUSHW_GS,
+	PUSH_GS,
+	POP_FS,
+	PUSH_FS,
+	POP_GS,
+	POPW_GS,
 
 	INT1,
 	INT3,

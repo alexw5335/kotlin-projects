@@ -1,9 +1,8 @@
 package assembler
 
 import core.BitList
+import core.ByteList
 import core.ReaderBase
-import java.nio.file.Path
-import java.nio.file.Files
 
 class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 
@@ -12,8 +11,31 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 
 	private val newlines = BitList()
 
+	private val newlineCounts = ByteList()
+
+	private var newlineCount = 0
 
 
+
+	private fun addNewlines() {
+		if(newlineCount == 0) return
+		
+		newlines.set(tokens.size)
+		if(newlineCount > 255)
+			error("Cannot have more than 255 consecutive newlines")
+		newlineCounts.add(newlineCount)
+		newlineCount = 0
+	}
+	
+	
+	
+	private fun addToken(token: Token) {
+		addNewlines()
+		tokens.add(token)
+	}
+	
+	
+	
 	fun lex(): LexerResult {
 		while(true) {
 			val char = chars[pos++]
@@ -22,7 +44,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 
 			if(char == '\n') {
 				newlines.set(tokens.size)
-				while(chars[pos] == '\n') pos++
+				newlineCount++
 				continue
 			}
 
@@ -46,14 +68,14 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 			val symbol = resolveSymbol(char)
 
 			if(symbol != null) {
-				tokens.add(symbol)
+				addToken(symbol)
 				continue
 			}
 
 			pos--
 
 			if(char.isDigit()) {
-				tokens.add(IntToken(readNumber(char)))
+				addToken(IntToken(readNumber(char)))
 				continue
 			}
 
@@ -65,16 +87,18 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 			val keyword = keywordMap[string]
 
 			if(keyword != null) {
-				tokens.add(keyword)
+				addToken(keyword)
 				continue
 			}
 
-			tokens.add(IdToken(string))
+			addToken(IdToken(string))
 		}
+		
+		addNewlines()
 
-		for(i in 0 until 4) tokens.add(EndToken)
+		for(i in 0 until 4) addToken(EndToken)
 		newlines.ensureBitCapacity(tokens.size)
-		return LexerResult(tokens, newlines)
+		return LexerResult(tokens, newlines, newlineCounts)
 	}
 
 
@@ -107,7 +131,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 
 	private fun resolveSlash() {
 		if(pos >= chars.size) {
-			tokens.add(SymbolToken.SLASH)
+			addToken(SymbolToken.SLASH)
 			return
 		}
 
@@ -118,7 +142,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 		}
 
 		if(chars[pos] != '*') {
-			tokens.add(SymbolToken.SLASH)
+			addToken(SymbolToken.SLASH)
 			return
 		}
 
@@ -126,7 +150,9 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 		var count = 1
 
 		while(count > 0) {
-			if(pos >= chars.size) error("Unterminated comment")
+			if(pos >= chars.size)
+				error("Unterminated multiline comment")
+
 			val char = chars[pos++]
 
 			if(char == '/' && chars[pos] == '*') {
@@ -135,6 +161,8 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 			} else if(char == '*' && chars[pos] == '/') {
 				count--
 				pos++
+			} else if(char == '\n') {
+				newlineCount++
 			}
 		}
 	}
@@ -144,7 +172,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 	private fun resolveDoubleApostrophe() {
 		val string = readUntil { it == '"' }
 		if(chars[pos++] != '"') error("Unterminated string literal")
-		tokens.add(StringToken(string))
+		addToken(StringToken(string))
 	}
 
 
@@ -152,7 +180,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 	private fun resolveSingleApostrophe() {
 		val char = chars[pos++]
 		if(chars[pos++] != '\'') error("Unterminated char literal")
-		tokens.add(CharToken(char))
+		addToken(CharToken(char))
 	}
 
 

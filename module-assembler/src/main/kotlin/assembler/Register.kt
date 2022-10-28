@@ -1,10 +1,5 @@
-@file:Suppress("Unused")
+package assembler
 
-package asm
-
-/**
- * An 8-, 16-, 32-, or 64-bit general purpose register.
- */
 enum class Register(
 	val value  : Int,
 	val width  : Width,
@@ -74,10 +69,10 @@ enum class Register(
 	CL(1, Width.BIT8),
 	DL(2, Width.BIT8),
 	BL(3, Width.BIT8),
-	AH(4, Width.BIT8, noRex8 = false),
-	CH(5, Width.BIT8, noRex8 = false),
-	DH(6, Width.BIT8, noRex8 = false),
-	BH(7, Width.BIT8, noRex8 = false),
+	AH(4, Width.BIT8, noRex8 = true),
+	CH(5, Width.BIT8, noRex8 = true),
+	DH(6, Width.BIT8, noRex8 = true),
+	BH(7, Width.BIT8, noRex8 = true),
 	R8B(0, Width.BIT8, 1),
 	R9B(1, Width.BIT8, 1),
 	R10B(2, Width.BIT8, 1),
@@ -94,117 +89,5 @@ enum class Register(
 	DIL(7, Width.BIT8, rex8 = true);
 
 	val string = name.lowercase()
-
-}
-
-
-
-enum class SRegister {
-
-	CS,
-	SS,
-	DS,
-	ES,
-	FS,
-	GS;
-
-	val string = name.lowercase()
-	val value = ordinal
-
-}
-
-
-
-enum class STRegister {
-
-	ST0,
-	ST1,
-	ST2,
-	ST3,
-	ST4,
-	ST5,
-	ST6,
-	ST7;
-
-	val string = name.lowercase()
-	val value = ordinal
-
-}
-
-
-
-enum class DRRegister {
-
-	DR0,
-	DR1,
-	DR2,
-	DR3,
-	DR4,
-	DR5,
-	DR6,
-	DR7;
-
-	val string = name.lowercase()
-	val value = ordinal
-
-}
-
-
-
-enum class CRRegister {
-	CR0,
-	CR1,
-	CR2,
-	CR3,
-	CR4,
-	CR5,
-	CR6,
-	CR7;
-
-	val string = name.lowercase()
-	val value = ordinal
-
-}
-
-
-
-enum class MMRegister {
-	MM0,
-	MM1,
-	MM2,
-	MM3,
-	MM4,
-	MM5,
-	MM6,
-	MM7;
-
-	val string = name.lowercase()
-	val value = ordinal
-
-}
-
-
-
-enum class XMMRegister {
-
-	XMM0,
-	XMM1,
-	XMM2,
-	XMM3,
-	XMM4,
-	XMM5,
-	XMM6,
-	XMM7,
-	XMM8,
-	XMM9,
-	XMM10,
-	XMM11,
-	XMM12,
-	XMM13,
-	XMM14,
-	XMM15;
-
-	val string = name.lowercase()
-	val value = ordinal
 
 }

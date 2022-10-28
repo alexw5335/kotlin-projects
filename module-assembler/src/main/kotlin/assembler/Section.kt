@@ -2,6 +2,9 @@ package assembler
 
 enum class Section {
 
+	/** Section not yet chosen */
+	NONE,
+
 	/** .text, initialised/code */
 	TEXT,
 
