@@ -19,9 +19,10 @@ data class RegToken(val value: Register) : Token
 
 
 enum class SymbolToken(
-	val string   : String,
-	val binaryOp : BinaryOp? = null,
-	val unaryOp  : UnaryOp? = null
+	val string      : String,
+	val binaryOp    : BinaryOp? = null,
+	val unaryOp     : UnaryOp? = null,
+	val firstSymbol : SymbolToken? = null
 ) : Token {
 
 	LEFT_PAREN    ("("),
@@ -40,8 +41,8 @@ enum class SymbolToken(
 	CARET         ("^", binaryOp = BinaryOp.XOR),
 	LEFT_ANGLE    ("<"),
 	RIGHT_ANGLE   (">"),
-	LEFT_SHIFT    ("<<", binaryOp = BinaryOp.SHL),
-	RIGHT_SHIFT   (">>", binaryOp = BinaryOp.SHR),
+	LEFT_SHIFT    ("<<", binaryOp = BinaryOp.SHL, firstSymbol = SymbolToken.LEFT_ANGLE),
+	RIGHT_SHIFT   (">>", binaryOp = BinaryOp.SHR, firstSymbol = SymbolToken.RIGHT_ANGLE),
 	LEFT_BRACKET  ("["),
 	RIGHT_BRACKET ("]"),
 	LEFT_BRACE    ("{"),
@@ -52,23 +53,10 @@ enum class SymbolToken(
 
 
 
-internal val keywordMap = HashMap<String, Token>().also { map ->
+internal val registerMap = HashMap<String, RegToken>().also { map ->
 	for(r in Register.values()) {
 		val token = RegToken(r)
 		map[r.string] = token
 		map[r.name] = token
 	}
 }
-
-
-
-internal val mnemonicMap = HashMap<String, Mnemonic>().also { map ->
-	for(m in Mnemonic.values())
-		map[m.name] = m
-}
-
-
-
-internal val Char.isIdStartChar get() = isLetter() || this == '_'
-
-internal val Char.isIdChar get() = isLetterOrDigit() || this == '_'

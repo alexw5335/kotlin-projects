@@ -31,9 +31,8 @@ interface Symbol {
  */
 data class IntSymbol(
 	override val name : String,
-	var value         : Long = 0L
+	var value         : Long
 ) : Symbol
-
 
 
 
@@ -47,14 +46,22 @@ data class LabelSymbol(
 
 data class ImportSymbol(
 	override val name    : String,
-	override var section : Section,
-	override var pos     : Int
+	override var section : Section = Section.NONE,
+	override var pos     : Int = 0
 ) : Symbol, Ref
 
 
 
 data class VarSymbol(
 	override val name    : String,
-	override var section : Section,
-	override var pos     : Int
+	override var section : Section = Section.NONE,
+	override var pos     : Int = 0
+) : Symbol, Ref
+
+
+
+data class ResSymbol(
+	override val name    : String,
+	override var section : Section = Section.NONE,
+	override var pos     : Int = 0
 ) : Symbol, Ref

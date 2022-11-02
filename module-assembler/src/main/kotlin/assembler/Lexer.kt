@@ -1,148 +1,173 @@
 package assembler
 
 import core.BitList
-import core.ByteList
-import core.ReaderBase
 
-class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
+class Lexer(chars: CharArray) {
 
+
+	private val chars = chars.copyOf(chars.size + 8)
+
+	private var pos = 0
 
 	private val tokens = ArrayList<Token>()
 
 	private val newlines = BitList()
 
-	private val newlineCounts = ByteList()
+	private val charMap = arrayOfNulls<() -> Unit>(255)
 
-	private var newlineCount = 0
+	private operator fun<T> Array<T>.set(char: Char, value: T) = set(char.code, value)
+
+	private val stringBuilder = StringBuilder()
 
 
 
-	private fun addNewlines() {
-		if(newlineCount == 0) return
-		
-		newlines.set(tokens.size)
-		if(newlineCount > 255)
-			error("Cannot have more than 255 consecutive newlines")
-		newlineCounts.add(newlineCount)
-		newlineCount = 0
+	init {
+		populateCharMap()
 	}
-	
-	
-	
-	private fun addToken(token: Token) {
-		addNewlines()
-		tokens.add(token)
-	}
-	
-	
-	
+
+
+
 	fun lex(): LexerResult {
 		while(true) {
 			val char = chars[pos++]
-
-			if(char == Char(0)) break
-
-			if(char == '\n') {
-				newlines.set(tokens.size)
-				newlineCount++
-				continue
-			}
-
-			if(char.isWhitespace()) continue
-
-			if(char == '/') {
-				resolveSlash()
-				continue
-			}
-
-			if(char == '"') {
-				resolveDoubleApostrophe()
-				continue
-			}
-
-			if(char == '\'') {
-				resolveSingleApostrophe()
-				continue
-			}
-
-			val symbol = resolveSymbol(char)
-
-			if(symbol != null) {
-				addToken(symbol)
-				continue
-			}
-
-			pos--
-
-			if(char.isDigit()) {
-				addToken(IntToken(readNumber(char)))
-				continue
-			}
-
-			if(!char.isIdStartChar)
-				error("Unexpected character '$char'")
-
-			val string = readWhile { it.isIdChar }
-
-			val keyword = keywordMap[string]
-
-			if(keyword != null) {
-				addToken(keyword)
-				continue
-			}
-
-			addToken(IdToken(string))
+			if(char.code == 0) break
+			charMap[char.code]!!()
 		}
-		
-		addNewlines()
 
-		for(i in 0 until 4) addToken(EndToken)
+		for(i in 0 until 4) tokens.add(EndToken)
 		newlines.ensureBitCapacity(tokens.size)
-		return LexerResult(tokens, newlines, newlineCounts)
+		return LexerResult(tokens, newlines)
 	}
 
 
 
-	private fun resolveSymbol(char: Char) = when(char) {
-		'+' -> SymbolToken.PLUS
-		'-' -> SymbolToken.MINUS
-		'*' -> SymbolToken.ASTERISK
-		'(' -> SymbolToken.LEFT_PAREN
-		')' -> SymbolToken.RIGHT_PAREN
-		'=' -> SymbolToken.EQUALS
-		',' -> SymbolToken.COMMA
-		';' -> SymbolToken.SEMICOLON
-		':' -> SymbolToken.COLON
-		'|' -> SymbolToken.PIPE
-		'&' -> SymbolToken.AMPERSAND
-		'~' -> SymbolToken.TILDE
-		'^' -> SymbolToken.CARET
-		'[' -> SymbolToken.LEFT_BRACKET
-		']' -> SymbolToken.RIGHT_BRACKET
-		'{' -> SymbolToken.LEFT_BRACE
-		'}' -> SymbolToken.RIGHT_BRACE
-		'.' -> SymbolToken.PERIOD
-		'<' -> if(chars[pos] == '<') SymbolToken.LEFT_SHIFT.adv() else SymbolToken.LEFT_ANGLE
-		'>' -> if(chars[pos] == '>') SymbolToken.RIGHT_SHIFT.adv() else SymbolToken.RIGHT_ANGLE
-		else -> null
+	private fun populateCharMap() {
+		charMap['\n'] = { newlines.set(tokens.size) }
+		charMap[' ']  = { }
+		charMap['\t'] = { }
+		charMap['\r'] = { }
+
+		for(s in SymbolToken.values()) {
+			val firstChar = s.string[0]
+
+			if(s.string.length == 1) {
+				charMap[firstChar] = { tokens.add(s)}
+				continue
+			}
+
+			val firstSymbol = s.firstSymbol ?: error("Invalid symbol")
+			val secondChar = s.string[1]
+
+			charMap[firstChar] = {
+				if(chars[pos] == secondChar) {
+					tokens.add(s)
+					pos++
+				} else
+					tokens.add(firstSymbol)
+			}
+		}
+
+		charMap['"'] = ::resolveDoubleApostrophe
+		charMap['\''] = ::resolveSingleApostrophe
+		charMap['/'] = ::resolveSlash
+
+		for(i in 65..90)
+			charMap[i] = ::idStart
+
+		for(i in 97..122)
+			charMap[i] = ::idStart
+
+		charMap['_'] = ::idStart
+
+		charMap['0'] = ::zero
+
+		for(i in 49..57)
+			charMap[i] = ::digit
+
+		for(i in charMap.indices)
+			if(charMap[i] == null)
+				charMap[i] = { error("Invalid char code: $i") }
+	}
+
+
+
+	private fun readNumber(radix: Int) {
+		stringBuilder.clear()
+
+		while(true) {
+			val char = chars[pos]
+			if(char == '_') continue
+			if(!char.isDigit() || char.code == 0) break
+			stringBuilder.append(char)
+			pos++
+		}
+
+		tokens.add(IntToken(stringBuilder.toString().toLong(radix)))
+	}
+
+
+
+	private fun digit() {
+		pos--
+		readNumber(10)
+	}
+
+
+
+	private fun zero() {
+		if(chars[pos].isDigit() || chars[pos].code == 0) {
+			digit()
+			return
+		}
+
+		if(!chars[pos].isLetter()) {
+			tokens.add(IntToken(0))
+			return
+		}
+
+		when(val base = chars[pos++]) {
+			'x'  -> readNumber(16)
+			'b'  -> readNumber(2)
+			'o'  -> readNumber(8)
+			else -> error("Invalid integer base: $base")
+		}
+	}
+
+
+
+	private fun idStart() {
+		pos--
+
+		stringBuilder.clear()
+
+		while(true) {
+			val char = chars[pos]
+			if(!char.isJavaIdentifierPart() || char.code == 0) break
+			stringBuilder.append(char)
+			pos++
+		}
+
+		val string = stringBuilder.toString()
+
+		registerMap[string]?.let {
+			tokens.add(it)
+			return
+		}
+
+		tokens.add(IdToken(string))
 	}
 
 
 
 	private fun resolveSlash() {
-		if(pos >= chars.size) {
-			addToken(SymbolToken.SLASH)
-			return
-		}
-
 		if(chars[pos] == '/') {
 			pos++
-			skipLine()
+			while(chars[pos] != '\n') pos++
 			return
 		}
 
 		if(chars[pos] != '*') {
-			addToken(SymbolToken.SLASH)
+			tokens.add(SymbolToken.SLASH)
 			return
 		}
 
@@ -161,8 +186,6 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 			} else if(char == '*' && chars[pos] == '/') {
 				count--
 				pos++
-			} else if(char == '\n') {
-				newlineCount++
 			}
 		}
 	}
@@ -170,9 +193,17 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 
 
 	private fun resolveDoubleApostrophe() {
-		val string = readUntil { it == '"' }
-		if(chars[pos++] != '"') error("Unterminated string literal")
-		addToken(StringToken(string))
+		stringBuilder.clear()
+
+		while(true) {
+			val char = chars[pos++]
+			if(char.code == 0) error("Unterminated string literal")
+			if(char == '\n') error("Newline not allowed in string literal")
+			if(char == '"') break
+			stringBuilder.append(char)
+		}
+
+		tokens.add(StringToken(stringBuilder.toString()))
 	}
 
 
@@ -180,7 +211,7 @@ class Lexer(chars: CharArray) : ReaderBase(chars.copyOf(chars.size + 8)) {
 	private fun resolveSingleApostrophe() {
 		val char = chars[pos++]
 		if(chars[pos++] != '\'') error("Unterminated char literal")
-		addToken(CharToken(char))
+		tokens.add(CharToken(char))
 	}
 
 

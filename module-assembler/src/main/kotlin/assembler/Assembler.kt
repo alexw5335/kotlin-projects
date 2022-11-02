@@ -1,0 +1,958 @@
+package assembler
+
+import assembler.Width.*
+import core.memory.NativeWriter
+
+class Assembler(parserResult: ParserResult) {
+
+
+	private val nodes = parserResult.nodes
+
+	private val symbols = parserResult.symbols
+
+	private val imports = parserResult.imports
+
+	private fun error(): Nothing = error("Invalid encoding")
+
+	private val groups = EncodingReader().read()
+
+
+
+	private lateinit var group: InstructionGroup
+
+	private val dataWriter = NativeWriter()
+
+	private val textWriter = NativeWriter()
+
+	private var writer = textWriter
+
+	private val relocations = ArrayList<Relocation>()
+
+	private var bssSize = 0
+
+	private var rexDisallowed = false
+
+	private var rexRequired = false
+
+
+
+	fun assemble(): AssemblerResult {
+		for(node in nodes) {
+			when(node) {
+				is LabelNode       -> handleLabelNode(node)
+				is VarNode         -> handleVarNode(node)
+				is ResNode         -> handleResNode(node)
+				is InstructionNode -> handleInstructionNode(node)
+				else               -> error("Invalid node: $node")
+			}
+		}
+
+		return AssemblerResult(
+			writer.getTrimmedBytes(),
+			dataWriter.getTrimmedBytes(),
+			bssSize,
+			imports,
+			relocations,
+			symbols
+		)
+	}
+
+
+
+	private fun handleInstructionNode(node: InstructionNode) {
+		rexRequired = false
+		rexDisallowed = false
+
+		group = groups[node.mnemonic] ?:
+			error("No encodings for mnemonic: ${node.mnemonic}")
+
+		val customEncoding = customEncodings[node.mnemonic]
+
+		if(customEncoding != null)
+			customEncoding(node)
+		else
+			assemble(node)
+	}
+
+
+
+	private fun handleLabelNode(node: LabelNode) {
+		node.symbol.pos = writer.pos
+	}
+
+
+
+	private fun handleVarNode(node: VarNode) {
+		for((width, components) in node.componentsAndWidths) {
+			for(component in components) {
+				if(component is StringNode) {
+					for(char in component.value)
+						dataWriter.int(width, char.code)
+				} else {
+					dataWriter.int(width, resolve(component))
+				}
+			}
+		}
+	}
+
+
+
+	private fun handleResNode(node: ResNode) {
+		val alignment = when(node.size) {
+			1    -> 1
+			2    -> 2
+			3    -> 4
+			4    -> 4
+			else -> 8
+		}
+
+		bssSize = (bssSize + alignment - 1) and -alignment
+		node.symbol.pos = bssSize
+		bssSize += node.size
+	}
+
+
+
+	/*
+	Resolution
+	 */
+
+
+
+	private var baseReg: Register? = null
+
+	private var indexReg: Register? = null
+
+	private var indexScale = 0
+
+	private var aso = false
+
+	private var refCount = 0
+
+	private val hasReloc get() = refCount > 0
+
+	private var importSymbol: Symbol? = null
+
+
+
+	private fun resolve(root: AstNode, isMem: Boolean = false): Long {
+		baseReg      = null
+		indexReg     = null
+		indexScale   = 0
+		aso          = false
+		importSymbol = null
+		refCount     = 0
+
+		val disp = resolveRec(if(root is ImmNode) root.value else root, 1)
+
+		if(isMem) {
+			if(baseReg != null) {
+				if(indexReg != null) {
+					if(baseReg!!.width != indexReg!!.width)
+						error()
+					if(baseReg!!.width.is32)
+						aso = true
+					else if(baseReg!!.width.isNot64)
+						error()
+
+					if(indexReg!!.isSP) {
+						if(indexScale != 1) error()
+						val temp = indexReg
+						indexReg = baseReg
+						baseReg = temp
+					}
+				} else {
+					if(baseReg!!.width.is32)
+						aso = true
+					else if(baseReg!!.width.isNot64)
+						error()
+				}
+			}
+		} else if(baseReg != null || indexReg != null) {
+			error()
+		}
+
+		if(importSymbol != null && refCount != 1) error()
+
+		return disp
+	}
+
+
+
+	private fun resolveRec(node: AstNode, positivity: Int): Long {
+		if(node is RegNode) {
+			if(positivity <= 0) error()
+
+			if(baseReg != null) {
+				if(indexReg != null) error()
+				indexReg = node.value
+				indexScale = 1
+			} else {
+				baseReg = node.value
+			}
+
+			return 0
+		}
+
+		if(node is UnaryNode) {
+			return node.op.calculate(resolveRec(node.node, positivity * node.op.positivity))
+		}
+
+		if(node is BinaryNode) {
+			if(node.op == BinaryOp.MUL) {
+				if(node.left is RegNode && node.right is IntNode) {
+					if(indexReg != null || positivity <= 0) error()
+					indexReg = node.left.value
+					indexScale = node.right.value.toInt()
+					return 0
+				} else if(node.left is IntNode && node.right is RegNode) {
+					if(indexReg != null || positivity <= 0) error()
+					indexReg = node.right.value
+					indexScale = node.left.value.toInt()
+					return 0
+				}
+			}
+
+			return node.op.calculate(
+				resolveRec(node.left, positivity * node.op.leftPositivity),
+				resolveRec(node.right, positivity * node.op.rightPositivity)
+			)
+		}
+
+		if(node is IntNode)
+			return node.value
+
+		if(node is IdNode) {
+			val symbol = symbols[node.name] ?: error()
+
+			if(symbol is IntSymbol)
+				return symbol.value
+
+			if(symbol is ImportSymbol) {
+				refCount++
+				importSymbol = symbol
+				return 0
+			}
+
+			if(symbol is Ref) {
+				refCount++
+				return 0
+			}
+
+			error()
+		}
+
+		error()
+	}
+
+
+
+	private fun addImmReloc(node: AstNode, width: Width) {
+		relocations.add(Relocation(
+			section  = Section.TEXT,
+			position = writer.pos,
+			width    = width,
+			value    = node,
+			base     = null
+		))
+	}
+
+
+
+	private fun addRelReloc(node: AstNode, width: Width, offset: Int = 0) {
+		relocations.add(Relocation(
+			section  = Section.TEXT,
+			position = writer.pos,
+			width    = width,
+			value    = node,
+			base     = Ref(Section.TEXT, writer.pos + width.bytes + offset)
+		))
+	}
+
+
+
+	private fun encoding(operands: Operands) =
+		if(operands !in group)
+			error("Invalid encoding")
+		else
+			group.instructions[(group.operandsBits and (operands.bit - 1)).countOneBits()]
+
+
+
+
+	/*
+	Base encoding
+	 */
+
+
+
+	private fun writeOpReg(opcode: Int, offset: Int) {
+		val length = ((39 - (opcode or 1).countLeadingZeroBits()) and -8) shr 3
+		writer.int(opcode + (offset shl ((length - 1) shl 3)))
+	}
+
+
+
+	private fun writeModRM(mod: Int, reg: Int, rm: Int) {
+		writer.i8((mod shl 6) or (reg shl 3) or rm)
+	}
+
+
+
+	private fun writeSib(scale: Int, index: Int, base: Int) {
+		writer.i8((scale shl 6) or (index shl 3) or base)
+	}
+
+
+
+	private fun writeRex(w: Int, r: Int, x: Int, b: Int) {
+		val value = 0b0100_0000 or (w shl 3) or (r shl 2) or (x shl 1) or b
+
+		if(rexRequired || value != 0b0100_0000)
+			if(rexDisallowed)
+				error()
+			else
+				writer.i8(value)
+	}
+
+
+
+	private fun writeMem(
+		opcode    : Int,
+		node      : AstNode,
+		rexW      : Int,
+		rexR      : Int,
+		reg       : Int,
+		immLength : Int
+	) {
+		val disp   = resolve(node, true).toInt()
+		val base   = baseReg
+		val index  = indexReg
+		val scale  = indexScale
+
+		if(aso) writer.i8(0x67)
+
+		val mod = when {
+			refCount > 0   -> 2
+			disp == 0      -> if(base != null && base.value == 5) 1 else 0
+			disp.isImm8    -> 1
+			else           -> 2
+		}
+
+		fun relocAndDisp() {
+			if(hasReloc) {
+				relocations.add(Relocation(Section.TEXT, writer.pos, BIT32, node, null))
+				writer.i32(0)
+			} else if(mod == 0b01)
+				writer.i8(disp)
+			else if(mod == 0b10)
+				writer.i32(disp)
+		}
+
+		if(index != null) { // SIB
+			if(scale.countOneBits() != 1) error()
+			val finalScale = scale.countTrailingZeroBits()
+
+			if(base != null) {
+				writeRex(rexW, rexR, index.rex, base.rex)
+				writer.int(opcode)
+				writeModRM(mod, reg, 0b100)
+				writeSib(finalScale, index.value, base.value)
+				relocAndDisp()
+			} else {
+				writeRex(rexW, rexR, index.rex, 0)
+				writer.int(opcode)
+				writeModRM(0, reg, 0b100)
+				writeSib(finalScale, index.value, 0b101)
+				relocAndDisp()
+			}
+		} else if(base != null) { // Indirect
+			writeRex(rexW, rexR, 0, base.rex)
+			writer.int(opcode)
+
+			if(base.isSP) {
+				writeModRM(mod, reg, 0b100)
+				writeSib(0, 0b100, 0b100)
+			} else {
+				writeModRM(mod, reg, base.value)
+			}
+
+			relocAndDisp()
+		} else if(refCount == 1) { // RIP-relative
+			writeRex(rexW, rexR, 0, 0)
+			writer.int(opcode)
+			writeModRM(0b00, reg, 0b101)
+			relocations.add(Relocation(Section.TEXT, writer.pos, BIT32, node, Ref(Section.TEXT, writer.pos + 4 + immLength)))
+			writer.advance(4)
+		} else if(mod != 0) { // Absolute 32-bit
+			writeRex(rexW, rexR, 0, 0)
+			writer.int(opcode)
+			writeModRM(0b00, reg, 0b100)
+			writeSib(0b00, 0b100, 0b101)
+			relocAndDisp()
+		} else { // Empty memory operand
+			error()
+		}
+	}
+
+
+
+	private fun writeRel8(node: ImmNode, value: Long) {
+		if(hasReloc) {
+			addRelReloc(node, BIT8)
+			writer.advance(1)
+		} else {
+			if(!value.isImm8) error()
+			writer.i8(value.toInt())
+		}
+	}
+
+
+
+	private fun writeRel32(node: ImmNode, value: Long) {
+		if(hasReloc) {
+			addRelReloc(node, BIT8)
+			writer.advance(4)
+		} else {
+			if(value.isImm32) error()
+			writer.i32(value.toInt())
+		}
+	}
+
+
+
+	private fun writeImmInternal(node: ImmNode, width: Width, value: Long) {
+		if(hasReloc) {
+			addImmReloc(node, width)
+			writer.advance(width.bytes)
+			return
+		}
+
+		if(value !in width) error()
+
+		when(width) {
+			BIT8  -> writer.i8(value.toInt())
+			BIT16 -> writer.i16(value.toInt())
+			BIT32 -> writer.i32(value.toInt())
+			BIT64 -> writer.i64(value)
+			else  -> error()
+		}
+	}
+
+
+
+	private fun writeImm(node: ImmNode, width: Width, value: Long)
+		= writeImmInternal(node, if(width.is64) BIT32 else width, value)
+
+
+
+	/*
+	Encoding
+	 */
+
+
+
+	private fun encodeNone(operands: Operands) {
+		val encoding = encoding(operands)
+		if(encoding.prefix != 0) writer.i8(encoding.prefix)
+		writer.int(encoding.opcode)
+	}
+
+
+
+	/**
+	 * Encodes a register in ModRM:RM.
+	 */
+	private fun encode1R(operands: Operands, op1: Register) {
+		val encoding = encoding(operands)
+		val width = op1.width
+		if(width !in encoding.widths) error()
+		if(width == BIT16) writer.i8(0x66)
+		rexRequired = op1.rex8
+		rexDisallowed = op1.noRex8
+		writeRex(width.rexW and encoding.widths.rexMod, 0, 0, op1.rex)
+		writer.int(encoding.opcode + (encoding.widths.bits and width.opcodeOffset))
+		writeModRM(0b11, encoding.extension, op1.value)
+	}
+
+
+
+	/**
+	 * Encodes a register in the opcode register field.
+	 */
+	private fun encode1O(operands: Operands, op1: Register) {
+		val encoding = encoding(operands)
+		val width = op1.width
+		if(width !in encoding.widths) error()
+		if(width.is16) writer.i8(0x66)
+		rexRequired = op1.rex8
+		rexDisallowed = op1.noRex8
+		writeRex(width.rexW and encoding.widths.rexMod, 0, 0, op1.rex)
+		writer.int(encoding.opcode + (encoding.widths.bits and width.opcodeOffset))
+		writeOpReg(encoding.opcode + ((encoding.widths.bits and width.opcodeOffset) shl 3), op1.value)
+	}
+
+
+
+	/**
+	 * Encodes a memory operand
+	 */
+	private fun encode1M(operands: Operands, op1: MemNode, immLength: Int) {
+		val encoding = encoding(operands)
+		val width = op1.width ?: error()
+		if(width !in encoding.widths) error()
+		if(width.is16) writer.i8(0x66)
+		writeMem(
+			encoding.opcode + (encoding.widths.bits and width.opcodeOffset),
+			op1.value,
+			width.rexW and encoding.widths.rexMod,
+			0,
+			encoding.extension,
+			immLength
+		)
+	}
+
+
+
+	/**
+	 * Encodes 2 registers in ModRM:RM and ModRM:REG respectively
+	 */
+	private fun encode2RR(operands: Operands, op1: Register, op2: Register) {
+		val encoding = encoding(operands)
+		val width = op1.width
+		if(width !in encoding.widths) error()
+		if(width.is16) writer.i8(0x66)
+		rexRequired = op1.rex8 || op2.rex8
+		rexDisallowed = op1.noRex8 || op2.noRex8
+		writeRex(width.rexW and encoding.widths.rexMod, op2.rex, 0, op1.rex)
+		writer.int(encoding.opcode + (width.opcodeOffset and encoding.widths.bits))
+		writeModRM(0b11, op2.value, op1.value)
+	}
+
+
+
+
+	/**
+	 * Encodes a register operand and a memory operand in ModRM:REG and ModRM:RM respectively.
+	 */
+	private fun encode2RM(operands: Operands, op1: Register, op2: MemNode, immLength: Int) {
+		val encoding = encoding(operands)
+		val width = op1.width
+		if(width !in encoding.widths) error()
+		if(width.is16) writer.i8(0x66)
+		rexRequired = op1.rex8
+		rexDisallowed = op1.noRex8
+		writeMem(
+			encoding.opcode + (encoding.widths.bits and width.opcodeOffset),
+			op2.value,
+			width.rexW and encoding.widths.rexMod,
+			op1.rex,
+			op1.value,
+			immLength
+		)
+	}
+
+
+
+	/*
+	Assembly
+	 */
+
+
+
+	private fun assemble(node: InstructionNode) {
+		when {
+			node.op1 == null -> assemble0()
+			node.op2 == null -> assemble1(node)
+			node.op3 == null -> if(node.op1 is RegNode) assemble2R(node) else assemble2M(node)
+			node.op4 == null -> error()
+			else             -> error()
+		}
+	}
+
+
+
+	private fun assemble0() {
+		encodeNone(Operands.NONE)
+	}
+
+
+	private fun assemble1(node: InstructionNode) {
+		val op1 = node.op1
+
+		if(op1 is RegNode) {
+			if(Specifier.O in group) {
+				encode1O(Operands.O, op1.value)
+			} else {
+				encode1R(Operands.O, op1.value)
+			}
+		} else if(op1 is MemNode) {
+			encode1M(Operands.M, op1, 0)
+		} else if(op1 is ImmNode) {
+			val imm = resolve(op1)
+
+			if(importSymbol != null) {
+				encode1M(Operands.M, MemNode(BIT64, op1), 0)
+			} else if(Specifier.REL8 in group && ((!hasReloc && node.shortImm) || Specifier.REL32 !in group)) {
+				encodeNone(Operands.REL8)
+				writeRel8(op1, imm)
+			} else if(Specifier.REL32 in group) {
+				encodeNone(Operands.REL32)
+				writeRel32(op1, imm)
+			} else if(Specifier.I8 in group && ((!hasReloc && imm.isImm8) || (Specifier.I16 !in group && Specifier.I32 !in group))) {
+				encodeNone(Operands.I8)
+				writeImm(op1, BIT8, imm)
+			} else if(Specifier.I16 in group && ((!hasReloc && imm.isImm16) || Specifier.I32 !in group)) {
+				encodeNone(Operands.I16)
+				writeImm(op1, BIT16, imm)
+			} else {
+				encodeNone(Operands.I32)
+				writeImm(op1, BIT32, imm)
+			}
+		} else {
+			error()
+		}
+	}
+
+
+
+	private fun assemble2R(node: InstructionNode) {
+		val op1 = (node.op1 as RegNode).value
+		val op2 = node.op2
+		val width = op1.width
+
+		if(op2 is RegNode) {
+			val r2 = op2.value
+			val width2 = r2.width
+
+			if(width != width2) {
+				if(Specifier.RM_CL in group && r2 == Register.CL) {
+					encode1R(Operands.RM_CL, op1)
+				} else {
+					error()
+				}
+			} else {
+				encode2RR(Operands.R_R, op1, r2)
+			}
+		} else if(op2 is MemNode) {
+			val width2 = op2.width
+
+			if(width2 != null && width2 != width)
+				error()
+
+			encode2RM(Operands.R_M, op1, op2, 0)
+		} else if(op2 is ImmNode) {
+			val imm = resolve(op2)
+
+			if(Specifier.RM_I8 in group && !hasReloc && width.isNot8 && imm.isImm8) {
+				encode1R(Operands.R_I8, op1)
+				writeImm(op2, BIT8, imm)
+			} else if(Specifier.RM_1 in group && !hasReloc && imm == 1L) {
+				encode1R(Operands.RM_1, op1)
+			} else if(op1.isA && Specifier.A_I in group) {
+				encodeNone(Operands.A_I)
+				writeImm(op2, width, imm)
+			} else {
+				encode1R(Operands.R_I, op1)
+				writeImm(op2, width, imm)
+			}
+		} else {
+			error()
+		}
+	}
+
+
+
+	private fun assemble2M(node: InstructionNode) {
+		val op1 = node.op1 as MemNode
+		val op2 = node.op2!!
+
+		if(op2 is RegNode) {
+			if(Specifier.RM_CL in group && op2.value == Register.CL) {
+				encode1M(Operands.RM_CL, op1, 0)
+			} else {
+				if(op1.width != null && op1.width != op2.value.width) error()
+				encode2RM(Operands.M_R, op2.value, op1, 0)
+			}
+		} else if(op2 is ImmNode) {
+			val width = op1.width ?: error()
+			val imm = resolve(op2)
+
+			if(Specifier.RM_I8 in group && !hasReloc && width.isNot8 && imm.isImm8) {
+				encode1M(Operands.M_I8, op1, 1)
+				writeImm(op2, BIT8, imm)
+			} else if(Specifier.RM_1 in group && !hasReloc && imm == 1L) {
+				encode1M(Operands.RM_1, op1, 0)
+			} else {
+				encode1M(Operands.M_I, op1, width.immLength)
+				writeImm(op2, width, imm)
+			}
+		} else {
+			error()
+		}
+	}
+
+
+
+	private val customEncodings: Map<Mnemonic, (InstructionNode) -> Unit> = mapOf(
+		Mnemonic.IMUL   to ::customEncodeIMUL,
+		Mnemonic.XCHG   to ::customEncodeXCHG,
+		Mnemonic.MOV    to ::customEncodeMOV,
+		Mnemonic.MOVSX  to ::customEncodeMOVSX,
+		Mnemonic.MOVZX  to ::customEncodeMOVZX,
+		Mnemonic.MOVSXD to ::customEncodeMOVSXD,
+		Mnemonic.IN     to ::customEncodeIN,
+		Mnemonic.OUT    to ::customEncodeOUT
+	)
+
+
+
+	/**
+	 * E6    OUT  I8_AL
+	 * E766  OUT  I8_AX
+	 * E7    OUT  I8_EAX
+	 * EE    OUT  DX_AL
+	 * EF66  OUT  DX_AX
+	 * EF    OUT  DX_EAX
+	 */
+	private fun customEncodeOUT(node: InstructionNode) {
+		if(node.op3 != null) error()
+		if(node.op2 !is RegNode) error()
+		val op2 = node.op2.value
+
+		if(!op2.isA) error()
+
+		if(node.op1 is RegNode) {
+			if(node.op1.value != Register.DX) error()
+			when(op2.width) {
+				BIT8  -> writer.i8(0xEE)
+				BIT16 -> writer.i16(0xEF66)
+				BIT32 -> writer.i8(0xEF)
+				else  -> error()
+			}
+		} else if(node.op1 is ImmNode) {
+			val imm = resolve(node.op1)
+			when(op2.width) {
+				BIT8  -> writer.i8(0xE6)
+				BIT16 -> writer.i16(0xE766)
+				BIT32 -> writer.i8(0xE7)
+				else  -> error()
+			}
+			if(hasReloc) addImmReloc(node.op1, BIT8)
+			else if(!imm.isImm8) error()
+			writer.i8(imm.toInt())
+		} else {
+			error()
+		}
+	}
+
+
+
+	/**
+	 * E4    IN  AL_I8
+	 * E566  IN  AX_IMM8
+	 * E5    IN  EAX_IMM8
+	 * EC    IN  AL_DX
+	 * ED66  IN  AX_DX
+	 * ED    IN  EAX_DX
+	 */
+	private fun customEncodeIN(node: InstructionNode) {
+		if(node.op3 != null) error()
+		if(node.op1 !is RegNode) error()
+		val op1 = node.op1.value
+
+		if(!op1.isA) error()
+
+		if(node.op2 is RegNode) {
+			if(node.op2.value != Register.DX) error()
+			when(op1.width) {
+				BIT8  -> writer.i8(0xEC)
+				BIT16 -> writer.i16(0xED66)
+				BIT32 -> writer.i8(0xED)
+				else  -> error()
+			}
+		} else if(node.op2 is ImmNode) {
+			val imm = resolve(node.op2)
+			when(op1.width) {
+				BIT8  -> writer.i8(0xE4)
+				BIT16 -> writer.i16(0xE566)
+				BIT32 -> writer.i8(0xE5)
+				else  -> error()
+			}
+			if(hasReloc) addImmReloc(node.op2, BIT8)
+			else if(!imm.isImm8) error()
+			writer.i8(imm.toInt())
+		} else {
+			error()
+		}
+	}
+
+
+
+	/**
+	 *     BE0F  MOVSX   R_RM8   NO8
+	 *     BF0F  MOVSX   R_RM16  NO816
+	 */
+	private fun customEncodeMOVSX(node: InstructionNode) {
+		if(node.op3 != null) error()
+		if(node.op1 !is RegNode) error()
+
+		if(node.op2 is RegNode) {
+			when(node.op2.value.width) {
+				BIT8  -> encode2RR(Operands.CUSTOM1, node.op1.value, node.op2.value)
+				BIT16 -> encode2RR(Operands.CUSTOM2, node.op1.value, node.op2.value)
+				else  -> error()
+			}
+		} else if(node.op2 is MemNode) {
+			when(node.op2.width) {
+				BIT8  -> encode2RM(Operands.CUSTOM1, node.op1.value, node.op2, 0)
+				BIT16 -> encode2RM(Operands.CUSTOM1, node.op1.value, node.op2, 0)
+				else  -> error()
+			}
+		} else {
+			error()
+		}
+	}
+
+
+
+	/**
+	 *     B60F  MOVZX   R_RM8   NO8
+	 *     B70F  MOVZX   R_RM16  NO816
+	 */
+	private fun customEncodeMOVZX(node: InstructionNode) {
+		if(node.op3 != null) error()
+		if(node.op1 !is RegNode) error()
+
+		if(node.op2 is RegNode) {
+			when(node.op2.value.width) {
+				BIT8  -> encode2RR(Operands.CUSTOM1, node.op1.value, node.op2.value)
+				BIT16 -> encode2RR(Operands.CUSTOM2, node.op1.value, node.op2.value)
+				else  -> error()
+			}
+		} else if(node.op2 is MemNode) {
+			when(node.op2.width) {
+				BIT8  -> encode2RM(Operands.CUSTOM1, node.op1.value, node.op2, 0)
+				BIT16 -> encode2RM(Operands.CUSTOM1, node.op1.value, node.op2, 0)
+				else  -> error()
+			}
+		} else {
+			error()
+		}
+	}
+
+
+
+	/**
+	 *     63    MOVSXD  R16_RM16  OSO
+	 *     63    MOVSXD  R32_RM32
+	 *     63    MOVSXD  R64_RM32  REX.W
+	 */
+	private fun customEncodeMOVSXD(node: InstructionNode) {
+		if(node.op3 != null) error()
+		if(node.op1 !is RegNode) error()
+		val op1 = node.op1.value
+		val width = op1.width
+
+		if(node.op2 is RegNode) {
+			val op2 = node.op2.value
+
+			when {
+				width.is16 && op2.width.is16 -> { }
+				width.is32 && op2.width.is32 -> { }
+				width.is64 && op2.width.is32 -> { }
+				else                         -> error()
+			}
+
+			encode2RR(Operands.CUSTOM1, op1, op2)
+		} else if(node.op2 is MemNode) {
+			val op2 = node.op2
+
+			when {
+				op2.width == null            -> { }
+				width.is16 && op2.width.is16 -> { }
+				width.is32 && op2.width.is32 -> { }
+				width.is64 && op2.width.is32 -> { }
+				else                         -> error()
+			}
+
+			encode2RM(Operands.CUSTOM1, op1, op2, 0)
+		} else {
+			error()
+		}
+	}
+
+
+
+	private fun customEncodeIMUL(node: InstructionNode) {
+		if(node.op2 == null || node.op3 == null) assemble(node)
+		if(node.op4 != null) error()
+
+		if(node.op1 !is RegNode || node.op3 !is ImmNode) error()
+
+		val op1 = node.op1.value
+		val op3 = node.op3
+		val width = op1.width
+		val imm = resolve(node.op3)
+
+		if(node.op2 is RegNode) {
+			val op2 = node.op2.value
+
+			if(width != op2.width) error()
+
+			if(!hasReloc && imm.isImm8) {
+				encode2RR(Operands.CUSTOM1, op1, op2)
+				writeImm(op3, BIT8, imm)
+			} else {
+				encode2RR(Operands.CUSTOM2, op1, op2)
+				writeImm(op3, width, imm)
+			}
+		} else if(node.op2 is MemNode) {
+			val op2 = node.op2
+
+			if(op2.width != null && op2.width != width) error()
+
+			if(!hasReloc && imm.isImm8) {
+				encode2RM(Operands.CUSTOM1, op1, op2, 1)
+				writeImm(op3, BIT8, imm)
+			} else {
+				encode2RM(Operands.CUSTOM2, op1, op2, width.immLength)
+				writeImm(op3, width, imm)
+			}
+		} else {
+			error()
+		}
+	}
+
+
+
+	private fun customEncodeMOV(node: InstructionNode) {
+		if(node.op3 != null) error()
+
+		if(node.op1 is RegNode && node.op2 is ImmNode) {
+			val imm = resolve(node.op2)
+
+			if(hasReloc || !imm.isImm32) {
+				encode1O(Operands.CUSTOM1, node.op1.value)
+				writeImmInternal(node.op2, node.op1.value.width, imm)
+			} else
+				assemble(node)
+		} else
+			assemble(node)
+	}
+
+
+
+	private fun customEncodeXCHG(node: InstructionNode) {
+		when {
+			node.op3 != null        -> error()
+			node.op1 !is RegNode ||
+			node.op2 !is RegNode    -> assemble(node)
+			node.op1.value.isA      -> encode1O(Operands.CUSTOM1, node.op2.value)
+			node.op2.value.isA      -> encode1O(Operands.CUSTOM1, node.op1.value)
+			else                    -> assemble(node)
+		}
+	}
+
+
+}

@@ -4,6 +4,8 @@ import core.swapEndian16
 import core.swapEndian32
 import core.swapEndian64
 import java.nio.charset.Charset
+import kotlin.math.max
+import kotlin.math.min
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
 class NativeWriter {
@@ -13,7 +15,11 @@ class NativeWriter {
 
 	var pos = 0
 
-	fun trimmedBytes() = bytes.copyOf(pos)
+	fun getTrimmedBytes() = bytes.copyOf(pos)
+
+	fun getTrimmedBytes(count: Int) = bytes.copyOf(count)
+
+	fun getTrimmedBytes(pos: Int, count: Int) = bytes.copyOfRange(pos, pos + count)
 
 
 
@@ -45,11 +51,16 @@ class NativeWriter {
 	}
 
 
+	fun alignEven() { if(pos and 1 != 0) i8(0) }
 
-	fun advance(count: Int) {
-		pos += count
-		if(pos > bytes.size)
-			bytes = bytes.copyOf(pos shl 2)
+	fun align8() { zero(pos.mod(8)) }
+
+
+
+	fun int(value: Int) {
+		ensureCapacity(4)
+		Unsafe.instance.putInt(bytes, pos + 16L, value)
+		pos += ((39 - (value or 1).countLeadingZeroBits()) and -8) shr 3
 	}
 
 
@@ -60,17 +71,9 @@ class NativeWriter {
 
 
 
-	fun i8(pos: Int, value: Int) {
-		bytes[pos] = value.toByte()
-	}
-
 	fun i8(value: Int) {
 		ensureCapacity(1)
 		bytes[pos++] = value.toByte()
-	}
-
-	fun i16(pos: Int, value: Int) {
-		Unsafe.instance.putShort(bytes, pos + 16L, value.toShort())
 	}
 
 	fun i16(value: Int) {
@@ -79,18 +82,10 @@ class NativeWriter {
 		pos += 2
 	}
 
-	fun i32(pos: Int, value: Int) {
-		Unsafe.instance.putInt(bytes, pos + 16L, value)
-	}
-
 	fun i32(value: Int) {
 		ensureCapacity(4)
 		Unsafe.instance.putInt(bytes, pos + 16L, value)
 		pos += 4
-	}
-
-	fun i64(pos: Int, value: Long) {
-		Unsafe.instance.putLong(bytes, pos + 16L, value)
 	}
 
 	fun i64(value: Long) {
@@ -99,18 +94,10 @@ class NativeWriter {
 		pos += 8
 	}
 
-	fun f32(pos: Int, value: Float) {
-		Unsafe.instance.putFloat(bytes, pos + 16L, value)
-	}
-
 	fun f32(value: Float) {
 		ensureCapacity(4)
 		Unsafe.instance.putFloat(bytes, pos + 16L, value)
 		pos += 4
-	}
-
-	fun f64(pos: Int, value: Double) {
-		Unsafe.instance.putDouble(bytes, pos + 16L, value)
 	}
 
 	fun f64(value: Double) {
@@ -121,15 +108,25 @@ class NativeWriter {
 
 
 
+	fun i8(pos: Int, value: Int) = bytes.set(pos, value.toByte())
+
+	fun i16(pos: Int, value: Int) = Unsafe.instance.putShort(bytes, pos + 16L, value.toShort())
+
+	fun i32(pos: Int, value: Int) = Unsafe.instance.putInt(bytes, pos + 16L, value)
+
+	fun i64(pos: Int, value: Long) = Unsafe.instance.putLong(bytes, pos + 16L, value)
+
+	fun f32(pos: Int, value: Float) = Unsafe.instance.putFloat(bytes, pos + 16L, value)
+
+	fun f64(pos: Int, value: Double) = Unsafe.instance.putDouble(bytes, pos + 16L, value)
+
+
+
 	/*
 	Big-endian primitives
 	 */
 
 
-
-	fun i16BE(pos: Int, value: Int) {
-		Unsafe.instance.putShort(bytes, pos + 16L, value.swapEndian16.toShort())
-	}
 
 	fun i16BE(value: Int) {
 		ensureCapacity(2)
@@ -137,18 +134,11 @@ class NativeWriter {
 		pos += 2
 	}
 
-	fun i32BE(pos: Int, value: Int) {
-		Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian32)
-	}
 
 	fun i32BE(value: Int) {
 		ensureCapacity(4)
 		Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian32)
 		pos += 4
-	}
-
-	fun i64BE(pos: Int, value: Long) {
-		Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian64)
 	}
 
 	fun i64BE(value: Long) {
@@ -157,18 +147,10 @@ class NativeWriter {
 		pos += 8
 	}
 
-	fun f32BE(pos: Int, value: Float) {
-		Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian32)
-	}
-
 	fun f32BE(value: Float) {
 		ensureCapacity(4)
 		Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian32)
 		pos += 4
-	}
-
-	fun f64BE(pos: Int, value: Double) {
-		Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian64)
 	}
 
 	fun f64BE(value: Double) {
@@ -176,6 +158,18 @@ class NativeWriter {
 		Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian64)
 		pos += 8
 	}
+
+
+
+	fun i16BE(pos: Int, value: Int) = Unsafe.instance.putShort(bytes, pos + 16L, value.swapEndian16.toShort())
+
+	fun i32BE(pos: Int, value: Int) = Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian32)
+
+	fun i64BE(pos: Int, value: Long) = Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian64)
+
+	fun f32BE(pos: Int, value: Float) = Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian32)
+
+	fun f64BE(pos: Int, value: Double) = Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian64)
 
 
 
@@ -227,16 +221,53 @@ class NativeWriter {
 
 
 
-	fun set(count: Int, value: Int) {
-		ensureCapacity(count)
-		Unsafe.instance.setMemory(bytes, pos + 16L, count.toLong(), value.toByte())
+	fun ascii8(string: String) {
+		ensureCapacity(8)
+		for(i in 0 until min(8, string.length))
+			i8(string[i].code)
+		for(i in 0 until max(0, 8 - string.length))
+			i8(0)
 	}
 
 
 
-	fun zero(count: Int) {
+	fun set(count: Int, value: Int) {
+		if(count <= 0) return
 		ensureCapacity(count)
-		Unsafe.instance.setMemory(bytes, pos + 16L, count.toLong(), 0)
+		Unsafe.instance.setMemory(bytes, pos + 16L, count.toLong(), value.toByte())
+		pos += count
+	}
+
+
+
+	fun setTo(pos: Int, value: Int) {
+		if(pos <= this.pos) return
+		ensureCapacity(pos - this.pos)
+		Unsafe.instance.setMemory(bytes, this.pos + 16L, pos.toLong() - this.pos, value.toByte())
+		this.pos = pos
+	}
+
+
+
+	fun zero(count: Int) = set(count, 0)
+
+
+
+	fun zeroTo(pos: Int) = setTo(pos, 0)
+
+
+
+	fun advance(count: Int) {
+		if(count <= 0) return
+		ensureCapacity(count)
+		pos += count
+	}
+
+
+
+	fun advanceTo(pos: Int) {
+		ensureCapacity(pos - this.pos)
+		this.pos = pos
 	}
 
 
