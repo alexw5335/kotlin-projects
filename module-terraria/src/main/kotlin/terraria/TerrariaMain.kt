@@ -12,7 +12,7 @@ fun main() {
 
 
 fun convertToMasterMode(path: String) {
-	val reader = BinaryReader(Core.readResourceBytes("/Parity_plot.wld"))
+	val reader = BinaryReader(Core.readResourceBytes(path))
 	reader.pos += 24
 	val sectionPointers = IntArray(reader.u16()) { reader.u32() }
 	reader.pos = sectionPointers[0]

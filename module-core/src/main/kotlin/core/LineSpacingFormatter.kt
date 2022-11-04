@@ -7,11 +7,8 @@ class LineSpacingFormatter(
 ) {
 
 
-	private val lengths = ArrayList<Int>()
-
-
-
 	fun format(): List<String> {
+		val lengths = ArrayList<Int>()
 		var index = 0
 		var length = 0
 		val remaining = lines.toMutableList()
@@ -36,5 +33,6 @@ class LineSpacingFormatter(
 			}
 		}
 	}
-	
+
+
 }

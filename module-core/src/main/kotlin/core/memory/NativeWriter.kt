@@ -8,10 +8,16 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
-class NativeWriter {
+class NativeWriter(bytes: ByteArray) {
 
 
-	var bytes = ByteArray(8192); private set
+	constructor(initialSize: Int) : this(ByteArray(initialSize))
+
+	constructor() : this(8192)
+
+
+
+	var bytes = bytes; private set
 
 	var pos = 0
 

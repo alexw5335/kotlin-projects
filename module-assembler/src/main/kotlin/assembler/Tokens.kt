@@ -41,13 +41,14 @@ enum class SymbolToken(
 	CARET         ("^", binaryOp = BinaryOp.XOR),
 	LEFT_ANGLE    ("<"),
 	RIGHT_ANGLE   (">"),
-	LEFT_SHIFT    ("<<", binaryOp = BinaryOp.SHL, firstSymbol = SymbolToken.LEFT_ANGLE),
-	RIGHT_SHIFT   (">>", binaryOp = BinaryOp.SHR, firstSymbol = SymbolToken.RIGHT_ANGLE),
+	LEFT_SHIFT    ("<<", binaryOp = BinaryOp.SHL, firstSymbol = LEFT_ANGLE),
+	RIGHT_SHIFT   (">>", binaryOp = BinaryOp.SHR, firstSymbol = RIGHT_ANGLE),
 	LEFT_BRACKET  ("["),
 	RIGHT_BRACKET ("]"),
 	LEFT_BRACE    ("{"),
 	RIGHT_BRACE   ("}"),
-	PERIOD        (".");
+	PERIOD        ("."),
+	REFERENCE     ("::", firstSymbol = COLON);
 
 }
 

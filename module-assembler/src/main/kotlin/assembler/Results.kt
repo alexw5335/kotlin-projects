@@ -1,6 +1,6 @@
 package assembler
 
-import core.BitList
+import core.collection.BitList
 
 
 

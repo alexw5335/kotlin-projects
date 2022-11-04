@@ -281,6 +281,7 @@ fun main() {
 
 
 
+@Suppress("UNUSED_PARAMETER")
 private fun windowProc(hwnd: Long, msg: Int, wParam: Long, lParam: Long): Boolean {
 	when(msg) {
 		MessageType.DESTROY.value -> Natives.postQuitMessage(wParam.toInt())

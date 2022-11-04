@@ -20,7 +20,7 @@ data class ImmNode(val value: AstNode) : AstNode
 
 data class MemNode(val width: Width?, val value: AstNode) : AstNode
 
-data class DiffNode(val first: String, val second: String) : AstNode
+data class SymNode(val name: String, var symbol: Symbol? = null): AstNode
 
 data class InstructionNode(
 	val mnemonic : Mnemonic,

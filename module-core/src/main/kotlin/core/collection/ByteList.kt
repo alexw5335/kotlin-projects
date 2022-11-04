@@ -1,9 +1,9 @@
-package core
+package core.collection
 
-class IntList(private var array: IntArray) {
+class ByteList(private var array: ByteArray) {
 
 
-	constructor(initialCapacity: Int = 512) : this(IntArray(initialCapacity))
+	constructor(initialCapacity: Int = 512) : this(ByteArray(initialCapacity))
 
 
 
@@ -25,12 +25,12 @@ class IntList(private var array: IntArray) {
 
 	fun add(value: Int) {
 		ensureCapacity()
-		array[pos++] = value
+		array[pos++] = value.toByte()
 	}
 
 
 
-	operator fun get(index: Int) = array[index]
+	operator fun get(index: Int) = array[index].toInt()
 
 
 }
