@@ -288,10 +288,10 @@ class Linker(private val assemblerResult: AssemblerResult) {
 
 
 
-	private fun writeRelocation(relocation: Relocation) {
+/*	private fun writeRelocation(relocation: Relocation) {
 		if(relocation.width != Width.BIT32) error("Invalid relocation width")
 		writer.i32(relocation.position + relocation., resolveRelocation(relocation))
-	}
+	}*/
 
 
 }

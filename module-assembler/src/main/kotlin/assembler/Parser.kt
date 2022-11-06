@@ -19,7 +19,7 @@ class Parser(lexerResult: LexerResult) {
 
 	private val idMap = HashMap<String, () -> Unit>()
 
-	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos] || tokens[pos] == SymbolToken.SEMICOLON
+	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos] || tokens[pos] is SymbolToken
 
 	private val widthMap = Width.values().associateBy { it.string }
 
@@ -259,7 +259,7 @@ class Parser(lexerResult: LexerResult) {
 			if(token is EndToken || token == SymbolToken.SEMICOLON) break
 
 			if(token !is SymbolToken)
-				if(!newlines[pos])
+				if(!atStatementEnd())
 					error("Use a semicolon to separate expressions that are on the same line")
 				else
 					break

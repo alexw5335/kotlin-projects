@@ -9,28 +9,6 @@ class EncodingReader(chars: CharArray) : ReaderBase(chars) {
 
 
 
-	private class InstructionTemp(
-		val opcode    : Int,
-		val extension : Int,
-		val prefix    : Int,
-		val operands  : Operands,
-		val widths    : Widths
-	)
-
-
-
-	private enum class CompoundOperands(vararg val components: Operands) {
-
-		R_RM(Operands.R_R, Operands.R_M),
-		RM_R(Operands.R_R, Operands.M_R),
-		RM(Operands.R, Operands.M),
-		RM_I(Operands.R_I, Operands.M_I),
-		RM_I8(Operands.R_I8, Operands.M_I8);
-
-	}
-
-
-
 	private val encodingsMap = HashMap<String, ArrayList<InstructionTemp>>()
 
 	private val operandsMap = Operands.values().associateBy { it.name }
@@ -165,6 +143,26 @@ class EncodingReader(chars: CharArray) : ReaderBase(chars) {
 	}
 
 
+}
+
+
+
+private class InstructionTemp(
+	val opcode    : Int,
+	val extension : Int,
+	val prefix    : Int,
+	val operands  : Operands,
+	val widths    : Widths
+)
+
+
+
+private enum class CompoundOperands(vararg val components: Operands) {
+	R_RM(Operands.R_R, Operands.R_M),
+	RM_R(Operands.R_R, Operands.M_R),
+	RM(Operands.R, Operands.M),
+	RM_I(Operands.R_I, Operands.M_I),
+	RM_I8(Operands.R_I8, Operands.M_I8);
 }
 
 
