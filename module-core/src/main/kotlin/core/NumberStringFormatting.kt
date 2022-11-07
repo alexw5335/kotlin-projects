@@ -28,6 +28,10 @@ val Int.bin32Full get() = "0b$bin32"
 
 
 
+val Int.dec8 get() = toString().zeroPadded(3)
+
+
+
 val Int.hex get() = Integer.toHexString(this)
 
 val Int.hex8 get() = hex.zeroPadded(2)

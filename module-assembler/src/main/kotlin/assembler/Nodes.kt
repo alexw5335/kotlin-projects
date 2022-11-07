@@ -4,8 +4,6 @@ sealed interface AstNode
 
 data class LabelNode(val symbol: LabelSymbol) : AstNode
 
-data class IdNode(val name: String) : AstNode
-
 data class StringNode(val value: String) : AstNode
 
 data class IntNode(val value: Long) : AstNode
@@ -20,7 +18,7 @@ data class ImmNode(val value: AstNode) : AstNode
 
 data class MemNode(val width: Width?, val value: AstNode) : AstNode
 
-data class SymNode(val name: String, var symbol: Symbol? = null): AstNode
+data class SymNode(val name: Interned, var symbol: Symbol? = null): AstNode
 
 data class InstructionNode(
 	val mnemonic : Mnemonic,
@@ -34,3 +32,5 @@ data class InstructionNode(
 data class ResNode(val symbol: ResSymbol, val size: Int) : AstNode
 
 data class VarNode(val symbol: VarSymbol, val componentsAndWidths: List<Pair<Width, List<AstNode>>>) : AstNode
+
+data class DotNode(val left: AstNode, val right: SymNode) : AstNode

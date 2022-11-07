@@ -21,20 +21,20 @@ fun Ref(section: Section, pos: Int): Ref = RefImpl(section, pos)
 
 
 interface Symbol {
-	val name: String
+	val name: Interned
 }
 
 
 
 data class IntSymbol(
-	override val name : String,
+	override val name : Interned,
 	var value         : Long
 ) : Symbol
 
 
 
 data class LabelSymbol(
-	override val name    : String,
+	override val name    : Interned,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
@@ -42,7 +42,7 @@ data class LabelSymbol(
 
 
 data class ImportSymbol(
-	override val name    : String,
+	override val name    : Interned,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
@@ -50,7 +50,7 @@ data class ImportSymbol(
 
 
 data class VarSymbol(
-	override val name    : String,
+	override val name    : Interned,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
@@ -58,7 +58,15 @@ data class VarSymbol(
 
 
 data class ResSymbol(
-	override val name    : String,
+	override val name    : Interned,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
+
+
+
+data class NamespaceSymbol(override val name: Interned) : Symbol {
+
+	val symbols = HashMap<Interned, Symbol>()
+
+}

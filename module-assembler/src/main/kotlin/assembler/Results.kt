@@ -8,12 +8,12 @@ data class Relocation(
 	val section  : Section,
 	val position : Int,
 	val width    : Width,
-	val value    : AstNode?,
+	val value    : AstNode,
 	val base     : Ref?
 )
 
 
-class DllImport(val dll: String, val symbol: ImportSymbol)
+class DllImport(val dll: Interned, val symbol: ImportSymbol)
 
 
 
@@ -26,7 +26,7 @@ class LexerResult(
 
 class ParserResult(
 	val nodes   : List<AstNode>,
-	val symbols : Map<String, Symbol>,
+	val symbols : Map<Interned, Symbol>,
 	val imports : List<DllImport>
 )
 
@@ -38,5 +38,5 @@ class AssemblerResult(
 	val bssSize     : Int,
 	val imports     : List<DllImport>,
 	val relocations : List<Relocation>,
-	val symbols     : Map<String, Symbol>,
+	val symbols     : Map<Interned, Symbol>,
 )

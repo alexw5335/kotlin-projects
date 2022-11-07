@@ -12,9 +12,7 @@ data class CharToken(val value: Char) : Token
 
 data class StringToken(val value: String) : Token
 
-data class IdToken(val value: String) : Token
-
-data class RegToken(val value: Register) : Token
+data class IdToken(val value: Interned) : Token
 
 
 
@@ -50,14 +48,4 @@ enum class SymbolToken(
 	PERIOD        ("."),
 	REFERENCE     ("::", firstSymbol = COLON);
 
-}
-
-
-
-internal val registerMap = HashMap<String, RegToken>().also { map ->
-	for(r in Register.values()) {
-		val token = RegToken(r)
-		map[r.string] = token
-		map[r.name] = token
-	}
 }

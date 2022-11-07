@@ -138,7 +138,10 @@ class Linker(private val assemblerResult: AssemblerResult) {
 		writeHeaders()
 		writeSections()
 
-		assemblerResult.symbols["main"]?.let {
+		for(relocation in assemblerResult.relocations)
+			writeRelocation(relocation)
+
+		assemblerResult.symbols[Intern.main]?.let {
 			if(it !is Ref)
 				return@let
 			writer.i32(entryPointPosPos, it.pos + it.section.address)
@@ -256,7 +259,7 @@ class Linker(private val assemblerResult: AssemblerResult) {
 				writer.i32(iltPos + importIndex * 8, writer.pos - offset)
 				writer.i32(iatPos + importIndex * 8, writer.pos - offset)
 				writer.i16(0)
-				writer.asciiNT(import.symbol.name)
+				writer.asciiNT(import.symbol.name.name)
 				writer.alignEven()
 				import.symbol.pos = iatPos + importIndex * 8 - idtsPos
 			}
@@ -273,25 +276,38 @@ class Linker(private val assemblerResult: AssemblerResult) {
 
 
 
-	private fun AstNode.resolveRelocation(): Long = when(this) {
-		is ImmNode    -> value.resolveRelocation()
-		is IntNode    -> value
-		is UnaryNode  -> op.calculate(node.resolveRelocation())
-		is BinaryNode -> op.calculate(left.resolveRelocation(), right.resolveRelocation())
-		is IdNode     -> {
-			val symbol = assemblerResult.symbols[name] ?: error("Invalid symbol")
-			if(symbol !is Ref) error("Invalid symbol")
-			symbol.pos + symbol.section.address.toLong()
+
+	private fun AstNode.resolveRelocation(): Long {
+		if(this is ImmNode)    return value.resolveRelocation()
+		if(this is IntNode)    return value
+		if(this is UnaryNode)  return op.calculate(node.resolveRelocation())
+		if(this is BinaryNode) return op.calculate(left.resolveRelocation(), right.resolveRelocation())
+
+		if(this is SymNode) {
+			val symbol = this.symbol ?: error("Missing symbol")
+			if(symbol is IntSymbol) return symbol.value
+			if(symbol !is Ref) error("Invalid symbol: $symbol")
+			return symbol.pos + symbol.section.address.toLong()
 		}
-		else -> error("Invalid node: $this")
+
+		error("Invalid node: $this")
 	}
 
 
 
-/*	private fun writeRelocation(relocation: Relocation) {
+
+	private fun writeRelocation(relocation: Relocation) {
 		if(relocation.width != Width.BIT32) error("Invalid relocation width")
-		writer.i32(relocation.position + relocation., resolveRelocation(relocation))
-	}*/
+
+		var value = relocation.value.resolveRelocation()
+
+		if(relocation.base != null)
+			value -= relocation.base.section.address + relocation.base.pos
+
+		if(!value.isImm32) error("relocation out of range")
+
+		writer.i32(relocation.position + relocation.section.position, value.toInt())
+	}
 
 
 }

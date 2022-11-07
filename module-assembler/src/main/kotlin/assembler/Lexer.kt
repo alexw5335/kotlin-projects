@@ -19,6 +19,8 @@ class Lexer(chars: CharArray) {
 
 	private val stringBuilder = StringBuilder()
 
+	private val Char.isIdentifierPart get() = isLetterOrDigit() || this == '_'
+
 
 
 	init {
@@ -91,32 +93,82 @@ class Lexer(chars: CharArray) {
 
 
 
-	private fun readNumber(radix: Int) {
-		stringBuilder.clear()
+	private fun readBinary(): Long {
+		var value = 0L
 
 		while(true) {
-			val char = chars[pos]
-			if(char == '_') continue
-			if(!char.isDigit() || char.code == 0) break
-			stringBuilder.append(char)
-			pos++
+			val mask = when(chars[pos++]) {
+				'0'  -> 0L
+				'1'  -> 1L
+				'_'  -> continue
+				else -> break
+			}
+
+			if(value and (1L shl 63) != 0L)
+				error("Integer literal out of range")
+			value = (value shl 1) or mask
 		}
 
-		tokens.add(IntToken(stringBuilder.toString().toLong(radix)))
+		pos--
+		return value
+	}
+
+
+
+	private fun readDecimal(): Long {
+		var value = 0L
+
+		while(true) {
+			val mask = when(val char = chars[pos++]) {
+				in '0'..'9' -> char.code - 48L
+				'_'         -> continue
+				else        -> break
+			}
+
+			if(value and (0xFFL shl 56) != 0L)
+				error("Integer literal out of range")
+			value = (value * 10) + mask
+		}
+
+		pos--
+		return value
+	}
+
+
+
+	private fun readHex(): Long {
+		var value = 0L
+
+		while(true) {
+			val mask = when(val char = chars[pos++]) {
+				'_'         -> continue
+				in '0'..'9' -> char.code - 48L
+				in 'a'..'z' -> char.code - 75L
+				in 'A'..'Z' -> char.code - 107L
+				else        -> break
+			}
+
+			if(value and (0b1111L shl 60) != 0L)
+				error("Integer literal out of range")
+			value = (value shl 4) or mask
+		}
+
+		pos--
+		return value
 	}
 
 
 
 	private fun digit() {
 		pos--
-		readNumber(10)
+		tokens.add(IntToken(readDecimal()))
 	}
 
 
 
 	private fun zero() {
-		if(chars[pos].isDigit() || chars[pos].code == 0) {
-			digit()
+		if(chars[pos].isDigit()) {
+			tokens.add(IntToken(readDecimal()))
 			return
 		}
 
@@ -126,9 +178,8 @@ class Lexer(chars: CharArray) {
 		}
 
 		when(val base = chars[pos++]) {
-			'x'  -> readNumber(16)
-			'b'  -> readNumber(2)
-			'o'  -> readNumber(8)
+			'x'  -> tokens.add(IntToken(readHex()))
+			'b'  -> tokens.add(IntToken(readBinary()))
 			else -> error("Invalid integer base: $base")
 		}
 	}
@@ -138,23 +189,15 @@ class Lexer(chars: CharArray) {
 	private fun idStart() {
 		pos--
 
-		stringBuilder.clear()
+		val startPos = pos
 
 		while(true) {
 			val char = chars[pos]
-			if(!char.isJavaIdentifierPart() || char.code == 0) break
-			stringBuilder.append(char)
+			if(!char.isIdentifierPart) break
 			pos++
 		}
 
-		val string = stringBuilder.toString()
-
-		registerMap[string]?.let {
-			tokens.add(it)
-			return
-		}
-
-		tokens.add(IdToken(string))
+		tokens.add(IdToken(Intern.addAndGet(String(chars, startPos, pos - startPos))))
 	}
 
 

@@ -13,25 +13,17 @@ class Parser(lexerResult: LexerResult) {
 
 	private val nodes = ArrayList<AstNode>()
 
-	private val symbols = HashMap<String, Symbol>()
+	private val symbols = HashMap<Interned, Symbol>()
 
 	private val imports = ArrayList<DllImport>()
 
-	private val idMap = HashMap<String, () -> Unit>()
-
 	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos] || tokens[pos] is SymbolToken
-
-	private val widthMap = Width.values().associateBy { it.string }
-
-	private val varWidthMap = Width.values().associateBy { it.varString }
 
 	private fun expectStatementEnd() { if(!atStatementEnd()) error("Expecting statement end") }
 
+	private fun id() = (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier")
 
-
-	init {
-		populateIdMap()
-	}
+	private fun expect(token: Token) { if(tokens[pos++] != token) error("Expecting $token") }
 
 
 
@@ -40,7 +32,7 @@ class Parser(lexerResult: LexerResult) {
 			when(val token = tokens[pos++]) {
 				EndToken              -> break
 				SymbolToken.SEMICOLON -> continue
-				is IdToken            -> parseId(token)
+				is IdToken            -> parseId(token.value)
 				else                  -> error("Invalid token: $token")
 			}
 		}
@@ -50,41 +42,39 @@ class Parser(lexerResult: LexerResult) {
 
 
 
-	private fun parseId(token: IdToken) {
-		val string = token.value
-
+	private fun parseId(interned: Interned) {
 		if(tokens[pos] == SymbolToken.COLON) {
 			pos++
-			val symbol = LabelSymbol(string, Section.TEXT)
+			val symbol = LabelSymbol(interned, Section.TEXT)
 			nodes.add(LabelNode(symbol))
-			symbols[string] = symbol
+			symbols[interned] = symbol
 			return
 		}
 
-		idMap[string]?.let {
-			it()
+		if(interned.type == InternType.KEYWORD) {
+			when(Intern.keyword(interned)) {
+				Keyword.CONST  -> parseConst()
+				Keyword.VAR    -> parseVar()
+				Keyword.IMPORT -> parseImport()
+			}
+
 			return
 		}
-	}
 
-
-
-	private fun populateIdMap() {
-		idMap["const"] = ::parseConst
-		idMap["var"] = ::parseVar
-		idMap["import"] = ::parseImport
-
-		for(mnemonic in Mnemonic.values()) idMap[mnemonic.string] = {
-			nodes.add(parseInstruction(mnemonic))
+		if(interned.type == InternType.MNEMONIC) {
+			nodes.add(parseInstruction(Intern.mnemonic(interned)))
+			return
 		}
+
+		error("Unexpected identifier: ${interned.name}")
 	}
 
 
 
 	private fun parseImport() {
-		val dll = (tokens[pos++] as? IdToken)?.value ?: error("Expecting import dll name")
-		if(tokens[pos++] != SymbolToken.PERIOD) error("Expecting '.'")
-		val name = (tokens[pos++] as? IdToken)?.value ?: error("Expecting import name")
+		val dll = id()
+		expect(SymbolToken.PERIOD)
+		val name = id()
 		val symbol = ImportSymbol(name, Section.RDATA)
 		symbols[name] = symbol
 		imports.add(DllImport(dll, symbol))
@@ -97,9 +87,9 @@ class Parser(lexerResult: LexerResult) {
 		var token = tokens[pos]
 		var width: Width? = null
 
-		if(token is IdToken) {
-			width = widthMap[token.value]
-			if(width != null && tokens[pos + 1] == SymbolToken.LEFT_BRACKET)
+		if(token is IdToken && token.value.type == InternType.WIDTH) {
+			width = Intern.width(token.value)
+			if(tokens[pos + 1] == SymbolToken.LEFT_BRACKET)
 				token = tokens[++pos]
 		}
 
@@ -116,7 +106,7 @@ class Parser(lexerResult: LexerResult) {
 			is IntNode    -> ImmNode(node)
 			is BinaryNode -> ImmNode(node)
 			is UnaryNode  -> ImmNode(node)
-			is IdNode     -> ImmNode(node)
+			is SymNode    -> ImmNode(node)
 			else          -> error("Invalid operand")
 		}
 	}
@@ -127,41 +117,40 @@ class Parser(lexerResult: LexerResult) {
 		val token = tokens[pos]
 		var shortImm = false
 
-		if(token is IdToken && token.value == "short") {
+		if(token is IdToken && token.value == Intern.short) {
 			shortImm = true
 			pos++
 		}
 
 		if(atStatementEnd()) return InstructionNode(mnemonic, shortImm, null, null, null, null)
+
 		val op1 = parseOperand()
+		if(tokens[pos] != SymbolToken.COMMA)
+			return InstructionNode(mnemonic, shortImm, op1, null, null, null)
+		pos++
 
-		if(atStatementEnd()) return InstructionNode(mnemonic, shortImm, op1, null, null, null)
-		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token")
 		val op2 = parseOperand()
+		if(tokens[pos] != SymbolToken.COMMA)
+			return InstructionNode(mnemonic, shortImm, op1, op2, null, null)
+		pos++
 
-		if(atStatementEnd()) return InstructionNode(mnemonic, shortImm, op1, op2, null, null)
-		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token")
 		val op3 = parseOperand()
+		if(tokens[pos] != SymbolToken.COMMA)
+			return InstructionNode(mnemonic, shortImm, op1, op2, op3, null)
+		pos++
 
-		if(atStatementEnd()) return InstructionNode(mnemonic, shortImm, op1, op2, op3, null)
-		if(tokens[pos++] != SymbolToken.COMMA) error("Unexpected token")
 		val op4 = parseOperand()
-
 		expectStatementEnd()
-
 		return InstructionNode(mnemonic, shortImm, op1, op2, op3, op4)
 	}
 
 
 
 	private fun parseVar() {
-		val name = (tokens[pos++] as? IdToken)?.value
-			?: error("Expecting name")
+		val name = id()
+		var initialiser = id()
 
-		var initialiser = (tokens[pos++] as? IdToken)?.value
-			?: error("Expecting variable initialiser")
-
-		if(initialiser == "res") {
+		if(initialiser == Intern.res) {
 			val size = readExpression().resolveInt()
 			val symbol = ResSymbol(name, Section.BSS)
 			symbols[name] = symbol
@@ -174,7 +163,8 @@ class Parser(lexerResult: LexerResult) {
 		val componentsAndWidths = ArrayList<Pair<Width, List<AstNode>>>()
 
 		while(true) {
-			val width = varWidthMap[initialiser] ?: break
+			if(initialiser.type != InternType.VAR_WIDTH) break
+			val width = Intern.varWidth(initialiser)
 			val components = ArrayList<AstNode>()
 
 			while(true) {
@@ -213,7 +203,7 @@ class Parser(lexerResult: LexerResult) {
 		is IntNode    -> value
 		is UnaryNode  -> op.calculate(node.resolveInt())
 		is BinaryNode -> op.calculate(left.resolveInt(), right.resolveInt())
-		is IdNode     -> (symbols[name] as? IntSymbol)?.value ?: error("Invalid symbol: $name")
+		is SymNode    -> (symbol as? IntSymbol)?.value ?: error("Invalid symbol: $name")
 		else          -> error("Invalid constant integer component: $this")
 	}
 
@@ -237,11 +227,16 @@ class Parser(lexerResult: LexerResult) {
 			return expression
 		}
 
+		if(token is IdToken) {
+			val id = token.value
+			if(id.type == InternType.REGISTER)
+				return RegNode(Intern.register(id))
+			return SymNode(id)
+		}
+
 		return when(token) {
 			is SymbolToken -> UnaryNode(token.unaryOp ?: error("Unexpected symbol: $token"), readAtom())
 			is IntToken    -> IntNode(token.value)
-			is RegToken    -> RegNode(token.value)
-			is IdToken     -> IdNode(token.value)
 			is StringToken -> StringNode(token.value)
 			is CharToken   -> IntNode(token.value.code.toLong())
 			else           -> error("Invalid token: $token")

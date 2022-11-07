@@ -1,8 +1,8 @@
 package assembler
 
-import core.Core
 import java.nio.file.Files
 import java.nio.file.Paths
+
 
 
 
@@ -26,19 +26,11 @@ main:
 
 
 fun main() {
-	val tree = AvlTree()
-	tree.add(10)
-	tree.add(20)
-	tree.add(19)
-	tree.add(21)
-	tree.add(8)
-	tree.print()
-
-	//val lexerResult = Lexer(input.toCharArray()).lex()
-	//val parserResult = Parser(lexerResult).parse()
-	//val assemblerResult = Assembler(parserResult).assemble()
+	val lexerResult = Lexer(input.toCharArray()).lex()
+	val parserResult = Parser(lexerResult).parse()
+	val assemblerResult = Assembler(parserResult).assemble()
 	//Files.write(Paths.get("test.bin"), assemblerResult.text)
 	//Core.run("ndisasm -b64 test.bin")
-	//val linkerResult = Linker(assemblerResult).link()
-	//Files.write(Paths.get("test.exe"), linkerResult)
+	val linkerResult = Linker(assemblerResult).link()
+	Files.write(Paths.get("test.exe"), linkerResult)
 }

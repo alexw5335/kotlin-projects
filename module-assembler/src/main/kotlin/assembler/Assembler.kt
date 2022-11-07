@@ -222,8 +222,9 @@ class Assembler(parserResult: ParserResult) {
 		if(node is IntNode)
 			return node.value
 
-		if(node is IdNode) {
+		if(node is SymNode) {
 			val symbol = symbols[node.name] ?: error()
+			node.symbol = symbol
 
 			if(symbol is IntSymbol)
 				return symbol.value
