@@ -368,7 +368,10 @@ enum class Mnemonic {
 	FNSTSW,
 	FIST,
 	FISTP,
-	FBSTP;
+	FBSTP,
+
+	RDRAND,
+	RDSEED;
 
 	val string = name.lowercase()
 

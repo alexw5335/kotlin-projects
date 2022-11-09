@@ -217,7 +217,7 @@ class Linker(private val assemblerResult: AssemblerResult) {
 			writeSection(".data", 0xC0_00_00_40L.toInt(), assemblerResult.data, 0, Section.DATA)
 
 		if(assemblerResult.bssSize > 0)
-			writeVirtualSection(".bss", 0x40_00_00_80, assemblerResult.bssSize, Section.BSS)
+			writeVirtualSection(".bss", 0xC0_00_00_80L.toInt(), assemblerResult.bssSize, Section.BSS)
 	}
 
 
@@ -271,7 +271,7 @@ class Linker(private val assemblerResult: AssemblerResult) {
 
 		val size = writer.pos - idtsPos
 
-		writeSection(".rdata", 0x40_00_00_40, writer.getTrimmedBytes(idtsPos, size), 0, Section.RDATA)
+		writeSection(".idata", 0x40_00_00_40, writer.getTrimmedBytes(idtsPos, size), 0, Section.RDATA)
 	}
 
 
@@ -297,7 +297,8 @@ class Linker(private val assemblerResult: AssemblerResult) {
 
 
 	private fun writeRelocation(relocation: Relocation) {
-		if(relocation.width != Width.BIT32) error("Invalid relocation width")
+		if(relocation.width != Width.BIT32)
+			error("Invalid relocation width: $relocation")
 
 		var value = relocation.value.resolveRelocation()
 

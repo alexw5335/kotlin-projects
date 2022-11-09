@@ -89,7 +89,7 @@ class Assembler(parserResult: ParserResult) {
 					for(char in component.value)
 						dataWriter.int(width, char.code)
 				} else {
-					dataWriter.int(width, resolve(component))
+					dataWriter.int(width, resolveImm(component))
 				}
 			}
 		}
@@ -127,59 +127,116 @@ class Assembler(parserResult: ParserResult) {
 
 	private var aso = false
 
-	private var refCount = 0
+	private var memRefCount = 0
 
-	private val hasReloc get() = refCount > 0
+	private val hasMemReloc get() = memRefCount > 0
 
 	private var importSymbol: Symbol? = null
 
+	private var immRefCount = 0
+
+	private val hasImmReloc get() = immRefCount > 0
 
 
-	private fun resolve(root: AstNode, isMem: Boolean = false): Long {
+
+	private fun resolveMem(root: AstNode): Int {
 		baseReg      = null
 		indexReg     = null
 		indexScale   = 0
 		aso          = false
 		importSymbol = null
-		refCount     = 0
+		memRefCount  = 0
 
-		val disp = resolveRec(if(root is ImmNode) root.value else root, 1)
+		val disp = resolveMemRec(if(root is ImmNode) root.value else root, 1)
 
-		if(isMem) {
-			if(baseReg != null) {
-				if(indexReg != null) {
-					if(baseReg!!.width != indexReg!!.width)
-						error()
-					if(baseReg!!.width.is32)
-						aso = true
-					else if(baseReg!!.width.isNot64)
-						error()
+		if(baseReg != null) {
+			if(indexReg != null) {
+				if(baseReg!!.width != indexReg!!.width)
+					error()
+				if(baseReg!!.width.is32)
+					aso = true
+				else if(baseReg!!.width.isNot64)
+					error()
 
-					if(indexReg!!.isSP) {
-						if(indexScale != 1) error()
-						val temp = indexReg
-						indexReg = baseReg
-						baseReg = temp
-					}
-				} else {
-					if(baseReg!!.width.is32)
-						aso = true
-					else if(baseReg!!.width.isNot64)
-						error()
+				if(indexReg!!.isSP) {
+					if(indexScale != 1) error()
+					val temp = indexReg
+					indexReg = baseReg
+					baseReg = temp
 				}
+			} else {
+				if(baseReg!!.width.is32)
+					aso = true
+				else if(baseReg!!.width.isNot64)
+					error()
 			}
-		} else if(baseReg != null || indexReg != null) {
-			error()
 		}
 
-		if(importSymbol != null && refCount != 1) error()
+		if(importSymbol != null && memRefCount != 1) error()
 
-		return disp
+		if(!hasImmReloc && !disp.isImm32) error()
+
+		return disp.toInt()
 	}
 
 
 
-	private fun resolveRec(node: AstNode, positivity: Int): Long {
+	private fun resolveStringImm(string: String): Long {
+		var value = 0L
+		if(string.length > 8) error("String literal out of range")
+		for((i, c) in string.withIndex())
+			if(c.code > 255)
+				error("String literal char out of range: $c")
+			else
+				value = value or (c.code.toLong() shl (i shl 3))
+		return value
+	}
+
+
+
+	private fun resolveImm(root: AstNode): Long {
+		immRefCount = 0
+		return if(root is ImmNode)
+			root.value.resolveImmRec()
+		else
+			root.resolveImmRec()
+	}
+
+
+
+	private fun AstNode.resolveImmRec(): Long {
+		if(this is UnaryNode)  return op.calculate(node.resolveImmRec())
+		if(this is BinaryNode) return op.calculate(left.resolveImmRec(), right.resolveImmRec())
+		if(this is IntNode)    return value
+		if(this is StringNode) return resolveStringImm(value)
+
+		if(this is SymNode) {
+			val symbol = symbols[name] ?: error()
+			this.symbol = symbol
+
+			if(symbol is IntSymbol)
+				return symbol.value
+
+			if(symbol is ImportSymbol) {
+				immRefCount++
+				importSymbol = symbol
+				return 0
+			}
+
+			if(symbol is Ref) {
+				immRefCount++
+				return 0
+			}
+
+			error()
+		}
+
+		error("Invalid node: $this")
+	}
+
+
+
+	private fun resolveMemRec(node: AstNode, positivity: Int): Long {
 		if(node is RegNode) {
 			if(positivity <= 0) error()
 
@@ -195,7 +252,7 @@ class Assembler(parserResult: ParserResult) {
 		}
 
 		if(node is UnaryNode) {
-			return node.op.calculate(resolveRec(node.node, positivity * node.op.positivity))
+			return node.op.calculate(resolveMemRec(node.node, positivity * node.op.positivity))
 		}
 
 		if(node is BinaryNode) {
@@ -214,29 +271,29 @@ class Assembler(parserResult: ParserResult) {
 			}
 
 			return node.op.calculate(
-				resolveRec(node.left, positivity * node.op.leftPositivity),
-				resolveRec(node.right, positivity * node.op.rightPositivity)
+				resolveMemRec(node.left, positivity * node.op.leftPositivity),
+				resolveMemRec(node.right, positivity * node.op.rightPositivity)
 			)
 		}
 
-		if(node is IntNode)
-			return node.value
+		if(node is IntNode) return node.value
+		if(node is StringNode) return resolveStringImm(node.value)
 
 		if(node is SymNode) {
-			val symbol = symbols[node.name] ?: error()
+			val symbol = symbols[node.name] ?: error("Missing symbol: ${node.name}")
 			node.symbol = symbol
 
 			if(symbol is IntSymbol)
 				return symbol.value
 
 			if(symbol is ImportSymbol) {
-				refCount++
+				memRefCount++
 				importSymbol = symbol
 				return 0
 			}
 
 			if(symbol is Ref) {
-				refCount++
+				memRefCount++
 				return 0
 			}
 
@@ -326,7 +383,7 @@ class Assembler(parserResult: ParserResult) {
 		reg       : Int,
 		immLength : Int
 	) {
-		val disp   = resolve(node, true).toInt()
+		val disp   = resolveMem(node)
 		val base   = baseReg
 		val index  = indexReg
 		val scale  = indexScale
@@ -334,14 +391,14 @@ class Assembler(parserResult: ParserResult) {
 		if(aso) writer.i8(0x67)
 
 		val mod = when {
-			refCount > 0   -> 2
-			disp == 0      -> if(base != null && base.value == 5) 1 else 0
-			disp.isImm8    -> 1
-			else           -> 2
+			hasMemReloc  -> 2
+			disp == 0    -> if(base != null && base.value == 5) 1 else 0
+			disp.isImm8  -> 1
+			else         -> 2
 		}
 
 		fun relocAndDisp() {
-			if(hasReloc) {
+			if(hasMemReloc) {
 				relocations.add(Relocation(Section.TEXT, writer.pos, BIT32, node, null))
 				writer.i32(0)
 			} else if(mod == 0b01)
@@ -379,7 +436,7 @@ class Assembler(parserResult: ParserResult) {
 			}
 
 			relocAndDisp()
-		} else if(refCount == 1) { // RIP-relative
+		} else if(memRefCount == 1) { // RIP-relative
 			writeRex(rexW, rexR, 0, 0)
 			writer.int(opcode)
 			writeModRM(0b00, reg, 0b101)
@@ -399,7 +456,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 	private fun writeRel8(node: ImmNode, value: Long) {
-		if(hasReloc) {
+		if(hasImmReloc) {
 			addRelReloc(node, BIT8)
 			writer.advance(1)
 		} else {
@@ -411,8 +468,8 @@ class Assembler(parserResult: ParserResult) {
 
 
 	private fun writeRel32(node: ImmNode, value: Long) {
-		if(hasReloc) {
-			addRelReloc(node, BIT8)
+		if(hasImmReloc) {
+			addRelReloc(node, BIT32)
 			writer.advance(4)
 		} else {
 			if(value.isImm32) error()
@@ -423,7 +480,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 	private fun writeImmInternal(node: ImmNode, width: Width, value: Long) {
-		if(hasReloc) {
+		if(hasImmReloc) {
 			addImmReloc(node, width)
 			writer.advance(width.bytes)
 			return
@@ -585,25 +642,25 @@ class Assembler(parserResult: ParserResult) {
 			if(Specifier.O in group) {
 				encode1O(Operands.O, op1.value)
 			} else {
-				encode1R(Operands.O, op1.value)
+				encode1R(Operands.R, op1.value)
 			}
 		} else if(op1 is MemNode) {
 			encode1M(Operands.M, op1, 0)
 		} else if(op1 is ImmNode) {
-			val imm = resolve(op1)
+			val imm = resolveImm(op1)
 
 			if(importSymbol != null) {
 				encode1M(Operands.M, MemNode(BIT64, op1), 0)
-			} else if(Specifier.REL8 in group && ((!hasReloc && node.shortImm) || Specifier.REL32 !in group)) {
+			} else if(Specifier.REL8 in group && ((!hasImmReloc && node.shortImm) || Specifier.REL32 !in group)) {
 				encodeNone(Operands.REL8)
 				writeRel8(op1, imm)
 			} else if(Specifier.REL32 in group) {
 				encodeNone(Operands.REL32)
 				writeRel32(op1, imm)
-			} else if(Specifier.I8 in group && ((!hasReloc && imm.isImm8) || (Specifier.I16 !in group && Specifier.I32 !in group))) {
+			} else if(Specifier.I8 in group && ((!hasImmReloc && imm.isImm8) || (Specifier.I16 !in group && Specifier.I32 !in group))) {
 				encodeNone(Operands.I8)
 				writeImm(op1, BIT8, imm)
-			} else if(Specifier.I16 in group && ((!hasReloc && imm.isImm16) || Specifier.I32 !in group)) {
+			} else if(Specifier.I16 in group && ((!hasImmReloc && imm.isImm16) || Specifier.I32 !in group)) {
 				encodeNone(Operands.I16)
 				writeImm(op1, BIT16, imm)
 			} else {
@@ -643,12 +700,12 @@ class Assembler(parserResult: ParserResult) {
 
 			encode2RM(Operands.R_M, op1, op2, 0)
 		} else if(op2 is ImmNode) {
-			val imm = resolve(op2)
+			val imm = resolveImm(op2)
 
-			if(Specifier.RM_I8 in group && !hasReloc && width.isNot8 && imm.isImm8) {
+			if(Specifier.RM_I8 in group && !hasImmReloc && width.isNot8 && imm.isImm8) {
 				encode1R(Operands.R_I8, op1)
 				writeImm(op2, BIT8, imm)
-			} else if(Specifier.RM_1 in group && !hasReloc && imm == 1L) {
+			} else if(Specifier.RM_1 in group && !hasImmReloc && imm == 1L) {
 				encode1R(Operands.RM_1, op1)
 			} else if(op1.isA && Specifier.A_I in group) {
 				encodeNone(Operands.A_I)
@@ -677,12 +734,12 @@ class Assembler(parserResult: ParserResult) {
 			}
 		} else if(op2 is ImmNode) {
 			val width = op1.width ?: error()
-			val imm = resolve(op2)
-
-			if(Specifier.RM_I8 in group && !hasReloc && width.isNot8 && imm.isImm8) {
+			val imm = resolveImm(op2)
+			// Issue with order of resolution with IMM and MEM.
+			if(Specifier.RM_I8 in group && !hasImmReloc && width.isNot8 && imm.isImm8) {
 				encode1M(Operands.M_I8, op1, 1)
 				writeImm(op2, BIT8, imm)
-			} else if(Specifier.RM_1 in group && !hasReloc && imm == 1L) {
+			} else if(Specifier.RM_1 in group && !hasImmReloc && imm == 1L) {
 				encode1M(Operands.RM_1, op1, 0)
 			} else {
 				encode1M(Operands.M_I, op1, width.immLength)
@@ -732,14 +789,14 @@ class Assembler(parserResult: ParserResult) {
 				else  -> error()
 			}
 		} else if(node.op1 is ImmNode) {
-			val imm = resolve(node.op1)
+			val imm = resolveImm(node.op1)
 			when(op2.width) {
 				BIT8  -> writer.i8(0xE6)
 				BIT16 -> writer.i16(0xE766)
 				BIT32 -> writer.i8(0xE7)
 				else  -> error()
 			}
-			if(hasReloc) addImmReloc(node.op1, BIT8)
+			if(hasImmReloc) addImmReloc(node.op1, BIT8)
 			else if(!imm.isImm8) error()
 			writer.i8(imm.toInt())
 		} else {
@@ -773,14 +830,14 @@ class Assembler(parserResult: ParserResult) {
 				else  -> error()
 			}
 		} else if(node.op2 is ImmNode) {
-			val imm = resolve(node.op2)
+			val imm = resolveImm(node.op2)
 			when(op1.width) {
 				BIT8  -> writer.i8(0xE4)
 				BIT16 -> writer.i16(0xE566)
 				BIT32 -> writer.i8(0xE5)
 				else  -> error()
 			}
-			if(hasReloc) addImmReloc(node.op2, BIT8)
+			if(hasImmReloc) addImmReloc(node.op2, BIT8)
 			else if(!imm.isImm8) error()
 			writer.i8(imm.toInt())
 		} else {
@@ -894,14 +951,14 @@ class Assembler(parserResult: ParserResult) {
 		val op1 = node.op1.value
 		val op3 = node.op3
 		val width = op1.width
-		val imm = resolve(node.op3)
+		val imm = resolveImm(node.op3)
 
 		if(node.op2 is RegNode) {
 			val op2 = node.op2.value
 
 			if(width != op2.width) error()
 
-			if(!hasReloc && imm.isImm8) {
+			if(!hasImmReloc && imm.isImm8) {
 				encode2RR(Operands.CUSTOM1, op1, op2)
 				writeImm(op3, BIT8, imm)
 			} else {
@@ -913,7 +970,7 @@ class Assembler(parserResult: ParserResult) {
 
 			if(op2.width != null && op2.width != width) error()
 
-			if(!hasReloc && imm.isImm8) {
+			if(!hasImmReloc && imm.isImm8) {
 				encode2RM(Operands.CUSTOM1, op1, op2, 1)
 				writeImm(op3, BIT8, imm)
 			} else {
@@ -931,9 +988,9 @@ class Assembler(parserResult: ParserResult) {
 		if(node.op3 != null) error()
 
 		if(node.op1 is RegNode && node.op2 is ImmNode) {
-			val imm = resolve(node.op2)
+			val imm = resolveImm(node.op2)
 
-			if(hasReloc || !imm.isImm32) {
+			if(hasImmReloc || !imm.isImm32) {
 				encode1O(Operands.CUSTOM1, node.op1.value)
 				writeImmInternal(node.op2, node.op1.value.width, imm)
 			} else

@@ -1,5 +1,6 @@
 package assembler
 
+import core.Core
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -19,6 +20,7 @@ main:
 	mov r8d, 8
 	mov r9, [rsp + 40]
 	mov qword [rsp + 32], 0
+	mov byte [message], 't'
 	call WriteFile
 	call ExitProcess
 """
@@ -26,7 +28,7 @@ main:
 
 
 fun main() {
-	val lexerResult = Lexer(input.toCharArray()).lex()
+	val lexerResult = Lexer(Core.readResourceText("/password_gen.eyre")).lex()
 	val parserResult = Parser(lexerResult).parse()
 	val assemblerResult = Assembler(parserResult).assemble()
 	//Files.write(Paths.get("test.bin"), assemblerResult.text)

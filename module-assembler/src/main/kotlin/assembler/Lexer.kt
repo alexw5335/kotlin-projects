@@ -205,7 +205,7 @@ class Lexer(chars: CharArray) {
 	private fun resolveSlash() {
 		if(chars[pos] == '/') {
 			pos++
-			while(chars[pos] != '\n') pos++
+			while(chars[pos] != '\n' && chars[pos].code != 0) pos++
 			return
 		}
 

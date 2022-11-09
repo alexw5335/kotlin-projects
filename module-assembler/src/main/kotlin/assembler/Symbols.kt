@@ -2,6 +2,45 @@ package assembler
 
 
 
+class SymbolTable {
+
+	private val map = HashMap<Interned, Symbol>()
+
+	operator fun get(interned: Interned) = map[interned]
+
+	operator fun set(interned: Interned, symbol: Symbol) = map.put(interned, symbol)
+
+	fun add(symbol: Symbol) = map.put(symbol.name, symbol)
+
+}
+
+
+
+class SymbolStack {
+
+	private val list = ArrayList<ArrayList<SymbolTable>>().also { it.add(ArrayList()) }
+
+	private var pos = 0
+
+	private var current = list[0]
+
+	fun push() {
+		pos++
+		if(pos >= list.size) list.add(ArrayList())
+		current = list[pos]
+		current.clear()
+	}
+
+	fun pop() {
+		pos--
+		if(pos < 0) error("Stack underflow")
+		current = list[pos]
+	}
+
+}
+
+
+
 interface Ref {
 	var section: Section
 	var pos: Int
@@ -65,8 +104,13 @@ data class ResSymbol(
 
 
 
-data class NamespaceSymbol(override val name: Interned) : Symbol {
-
-	val symbols = HashMap<Interned, Symbol>()
-
+interface Namespace {
+	val symbols: SymbolTable
 }
+
+
+
+data class EnumSymbol(
+	override val name    : Interned,
+	override val symbols : SymbolTable = SymbolTable()
+) : Symbol, Namespace

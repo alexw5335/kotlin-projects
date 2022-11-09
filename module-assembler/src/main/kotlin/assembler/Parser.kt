@@ -13,7 +13,7 @@ class Parser(lexerResult: LexerResult) {
 
 	private val nodes = ArrayList<AstNode>()
 
-	private val symbols = HashMap<Interned, Symbol>()
+	private val symbols = SymbolTable()
 
 	private val imports = ArrayList<DllImport>()
 
@@ -56,6 +56,7 @@ class Parser(lexerResult: LexerResult) {
 				Keyword.CONST  -> parseConst()
 				Keyword.VAR    -> parseVar()
 				Keyword.IMPORT -> parseImport()
+				Keyword.ENUM   -> parseEnum()
 			}
 
 			return
@@ -73,7 +74,7 @@ class Parser(lexerResult: LexerResult) {
 
 	private fun parseImport() {
 		val dll = id()
-		expect(SymbolToken.PERIOD)
+		expect(SymbolToken.REFERENCE)
 		val name = id()
 		val symbol = ImportSymbol(name, Section.RDATA)
 		symbols[name] = symbol
@@ -102,12 +103,8 @@ class Parser(lexerResult: LexerResult) {
 		}
 
 		return when(val node = readExpression()) {
-			is RegNode    -> node
-			is IntNode    -> ImmNode(node)
-			is BinaryNode -> ImmNode(node)
-			is UnaryNode  -> ImmNode(node)
-			is SymNode    -> ImmNode(node)
-			else          -> error("Invalid operand")
+			is RegNode -> node
+			else       -> ImmNode(node)
 		}
 	}
 
@@ -122,7 +119,8 @@ class Parser(lexerResult: LexerResult) {
 			pos++
 		}
 
-		if(atStatementEnd()) return InstructionNode(mnemonic, shortImm, null, null, null, null)
+		if(newlines[pos] || tokens[pos] == EndToken)
+			return InstructionNode(mnemonic, shortImm, null, null, null, null)
 
 		val op1 = parseOperand()
 		if(tokens[pos] != SymbolToken.COMMA)
@@ -189,9 +187,34 @@ class Parser(lexerResult: LexerResult) {
 
 
 
+	private fun parseEnum() {
+		val name = id()
+		expect(SymbolToken.LEFT_BRACE)
+
+		val symbols = SymbolTable()
+		var currentValue = 0L
+
+		if(tokens[pos] == SymbolToken.RIGHT_BRACE) {
+			pos++
+			return
+		}
+
+		while(true) {
+			symbols.add(IntSymbol(id(), currentValue++))
+			val token = tokens[pos]
+			if(token != SymbolToken.COMMA) break
+			if(tokens[++pos] !is IdToken)
+				break
+		}
+
+		this.symbols.add(EnumSymbol(name, symbols))
+	}
+
+
+
 	private fun parseConst() {
-		val name = (tokens[pos++] as? IdToken)?.value ?: error("Expecting name")
-		if(tokens[pos++] != SymbolToken.EQUALS) error("Expecting '='")
+		val name = id()
+		expect(SymbolToken.EQUALS)
 		val value = readExpression().resolveInt()
 		val symbol = IntSymbol(name, value)
 		symbols[name] = symbol
@@ -203,7 +226,7 @@ class Parser(lexerResult: LexerResult) {
 		is IntNode    -> value
 		is UnaryNode  -> op.calculate(node.resolveInt())
 		is BinaryNode -> op.calculate(left.resolveInt(), right.resolveInt())
-		is SymNode    -> (symbol as? IntSymbol)?.value ?: error("Invalid symbol: $name")
+		is SymNode    -> (symbols[name] as? IntSymbol)?.value ?: error("Invalid symbol: $name")
 		else          -> error("Invalid constant integer component: $this")
 	}
 
@@ -220,10 +243,7 @@ class Parser(lexerResult: LexerResult) {
 
 		if(token == SymbolToken.LEFT_PAREN) {
 			val expression = readExpression()
-
-			if(tokens[pos++] != SymbolToken.RIGHT_PAREN)
-				error("Expected ')")
-
+			expect(SymbolToken.RIGHT_PAREN)
 			return expression
 		}
 

@@ -3,7 +3,8 @@ package assembler
 enum class Keyword {
 	CONST,
 	VAR,
-	IMPORT;
+	IMPORT,
+	ENUM;
 
 	val string = name.lowercase()
 }

@@ -26,7 +26,7 @@ class LexerResult(
 
 class ParserResult(
 	val nodes   : List<AstNode>,
-	val symbols : Map<Interned, Symbol>,
+	val symbols : SymbolTable,
 	val imports : List<DllImport>
 )
 
@@ -38,5 +38,5 @@ class AssemblerResult(
 	val bssSize     : Int,
 	val imports     : List<DllImport>,
 	val relocations : List<Relocation>,
-	val symbols     : Map<Interned, Symbol>,
+	val symbols     : SymbolTable,
 )

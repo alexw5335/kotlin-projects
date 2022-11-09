@@ -4,7 +4,7 @@ package assembler
 
 class Interned(val id: Int, val type: InternType, val name: String) {
 	override fun hashCode() = id
-	override fun equals(other: Any?) = other == this
+	override fun equals(other: Any?) = other === this
 	override fun toString() = name
 }
 
@@ -28,7 +28,7 @@ object Intern {
 
 	private val map = HashMap<String, Interned>()
 
-	fun add(type: InternType, string: String) = map.put(string, Interned(count++, type, string))
+	fun add(type: InternType, string: String) = Interned(count++, type, string).also { map[string] = it }
 
 	fun addAndGet(string: String) = map.getOrPut(string) { Interned(count++, InternType.NONE, string) }
 
