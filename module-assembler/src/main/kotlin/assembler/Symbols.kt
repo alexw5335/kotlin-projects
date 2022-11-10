@@ -104,7 +104,7 @@ data class ResSymbol(
 
 
 
-interface Namespace {
+interface Namespace : Symbol {
 	val symbols: SymbolTable
 }
 
@@ -113,4 +113,4 @@ interface Namespace {
 data class EnumSymbol(
 	override val name    : Interned,
 	override val symbols : SymbolTable = SymbolTable()
-) : Symbol, Namespace
+) : Namespace

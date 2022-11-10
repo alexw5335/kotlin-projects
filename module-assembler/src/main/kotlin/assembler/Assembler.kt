@@ -203,12 +203,41 @@ class Assembler(parserResult: ParserResult) {
 	}
 
 
+	// a.b.c.d
+	// (((a.b).c).d)
+
+
+	private fun AstNode.resolveNamespace(): Namespace {
+		if(this is SymNode) {
+			val symbol = symbols[name] as? Namespace ?: error()
+			this.symbol = symbol
+			return symbol
+		}
+
+		if(this is BinaryNode) {
+			val name = (right as? SymNode)?.name ?: error()
+			val namespace = left.resolveNamespace()
+			val symbol = namespace.symbols[name] as? Namespace ?: error()
+			right.symbol = symbol
+			return symbol
+		}
+
+		error()
+	}
 
 	private fun AstNode.resolveImmRec(): Long {
 		if(this is UnaryNode)  return op.calculate(node.resolveImmRec())
-		if(this is BinaryNode) return op.calculate(left.resolveImmRec(), right.resolveImmRec())
 		if(this is IntNode)    return value
 		if(this is StringNode) return resolveStringImm(value)
+
+		if(this is BinaryNode) {
+			if(op != BinaryOp.DOT) return op.calculate(left.resolveImmRec(), right.resolveImmRec())
+			val namespace = left.resolveNamespace()
+			val name = (right as? SymNode)?.name ?: error()
+			val symbol = namespace.symbols[name] as? IntSymbol ?: error()
+			right.symbol = symbol
+			return symbol.value
+		}
 
 		if(this is SymNode) {
 			val symbol = symbols[name] ?: error()
@@ -228,7 +257,7 @@ class Assembler(parserResult: ParserResult) {
 				return 0
 			}
 
-			error()
+			error("Invalid symbol: $symbol")
 		}
 
 		error("Invalid node: $this")

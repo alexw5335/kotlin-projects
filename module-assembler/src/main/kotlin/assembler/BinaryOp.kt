@@ -3,8 +3,7 @@ package assembler
 enum class BinaryOp(
 	val symbol      : String,
 	val precedence  : Int,
-	val calculate   : (Long, Long) -> Long,
-	val canCalcInt  : Boolean = true
+	val calculate   : (Long, Long) -> Long
 ) {
 
 	DOT(".", 5,  Lambdas::zero),

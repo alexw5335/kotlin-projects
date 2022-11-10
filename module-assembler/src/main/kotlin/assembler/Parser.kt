@@ -25,19 +25,27 @@ class Parser(lexerResult: LexerResult) {
 
 	private fun expect(token: Token) { if(tokens[pos++] != token) error("Expecting $token") }
 
+	private var namespace: Namespace? = null
+
 
 
 	fun parse(): ParserResult {
+		parseLevel(isTopLevel = true)
+		return ParserResult(nodes, symbols, imports)
+	}
+
+
+
+	private fun parseLevel(isTopLevel: Boolean) {
 		while(true) {
 			when(val token = tokens[pos++]) {
-				EndToken              -> break
-				SymbolToken.SEMICOLON -> continue
-				is IdToken            -> parseId(token.value)
-				else                  -> error("Invalid token: $token")
+				SymbolToken.LEFT_BRACE -> if(isTopLevel) error("Invalid token: $token") else return
+				EndToken               -> break
+				SymbolToken.SEMICOLON  -> continue
+				is IdToken             -> parseId(token.value)
+				else                   -> error("Invalid token: $token")
 			}
 		}
-
-		return ParserResult(nodes, symbols, imports)
 	}
 
 
@@ -53,10 +61,11 @@ class Parser(lexerResult: LexerResult) {
 
 		if(interned.type == InternType.KEYWORD) {
 			when(Intern.keyword(interned)) {
-				Keyword.CONST  -> parseConst()
-				Keyword.VAR    -> parseVar()
-				Keyword.IMPORT -> parseImport()
-				Keyword.ENUM   -> parseEnum()
+				Keyword.CONST     -> parseConst()
+				Keyword.VAR       -> parseVar()
+				Keyword.IMPORT    -> parseImport()
+				Keyword.ENUM      -> parseEnum()
+				Keyword.NAMESPACE -> parseNamespace()
 			}
 
 			return
@@ -68,6 +77,16 @@ class Parser(lexerResult: LexerResult) {
 		}
 
 		error("Unexpected identifier: ${interned.name}")
+	}
+
+
+
+	private fun parseNamespace() {
+		val name = id()
+		val namespace = Namespace(name)
+		if(tokens[pos] != SymbolToken.LEFT_BRACE) {
+			name
+		}
 	}
 
 
@@ -206,6 +225,8 @@ class Parser(lexerResult: LexerResult) {
 			if(tokens[++pos] !is IdToken)
 				break
 		}
+
+		expect(SymbolToken.RIGHT_BRACE)
 
 		this.symbols.add(EnumSymbol(name, symbols))
 	}
