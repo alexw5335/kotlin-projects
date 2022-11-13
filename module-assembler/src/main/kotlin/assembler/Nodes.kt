@@ -20,6 +20,10 @@ data class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) :
 	override fun toString() = "($left ${op.symbol} $right)"
 }
 
+data class DotNode(val left: AstNode, val right: SymNode) : AstNode {
+	override fun toString() = "($left.$right)"
+}
+
 data class RegNode(val value: Register) : AstNode {
 	override fun toString() = "$value"
 }

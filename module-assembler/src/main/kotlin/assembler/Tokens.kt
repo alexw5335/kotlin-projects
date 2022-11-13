@@ -45,7 +45,7 @@ enum class SymbolToken(
 	RIGHT_BRACKET ("]"),
 	LEFT_BRACE    ("{"),
 	RIGHT_BRACE   ("}"),
-	PERIOD        (".", binaryOp = BinaryOp.DOT),
+	PERIOD        ("."),
 	REFERENCE     ("::", firstSymbol = COLON);
 
 }

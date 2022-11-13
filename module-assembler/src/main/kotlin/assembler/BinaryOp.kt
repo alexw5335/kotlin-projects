@@ -6,15 +6,14 @@ enum class BinaryOp(
 	val calculate   : (Long, Long) -> Long
 ) {
 
-	DOT(".", 5,  Lambdas::zero),
 	MUL("*",  4, Long::times),
 	DIV("/",  4, Long::div),
 
 	ADD("+",  3, Long::plus),
 	SUB("-",  3, Long::minus),
 
-	SHL("<<", 2, Lambdas::shl),
-	SHR(">>", 2, Lambdas::shr),
+	SHL("<<", 2, { a, b -> a shl b.toInt() }),
+	SHR(">>", 2, { a, b -> a shr b.toInt() }),
 
 	AND("&",  1, Long::and),
 	XOR("^",  1, Long::xor),
@@ -30,15 +29,6 @@ enum class BinaryOp(
 		ADD  -> 1
 		SUB  -> -1
 		else -> 0
-	}
-
-	private object Lambdas {
-
-		fun zero(a: Long, b: Long) = 0L
-
-		fun shl(a: Long, b: Long) = a shl b.toInt()
-
-		fun shr(a: Long, b: Long) = a shr b.toInt()
 	}
 
 }

@@ -13,7 +13,9 @@ class Parser(lexerResult: LexerResult) {
 
 	private val nodes = ArrayList<AstNode>()
 
-	private val symbols = SymbolTable()
+	private var globalSymbols = SymbolTable()
+
+	private var symbols = globalSymbols
 
 	private val imports = ArrayList<DllImport>()
 
@@ -83,10 +85,13 @@ class Parser(lexerResult: LexerResult) {
 
 	private fun parseNamespace() {
 		val name = id()
-		val namespace = Namespace(name)
-		if(tokens[pos] != SymbolToken.LEFT_BRACE) {
-			name
-		}
+		val namespace = Namespace(name, SymbolTable())
+		symbols[name] = namespace
+		this.namespace = namespace
+		if(tokens[pos] != SymbolToken.LEFT_BRACE) return
+		pos++
+		parseLevel(false)
+		this.namespace = null
 	}
 
 
@@ -228,7 +233,7 @@ class Parser(lexerResult: LexerResult) {
 
 		expect(SymbolToken.RIGHT_BRACE)
 
-		this.symbols.add(EnumSymbol(name, symbols))
+		this.symbols.add(Namespace(name, symbols))
 	}
 
 
@@ -299,6 +304,12 @@ class Parser(lexerResult: LexerResult) {
 					error("Use a semicolon to separate expressions that are on the same line")
 				else
 					break
+
+			if(token == SymbolToken.PERIOD) {
+				pos++
+				result = DotNode(result, readExpression(6) as? SymNode ?: error("Invalid symbol"))
+				continue
+			}
 
 			val op = token.binaryOp ?: break
 			if(op.precedence < precedence) break

@@ -235,15 +235,30 @@ class Lexer(chars: CharArray) {
 
 
 
+	private val Char.escape get() = when(this) {
+		't'  -> '\t'
+		'n'  -> '\n'
+		'\\' -> '\\'
+		'r'  -> '\r'
+		'b'  -> '\b'
+		'"'  -> '"'
+		'\'' -> '\''
+		else -> error("Invalid escape char: $this")
+	}
+
+
+
 	private fun resolveDoubleApostrophe() {
 		stringBuilder.clear()
 
 		while(true) {
-			val char = chars[pos++]
-			if(char.code == 0) error("Unterminated string literal")
-			if(char == '\n') error("Newline not allowed in string literal")
-			if(char == '"') break
-			stringBuilder.append(char)
+			when(val char = chars[pos++]) {
+				Char(0) -> error("Unterminated string literal")
+				'\n'    -> error("Newline not allowed in string literal")
+				'"'     -> break
+				'\\'    -> stringBuilder.append(chars[pos++].escape)
+				else    -> stringBuilder.append(char)
+			}
 		}
 
 		tokens.add(StringToken(stringBuilder.toString()))
@@ -252,9 +267,15 @@ class Lexer(chars: CharArray) {
 
 
 	private fun resolveSingleApostrophe() {
-		val char = chars[pos++]
-		if(chars[pos++] != '\'') error("Unterminated char literal")
+		var char = chars[pos++]
+
+		if(char == '\\')
+			char = chars[pos++].escape
+
 		tokens.add(CharToken(char))
+
+		if(chars[pos++] != '\'')
+			error("Unterminated char literal")
 	}
 
 
