@@ -92,11 +92,11 @@ object Intern {
 
 
 
-	val short = add(InternType.NONE, "short")
-
 	val res = add(InternType.NONE, "res")
 
 	val main = add(InternType.NONE, "main")
+
+	val short = add(InternType.NONE, "short")
 
 
 }

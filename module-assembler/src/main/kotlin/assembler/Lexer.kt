@@ -2,10 +2,8 @@ package assembler
 
 import core.collection.BitList
 
-class Lexer(chars: CharArray) {
+class Lexer(private val chars: CharArray) {
 
-
-	private val chars = chars.copyOf(chars.size + 8)
 
 	private var pos = 0
 
@@ -13,19 +11,9 @@ class Lexer(chars: CharArray) {
 
 	private val newlines = BitList()
 
-	private val charMap = arrayOfNulls<() -> Unit>(255)
-
-	private operator fun<T> Array<T>.set(char: Char, value: T) = set(char.code, value)
-
 	private val stringBuilder = StringBuilder()
 
 	private val Char.isIdentifierPart get() = isLetterOrDigit() || this == '_'
-
-
-
-	init {
-		populateCharMap()
-	}
 
 
 
@@ -43,52 +31,59 @@ class Lexer(chars: CharArray) {
 
 
 
-	private fun populateCharMap() {
-		charMap['\n'] = { newlines.set(tokens.size) }
-		charMap[' ']  = { }
-		charMap['\t'] = { }
-		charMap['\r'] = { }
+	companion object {
 
-		for(s in SymbolToken.values()) {
-			val firstChar = s.string[0]
+		private val charMap = arrayOfNulls<Lexer.() -> Unit>(255)
 
-			if(s.string.length == 1) {
-				charMap[firstChar] = { tokens.add(s)}
-				continue
+		private operator fun<T> Array<T>.set(char: Char, value: T) = set(char.code, value)
+
+		init {
+			charMap['\n'] = { newlines.set(tokens.size) }
+			charMap[' ']  = { }
+			charMap['\t'] = { }
+			charMap['\r'] = { }
+
+			for(s in SymbolToken.values()) {
+				val firstChar = s.string[0]
+
+				if(s.string.length == 1) {
+					charMap[firstChar] = { tokens.add(s)}
+					continue
+				}
+
+				val firstSymbol = s.firstSymbol ?: error("Invalid symbol")
+				val secondChar = s.string[1]
+
+				charMap[firstChar] = {
+					if(pos < chars.size && chars[pos] == secondChar) {
+						tokens.add(s)
+						pos++
+					} else
+						tokens.add(firstSymbol)
+				}
 			}
 
-			val firstSymbol = s.firstSymbol ?: error("Invalid symbol")
-			val secondChar = s.string[1]
+			charMap['"'] = Lexer::resolveDoubleApostrophe
+			charMap['\''] = Lexer::resolveSingleApostrophe
+			charMap['/'] = Lexer::resolveSlash
 
-			charMap[firstChar] = {
-				if(chars[pos] == secondChar) {
-					tokens.add(s)
-					pos++
-				} else
-					tokens.add(firstSymbol)
-			}
+			for(i in 65..90)
+				charMap[i] = Lexer::idStart
+
+			for(i in 97..122)
+				charMap[i] = Lexer::idStart
+
+			charMap['_'] = Lexer::idStart
+
+			charMap['0'] = Lexer::zero
+
+			for(i in 49..57)
+				charMap[i] = Lexer::digit
+
+			for(i in charMap.indices)
+				if(charMap[i] == null)
+					charMap[i] = { error("Invalid char code: $i") }
 		}
-
-		charMap['"'] = ::resolveDoubleApostrophe
-		charMap['\''] = ::resolveSingleApostrophe
-		charMap['/'] = ::resolveSlash
-
-		for(i in 65..90)
-			charMap[i] = ::idStart
-
-		for(i in 97..122)
-			charMap[i] = ::idStart
-
-		charMap['_'] = ::idStart
-
-		charMap['0'] = ::zero
-
-		for(i in 49..57)
-			charMap[i] = ::digit
-
-		for(i in charMap.indices)
-			if(charMap[i] == null)
-				charMap[i] = { error("Invalid char code: $i") }
 	}
 
 
@@ -243,6 +238,7 @@ class Lexer(chars: CharArray) {
 		'b'  -> '\b'
 		'"'  -> '"'
 		'\'' -> '\''
+		'0'  -> Char(0)
 		else -> error("Invalid escape char: $this")
 	}
 

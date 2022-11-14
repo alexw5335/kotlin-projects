@@ -12,14 +12,14 @@ object Core {
 
 
 	fun runPrint(command: String) {
-		val process = Runtime.getRuntime().exec(command)
+		val process = Runtime.getRuntime().exec(arrayOf(command))
 		println(process.inputReader().readText())
 	}
 
 
 
 	fun run(command: String, output: Boolean = true, timeoutSeconds: Int = -1): Boolean {
-		val process = Runtime.getRuntime().exec(command)
+		val process = Runtime.getRuntime().exec(arrayOf(command))
 
 		if(timeoutSeconds > 0)
 			process.waitFor(timeoutSeconds.toLong(), TimeUnit.SECONDS)

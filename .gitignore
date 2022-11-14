@@ -4,6 +4,7 @@ build/
 out/
 run/
 /test.*
+/test/
 prev/
 *.dll
 

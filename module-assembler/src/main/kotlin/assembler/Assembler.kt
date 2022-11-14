@@ -203,9 +203,6 @@ class Assembler(parserResult: ParserResult) {
 	}
 
 
-	// a.b.c.d
-	// (((a.b).c).d)
-
 
 	private fun AstNode.resolveNamespace(): Namespace {
 		if(this is SymNode) {
@@ -225,18 +222,20 @@ class Assembler(parserResult: ParserResult) {
 		error()
 	}
 
+
+
 	private fun AstNode.resolveImmRec(): Long {
 		if(this is UnaryNode)  return op.calculate(node.resolveImmRec())
 		if(this is IntNode)    return value
 		if(this is StringNode) return resolveStringImm(value)
 
 		if(this is BinaryNode) {
-			if(op != BinaryOp.DOT) return op.calculate(left.resolveImmRec(), right.resolveImmRec())
-			val namespace = left.resolveNamespace()
+			return op.calculate(left.resolveImmRec(), right.resolveImmRec())
+/*			val namespace = left.resolveNamespace()
 			val name = (right as? SymNode)?.name ?: error()
 			val symbol = namespace.symbols[name] as? IntSymbol ?: error()
 			right.symbol = symbol
-			return symbol.value
+			return symbol.value*/
 		}
 
 		if(this is SymNode) {

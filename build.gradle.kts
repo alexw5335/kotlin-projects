@@ -23,7 +23,7 @@ allprojects {
 
 	apply {
 		tasks.withType<KotlinCompile> {
-			kotlinOptions.jvmTarget = "18"
+			kotlinOptions.jvmTarget = "17"
 		}
 
 		plugin("org.jetbrains.kotlin.jvm")
