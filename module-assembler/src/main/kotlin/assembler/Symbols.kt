@@ -4,11 +4,11 @@ package assembler
 
 class SymbolTable {
 
-	private val map = HashMap<Interned, Symbol>()
+	private val map = HashMap<Intern, Symbol>()
 
-	operator fun get(interned: Interned) = map[interned]
+	operator fun get(intern: Intern) = map[intern]
 
-	operator fun set(interned: Interned, symbol: Symbol) = map.put(interned, symbol)
+	operator fun set(intern: Intern, symbol: Symbol) = map.put(intern, symbol)
 
 	fun add(symbol: Symbol) = map.put(symbol.name, symbol)
 
@@ -60,20 +60,20 @@ fun Ref(section: Section, pos: Int): Ref = RefImpl(section, pos)
 
 
 interface Symbol {
-	val name: Interned
+	val name: Intern
 }
 
 
 
 data class IntSymbol(
-	override val name : Interned,
+	override val name : Intern,
 	var value         : Long
 ) : Symbol
 
 
 
 data class LabelSymbol(
-	override val name    : Interned,
+	override val name    : Intern,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
@@ -81,7 +81,7 @@ data class LabelSymbol(
 
 
 data class ImportSymbol(
-	override val name    : Interned,
+	override val name    : Intern,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
@@ -89,7 +89,7 @@ data class ImportSymbol(
 
 
 data class VarSymbol(
-	override val name    : Interned,
+	override val name    : Intern,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
@@ -97,7 +97,7 @@ data class VarSymbol(
 
 
 data class ResSymbol(
-	override val name    : Interned,
+	override val name    : Intern,
 	override var section : Section = Section.NONE,
 	override var pos     : Int = 0
 ) : Symbol, Ref
@@ -105,6 +105,6 @@ data class ResSymbol(
 
 
 data class Namespace(
-	override val name: Interned,
+	override val name: Intern,
 	val symbols: SymbolTable
 ) : Symbol

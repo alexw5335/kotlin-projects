@@ -141,7 +141,7 @@ class Linker(private val assemblerResult: AssemblerResult) {
 		for(relocation in assemblerResult.relocations)
 			writeRelocation(relocation)
 
-		assemblerResult.symbols[Intern.main]?.let {
+		assemblerResult.symbols[Interns.MAIN]?.let {
 			if(it !is Ref)
 				return@let
 			writer.i32(entryPointPosPos, it.pos + it.section.address)

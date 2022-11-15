@@ -42,7 +42,7 @@ class Assembler(parserResult: ParserResult) {
 				is LabelNode       -> handleLabelNode(node)
 				is VarNode         -> handleVarNode(node)
 				is ResNode         -> handleResNode(node)
-				is InstructionNode -> handleInstructionNode(node)
+				is InsNode -> handleInstructionNode(node)
 				else               -> error("Invalid node: $node")
 			}
 		}
@@ -59,7 +59,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun handleInstructionNode(node: InstructionNode) {
+	private fun handleInstructionNode(node: InsNode) {
 		rexRequired = false
 		rexDisallowed = false
 
@@ -224,19 +224,34 @@ class Assembler(parserResult: ParserResult) {
 
 
 
+	private fun DotNode.resolveSymbol(): Symbol {
+		if(left is SymNode) {
+			val namespace = symbols[left.name] as? Namespace ?: error()
+			left.symbol = namespace
+			val symbol = namespace.symbols[right.name] ?: error()
+			right.symbol = symbol
+			return symbol
+		}
+
+		if(left is DotNode) {
+			val namespace = left.resolveSymbol() as? Namespace ?: error()
+			val symbol = namespace.symbols[right.name] ?: error()
+			right.symbol = symbol
+			return symbol
+		}
+
+		error()
+	}
+
+
+
 	private fun AstNode.resolveImmRec(): Long {
 		if(this is UnaryNode)  return op.calculate(node.resolveImmRec())
 		if(this is IntNode)    return value
 		if(this is StringNode) return resolveStringImm(value)
 
-		if(this is BinaryNode) {
-			return op.calculate(left.resolveImmRec(), right.resolveImmRec())
-/*			val namespace = left.resolveNamespace()
-			val name = (right as? SymNode)?.name ?: error()
-			val symbol = namespace.symbols[name] as? IntSymbol ?: error()
-			right.symbol = symbol
-			return symbol.value*/
-		}
+		if(this is DotNode)    return (resolveSymbol() as? IntSymbol)?.value ?: error()
+		if(this is BinaryNode) return op.calculate(left.resolveImmRec(), right.resolveImmRec())
 
 		if(this is SymNode) {
 			val symbol = symbols[name] ?: error()
@@ -646,7 +661,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun assemble(node: InstructionNode) {
+	private fun assemble(node: InsNode) {
 		when {
 			node.op1 == null -> assemble0()
 			node.op2 == null -> assemble1(node)
@@ -663,7 +678,7 @@ class Assembler(parserResult: ParserResult) {
 	}
 
 
-	private fun assemble1(node: InstructionNode) {
+	private fun assemble1(node: InsNode) {
 		val op1 = node.op1
 
 		if(op1 is RegNode) {
@@ -679,7 +694,7 @@ class Assembler(parserResult: ParserResult) {
 
 			if(importSymbol != null) {
 				encode1M(Operands.M, MemNode(BIT64, op1), 0)
-			} else if(Specifier.REL8 in group && ((!hasImmReloc && node.shortImm) || Specifier.REL32 !in group)) {
+			} else if(Specifier.REL8 in group && ((!hasImmReloc && node.modifier == Modifier.SHORT) || Specifier.REL32 !in group)) {
 				encodeNone(Operands.REL8)
 				writeRel8(op1, imm)
 			} else if(Specifier.REL32 in group) {
@@ -702,7 +717,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun assemble2R(node: InstructionNode) {
+	private fun assemble2R(node: InsNode) {
 		val op1 = (node.op1 as RegNode).value
 		val op2 = node.op2
 		val width = op1.width
@@ -749,7 +764,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun assemble2M(node: InstructionNode) {
+	private fun assemble2M(node: InsNode) {
 		val op1 = node.op1 as MemNode
 		val op2 = node.op2!!
 
@@ -780,7 +795,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private val customEncodings: Map<Mnemonic, (InstructionNode) -> Unit> = mapOf(
+	private val customEncodings: Map<Mnemonic, (InsNode) -> Unit> = mapOf(
 		Mnemonic.IMUL   to ::customEncodeIMUL,
 		Mnemonic.XCHG   to ::customEncodeXCHG,
 		Mnemonic.MOV    to ::customEncodeMOV,
@@ -801,7 +816,7 @@ class Assembler(parserResult: ParserResult) {
 	 * EF66  OUT  DX_AX
 	 * EF    OUT  DX_EAX
 	 */
-	private fun customEncodeOUT(node: InstructionNode) {
+	private fun customEncodeOUT(node: InsNode) {
 		if(node.op3 != null) error()
 		if(node.op2 !is RegNode) error()
 		val op2 = node.op2.value
@@ -842,7 +857,7 @@ class Assembler(parserResult: ParserResult) {
 	 * ED66  IN  AX_DX
 	 * ED    IN  EAX_DX
 	 */
-	private fun customEncodeIN(node: InstructionNode) {
+	private fun customEncodeIN(node: InsNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
 		val op1 = node.op1.value
@@ -879,7 +894,7 @@ class Assembler(parserResult: ParserResult) {
 	 *     BE0F  MOVSX   R_RM8   NO8
 	 *     BF0F  MOVSX   R_RM16  NO816
 	 */
-	private fun customEncodeMOVSX(node: InstructionNode) {
+	private fun customEncodeMOVSX(node: InsNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
 
@@ -906,7 +921,7 @@ class Assembler(parserResult: ParserResult) {
 	 *     B60F  MOVZX   R_RM8   NO8
 	 *     B70F  MOVZX   R_RM16  NO816
 	 */
-	private fun customEncodeMOVZX(node: InstructionNode) {
+	private fun customEncodeMOVZX(node: InsNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
 
@@ -934,7 +949,7 @@ class Assembler(parserResult: ParserResult) {
 	 *     63    MOVSXD  R32_RM32
 	 *     63    MOVSXD  R64_RM32  REX.W
 	 */
-	private fun customEncodeMOVSXD(node: InstructionNode) {
+	private fun customEncodeMOVSXD(node: InsNode) {
 		if(node.op3 != null) error()
 		if(node.op1 !is RegNode) error()
 		val op1 = node.op1.value
@@ -970,7 +985,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun customEncodeIMUL(node: InstructionNode) {
+	private fun customEncodeIMUL(node: InsNode) {
 		if(node.op2 == null || node.op3 == null) assemble(node)
 		if(node.op4 != null) error()
 
@@ -1012,7 +1027,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun customEncodeMOV(node: InstructionNode) {
+	private fun customEncodeMOV(node: InsNode) {
 		if(node.op3 != null) error()
 
 		if(node.op1 is RegNode && node.op2 is ImmNode) {
@@ -1029,7 +1044,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun customEncodeXCHG(node: InstructionNode) {
+	private fun customEncodeXCHG(node: InsNode) {
 		when {
 			node.op3 != null        -> error()
 			node.op1 !is RegNode ||

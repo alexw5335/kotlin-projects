@@ -13,35 +13,6 @@ import kotlin.system.measureTimeMillis
 
 fun main() {
 	//link()
-	test1()
-}
-
-
-val bytes = byteArrayOf(123,123,123,34,1,1,2,54,56,2,3,56,76,4,23,12,1,2,32,5,34,23,21,43,3,2,12,35,2)
-
-
-fun test2() {
-	val writer = BinaryWriter()
-	measureTimeMillis {
-		for(i in 0 until 1000) {
-			writer.pos = 0
-			for(j in 0 until 100000)
-				writer.bytes(bytes)
-		}
-	}.also(::println)
-}
-
-
-
-fun test1() {
-	val writer = NativeWriter()
-	measureTimeMillis {
-		for(i in 0 until 1000) {
-			writer.pos = 0
-			for(j in 0 until 100000)
-				writer.bytes(bytes)
-		}
-	}.also(::println)
 }
 
 

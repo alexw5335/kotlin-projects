@@ -1,70 +1,88 @@
 package assembler
 
+
+
 sealed interface AstNode
 
-class LabelNode(val symbol: LabelSymbol) : AstNode {
-	override fun toString() = "label ${symbol.name}"
-}
+class LabelNode(val symbol: LabelSymbol) : AstNode
 
-class StringNode(val value: String) : AstNode {
-	override fun toString() = value
-}
+class StringNode(val value: String) : AstNode
 
-class IntNode(val value: Long) : AstNode {
-	override fun toString() = "$value"
-}
+class IntNode(val value: Long) : AstNode
 
-class UnaryNode(val op: UnaryOp, val node: AstNode) : AstNode {
-	override fun toString() = "${op.symbol}${node}"
-}
+class UnaryNode(val op: UnaryOp, val node: AstNode) : AstNode
 
-class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstNode {
-	override fun toString() = "($left ${op.symbol} $right)"
-}
+class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstNode
 
-class DotNode(val left: AstNode, val right: SymNode) : AstNode {
-	override fun toString() = "($left.$right)"
-}
+class DotNode(val left: AstNode, val right: SymNode) : AstNode
 
-class RegNode(val value: Register) : AstNode {
-	override fun toString() = "$value"
-}
+class RegNode(val value: Register) : AstNode
 
-class ImmNode(val value: AstNode) : AstNode {
-	override fun toString() = "$value"
-}
+class ImmNode(val value: AstNode) : AstNode
 
-class MemNode(val width: Width?, val value: AstNode) : AstNode {
-	override fun toString() = "$width [$value]"
-}
+class MemNode(val width: Width?, val value: AstNode) : AstNode
 
-class SymNode(val name: Interned, var symbol: Symbol? = null) : AstNode {
-	override fun toString() = "$name"
-}
+class SymNode(val name: Intern, var symbol: Symbol? = null) : AstNode
 
-class ConstNode(val name: Interned, val value: AstNode): AstNode {
-	override fun toString() = "const $name = $value"
-}
-
-class EnumEntry(val name: Interned)
-
-class EnumNode(val name: Interned, val entries: List<EnumEntry>): AstNode
-
-class InstructionNode(
+class InsNode(
 	val mnemonic : Mnemonic,
+	val modifier : Modifier?,
 	val shortImm : Boolean,
 	val op1      : AstNode?,
 	val op2      : AstNode?,
 	val op3      : AstNode?,
 	val op4      : AstNode?
-) : AstNode {
-	override fun toString() = "$mnemonic $op1, $op2, $op3, $op4"
-}
+) : AstNode
 
-class ResNode(val symbol: ResSymbol, val size: Int) : AstNode {
-	override fun toString() = "var $symbol res $size"
-}
+class ResNode(val symbol: ResSymbol, val size: Int) : AstNode
 
-class VarNode(val symbol: VarSymbol, val componentsAndWidths: List<Pair<Width, List<AstNode>>>) : AstNode {
-	override fun toString() = "var $symbol..."
+class VarNode(val symbol: VarSymbol, val componentsAndWidths: List<Pair<Width, List<AstNode>>>) : AstNode
+
+
+
+val AstNode.printableString: String get() = when(this) {
+	is LabelNode  -> "label ${symbol.name}"
+	is StringNode -> value
+	is IntNode    -> value.toString()
+	is UnaryNode  -> "${op.symbol}${node.printableString}"
+	is BinaryNode -> "(${left.printableString} ${op.symbol} ${right.printableString}"
+	is DotNode    -> "(${left.printableString}.${right.printableString}"
+	is RegNode    -> value.string
+	is ImmNode    -> value.printableString
+	is MemNode    -> "$width [${value.printableString}]"
+	is SymNode    -> "$name"
+	is ResNode    -> "var ${symbol.name} res $size"
+
+	is VarNode -> buildString {
+		append("var ")
+		append(symbol.name)
+		for((width, components) in componentsAndWidths) {
+			append("\n\t")
+			append(width.varString)
+			append(' ')
+			for((i, c) in components.withIndex()) {
+				append(c.printableString)
+				if(i < components.size - 1) append(", ")
+			}
+		}
+	}
+
+	is InsNode -> buildString {
+		append(mnemonic.string)
+		if(modifier != null) { append(':'); append(modifier.string) }
+		if(op1 == null) return@buildString
+		append(' ')
+		append(op1.printableString)
+		if(op2 == null) return@buildString
+		append(", ")
+		append(op2.printableString)
+		if(op3 == null) return@buildString
+		append(", ")
+		append(op3.printableString)
+		if(op4 == null) return@buildString
+		append(", ")
+		append(op4.printableString)
+	}
+
+	else -> toString()
 }

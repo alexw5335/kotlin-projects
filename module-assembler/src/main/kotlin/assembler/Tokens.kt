@@ -12,7 +12,7 @@ data class CharToken(val value: Char) : Token
 
 data class StringToken(val value: String) : Token
 
-data class IdToken(val value: Interned) : Token
+data class IdToken(val value: Intern) : Token
 
 
 
@@ -47,5 +47,36 @@ enum class SymbolToken(
 	RIGHT_BRACE   ("}"),
 	PERIOD        ("."),
 	REFERENCE     ("::", firstSymbol = COLON);
+
+}
+
+
+
+
+enum class Modifier(val prefix: Int) {
+
+	SHORT(0),
+	REP(0xF3),
+	REPE(0xF3),
+	REPZ(0xF3),
+	REPNE(0xF2),
+	REPNZ(0xF2),
+	LOCK(0xF0);
+
+	val string = name.lowercase()
+
+}
+
+
+
+enum class Keyword {
+
+	CONST,
+	VAR,
+	IMPORT,
+	ENUM,
+	NAMESPACE;
+
+	val string = name.lowercase()
 
 }

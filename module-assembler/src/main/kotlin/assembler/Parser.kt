@@ -52,17 +52,17 @@ class Parser(lexerResult: LexerResult) {
 
 
 
-	private fun parseId(interned: Interned) {
+	private fun parseId(intern: Intern) {
 		if(tokens[pos] == SymbolToken.COLON) {
 			pos++
-			val symbol = LabelSymbol(interned, Section.TEXT)
+			val symbol = LabelSymbol(intern, Section.TEXT)
 			nodes.add(LabelNode(symbol))
-			symbols[interned] = symbol
+			symbols[intern] = symbol
 			return
 		}
 
-		if(interned.type == InternType.KEYWORD) {
-			when(Intern.keyword(interned)) {
+		if(intern.type == InternType.KEYWORD) {
+			when(Interning.keyword(intern)) {
 				Keyword.CONST     -> parseConst()
 				Keyword.VAR       -> parseVar()
 				Keyword.IMPORT    -> parseImport()
@@ -73,12 +73,18 @@ class Parser(lexerResult: LexerResult) {
 			return
 		}
 
-		if(interned.type == InternType.MNEMONIC) {
-			nodes.add(parseInstruction(Intern.mnemonic(interned)))
+		if(intern.type == InternType.MODIFIER) {
+			val modifier = Interning.modifier(intern)
+			val mnemonic = Interning.mnemonic((tokens[pos++] as? IdToken)?.value ?: error("Expecting instruction"))
+			nodes.add(parseInstruction(mnemonic, modifier))
+		}
+
+		if(intern.type == InternType.MNEMONIC) {
+			nodes.add(parseInstruction(Interning.mnemonic(intern), null))
 			return
 		}
 
-		error("Unexpected identifier: ${interned.name}")
+		error("Unexpected identifier: ${intern.name}")
 	}
 
 
@@ -113,7 +119,7 @@ class Parser(lexerResult: LexerResult) {
 		var width: Width? = null
 
 		if(token is IdToken && token.value.type == InternType.WIDTH) {
-			width = Intern.width(token.value)
+			width = Interning.width(token.value)
 			if(tokens[pos + 1] == SymbolToken.LEFT_BRACKET)
 				token = tokens[++pos]
 		}
@@ -134,36 +140,36 @@ class Parser(lexerResult: LexerResult) {
 
 
 
-	private fun parseInstruction(mnemonic: Mnemonic): InstructionNode {
+	private fun parseInstruction(mnemonic: Mnemonic, modifier: Modifier?): InsNode {
 		val token = tokens[pos]
 		var shortImm = false
 
-		if(token is IdToken && token.value == Intern.short) {
+		if(token is IdToken && token.value == Interns.SHORT) {
 			shortImm = true
 			pos++
 		}
 
 		if(newlines[pos] || tokens[pos] == EndToken)
-			return InstructionNode(mnemonic, shortImm, null, null, null, null)
+			return InsNode(mnemonic, modifier, shortImm, null, null, null, null)
 
 		val op1 = parseOperand()
 		if(tokens[pos] != SymbolToken.COMMA)
-			return InstructionNode(mnemonic, shortImm, op1, null, null, null)
+			return InsNode(mnemonic, modifier, shortImm, op1, null, null, null)
 		pos++
 
 		val op2 = parseOperand()
 		if(tokens[pos] != SymbolToken.COMMA)
-			return InstructionNode(mnemonic, shortImm, op1, op2, null, null)
+			return InsNode(mnemonic, modifier, shortImm, op1, op2, null, null)
 		pos++
 
 		val op3 = parseOperand()
 		if(tokens[pos] != SymbolToken.COMMA)
-			return InstructionNode(mnemonic, shortImm, op1, op2, op3, null)
+			return InsNode(mnemonic, modifier, shortImm, op1, op2, op3, null)
 		pos++
 
 		val op4 = parseOperand()
 		expectStatementEnd()
-		return InstructionNode(mnemonic, shortImm, op1, op2, op3, op4)
+		return InsNode(mnemonic, modifier, shortImm, op1, op2, op3, op4)
 	}
 
 
@@ -172,7 +178,7 @@ class Parser(lexerResult: LexerResult) {
 		val name = id()
 		var initialiser = id()
 
-		if(initialiser == Intern.res) {
+		if(initialiser == Interns.RES) {
 			val size = readExpression().resolveInt()
 			val symbol = ResSymbol(name, Section.BSS)
 			symbols[name] = symbol
@@ -186,7 +192,7 @@ class Parser(lexerResult: LexerResult) {
 
 		while(true) {
 			if(initialiser.type != InternType.VAR_WIDTH) break
-			val width = Intern.varWidth(initialiser)
+			val width = Interning.varWidth(initialiser)
 			val components = ArrayList<AstNode>()
 
 			while(true) {
@@ -276,7 +282,7 @@ class Parser(lexerResult: LexerResult) {
 		if(token is IdToken) {
 			val id = token.value
 			if(id.type == InternType.REGISTER)
-				return RegNode(Intern.register(id))
+				return RegNode(Interning.register(id))
 			return SymNode(id)
 		}
 

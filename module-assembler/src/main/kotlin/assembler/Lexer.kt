@@ -2,8 +2,10 @@ package assembler
 
 import core.collection.BitList
 
-class Lexer(private val chars: CharArray) {
+class Lexer(chars: CharArray) {
 
+
+	private val chars = chars.copyOf(chars.size + 4)
 
 	private var pos = 0
 
@@ -55,7 +57,7 @@ class Lexer(private val chars: CharArray) {
 				val secondChar = s.string[1]
 
 				charMap[firstChar] = {
-					if(pos < chars.size && chars[pos] == secondChar) {
+					if(chars[pos] == secondChar) {
 						tokens.add(s)
 						pos++
 					} else
@@ -192,7 +194,7 @@ class Lexer(private val chars: CharArray) {
 			pos++
 		}
 
-		tokens.add(IdToken(Intern.addAndGet(String(chars, startPos, pos - startPos))))
+		tokens.add(IdToken(Interning.addAndGet(String(chars, startPos, pos - startPos))))
 	}
 
 

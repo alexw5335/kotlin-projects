@@ -1,8 +1,6 @@
 package core.memory
 
-import core.swapEndian16
-import core.swapEndian32
-import core.swapEndian64
+import core.swapEndian
 import java.nio.charset.Charset
 import kotlin.math.max
 import kotlin.math.min
@@ -136,46 +134,45 @@ class NativeWriter(bytes: ByteArray) {
 
 	fun i16BE(value: Int) {
 		ensureCapacity(2)
-		Unsafe.instance.putShort(bytes, pos + 16L, value.swapEndian16.toShort())
+		Unsafe.instance.putShort(bytes, pos + 16L, value.toShort().swapEndian)
 		pos += 2
 	}
 
-
 	fun i32BE(value: Int) {
 		ensureCapacity(4)
-		Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian32)
+		Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian)
 		pos += 4
 	}
 
 	fun i64BE(value: Long) {
 		ensureCapacity(8)
-		Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian64)
+		Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian)
 		pos += 8
 	}
 
 	fun f32BE(value: Float) {
 		ensureCapacity(4)
-		Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian32)
+		Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian)
 		pos += 4
 	}
 
 	fun f64BE(value: Double) {
 		ensureCapacity(8)
-		Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian64)
+		Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian)
 		pos += 8
 	}
 
 
 
-	fun i16BE(pos: Int, value: Int) = Unsafe.instance.putShort(bytes, pos + 16L, value.swapEndian16.toShort())
+	fun i16BE(pos: Int, value: Int) = Unsafe.instance.putShort(bytes, pos + 16L, value.toShort().swapEndian)
 
-	fun i32BE(pos: Int, value: Int) = Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian32)
+	fun i32BE(pos: Int, value: Int) = Unsafe.instance.putInt(bytes, pos + 16L, value.swapEndian)
 
-	fun i64BE(pos: Int, value: Long) = Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian64)
+	fun i64BE(pos: Int, value: Long) = Unsafe.instance.putLong(bytes, pos + 16L, value.swapEndian)
 
-	fun f32BE(pos: Int, value: Float) = Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian32)
+	fun f32BE(pos: Int, value: Float) = Unsafe.instance.putInt(bytes, pos + 16L, value.toRawBits().swapEndian)
 
-	fun f64BE(pos: Int, value: Double) = Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian64)
+	fun f64BE(pos: Int, value: Double) = Unsafe.instance.putLong(bytes, pos + 16L, value.toRawBits().swapEndian)
 
 
 

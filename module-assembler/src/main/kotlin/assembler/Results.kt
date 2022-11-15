@@ -13,7 +13,7 @@ data class Relocation(
 )
 
 
-class DllImport(val dll: Interned, val symbol: ImportSymbol)
+class DllImport(val dll: Intern, val symbol: ImportSymbol)
 
 
 
