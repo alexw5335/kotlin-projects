@@ -5,6 +5,8 @@ package assembler
 import core.Core
 import core.binary.BinaryWriter
 import core.memory.NativeWriter
+import java.io.File
+import java.io.RandomAccessFile
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.measureTimeMillis
@@ -12,6 +14,7 @@ import kotlin.system.measureTimeMillis
 
 
 fun main() {
+	Compiler.create(Paths.get("test/src")).compile()
 	//link()
 }
 

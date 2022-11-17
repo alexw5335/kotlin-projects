@@ -694,7 +694,7 @@ class Assembler(parserResult: ParserResult) {
 
 			if(importSymbol != null) {
 				encode1M(Operands.M, MemNode(BIT64, op1), 0)
-			} else if(Specifier.REL8 in group && ((!hasImmReloc && node.modifier == Modifier.SHORT) || Specifier.REL32 !in group)) {
+			} else if(Specifier.REL8 in group && ((!hasImmReloc && node.shortImm) || Specifier.REL32 !in group)) {
 				encodeNone(Operands.REL8)
 				writeRel8(op1, imm)
 			} else if(Specifier.REL32 in group) {

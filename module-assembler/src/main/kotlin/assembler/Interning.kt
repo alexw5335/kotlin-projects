@@ -17,7 +17,7 @@ enum class InternType {
 	VAR_WIDTH,
 	MNEMONIC,
 	REGISTER,
-	MODIFIER;
+	Prefix;
 }
 
 
@@ -43,7 +43,7 @@ object Interning {
 
 	private val mnemonics = Mnemonic.values()
 
-	private val modifiers = Modifier.values()
+	private val prefixes = Prefix.values()
 
 
 
@@ -57,7 +57,7 @@ object Interning {
 
 	private val mnemonicOffset: Int
 
-	private val modifierOffset: Int
+	private val prefixOffset: Int
 
 
 
@@ -71,7 +71,7 @@ object Interning {
 
 	fun mnemonic(intern: Intern) = mnemonics[intern.id - mnemonicOffset]
 
-	fun modifier(intern: Intern) = modifiers[intern.id - modifierOffset]
+	fun prefix(intern: Intern) = prefixes[intern.id - prefixOffset]
 
 
 
@@ -96,9 +96,9 @@ object Interning {
 		for(m in mnemonics)
 			add(InternType.MNEMONIC, m.string)
 
-		modifierOffset = count
-		for(m in modifiers)
-			add(InternType.MODIFIER, m.string)
+		prefixOffset = count
+		for(m in prefixes)
+			add(InternType.Prefix, m.string)
 	}
 
 

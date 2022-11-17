@@ -73,8 +73,8 @@ class Parser(lexerResult: LexerResult) {
 			return
 		}
 
-		if(intern.type == InternType.MODIFIER) {
-			val modifier = Interning.modifier(intern)
+		if(intern.type == InternType.Prefix) {
+			val modifier = Interning.prefix(intern)
 			val mnemonic = Interning.mnemonic((tokens[pos++] as? IdToken)?.value ?: error("Expecting instruction"))
 			nodes.add(parseInstruction(mnemonic, modifier))
 		}
@@ -140,7 +140,7 @@ class Parser(lexerResult: LexerResult) {
 
 
 
-	private fun parseInstruction(mnemonic: Mnemonic, modifier: Modifier?): InsNode {
+	private fun parseInstruction(mnemonic: Mnemonic, prefix: Prefix?): InsNode {
 		val token = tokens[pos]
 		var shortImm = false
 
@@ -150,26 +150,26 @@ class Parser(lexerResult: LexerResult) {
 		}
 
 		if(newlines[pos] || tokens[pos] == EndToken)
-			return InsNode(mnemonic, modifier, shortImm, null, null, null, null)
+			return InsNode(mnemonic, prefix, shortImm, null, null, null, null)
 
 		val op1 = parseOperand()
 		if(tokens[pos] != SymbolToken.COMMA)
-			return InsNode(mnemonic, modifier, shortImm, op1, null, null, null)
+			return InsNode(mnemonic, prefix, shortImm, op1, null, null, null)
 		pos++
 
 		val op2 = parseOperand()
 		if(tokens[pos] != SymbolToken.COMMA)
-			return InsNode(mnemonic, modifier, shortImm, op1, op2, null, null)
+			return InsNode(mnemonic, prefix, shortImm, op1, op2, null, null)
 		pos++
 
 		val op3 = parseOperand()
 		if(tokens[pos] != SymbolToken.COMMA)
-			return InsNode(mnemonic, modifier, shortImm, op1, op2, op3, null)
+			return InsNode(mnemonic, prefix, shortImm, op1, op2, op3, null)
 		pos++
 
 		val op4 = parseOperand()
 		expectStatementEnd()
-		return InsNode(mnemonic, modifier, shortImm, op1, op2, op3, op4)
+		return InsNode(mnemonic, prefix, shortImm, op1, op2, op3, op4)
 	}
 
 

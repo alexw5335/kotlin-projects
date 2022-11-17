@@ -2,10 +2,8 @@ package assembler
 
 import core.collection.BitList
 
-class Lexer(chars: CharArray) {
+class Lexer(private val chars: CharArray) {
 
-
-	private val chars = chars.copyOf(chars.size + 4)
 
 	private var pos = 0
 
@@ -20,6 +18,9 @@ class Lexer(chars: CharArray) {
 
 
 	fun lex(): LexerResult {
+		if(chars.size < 2 || chars[chars.size - 1] != Char(0) || chars[chars.size - 2] != Char(0))
+			error("File must end with at least 2 null characters")
+
 		while(true) {
 			val char = chars[pos++]
 			if(char.code == 0) break
@@ -29,63 +30,6 @@ class Lexer(chars: CharArray) {
 		for(i in 0 until 4) tokens.add(EndToken)
 		newlines.ensureBitCapacity(tokens.size)
 		return LexerResult(tokens, newlines)
-	}
-
-
-
-	companion object {
-
-		private val charMap = arrayOfNulls<Lexer.() -> Unit>(255)
-
-		private operator fun<T> Array<T>.set(char: Char, value: T) = set(char.code, value)
-
-		init {
-			charMap['\n'] = { newlines.set(tokens.size) }
-			charMap[' ']  = { }
-			charMap['\t'] = { }
-			charMap['\r'] = { }
-
-			for(s in SymbolToken.values()) {
-				val firstChar = s.string[0]
-
-				if(s.string.length == 1) {
-					charMap[firstChar] = { tokens.add(s)}
-					continue
-				}
-
-				val firstSymbol = s.firstSymbol ?: error("Invalid symbol")
-				val secondChar = s.string[1]
-
-				charMap[firstChar] = {
-					if(chars[pos] == secondChar) {
-						tokens.add(s)
-						pos++
-					} else
-						tokens.add(firstSymbol)
-				}
-			}
-
-			charMap['"'] = Lexer::resolveDoubleApostrophe
-			charMap['\''] = Lexer::resolveSingleApostrophe
-			charMap['/'] = Lexer::resolveSlash
-
-			for(i in 65..90)
-				charMap[i] = Lexer::idStart
-
-			for(i in 97..122)
-				charMap[i] = Lexer::idStart
-
-			charMap['_'] = Lexer::idStart
-
-			charMap['0'] = Lexer::zero
-
-			for(i in 49..57)
-				charMap[i] = Lexer::digit
-
-			for(i in charMap.indices)
-				if(charMap[i] == null)
-					charMap[i] = { error("Invalid char code: $i") }
-		}
 	}
 
 
@@ -274,6 +218,63 @@ class Lexer(chars: CharArray) {
 
 		if(chars[pos++] != '\'')
 			error("Unterminated char literal")
+	}
+
+
+
+	companion object {
+
+		private val charMap = arrayOfNulls<Lexer.() -> Unit>(255)
+
+		private operator fun<T> Array<T>.set(char: Char, value: T) = set(char.code, value)
+
+		init {
+			charMap['\n'] = { newlines.set(tokens.size) }
+			charMap[' ']  = { }
+			charMap['\t'] = { }
+			charMap['\r'] = { }
+
+			for(s in SymbolToken.values()) {
+				val firstChar = s.string[0]
+
+				if(s.string.length == 1) {
+					charMap[firstChar] = { tokens.add(s)}
+					continue
+				}
+
+				val firstSymbol = s.firstSymbol ?: error("Invalid symbol")
+				val secondChar = s.string[1]
+
+				charMap[firstChar] = {
+					if(chars[pos] == secondChar) {
+						tokens.add(s)
+						pos++
+					} else
+						tokens.add(firstSymbol)
+				}
+			}
+
+			charMap['"'] = Lexer::resolveDoubleApostrophe
+			charMap['\''] = Lexer::resolveSingleApostrophe
+			charMap['/'] = Lexer::resolveSlash
+
+			for(i in 65..90)
+				charMap[i] = Lexer::idStart
+
+			for(i in 97..122)
+				charMap[i] = Lexer::idStart
+
+			charMap['_'] = Lexer::idStart
+
+			charMap['0'] = Lexer::zero
+
+			for(i in 49..57)
+				charMap[i] = Lexer::digit
+
+			for(i in charMap.indices)
+				if(charMap[i] == null)
+					charMap[i] = { error("Invalid char code: $i") }
+		}
 	}
 
 

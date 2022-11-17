@@ -53,9 +53,8 @@ enum class SymbolToken(
 
 
 
-enum class Modifier(val prefix: Int) {
+enum class Prefix(val value: Int) {
 
-	SHORT(0),
 	REP(0xF3),
 	REPE(0xF3),
 	REPZ(0xF3),
