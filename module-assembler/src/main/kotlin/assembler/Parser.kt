@@ -17,8 +17,6 @@ class Parser(lexerResult: LexerResult) {
 
 	private var symbols = globalSymbols
 
-	private val imports = ArrayList<DllImport>()
-
 	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos] || tokens[pos] is SymbolToken
 
 	private fun expectStatementEnd() { if(!atStatementEnd()) error("Expecting statement end") }
@@ -29,11 +27,28 @@ class Parser(lexerResult: LexerResult) {
 
 	private var namespace: Namespace? = null
 
+	private val namespaces = ArrayList<Namespace>()
+
+	private val namespaceImports = ArrayList<Intern>()
+
+
+
+	private fun<T : Symbol> T.add(): T {
+		symbols[name] = this
+		return this
+	}
+
+
+
+	private fun AstNode.add() {
+		nodes.add(this)
+	}
+
 
 
 	fun parse(): ParserResult {
 		parseLevel(isTopLevel = true)
-		return ParserResult(nodes, symbols, imports)
+		return ParserResult(nodes, symbols)
 	}
 
 
@@ -66,17 +81,17 @@ class Parser(lexerResult: LexerResult) {
 				Keyword.CONST     -> parseConst()
 				Keyword.VAR       -> parseVar()
 				Keyword.IMPORT    -> parseImport()
-				Keyword.ENUM      -> parseEnum()
-				Keyword.NAMESPACE -> parseNamespace()
+				Keyword.ENUM      -> { }
+				Keyword.NAMESPACE -> { }
 			}
 
 			return
 		}
 
-		if(intern.type == InternType.Prefix) {
-			val modifier = Interning.prefix(intern)
+		if(intern.type == InternType.PREFIX) {
+			val prefix = Interning.prefix(intern)
 			val mnemonic = Interning.mnemonic((tokens[pos++] as? IdToken)?.value ?: error("Expecting instruction"))
-			nodes.add(parseInstruction(mnemonic, modifier))
+			nodes.add(parseInstruction(mnemonic, prefix))
 		}
 
 		if(intern.type == InternType.MNEMONIC) {
@@ -89,7 +104,7 @@ class Parser(lexerResult: LexerResult) {
 
 
 
-	private fun parseNamespace() {
+/*	private fun parseNamespace() {
 		val name = id()
 		val namespace = Namespace(name, SymbolTable())
 		symbols[name] = namespace
@@ -98,18 +113,34 @@ class Parser(lexerResult: LexerResult) {
 		pos++
 		parseLevel(false)
 		this.namespace = null
-	}
+	}*/
 
 
 
 	private fun parseImport() {
-		val dll = id()
-		expect(SymbolToken.REFERENCE)
-		val name = id()
-		val symbol = ImportSymbol(name, Section.RDATA)
-		symbols[name] = symbol
-		imports.add(DllImport(dll, symbol))
+		val first = id()
+
+		if(!atStatementEnd() && tokens[pos] == SymbolToken.COLON) {
+			pos++
+			if(first != Interns.DLL) error("Expecting dll import")
+			val dll = id()
+			expect(SymbolToken.PERIOD)
+			val name = id()
+			expectStatementEnd()
+			DllImportNode(ImportSymbol(name, Section.RDATA).add(), dll).add()
+			return
+		}
+
+		val components = ArrayList<Intern>()
+
+		while(true) {
+			if(atStatementEnd() || tokens[pos] != SymbolToken.PERIOD) break
+			pos++
+			components.add(id())
+		}
+
 		expectStatementEnd()
+		ImportNode(components).add()
 	}
 
 
@@ -179,12 +210,10 @@ class Parser(lexerResult: LexerResult) {
 		var initialiser = id()
 
 		if(initialiser == Interns.RES) {
-			val size = readExpression().resolveInt()
+			val size = readExpression()
 			val symbol = ResSymbol(name, Section.BSS)
 			symbols[name] = symbol
-			if(size !in Int.MIN_VALUE..Int.MAX_VALUE)
-				error("Too many bytes reserved")
-			nodes.add(ResNode(symbol, size.toInt()))
+			ResNode(ResSymbol(name, Section.BSS).add(), size).add()
 			return
 		}
 
@@ -210,14 +239,12 @@ class Parser(lexerResult: LexerResult) {
 
 		if(componentsAndWidths.isEmpty()) error("Expecting variable initialiser")
 
-		val symbol = VarSymbol(name, Section.DATA)
-		symbols[name] = symbol
-		nodes.add(VarNode(symbol, componentsAndWidths))
+		VarNode(VarSymbol(name, Section.DATA).add(), componentsAndWidths).add()
 	}
 
 
 
-	private fun parseEnum() {
+/*	private fun parseEnum() {
 		val name = id()
 		expect(SymbolToken.LEFT_BRACE)
 
@@ -239,27 +266,15 @@ class Parser(lexerResult: LexerResult) {
 
 		expect(SymbolToken.RIGHT_BRACE)
 
-		this.symbols.add(Namespace(name, symbols))
-	}
+		Namespace(name, symbols).add()
+	}*/
 
 
 
 	private fun parseConst() {
 		val name = id()
 		expect(SymbolToken.EQUALS)
-		val value = readExpression().resolveInt()
-		val symbol = IntSymbol(name, value)
-		symbols[name] = symbol
-	}
-
-
-
-	private fun AstNode.resolveInt(): Long = when(this) {
-		is IntNode    -> value
-		is UnaryNode  -> op.calculate(node.resolveInt())
-		is BinaryNode -> op.calculate(left.resolveInt(), right.resolveInt())
-		is SymNode    -> (symbols[name] as? IntSymbol)?.value ?: error("Invalid symbol: $name")
-		else          -> error("Invalid constant integer component: $this")
+		ConstNode(IntSymbol(name, 0).add(), readExpression()).add()
 	}
 
 

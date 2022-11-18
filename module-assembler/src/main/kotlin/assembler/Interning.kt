@@ -17,7 +17,7 @@ enum class InternType {
 	VAR_WIDTH,
 	MNEMONIC,
 	REGISTER,
-	Prefix;
+	PREFIX;
 }
 
 
@@ -98,7 +98,7 @@ object Interning {
 
 		prefixOffset = count
 		for(m in prefixes)
-			add(InternType.Prefix, m.string)
+			add(InternType.PREFIX, m.string)
 	}
 
 
@@ -113,5 +113,7 @@ object Interns {
 	val MAIN = Interning.add(InternType.NONE, "main")
 
 	val SHORT = Interning.add(InternType.NONE, "short")
+
+	val DLL = Interning.add(InternType.NONE, "dll")
 
 }

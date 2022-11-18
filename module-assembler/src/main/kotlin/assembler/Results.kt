@@ -26,8 +26,7 @@ class LexerResult(
 
 class ParserResult(
 	val nodes   : List<AstNode>,
-	val symbols : SymbolTable,
-	val imports : List<DllImport>
+	val symbols : SymbolTable
 )
 
 

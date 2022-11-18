@@ -26,7 +26,7 @@ class SymNode(val name: Intern, var symbol: Symbol? = null) : AstNode
 
 class InsNode(
 	val mnemonic : Mnemonic,
-	val prefix : Prefix?,
+	val prefix   : Prefix?,
 	val shortImm : Boolean,
 	val op1      : AstNode?,
 	val op2      : AstNode?,
@@ -34,11 +34,15 @@ class InsNode(
 	val op4      : AstNode?
 ) : AstNode
 
-class ResNode(val symbol: ResSymbol, val size: Int) : AstNode
+class ResNode(val symbol: ResSymbol, val size: AstNode) : AstNode
 
 class VarNode(val symbol: VarSymbol, val componentsAndWidths: List<Pair<Width, List<AstNode>>>) : AstNode
 
 class ConstNode(val symbol: Symbol, val value: AstNode) : AstNode
+
+class DllImportNode(val symbol: Symbol, val dll: Intern) : AstNode
+
+class ImportNode(val components: List<Intern>) : AstNode
 
 
 
