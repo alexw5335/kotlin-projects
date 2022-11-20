@@ -35,7 +35,6 @@ class AssemblerResult(
 	val text        : ByteArray,
 	val data        : ByteArray,
 	val bssSize     : Int,
-	val imports     : List<DllImport>,
 	val relocations : List<Relocation>,
 	val symbols     : SymbolTable,
 )

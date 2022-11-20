@@ -7,5 +7,6 @@ run/
 /test/
 prev/
 *.dll
+/temp/
 
 /module-macro/src/main/resources/output.txt

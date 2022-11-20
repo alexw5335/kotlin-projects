@@ -3,14 +3,11 @@ package assembler
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Stream
-import kotlin.io.path.exists
-import kotlin.io.path.extension
-import kotlin.io.path.isDirectory
-import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.*
 
 
 
-class SrcFile(val path: Path?, val chars: CharArray)
+class SrcFile(val path: Path, val relativePath: Path, val chars: CharArray)
 
 
 
@@ -51,7 +48,7 @@ class Compiler(val srcFiles: List<SrcFile>) {
 			val srcFiles = Files
 				.walk(srcDir)
 				.filter { it.extension == "eyre" }
-				.map { SrcFile(it, Files.readString(it).padded) }
+				.map { SrcFile(it, it.relativeTo(srcDir), Files.readString(it).padded) }
 				.toList()
 
 			return Compiler(srcFiles)

@@ -210,8 +210,8 @@ class Linker(private val assemblerResult: AssemblerResult) {
 		if(assemblerResult.text.isNotEmpty())
 			writeSection(".text", 0x60_00_00_20, assemblerResult.text, 0, Section.TEXT)
 
-		if(assemblerResult.imports.isNotEmpty())
-			writeImports()
+		//if(assemblerResult.imports.isNotEmpty())
+		//	writeImports()
 
 		if(assemblerResult.data.isNotEmpty())
 			writeSection(".data", 0xC0_00_00_40L.toInt(), assemblerResult.data, 0, Section.DATA)
@@ -222,7 +222,7 @@ class Linker(private val assemblerResult: AssemblerResult) {
 
 
 
-	private fun writeImports() {
+	/*private fun writeImports() {
 		val dlls = assemblerResult.imports.associateFlatMap { it.dll }
 		val idtsRva = nextSectionRva
 
@@ -273,7 +273,7 @@ class Linker(private val assemblerResult: AssemblerResult) {
 
 		writeSection(".idata", 0x40_00_00_40, writer.getTrimmedBytes(idtsPos, size), 0, Section.RDATA)
 	}
-
+*/
 
 
 

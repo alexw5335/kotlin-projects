@@ -10,7 +10,7 @@ class Assembler(parserResult: ParserResult) {
 
 	private val symbols = parserResult.symbols
 
-	private val imports = parserResult.imports
+	//private val imports = parserResult.imports
 
 	private fun error(): Nothing = error("Invalid encoding")
 
@@ -41,7 +41,7 @@ class Assembler(parserResult: ParserResult) {
 			when(node) {
 				is LabelNode       -> handleLabelNode(node)
 				is VarNode         -> handleVarNode(node)
-				is ResNode         -> handleResNode(node)
+				//is ResNode         -> handleResNode(node)
 				is InsNode -> handleInstructionNode(node)
 				else               -> error("Invalid node: $node")
 			}
@@ -51,7 +51,6 @@ class Assembler(parserResult: ParserResult) {
 			writer.getTrimmedBytes(),
 			dataWriter.getTrimmedBytes(),
 			bssSize,
-			imports,
 			relocations,
 			symbols
 		)
@@ -97,7 +96,7 @@ class Assembler(parserResult: ParserResult) {
 
 
 
-	private fun handleResNode(node: ResNode) {
+	/*private fun handleResNode(node: ResNode) {
 		val alignment = when(node.size) {
 			1    -> 1
 			2    -> 2
@@ -109,7 +108,7 @@ class Assembler(parserResult: ParserResult) {
 		bssSize = (bssSize + alignment - 1) and -alignment
 		node.symbol.pos = bssSize
 		bssSize += node.size
-	}
+	}*/
 
 
 

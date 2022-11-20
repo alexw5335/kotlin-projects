@@ -25,12 +25,6 @@ class Parser(lexerResult: LexerResult) {
 
 	private fun expect(token: Token) { if(tokens[pos++] != token) error("Expecting $token") }
 
-	private var namespace: Namespace? = null
-
-	private val namespaces = ArrayList<Namespace>()
-
-	private val namespaceImports = ArrayList<Intern>()
-
 
 
 	private fun<T : Symbol> T.add(): T {
