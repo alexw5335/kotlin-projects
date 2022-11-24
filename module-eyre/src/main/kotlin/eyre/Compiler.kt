@@ -16,40 +16,31 @@ class Compiler(private val srcFiles: List<SrcFile>) {
 
 
 	fun compile() {
-		val lexOutputs   = srcFiles.map { Lexer(it).lex() }
-		val parseOutputs = lexOutputs.map { Parser(it, globalNamespace).parse() }
+		val lexOutputs = srcFiles.map { Lexer(it).lex() }
+		val parsers = lexOutputs.map { Parser(it, globalNamespace) }
+		val parseOutputs = parsers.map { it.parse() }
+		for(p in parseOutputs) Resolver(globalNamespace.symbols, p).resolve()
 
-		for(p in parseOutputs) {
-			for(i in p.fileImports) {
-				val path = Paths.get(i.components.joinToString(separator = "/") { it.value } + ".eyre")
-				val file = srcFiles.first { it.relativePath == path }
-				p.file.dependencies.add(file)
-			}
-		}
-
-		fun processDependencies(file: SrcFile) {
-			if(file.parsed) return
-			for(p in file.dependencies)
-				processDependencies(p)
-			// second-stage parsing
-			file.parsed = true
-		}
-
-		for(file in srcFiles)
-			processDependencies(file)
+		for(p in parseOutputs)
+			for(n in p.nodes)
+				println(n.printableString)
 	}
 
 
 
 	companion object {
 
+		fun create(srcDir: Path, fileNames: List<String>): Compiler {
+			val srcFiles = fileNames.map { name ->
+				val path = srcDir.resolve("$name.eyre")
+				val content = Files.readString(path)
+				SrcFile(path, path.relativeTo(srcDir), CharArray(content.length + 4).let(content::toCharArray))
+			}
+
+			return Compiler(srcFiles)
+		}
+
 		fun create(srcDir: Path): Compiler {
-			if(!srcDir.exists())
-				error("Source directory does not exist: $srcDir")
-
-			if(!srcDir.isDirectory())
-				error("Source directory is not a directory: $srcDir")
-
 			val srcFiles = Files
 				.walk(srcDir)
 				.filter { it.extension == "eyre" }

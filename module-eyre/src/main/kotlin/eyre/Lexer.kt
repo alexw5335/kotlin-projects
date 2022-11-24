@@ -205,7 +205,7 @@ class Lexer(private val file: SrcFile) {
 			}
 		}
 
-		tokens.add(StringToken(stringBuilder.toString()))
+		tokens.add(StringToken(Interning.addOrGet(stringBuilder.toString())))
 	}
 
 

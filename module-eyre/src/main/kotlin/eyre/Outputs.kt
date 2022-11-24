@@ -9,10 +9,7 @@ class SrcFile(
 	val path         : Path,
 	val relativePath : Path,
 	val text         : CharArray
-) {
-	val dependencies = ArrayList<SrcFile>()
-	var parsed = false
-}
+)
 
 
 
@@ -26,6 +23,5 @@ class LexOutput(
 
 class ParseOutput(
 	val file        : SrcFile,
-	val nodes       : List<AstNode>,
-	val fileImports : List<FileImportNode>
+	val nodes       : List<AstNode>
 )

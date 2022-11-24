@@ -5,7 +5,7 @@ package eyre
 class Intern(val id: Int, val type: InternType, val value: String) {
 	override fun hashCode() = id
 	override fun equals(other: Any?) = other === this
-	override fun toString() = "($id:$value)"
+	override fun toString() = value
 }
 
 

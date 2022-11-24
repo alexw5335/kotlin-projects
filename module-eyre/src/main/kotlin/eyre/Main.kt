@@ -3,5 +3,7 @@ package eyre
 import java.nio.file.Paths
 
 fun main() {
-	Compiler.create(Paths.get("test/src")).compile()
+	val srcDir = Paths.get("test/src")
+
+	Compiler.create(srcDir, listOf("vulkan", "main")).compile()
 }

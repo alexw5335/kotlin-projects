@@ -12,6 +12,44 @@ class SymbolTable {
 
 	fun add(symbol: Symbol) = map.put(symbol.name, symbol)
 
+	override fun toString() = map.toString()
+
+}
+
+
+
+class SymbolStack {
+
+	private val list = ArrayList<ArrayList<SymbolTable>>()
+
+	private var pos = 0
+
+	private var current = ArrayList<SymbolTable>().also(list::add)
+
+	fun push() {
+		pos++
+		if(pos >= list.size) list.add(ArrayList())
+		current = list[pos]
+		current.clear()
+	}
+
+	fun pop() {
+		pos--
+		if(pos < 0) error("Stack underflow")
+		current = list[pos]
+	}
+
+	fun add(table: SymbolTable) {
+		current.add(table)
+	}
+
+	fun get(intern: Intern): Symbol? {
+		for(tables in list)
+			for(table in tables)
+				table[intern]?.let { return it }
+		return null
+	}
+
 }
 
 
@@ -29,42 +67,14 @@ interface Ref : Symbol {
 
 
 
-class AnonSymbol(
+class IntSymbol(override val name: Intern, var value: Long = 0) :Symbol
+
+
+
+class LabelSymbol(
 	override val name    : Intern,
 	override var section : Section = Section.NONE,
-	override val pos     : Int = 0
-) : Ref
-
-
-
-data class LabelSymbol(
-	override val name    : Intern,
-	override var section : Section = Section.NONE,
-	override var pos     : Int = 0
-) : Ref
-
-
-
-data class ImportSymbol(
-	override val name    : Intern,
-	override var section : Section = Section.NONE,
-	override var pos     : Int = 0
-) : Ref
-
-
-
-data class VarSymbol(
-	override val name    : Intern,
-	override var section : Section = Section.NONE,
-	override var pos     : Int = 0
-) : Ref
-
-
-
-data class ResSymbol(
-	override val name    : Intern,
-	override var section : Section = Section.NONE,
-	override var pos     : Int = 0
+	override var pos     : Int     = 0
 ) : Ref
 
 
