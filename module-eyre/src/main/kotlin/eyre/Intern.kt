@@ -33,15 +33,25 @@ object Interner {
 
 
 
-	private val keywordRange = addRanged(Keyword.values, Keyword::string)
+	private val keywordRange    = addRanged(Keyword.values, Keyword::string)
 
-	private val widthRange = addRanged(Width.values, Width::string)
+	private val widthRange      = addRanged(Width.values, Width::string)
 
-	private val varWidthRange = addRanged(Width.values, Width::varString)
+	private val varWidthRange   = addRanged(Width.values, Width::varString)
 
-	private val registerRange = addRanged(Register.values, Register::string)
+	private val registerRange   = addRanged(Register.values, Register::string)
 
-	private val prefixRange = addRanged(Prefix.values, Prefix::string)
+	private val prefixRange     = addRanged(Prefix.values, Prefix::string)
+
+	private val visibilityRange = addRanged(Visibility.values, Visibility::string)
+
+
+
+	private fun<T> addRanged(elements: Array<T>, block: (T) -> String): IntRange {
+		val range = IntRange(count, count + elements.size)
+		for(e in elements) add(block(e))
+		return range
+	}
 
 
 
@@ -55,6 +65,8 @@ object Interner {
 
 	fun isPrefix(intern: Intern) = intern.id in prefixRange
 
+	fun isVisibility(intern: Intern) = intern.id in visibilityRange
+
 
 
 	fun keyword(intern: Intern) = Keyword.values[intern.id - keywordRange.first]
@@ -67,13 +79,9 @@ object Interner {
 
 	fun prefix(intern: Intern) = Prefix.values[intern.id - prefixRange.first]
 
+	fun visibility(intern: Intern) = Visibility.values[intern.id - visibilityRange.first]
 
 
-	fun<T> addRanged(elements: Array<T>, block: (T) -> String): IntRange {
-		val start = count
-		for(e in elements) add(block(e))
-		return IntRange(start, start + elements.size)
-	}
 
 
 
@@ -98,11 +106,12 @@ object Interns {
 
 	private val String.intern get() = Interner.add(this)
 
-	val RES   = "res"   .intern
-	val MAIN  = "main"  .intern
-	val SHORT = "short" .intern
-	val DLL   = "dll"   .intern
-	val NULL  = "null"  .intern
-	val EMPTY = ""      .intern
+	val RES    = "res"   .intern
+	val MAIN   = "main"  .intern
+	val SHORT  = "short" .intern
+	val DLL    = "dll"   .intern
+	val NULL   = "null"  .intern
+	val EMPTY  = ""      .intern
+	val GLOBAL = "global".intern
 
 }

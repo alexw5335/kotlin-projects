@@ -9,17 +9,38 @@ class Compiler(val srcSet: SrcSet) {
 
 
 
+	private val globalNamespace = Namespace(Interns.GLOBAL, Visibility.PUBLIC, SymbolTable())
+
+
+
 	fun compile() {
-		val lexOutputs = srcSet.files.map { Lexer(it).lex() }
-		val parseOutputs = lexOutputs.map { Parser(it).parse() }
+		for(s in srcSet.files) {
+			s.lexOutput = Lexer(s).lex()
+			s.parseOutput = Parser(s, globalNamespace).parse()
+		}
 
-		for(p in parseOutputs)
-			for(t in p.fileImports)
-				t.array.contentToString().let(::println)
+		for(s in srcSet.files)
+			resolveFile(s)
+	}
 
-		println("test")
-		for(i in srcSet.files)
-			i.relParts.array.contentToString().let(::println)
+
+
+	private fun resolveFile(srcFile: SrcFile) {
+		if(srcFile.resolving)
+			error("Circular dependency found. Currently resolving files: ${srcSet.files.filter { it.resolving }}")
+		else if(srcFile.resolved)
+			return
+
+		srcFile.resolving = true
+
+		for(import in srcFile.parseOutput.fileImports) {
+			val imported = srcSet[import] ?: error("Invalid file import: $import")
+			resolveFile(imported)
+		}
+
+		Resolver(srcFile).resolve()
+		srcFile.resolved = true
+		srcFile.resolving = false
 	}
 
 

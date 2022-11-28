@@ -3,6 +3,8 @@ package eyre
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.extension
+import kotlin.io.path.name
+import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.relativeTo
 
 class SrcSet(val root: Path) {
@@ -14,17 +16,25 @@ class SrcSet(val root: Path) {
 		.map(::createSrcFile)
 		.toList()
 
-	val map: Map<InternArray, SrcFile> = files.associateBy { it.relParts }
+	val map = files.associateBy { it.relParts }
 
 
 
 	private fun createSrcFile(path: Path): SrcFile {
-		val name        = Interner.add(path.fileName.toString())
-		val relPath     = path.relativeTo(root)
-		val relParts    = InternArray(relPath.map(Path::toString))
+		val name = Interner.add(path.nameWithoutExtension)
+		val relPath = path.relativeTo(root)
+		val relNames = relPath.toList()
+
+		val relParts = IntArray(relNames.size) {
+			if(it == relNames.size - 1)
+				name.id
+			else
+				Interner.add(relNames[it].name).id
+		}
+
 		val rawContents = Files.readString(path)
-		val contents    = CharArray(rawContents.length + 4).also(rawContents::toCharArray)
-		return SrcFile(name, path, relPath, relParts, contents)
+		val contents = CharArray(rawContents.length + 4).also(rawContents::toCharArray)
+		return SrcFile(name, path, relPath, InternArray(relParts), contents)
 	}
 
 

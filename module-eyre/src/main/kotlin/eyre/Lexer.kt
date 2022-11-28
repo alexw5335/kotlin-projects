@@ -31,7 +31,7 @@ class Lexer(private val srcFile: SrcFile) {
 
 		for(i in 0 until 4) tokens.add(EndToken)
 		newlines.ensureBitCapacity(tokens.size)
-		return LexOutput(srcFile, tokens, newlines)
+		return LexOutput(tokens, newlines)
 	}
 
 

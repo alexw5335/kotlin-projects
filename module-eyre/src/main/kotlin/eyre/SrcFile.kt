@@ -8,4 +8,10 @@ class SrcFile(
 	val relPath  : Path,
 	val relParts : InternArray,
 	val contents : CharArray
-)
+) {
+	lateinit var lexOutput: LexOutput
+	lateinit var parseOutput: ParseOutput
+	var resolved = false
+	var resolving = false
+	override fun toString() = relPath.toString()
+}
