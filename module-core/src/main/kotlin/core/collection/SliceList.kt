@@ -1,10 +1,15 @@
-package scratch
+package core.collection
 
 class SliceList<T>(
 	private  val list   : List<T>,
 	private  val offset : Int,
 	override val size   : Int
 ) : List<T> {
+
+	init {
+		if(offset < 0 || offset + size > list.size)
+			error("Slice $offset..${offset + size} out of range for list with size ${list.size}")
+	}
 
 	inner class SliceIterator : Iterator<T> {
 		private var pos        = 0
@@ -28,7 +33,12 @@ class SliceList<T>(
 		return false
 	}
 
-	override fun containsAll(elements: Collection<T>) = elements.all(::contains)
+	override fun containsAll(elements: Collection<T>): Boolean {
+		for(e in elements)
+			if(!contains(e))
+				return false
+		return true
+	}
 
 	override fun get(index: Int) = list[offset + index]
 

@@ -1,4 +1,4 @@
-package core
+package core.collection
 
 /**
  * Constructs a map of keys to lists of elements that return the mapped key with the given [mapper].

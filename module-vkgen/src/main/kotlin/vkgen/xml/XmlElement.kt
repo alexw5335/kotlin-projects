@@ -1,4 +1,4 @@
-package core.xml
+package vkgen.xml
 
 class XmlElement(
 	val type     : String,
@@ -22,6 +22,8 @@ class XmlElement(
 
 	fun childText(type: String) = child(type).text ?: error("No text for child '$type' in $this")
 
+	fun childTextOrNull(type: String) = childOrNull(type)?.text
+
 
 
 	/*
@@ -39,6 +41,10 @@ class XmlElement(
 	/*
 	String formatting
 	 */
+
+
+
+	fun print() = printAll()
 
 
 

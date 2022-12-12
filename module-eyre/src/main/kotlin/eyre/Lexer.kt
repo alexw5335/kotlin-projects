@@ -19,7 +19,7 @@ class Lexer(private val srcFile: SrcFile) {
 
 
 
-	fun lex(): LexOutput {
+	fun lex() {
 		if(chars.size < 2 || chars[chars.size - 1] != Char(0) || chars[chars.size - 2] != Char(0))
 			error("File must end with at least 2 null characters")
 
@@ -31,7 +31,8 @@ class Lexer(private val srcFile: SrcFile) {
 
 		for(i in 0 until 4) tokens.add(EndToken)
 		newlines.ensureBitCapacity(tokens.size)
-		return LexOutput(tokens, newlines)
+		srcFile.tokens = tokens
+		srcFile.newlines = newlines
 	}
 
 

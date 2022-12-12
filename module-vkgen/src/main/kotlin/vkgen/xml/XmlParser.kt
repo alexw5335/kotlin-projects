@@ -1,4 +1,4 @@
-package core.xml
+package vkgen.xml
 
 import java.nio.file.Files
 import java.nio.file.Path

@@ -1,5 +1,6 @@
 package eyre
 
+import core.collection.BitList
 import java.nio.file.Path
 
 class SrcFile(
@@ -9,8 +10,9 @@ class SrcFile(
 	val relParts : InternArray,
 	val contents : CharArray
 ) {
-	lateinit var lexOutput: LexOutput
-	lateinit var parseOutput: ParseOutput
+	lateinit var tokens: List<Token>
+	lateinit var newlines: BitList
+	lateinit var nodes: List<AstNode>
 	var resolved = false
 	var resolving = false
 	override fun toString() = relPath.toString()

@@ -2,7 +2,7 @@ package core
 
 /**
  * Not intended as a general-purpose lexer superclass. Contains convenience methods for simple lexers/parsers. The
- * [chars] array is expected to provide a buffer of at 8 null chars at the end of the array.
+ * [chars] array is expected to provide a buffer of at least 2 null chars at the end of the array.
  */
 abstract class ReaderBase(val chars: CharArray) {
 
@@ -78,6 +78,7 @@ abstract class ReaderBase(val chars: CharArray) {
 	fun readNumber(char: Char) = when {
 		pos == chars.size - 1 -> readIntegerDefaultBase()
 		char != '0'           -> readIntegerDefaultBase()
+		chars[pos + 1] == 'd' -> { pos += 2; readDecimal() }
 		chars[pos + 1] == 'b' -> { pos += 2; readBinary() }
 		chars[pos + 1] == 'x' -> { pos += 2; readHex() }
 		else                  -> readIntegerDefaultBase()

@@ -1,7 +1,7 @@
 package rome2
 
 import core.Core
-import core.associateFlatMap
+import core.collection.associateFlatMap
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass

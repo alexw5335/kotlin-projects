@@ -22,6 +22,14 @@ class InternArray(val array: IntArray) {
 
 
 
+
+class InternRange<T>(private val range: IntRange, private val elements: Array<T>) {
+	operator fun contains(intern: Intern) = intern.id in range
+	operator fun get(intern: Intern) = elements[intern.id - range.first]
+}
+
+
+
 object Interner {
 
 
@@ -33,55 +41,27 @@ object Interner {
 
 
 
-	private val keywordRange    = addRanged(Keyword.values, Keyword::string)
+	val keywords     = createRange(Keyword.values, Keyword::string)
 
-	private val widthRange      = addRanged(Width.values, Width::string)
+	val widths       = createRange(Width.values, Width::string)
 
-	private val varWidthRange   = addRanged(Width.values, Width::varString)
+	val varWidths    = createRange(Width.values, Width::varString)
 
-	private val registerRange   = addRanged(Register.values, Register::string)
+	val registers    = createRange(Register.values, Register::string)
 
-	private val prefixRange     = addRanged(Prefix.values, Prefix::string)
+	val prefixes     = createRange(Prefix.values, Prefix::string)
 
-	private val visibilityRange = addRanged(Visibility.values, Visibility::string)
+	val visibilities = createRange(Visibility.values, Visibility::string)
+	
+	val mnemonics    = createRange(Mnemonic.values, Mnemonic::string)
 
 
-
-	private fun<T> addRanged(elements: Array<T>, block: (T) -> String): IntRange {
+	
+	private fun<T> createRange(elements: Array<T>, supplier: (T) -> String): InternRange<T> {
 		val range = IntRange(count, count + elements.size)
-		for(e in elements) add(block(e))
-		return range
+		for(e in elements) add(supplier(e))
+		return InternRange(range, elements)
 	}
-
-
-
-	fun isKeyword(intern: Intern) = intern.id in keywordRange
-
-	fun isWidth(intern: Intern) = intern.id in widthRange
-
-	fun isVarWidth(intern: Intern) = intern.id in varWidthRange
-
-	fun isRegister(intern: Intern) = intern.id in registerRange
-
-	fun isPrefix(intern: Intern) = intern.id in prefixRange
-
-	fun isVisibility(intern: Intern) = intern.id in visibilityRange
-
-
-
-	fun keyword(intern: Intern) = Keyword.values[intern.id - keywordRange.first]
-
-	fun width(intern: Intern) = Width.values[intern.id - widthRange.first]
-
-	fun varWidth(intern: Intern) = Width.values[intern.id - varWidthRange.first]
-
-	fun register(intern: Intern) = Register.values[intern.id - registerRange.first]
-
-	fun prefix(intern: Intern) = Prefix.values[intern.id - prefixRange.first]
-
-	fun visibility(intern: Intern) = Visibility.values[intern.id - visibilityRange.first]
-
-
 
 
 
@@ -107,11 +87,11 @@ object Interns {
 	private val String.intern get() = Interner.add(this)
 
 	val RES    = "res"   .intern
-	val MAIN   = "main"  .intern
 	val SHORT  = "short" .intern
-	val DLL    = "dll"   .intern
 	val NULL   = "null"  .intern
 	val EMPTY  = ""      .intern
 	val GLOBAL = "global".intern
+	val MAIN   = "main"  .intern
+	val ENDP   = "endp"  .intern
 
 }

@@ -8,6 +8,7 @@ enum class BinaryOp(
 	val calculate       : (Long, Long) -> Long
 ) {
 
+	DOT(".",  6, 0, 0,  { _, _ -> 0L }),
 	MUL("*",  4, 0, 0,  Long::times),
 	DIV("/",  4, 0, 0,  Long::div),
 	ADD("+",  3, 1, 1,  Long::plus),

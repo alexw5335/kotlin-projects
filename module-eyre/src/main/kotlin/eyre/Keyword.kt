@@ -6,7 +6,10 @@ enum class Keyword {
 	VAR,
 	IMPORT,
 	ENUM,
-	NAMESPACE;
+	NAMESPACE,
+	FLAGS,
+	STRUCT,
+	PROC;
 
 	val string = name.lowercase()
 

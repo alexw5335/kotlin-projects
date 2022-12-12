@@ -1,5 +1,6 @@
 package eyre
 
+import java.nio.file.Files
 import java.nio.file.Paths
 
 class Compiler(val srcSet: SrcSet) {
@@ -9,38 +10,36 @@ class Compiler(val srcSet: SrcSet) {
 
 
 
-	private val globalNamespace = Namespace(Interns.GLOBAL, Visibility.PUBLIC, SymbolTable())
+	val globalNamespace = Namespace(Interns.GLOBAL, SymTable())
+
+	val dllImports = DllImports()
+
+	var entryPoint: LabelSymbol? = null
 
 
 
 	fun compile() {
 		for(s in srcSet.files) {
-			s.lexOutput = Lexer(s).lex()
-			s.parseOutput = Parser(s, globalNamespace).parse()
+			Lexer(s).lex()
+			Parser(this, s).parse()
 		}
 
-		for(s in srcSet.files)
-			resolveFile(s)
-	}
-
-
-
-	private fun resolveFile(srcFile: SrcFile) {
-		if(srcFile.resolving)
-			error("Circular dependency found. Currently resolving files: ${srcSet.files.filter { it.resolving }}")
-		else if(srcFile.resolved)
-			return
-
-		srcFile.resolving = true
-
-		for(import in srcFile.parseOutput.fileImports) {
-			val imported = srcSet[import] ?: error("Invalid file import: $import")
-			resolveFile(imported)
+		for(s in srcSet.files) {
+			println("FILE ${s.name}\n")
+			for(n in s.nodes) {
+				println(n.printableString)
+			}
+			println("\n\n")
 		}
 
-		Resolver(srcFile).resolve()
-		srcFile.resolved = true
-		srcFile.resolving = false
+		Resolver(srcSet, globalNamespace).resolve()
+
+		val assemblerOutput = Assembler(srcSet).assemble()
+
+		val linkerOutput = Linker(this, assemblerOutput).link()
+
+		Files.write(Paths.get("test.bin"), assemblerOutput.text)
+		Files.write(Paths.get("test.exe"), linkerOutput)
 	}
 
 

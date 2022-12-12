@@ -3,10 +3,8 @@ package core
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.*
-import kotlin.system.exitProcess
 
 @Suppress("Unused", "MemberVisibilityCanBePrivate")
 object Core {
@@ -53,6 +51,11 @@ object Core {
 	fun resourceBufferedReader(path: String) = this::class.java.getResourceAsStream(path)!!.bufferedReader()
 
 	fun readResourceText(path: String) = this::class.java
+		.getResourceAsStream(path)!!
+		.reader()
+		.readText()
+
+	fun readResourceChars(path: String) = this::class.java
 		.getResourceAsStream(path)!!
 		.reader()
 		.readText()

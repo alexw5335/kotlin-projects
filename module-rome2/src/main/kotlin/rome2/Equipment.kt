@@ -5,7 +5,6 @@ package rome2
 
 
 object Armours {
-
 	                                                    //  armour, strongVsMissiles, weakVsMissiles
 	val BRONZE            = armour("bronze")            //  60   0  0
 	val BRONZE_ELITE      = armour("bronze_elite")      //  70   0  0

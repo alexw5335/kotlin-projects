@@ -1,19 +1,22 @@
 package eyre
 
-class Parser(private val srcFile: SrcFile) {
+class Parser(
+	private val compiler : Compiler,
+	private val srcFile  : SrcFile
+) {
 
 
 	private var pos = 0
 
-	private val tokens = srcFile.lexOutput.tokens
+	private val tokens = srcFile.tokens
 
-	private val newlines = srcFile.lexOutput.newlines
-
-	private val fileImports = ArrayList<InternArray>()
+	private val newlines = srcFile.newlines
 
 	private val nodes = ArrayList<AstNode>()
 
-	private var symbols = SymbolTable()
+	private var symbols = compiler.globalNamespace.symbols
+
+	private var currentLabel: LabelSymbol? = null
 
 
 
@@ -43,34 +46,14 @@ class Parser(private val srcFile: SrcFile) {
 
 
 
-	fun parse(): ParseOutput {
-		parseFileNamespace()
+	fun parse() {
 		parseScope(symbols)
-		return ParseOutput(nodes, fileImports)
+		srcFile.nodes = nodes
 	}
 
 
 
-	private fun parseFileNamespace(): Namespace {
-		val keyword = id()
-		if(!Interner.isKeyword(keyword) || Interner.keyword(keyword) != Keyword.NAMESPACE)
-			error("Expecting file namespace as first declaration")
-		val name = id()
-		expectStatementEnd()
-		return Namespace(name, Visibility.PUBLIC, symbols).add()
-	}
-
-
-
-	private fun parseBracedScope(symbols: SymbolTable) {
-		expect(SymToken.LEFT_BRACE)
-		parseScope(symbols)
-		expect(SymToken.RIGHT_BRACE)
-	}
-
-
-
-	private fun parseScope(symbols: SymbolTable) {
+	private fun parseScope(symbols: SymTable) {
 		val prevSymbols = this.symbols
 		this.symbols = symbols
 
@@ -89,28 +72,129 @@ class Parser(private val srcFile: SrcFile) {
 
 
 
+	private fun parseScopeBraced(symbols: SymTable) {
+		expect(SymToken.LEFT_BRACE)
+		parseScope(symbols)
+		expect(SymToken.RIGHT_BRACE)
+	}
+
+
+
 	private fun parseId(intern: Intern) {
-		if(Interner.isKeyword(intern)) {
-			when(Interner.keyword(intern)) {
+		if(tokens[pos] == SymToken.COLON) {
+			pos++
+			val symbol = LabelSymbol(intern, Section.TEXT).add()
+			if(intern == Interns.MAIN) {
+				if(compiler.entryPoint != null)
+					error("Multiple entry points (labels named 'main')")
+				compiler.entryPoint = symbol
+			}
+			LabelNode(symbol).add()
+			return
+		}
+
+		if(intern in Interner.keywords) {
+			when(Interner.keywords[intern]) {
 				Keyword.IMPORT    -> parseImport()
 				Keyword.CONST     -> parseConst()
 				Keyword.NAMESPACE -> parseNamespace()
-				else              -> error("Invalid keyword")
+				Keyword.VAR       -> parseVar()
+				Keyword.ENUM      -> parseEnum(false)
+				Keyword.FLAGS     -> parseEnum(true)
+				Keyword.STRUCT    -> parseStruct()
+				Keyword.PROC      -> parseProc()
+				//else              -> error("Unexpected keyword: $intern")
 			}
+			return
 		}
+
+		if(intern in Interner.prefixes) {
+			val prefix = Interner.prefixes[intern]
+			val mnemonic = Interner.mnemonics[intern]
+			parseInstruction(mnemonic, prefix).add()
+			return
+		}
+
+		if(intern in Interner.mnemonics) {
+			parseInstruction(Interner.mnemonics[intern], null).add()
+			return
+		}
+
+		error("Unexpected identifier: $intern")
+	}
+
+
+
+	private fun parseProc() {
+		val name = id()
+		val symbols = SymTable()
+		val symbol = ProcSymbol(name, Section.TEXT, 0, symbols).add()
+		ProcNode(symbol).add()
+		parseScopeBraced(symbols)
+		ScopeEndNode.add()
+	}
+
+
+
+	private fun parseStruct() {
+		val name = id()
+		val components = ArrayList<Pair<Width, Intern>>()
+		expect(SymToken.LEFT_BRACE)
+		while(true) {
+			val token = tokens[pos++]
+			if(token == SymToken.RIGHT_BRACE) break
+			if(token !is IdToken) error("Invalid struct type: $token")
+			val intern = token.value
+			if(intern !in Interner.widths) error("Invalid struct type: $token")
+			val width = Interner.widths[intern]
+			components.add(width to id())
+			expectStatementEnd()
+		}
+	}
+
+
+
+	private fun parseEnum(isBitmask: Boolean) {
+		val symbols = SymTable()
+		var current = if(isBitmask) 1L else 0L
+
+		val enumName = id()
+
+		expect(SymToken.LEFT_BRACE)
+
+		if(tokens[pos] == SymToken.RIGHT_BRACE) {
+			pos++
+			return
+		}
+
+		val entries = ArrayList<EnumEntryNode>()
+
+		while(true) {
+			val name = id()
+
+			val value = if(tokens[pos] == SymToken.EQUALS) {
+				pos++
+				readExpression()
+			} else {
+				val value = current
+				current += if(isBitmask) current else 1
+				IntNode(value)
+			}
+
+			val symbol = IntSymbol(name, srcFile)
+			symbols += symbol
+			entries += EnumEntryNode(symbol, value)
+
+			if(tokens[pos] != SymToken.COMMA || tokens[++pos] !is IdToken) break
+		}
+
+		EnumNode(Namespace(enumName, symbols).add(), entries).add()
 	}
 
 
 
 	private fun parseImport() {
 		val first = id()
-
-		if(first == Interns.DLL && tokens[pos] == SymToken.REFERENCE) {
-			pos++
-			val dll = id()
-			println("DLL import: $dll")
-			return
-		}
 
 		val startPos = pos
 		var count = 0
@@ -133,9 +217,8 @@ class Parser(private val srcFile: SrcFile) {
 		}
 
 		expectStatementEnd()
-		val internArray = InternArray(components)
-		ImportNode(internArray).add()
-		fileImports.add(internArray)
+		//val internArray = InternArray(components)
+		//ImportNode(internArray).add()
 	}
 
 
@@ -144,7 +227,7 @@ class Parser(private val srcFile: SrcFile) {
 		val name = id()
 		expect(SymToken.EQUALS)
 		val value = readExpression()
-		val symbol = IntSymbol(name, Visibility.PUBLIC, 0).add()
+		val symbol = IntSymbol(name, srcFile, 0, false).add()
 		ConstNode(symbol, value).add()
 	}
 
@@ -158,10 +241,54 @@ class Parser(private val srcFile: SrcFile) {
 		val namespace = if(existing != null)
 			existing as? Namespace ?: error("Symbol naming conflict")
 		else
-			Namespace(name, Visibility.PUBLIC, SymbolTable()).add()
+			Namespace(name, SymTable()).add()
 
 		NamespaceNode(namespace).add()
-		parseBracedScope(namespace.symbolTable)
+
+		if(tokens[pos] != SymToken.LEFT_BRACE) {
+			symbols = namespace.symbols
+		} else {
+			pos++
+			parseScopeBraced(symbols)
+			ScopeEndNode.add()
+		}
+	}
+
+
+
+	private fun parseVar() {
+		val name = id()
+		var initialiser = id()
+
+		if(initialiser == Interns.RES) {
+			val size = readExpression()
+			ResNode(ResSymbol(name, Section.BSS).add(), size).add()
+			return
+		}
+
+		val parts = ArrayList<VarPart>()
+
+		while(true) {
+			if(initialiser !in Interner.varWidths) break
+			val width = Interner.varWidths[initialiser]
+			val values = ArrayList<AstNode>()
+
+			while(true) {
+				val component = readExpression()
+				values.add(component)
+				if(tokens[pos] != SymToken.COMMA) break
+				pos++
+			}
+
+			parts.add(VarPart(width, values))
+			initialiser = (tokens[pos++] as? IdToken)?.value ?: break
+		}
+
+		pos--
+
+		if(parts.isEmpty()) error("Expecting variable initialiser")
+
+		VarNode(VarSymbol(name, Section.DATA).add(), parts).add()
 	}
 
 
@@ -182,8 +309,9 @@ class Parser(private val srcFile: SrcFile) {
 		}
 
 		if(token is IdToken) {
-			if(Interner.isRegister(token.value))
-				return RegNode(Interner.register(token.value))
+			if(token.value in Interner.registers)
+				return RegNode(Interner.registers[token.value])
+			return SymNode(token.value)
 		}
 
 		return when(token) {
@@ -211,16 +339,14 @@ class Parser(private val srcFile: SrcFile) {
 
 			if(token == SymToken.SEMICOLON) break
 
-			if(token == SymToken.PERIOD) {
-				pos++
-				atom = DotNode(atom, readExpression(6) as? SymNode ?: error("Invalid symbol"))
-				continue
-			}
-
 			val op = token.binaryOp ?: break
 			if(op.precedence < precedence) break
 			pos++
-			atom = BinaryNode(op, atom, readExpression(op.precedence + 1))
+
+			atom = if(op != BinaryOp.DOT)
+				BinaryNode(op, atom, readExpression(op.precedence + 1))
+			else
+				DotNode(atom, readExpression(op.precedence + 1) as? SymNode ?: error("Invalid node"))
 		}
 
 		return atom
@@ -238,8 +364,8 @@ class Parser(private val srcFile: SrcFile) {
 		var token = tokens[pos]
 		var width: Width? = null
 
-		if(token is IdToken && Interner.isWidth(token.value)) {
-			width = Interner.width(token.value)
+		if(token is IdToken && token.value in Interner.widths) {
+			width = Interner.widths[token.value]
 			if(tokens[pos + 1] == SymToken.LEFT_BRACKET)
 				token = tokens[++pos]
 		}
@@ -250,6 +376,13 @@ class Parser(private val srcFile: SrcFile) {
 			if(tokens[pos++] != SymToken.RIGHT_BRACKET)
 				error("Expecting ']'")
 			return MemNode(width, value)
+		}
+
+		if(token is IdToken && tokens[pos + 1] == SymToken.REFERENCE) {
+			pos += 2
+			val dllName = Interner.add(token.value.string.lowercase())
+			val symbol = compiler.dllImports.add(dllName, id())
+			return MemNode(Width.BIT64, SymNode(symbol.name, symbol))
 		}
 
 		return when(val node = readExpression()) {

@@ -45,7 +45,7 @@ enum class SymToken(
 	RIGHT_BRACKET ("]"),
 	LEFT_BRACE    ("{"),
 	RIGHT_BRACE   ("}"),
-	PERIOD        ("."),
+	PERIOD        (".", binaryOp = BinaryOp.DOT),
 	REFERENCE     ("::", firstSymbol = COLON);
 
 }

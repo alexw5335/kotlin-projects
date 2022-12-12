@@ -1,6 +1,6 @@
 package core
 
-class LineSpacingFormatter(
+class LineFormatter(
 	private val lines         : List<List<String>>,
 	private val singleSpacing : Int = 1,
 	private val spacings      : Map<Int, Int> = emptyMap()

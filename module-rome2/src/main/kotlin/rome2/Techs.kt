@@ -1,8 +1,12 @@
 package rome2
 
 object Techs {
+
+
 	val ALL = ArrayList<Tech>()
+
 	private fun romanTech(name: String) = tech(name).also(ALL::add)
+
 	val ANIMAL_HUSBANDRY = romanTech("rom_roman_civil_agriculture_animal_husbandry")
 	val DOUBLE_CROPPING = romanTech("rom_roman_civil_agriculture_double_cropping")
 	val IMPROVED_IRRIGATION = romanTech("rom_roman_civil_agriculture_improved_irrigation")
