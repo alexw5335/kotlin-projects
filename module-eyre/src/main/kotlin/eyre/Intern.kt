@@ -35,7 +35,7 @@ object Interner {
 
 	private var count = 0
 
-	private val list = ArrayList<Intern>()
+	val list = ArrayList<Intern>()
 
 	private val map = HashMap<String, Intern>()
 
@@ -66,9 +66,9 @@ object Interner {
 
 
 	fun add(string: String): Intern {
-		val intern = Intern(count++, string)
 		map[string]?.let { return it }
-		list.add(intern)
+		val intern = Intern(count++, string)
+		list += intern
 		map[string] = intern
 		return intern
 	}

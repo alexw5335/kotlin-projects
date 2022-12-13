@@ -43,6 +43,17 @@ class Resolver(private val srcSet: SrcSet, private val globalNamespace: Namespac
 
 			is ScopeEndNode -> stack.pop()
 
+			is ImportNode -> {
+				var symbol = stack.get(node.parts[0])
+
+				for(i in 1 until node.parts.size) {
+					if(symbol !is Namespace) error("Expecting namespace, found: $symbol")
+					symbol = symbol.symbols[node.parts[i]]
+				}
+
+				stack.push()
+			}
+
 			is ResNode -> {
 				resolveSymbols(node.size)
 				val size = node.size.resolveInt()

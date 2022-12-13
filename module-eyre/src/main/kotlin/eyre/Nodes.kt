@@ -4,7 +4,7 @@ package eyre
 
 sealed interface AstNode
 
-class ImportNode(val parts: InternArray) : AstNode
+class ImportNode(val parts: List<Intern>) : AstNode
 
 class IntNode(val value: Long) : AstNode
 
@@ -89,11 +89,20 @@ val AstNode.printableString: String get() = when(this) {
 	is DotNode       -> "(${left.printableString}.${right.printableString})"
 	is RegNode       -> value.string
 	is ImmNode       -> value.printableString
-	is MemNode       -> "$width [${value.printableString}]"
+	is MemNode       -> "${width?.string} [${value.printableString}]"
 	is SymNode       -> "$name"
 	is ResNode       -> "var ${symbol.name} res ${size.printableString}"
 	is ConstNode     -> "const ${symbol.name} = ${value.printableString}"
 	is DllRefNode    -> "${symbol.dll}::${symbol.name}"
+	is ProcNode      -> "proc ${symbol.name}"
+
+	is ImportNode -> buildString {
+		append("import ")
+		for(i in parts.indices) {
+			append(parts[i])
+			if(i != parts.size - 1) append('.')
+		}
+	}
 
 	is VarNode -> buildString {
 		append("var ")

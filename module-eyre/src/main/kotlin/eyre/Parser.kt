@@ -16,7 +16,7 @@ class Parser(
 
 	private var symbols = compiler.globalNamespace.symbols
 
-	private var currentLabel: LabelSymbol? = null
+	private var currentNamespace: Namespace? = null // Current single-line namespace declaration
 
 
 
@@ -25,6 +25,8 @@ class Parser(
 	 */
 
 
+
+	private fun atNewline() = newlines[pos]
 
 	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos] || tokens[pos] is SymToken
 
@@ -48,6 +50,7 @@ class Parser(
 
 	fun parse() {
 		parseScope(symbols)
+		if(currentNamespace != null) nodes.add(ScopeEndNode)
 		srcFile.nodes = nodes
 	}
 
@@ -170,6 +173,8 @@ class Parser(
 		val entries = ArrayList<EnumEntryNode>()
 
 		while(true) {
+			if(tokens[pos] == SymToken.RIGHT_BRACE) break
+
 			val name = id()
 
 			val value = if(tokens[pos] == SymToken.EQUALS) {
@@ -185,8 +190,10 @@ class Parser(
 			symbols += symbol
 			entries += EnumEntryNode(symbol, value)
 
-			if(tokens[pos] != SymToken.COMMA || tokens[++pos] !is IdToken) break
+			if(!atNewline() && (tokens[pos] != SymToken.COMMA || tokens[++pos] !is IdToken)) break
 		}
+
+		expect(SymToken.RIGHT_BRACE)
 
 		EnumNode(Namespace(enumName, symbols).add(), entries).add()
 	}
@@ -194,31 +201,16 @@ class Parser(
 
 
 	private fun parseImport() {
-		val first = id()
-
-		val startPos = pos
-		var count = 0
+		val parts = ArrayList<Intern>()
 
 		while(true) {
+			parts.add(id())
 			if(tokens[pos] != SymToken.PERIOD) break
 			pos++
-			id()
-			count++
-		}
-
-		pos = startPos
-
-		val components = IntArray(count + 1)
-		components[0] = first.id
-
-		for(i in 0 until count) {
-			pos++
-			components[i + 1] = id().id
 		}
 
 		expectStatementEnd()
-		//val internArray = InternArray(components)
-		//ImportNode(internArray).add()
+		ImportNode(parts).add()
 	}
 
 
@@ -243,12 +235,14 @@ class Parser(
 		else
 			Namespace(name, SymTable()).add()
 
-		NamespaceNode(namespace).add()
-
 		if(tokens[pos] != SymToken.LEFT_BRACE) {
+			if(currentNamespace != null) ScopeEndNode.add()
+			currentNamespace = namespace
+			NamespaceNode(namespace).add()
 			symbols = namespace.symbols
 		} else {
 			pos++
+			NamespaceNode(namespace).add()
 			parseScopeBraced(symbols)
 			ScopeEndNode.add()
 		}

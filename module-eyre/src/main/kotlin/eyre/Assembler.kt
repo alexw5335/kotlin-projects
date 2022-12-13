@@ -53,6 +53,7 @@ class Assembler(private val srcSet: SrcSet) {
 				is NamespaceNode,
 				is ScopeEndNode,
 				is EnumNode,
+				is ImportNode,
 				is ConstNode      -> { }
 				else              -> error("Invalid node: $node")
 			}

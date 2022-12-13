@@ -1,9 +1,10 @@
 package eyre
 
+import core.Core
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class Compiler(val srcSet: SrcSet) {
+class Compiler(private val srcSet: SrcSet) {
 
 
 	constructor(singleDirPath: String) : this(SrcSet(Paths.get(singleDirPath)))
@@ -25,11 +26,9 @@ class Compiler(val srcSet: SrcSet) {
 		}
 
 		for(s in srcSet.files) {
-			println("FILE ${s.name}\n")
-			for(n in s.nodes) {
+			println("AST for file: ${s.path}")
+			for(n in s.nodes)
 				println(n.printableString)
-			}
-			println("\n\n")
 		}
 
 		Resolver(srcSet, globalNamespace).resolve()
@@ -40,6 +39,9 @@ class Compiler(val srcSet: SrcSet) {
 
 		Files.write(Paths.get("test.bin"), assemblerOutput.text)
 		Files.write(Paths.get("test.exe"), linkerOutput)
+
+		println("\nRunning:")
+		Core.runPrint("./test.exe")
 	}
 
 

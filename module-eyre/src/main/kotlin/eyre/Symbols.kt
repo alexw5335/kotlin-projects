@@ -1,5 +1,7 @@
 package eyre
 
+import java.util.LinkedList
+
 
 
 interface MutableScope : Scope {
@@ -41,6 +43,8 @@ class SymStack {
 
 	private var tables = arrayOfNulls<SymTable>(10)
 
+	private var imports = LinkedList<SymTable>()
+
 	var pos = -1
 
 	fun push(table: SymTable) {
@@ -54,6 +58,12 @@ class SymStack {
 		if(pos < 0)
 			error("Stack underflow")
 		tables[pos--] = null
+	}
+
+	fun get(id: Int): Symbol? {
+		for(i in pos downTo 0)
+			tables[i]!![id]?.let { return it }
+		return null
 	}
 
 	fun get(name: Intern): Symbol? {
