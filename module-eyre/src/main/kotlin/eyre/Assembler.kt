@@ -50,6 +50,7 @@ class Assembler(private val srcSet: SrcSet) {
 				is VarNode        -> handleVar(node)
 				is InsNode        -> handleInstruction(node)
 				is ResNode        -> handleRes(node)
+				is SizeofNode,
 				is NamespaceNode,
 				is ScopeEndNode,
 				is EnumNode,
@@ -92,6 +93,9 @@ class Assembler(private val srcSet: SrcSet) {
 
 
 	private fun handleVar(node: VarNode) {
+		dataWriter.align8()
+
+		node.symbol.pos = dataWriter.pos
 		for(part in node.parts) {
 			for(value in part.values) {
 				if(value is StringNode) {
@@ -227,6 +231,7 @@ class Assembler(private val srcSet: SrcSet) {
 			is Ref       -> { immRefCount++; 0 }
 			else         -> error("Invalid symbol: $symbol, ${this.printableString}")
 		}
+		is SizeofNode    -> size
 		else             -> error("Invalid immediate node: $this")
 	}
 

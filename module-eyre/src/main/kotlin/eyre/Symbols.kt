@@ -35,40 +35,50 @@ class SymTable(val map: MutableMap<Intern, Symbol> = HashMap()) : MutableScope {
 
 	override fun toString() = map.toString()
 
+	operator fun contains(intern: Intern) = map.contains(intern)
+
 }
 
 
 
 class SymStack {
 
-	private var tables = arrayOfNulls<SymTable>(10)
+	private class Frame {
+		lateinit var locals: SymTable
+		val imports = ArrayList<SymTable>()
+	}
 
-	private var imports = LinkedList<SymTable>()
+	private var frames = arrayOfNulls<Frame>(10)
 
 	var pos = -1
 
-	fun push(table: SymTable) {
+	fun push(locals: SymTable) {
 		pos++
-		if(pos >= tables.size)
-			tables = tables.copyOf(pos * 2)
-		tables[pos] = table
+		if(pos >= frames.size)
+			frames = frames.copyOf(frames.size shl 2)
+
+		val frame = frames[pos] ?: Frame().also { frames[pos] = it }
+		frame.locals = locals
+		frame.imports.clear()
+	}
+
+	fun add(import: SymTable) {
+		frames[pos]!!.imports.add(import)
 	}
 
 	fun pop() {
-		if(pos < 0)
+		if(pos-- < 0)
 			error("Stack underflow")
-		tables[pos--] = null
 	}
 
-	fun get(id: Int): Symbol? {
-		for(i in pos downTo 0)
-			tables[i]!![id]?.let { return it }
-		return null
-	}
+	operator fun get(name: Intern): Symbol? {
+		for(i in pos downTo 0) {
+			val frame = frames[i]!!
+			frame.locals[name]?.let { return it }
+			for(imports in frame.imports)
+				imports[name]?.let { return it }
+		}
 
-	fun get(name: Intern): Symbol? {
-		for(i in pos downTo 0)
-			tables[i]!![name]?.let { return it }
 		return null
 	}
 
@@ -123,7 +133,8 @@ data class DllSymbol(
 data class VarSymbol(
 	override val name    : Intern,
 	override var section : Section,
-	override var pos     : Int = 0
+	override var pos     : Int = 0,
+	val size             : Int
 ) : Symbol, Ref
 
 

@@ -22,11 +22,13 @@ class ConstNode(val symbol: Symbol, val value: AstNode) : AstNode
 
 class ResNode(val symbol: ResSymbol, val size: AstNode) : AstNode
 
-class VarNode(val symbol: Symbol, val parts: List<VarPart>) : AstNode
+class VarNode(val symbol: VarSymbol, val parts: List<VarPart>) : AstNode
 
 class VarPart(val width: Width, val values: List<AstNode>)
 
 class LabelNode(val symbol: LabelSymbol) : AstNode
+
+class SizeofNode(val value: AstNode, var size: Long = 0) : AstNode
 
 
 
@@ -95,6 +97,7 @@ val AstNode.printableString: String get() = when(this) {
 	is ConstNode     -> "const ${symbol.name} = ${value.printableString}"
 	is DllRefNode    -> "${symbol.dll}::${symbol.name}"
 	is ProcNode      -> "proc ${symbol.name}"
+	is SizeofNode      -> "sizeof(${value.printableString})"
 
 	is ImportNode -> buildString {
 		append("import ")

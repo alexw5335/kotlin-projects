@@ -1,6 +1,7 @@
 package eyre
 
 import core.collection.BitList
+import core.collection.IntList
 
 class Lexer(private val srcFile: SrcFile) {
 
@@ -16,6 +17,8 @@ class Lexer(private val srcFile: SrcFile) {
 	private val stringBuilder = StringBuilder()
 
 	private val Char.isIdentifierPart get() = isLetterOrDigit() || this == '_'
+
+	private val lineNumbers = IntList() // Each int is the index of a token before which a newline occurs
 
 
 
@@ -33,6 +36,7 @@ class Lexer(private val srcFile: SrcFile) {
 		newlines.ensureBitCapacity(tokens.size)
 		srcFile.tokens = tokens
 		srcFile.newlines = newlines
+		srcFile.lineNumbers = lineNumbers
 	}
 
 
@@ -173,8 +177,18 @@ class Lexer(private val srcFile: SrcFile) {
 			} else if(char == '*' && chars[pos] == '/') {
 				count--
 				pos++
+			} else if(char == '\n') {
+				handleNewline()
+				pos++
 			}
 		}
+	}
+
+
+
+	private fun handleNewline() {
+		newlines.set(tokens.size)
+		lineNumbers.add(tokens.size)
 	}
 
 
@@ -232,7 +246,7 @@ class Lexer(private val srcFile: SrcFile) {
 		private operator fun<T> Array<T>.set(char: Char, value: T) = set(char.code, value)
 
 		init {
-			charMap['\n'] = { newlines.set(tokens.size) }
+			charMap['\n'] = Lexer::handleNewline
 			charMap[' ']  = { }
 			charMap['\t'] = { }
 			charMap['\r'] = { }
@@ -257,9 +271,9 @@ class Lexer(private val srcFile: SrcFile) {
 				}
 			}
 
-			charMap['"'] = Lexer::resolveDoubleApostrophe
+			charMap['"']  = Lexer::resolveDoubleApostrophe
 			charMap['\''] = Lexer::resolveSingleApostrophe
-			charMap['/'] = Lexer::resolveSlash
+			charMap['/']  = Lexer::resolveSlash
 
 			for(i in 65..90)
 				charMap[i] = Lexer::idStart

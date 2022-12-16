@@ -93,5 +93,6 @@ object Interns {
 	val GLOBAL = "global".intern
 	val MAIN   = "main"  .intern
 	val ENDP   = "endp"  .intern
+	val SIZEOF = "sizeof".intern
 
 }

@@ -38,7 +38,10 @@ class Parser(
 
 	private fun<T : AstNode> T.add(): T { nodes.add(this); return this }
 
-	private fun<T : Symbol> T.add(): T { symbols.add(this); return this }
+	private fun<T : Symbol> T.add(): T {
+		if(symbols.add(this) != null) error("Symbol already defined: ${this.name}")
+		return this
+	}
 
 
 
@@ -113,7 +116,7 @@ class Parser(
 
 		if(intern in Interner.prefixes) {
 			val prefix = Interner.prefixes[intern]
-			val mnemonic = Interner.mnemonics[intern]
+			val mnemonic = Interner.mnemonics[id()]
 			parseInstruction(mnemonic, prefix).add()
 			return
 		}
@@ -140,8 +143,44 @@ class Parser(
 
 
 	private fun parseStruct() {
+		val structName = id()
+		val symbols = SymTable()
+		var size = -1L
+
+		expect(SymToken.LEFT_BRACE)
+
+		while(true) {
+			val token = tokens[pos++]
+			if(token == SymToken.RIGHT_BRACE) break
+			if(token !is IntToken) error("Expecting offset")
+			val offset = token.value
+			if(tokens[pos] !is IdToken) {
+				size = offset
+				break
+			}
+			val name = id()
+			val symbol = IntSymbol(name, srcFile, offset, true)
+			symbols.add(symbol)
+		}
+
+		if(size < 0L)
+			error("Invalid or unspecified size")
+
+		if(Interns.SIZEOF in symbols)
+			error("Cannot have struct member named sizeof")
+
+		symbols.add(IntSymbol(Interns.SIZEOF, srcFile, size, true))
+
+		Namespace(structName, symbols).add()
+	}
+
+
+
+/*
+	private fun parseStruct() {
 		val name = id()
-		val components = ArrayList<Pair<Width, Intern>>()
+		class Component(width: Width, name: Intern)
+		val components = ArrayList<Component>()
 		expect(SymToken.LEFT_BRACE)
 		while(true) {
 			val token = tokens[pos++]
@@ -150,10 +189,11 @@ class Parser(
 			val intern = token.value
 			if(intern !in Interner.widths) error("Invalid struct type: $token")
 			val width = Interner.widths[intern]
-			components.add(width to id())
+			components.add(Component(width, id()))
 			expectStatementEnd()
 		}
 	}
+*/
 
 
 
@@ -262,6 +302,8 @@ class Parser(
 
 		val parts = ArrayList<VarPart>()
 
+		var size = 0
+
 		while(true) {
 			if(initialiser !in Interner.varWidths) break
 			val width = Interner.varWidths[initialiser]
@@ -270,6 +312,12 @@ class Parser(
 			while(true) {
 				val component = readExpression()
 				values.add(component)
+
+				size += if(component is StringNode)
+					width.bytes * component.value.string.length
+				else
+					width.bytes
+
 				if(tokens[pos] != SymToken.COMMA) break
 				pos++
 			}
@@ -282,7 +330,7 @@ class Parser(
 
 		if(parts.isEmpty()) error("Expecting variable initialiser")
 
-		VarNode(VarSymbol(name, Section.DATA).add(), parts).add()
+		VarNode(VarSymbol(name, Section.DATA, 0, size).add(), parts).add()
 	}
 
 
@@ -303,9 +351,19 @@ class Parser(
 		}
 
 		if(token is IdToken) {
-			if(token.value in Interner.registers)
-				return RegNode(Interner.registers[token.value])
-			return SymNode(token.value)
+			val intern = token.value
+
+			if(intern in Interner.registers)
+				return RegNode(Interner.registers[intern])
+
+			if(intern == Interns.SIZEOF && tokens[pos] == SymToken.LEFT_PAREN) {
+				pos++
+				val node = SizeofNode(readExpression())
+				expect(SymToken.RIGHT_PAREN)
+				return node
+			}
+
+			return SymNode(intern)
 		}
 
 		return when(token) {

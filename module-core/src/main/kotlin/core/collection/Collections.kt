@@ -14,7 +14,7 @@ fun<E, K> List<E>.associateFlatMap(mapper: (E) -> K): Map<K, List<E>> {
 
 
 
-fun<E, K> List<E>.associateByList(mapper: (E) -> List<K>): Map<K, E> {
+fun<E, K> List<E>.associateByList(mapper: (E) -> Iterable<K>): Map<K, E> {
 	val map = HashMap<K, E>()
 	for(element in this)
 		for(key in mapper(element))

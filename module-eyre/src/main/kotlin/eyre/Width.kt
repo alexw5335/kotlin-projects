@@ -15,7 +15,7 @@ enum class Width(
 	BIT32("dword", "dd", 4, opcodeOffset = 1),
 	BIT64("qword", "dq", 8, opcodeOffset = 1, rexW = 1),
 	BIT80("tword", "dt", 10),
-	BIT128("xword", "dx", 16);
+	BIT128("xword", "do", 16);
 
 	val is8 get() = this == BIT8
 	val is16 get() = this == BIT16

@@ -44,15 +44,23 @@ class Resolver(private val srcSet: SrcSet, private val globalNamespace: Namespac
 			is ScopeEndNode -> stack.pop()
 
 			is ImportNode -> {
-				var symbol = stack.get(node.parts[0])
+				var symbol = stack[node.parts[0]] ?: error("Missing symbol")
 
 				for(i in 1 until node.parts.size) {
 					if(symbol !is Namespace) error("Expecting namespace, found: $symbol")
-					symbol = symbol.symbols[node.parts[i]]
+					symbol = symbol.symbols[node.parts[i]] ?: error("Missing symbol")
 				}
 
-				stack.push()
+				when(symbol) {
+					is Namespace -> stack.add(symbol.symbols)
+					else -> error("Invalid import symbol: $symbol")
+				}
 			}
+
+			is VarNode ->
+				for(part in node.parts)
+					for(value in part.values)
+						resolveSymbols(value)
 
 			is ResNode -> {
 				resolveSymbols(node.size)
@@ -96,12 +104,14 @@ class Resolver(private val srcSet: SrcSet, private val globalNamespace: Namespac
 	private fun resolveSymbols(node: AstNode) {
 		when(node) {
 			is SymNode    -> if(node.symbol == null)
-				node.symbol = stack.get(node.name) ?: error("Unresolved symbol: ${node.name}")
+				node.symbol = stack[node.name] ?: error("Unresolved symbol: ${node.name}")
 			is UnaryNode  -> resolveSymbols(node.node)
 			is BinaryNode -> { resolveSymbols(node.left); resolveSymbols(node.right) }
 			is DotNode    -> resolveDot(node)
 			is ImmNode    -> resolveSymbols(node.value)
 			is MemNode    -> resolveSymbols(node.value)
+			is SizeofNode -> resolveSizeof(node)
+			is StringNode,
 			is IntNode,
 			is RegNode,
 			is DllRefNode -> { }
@@ -115,7 +125,7 @@ class Resolver(private val srcSet: SrcSet, private val globalNamespace: Namespac
 		val name = node.right.name
 
 		if(node.left is SymNode) {
-			val namespace = stack.get(node.left.name) as? Namespace ?: error("Expecting namespace: ${node.left.name}")
+			val namespace = stack[node.left.name] as? Namespace ?: error("Expecting namespace: ${node.left.name}")
 			node.left.symbol = namespace
 			val symbol = namespace.symbols[name] ?: error("Missing symbol: $name")
 			node.right.symbol = symbol
@@ -142,7 +152,27 @@ class Resolver(private val srcSet: SrcSet, private val globalNamespace: Namespac
 		is BinaryNode -> op.calculate(left.resolveInt(), right.resolveInt())
 		is DotNode    -> resolveIntSymbol(right.symbol)
 		is SymNode    -> resolveIntSymbol(symbol)
+		is SizeofNode -> size
 		else          -> error("Invalid int node: $this")
+	}
+
+
+
+	private fun resolveSizeof(node: SizeofNode): Long {
+		resolveSymbols(node.value)
+
+		val symbol = when(val value = node.value) {
+			is DotNode -> value.right.symbol!!
+			is SymNode -> value.symbol!!
+			else -> error("Invalid size node: $node")
+		}
+
+		node.size = when(symbol) {
+			is VarSymbol -> symbol.size.toLong()
+			else -> error("Invalid size symbol: $symbol")
+		}
+
+		return node.size
 	}
 
 
