@@ -1,5 +1,5 @@
 package eyre
 
 fun main() {
-	Compiler("test").compile()
+	Compiler.createFromResources("/samples", "window.eyre").run()
 }

@@ -3,8 +3,12 @@ package scratch
 
 
 fun main() {
-	intToString(-123).let(::println)
+	println(alignStack(48, 16))
 }
+
+
+
+fun alignStack(rsp: Int, alignment: Int) = rsp and -alignment
 
 
 

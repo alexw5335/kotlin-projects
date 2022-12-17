@@ -7,7 +7,7 @@ import java.nio.file.Paths
 class Compiler(private val srcSet: SrcSet) {
 
 
-	constructor(singleDirPath: String) : this(SrcSet(Paths.get(singleDirPath)))
+	constructor(singleDirPath: String) : this(SrcSet.create(Paths.get(singleDirPath)))
 
 
 
@@ -19,16 +19,17 @@ class Compiler(private val srcSet: SrcSet) {
 
 
 
+	fun run() {
+		compile()
+		Core.runPrint("./test.exe")
+	}
+
+
+
 	fun compile() {
-		for(s in srcSet.files) {
+		for(s in srcSet.srcFiles) {
 			Lexer(s).lex()
 			Parser(this, s).parse()
-		}
-
-		for(s in srcSet.files) {
-			println("AST for file: ${s.path}")
-			for(n in s.nodes)
-				println(n.printableString)
 		}
 
 		Resolver(srcSet, globalNamespace).resolve()
@@ -39,10 +40,22 @@ class Compiler(private val srcSet: SrcSet) {
 
 		Files.write(Paths.get("test.bin"), assemblerOutput.text)
 		Files.write(Paths.get("test.exe"), linkerOutput)
-
-		println("\nRunning:")
-		Core.runPrint("./test.exe")
 	}
 
+
+
+	fun printAst() {
+		for(s in srcSet.srcFiles) {
+			println("AST for file: ${s.path}")
+			for(n in s.nodes)
+				println(n.printableString)
+		}
+	}
+
+
+	companion object {
+		fun createFromResources(root: String, vararg files: String) =
+			Compiler(SrcSet.create(Core.getResourcePath(root), *files))
+	}
 
 }

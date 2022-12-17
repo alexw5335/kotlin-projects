@@ -43,6 +43,13 @@ class Parser(
 		return this
 	}
 
+	private fun error(numTokens: Int, message: String) {
+		if(srcFile.lineNumbers == null) PosLexer(srcFile).lex()
+		val lineNumber = srcFile.lineNumbers!![pos - numTokens]
+		System.err.println("Error on line $lineNumber of ${srcFile.path}:\n\t$message\n")
+		error("Parsing error")
+	}
+
 
 
 	/*
@@ -69,7 +76,8 @@ class Parser(
 				SymToken.RIGHT_BRACE -> { pos--; break }
 				SymToken.SEMICOLON   -> continue
 				EndToken             -> break
-				else                 -> error("Invalid token: $token")
+				is SymToken          -> error(1, "Invalid symbol: '${token.string}'")
+				else                 -> error(1, "Invalid token '$token'")
 			}
 		}
 
@@ -92,7 +100,7 @@ class Parser(
 			val symbol = LabelSymbol(intern, Section.TEXT).add()
 			if(intern == Interns.MAIN) {
 				if(compiler.entryPoint != null)
-					error("Multiple entry points (labels named 'main')")
+					error(2, "Multiple entry points (labels named 'main')")
 				compiler.entryPoint = symbol
 			}
 			LabelNode(symbol).add()
@@ -126,7 +134,7 @@ class Parser(
 			return
 		}
 
-		error("Unexpected identifier: $intern")
+		error(1, "Unexpected identifier '$intern'")
 	}
 
 
@@ -173,27 +181,6 @@ class Parser(
 
 		Namespace(structName, symbols).add()
 	}
-
-
-
-/*
-	private fun parseStruct() {
-		val name = id()
-		class Component(width: Width, name: Intern)
-		val components = ArrayList<Component>()
-		expect(SymToken.LEFT_BRACE)
-		while(true) {
-			val token = tokens[pos++]
-			if(token == SymToken.RIGHT_BRACE) break
-			if(token !is IdToken) error("Invalid struct type: $token")
-			val intern = token.value
-			if(intern !in Interner.widths) error("Invalid struct type: $token")
-			val width = Interner.widths[intern]
-			components.add(Component(width, id()))
-			expectStatementEnd()
-		}
-	}
-*/
 
 
 

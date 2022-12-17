@@ -1,7 +1,6 @@
 package eyre
 
 import core.collection.BitList
-import core.collection.IntList
 
 class Lexer(private val srcFile: SrcFile) {
 
@@ -18,13 +17,20 @@ class Lexer(private val srcFile: SrcFile) {
 
 	private val Char.isIdentifierPart get() = isLetterOrDigit() || this == '_'
 
-	private val lineNumbers = IntList() // Each int is the index of a token before which a newline occurs
+	private var lineNumber = 1
+
+	
+
+	private fun error(message: String): Nothing {
+		System.err.println("Error on line $lineNumber of ${srcFile.path}:\n\t$message\n")
+		kotlin.error("Lexing error")
+	}
 
 
 
 	fun lex() {
 		if(chars.size < 2 || chars[chars.size - 1] != Char(0) || chars[chars.size - 2] != Char(0))
-			error("File must end with at least 2 null characters")
+			kotlin.error("File must end with at least 2 null characters")
 
 		while(true) {
 			val char = chars[pos++]
@@ -36,7 +42,13 @@ class Lexer(private val srcFile: SrcFile) {
 		newlines.ensureBitCapacity(tokens.size)
 		srcFile.tokens = tokens
 		srcFile.newlines = newlines
-		srcFile.lineNumbers = lineNumbers
+	}
+
+
+
+	private fun onNewline() {
+		lineNumber++
+		newlines.set(tokens.size)
 	}
 
 
@@ -152,7 +164,6 @@ class Lexer(private val srcFile: SrcFile) {
 
 	private fun resolveSlash() {
 		if(chars[pos] == '/') {
-			pos++
 			while(chars[pos] != '\n' && chars[pos].code != 0) pos++
 			return
 		}
@@ -162,7 +173,6 @@ class Lexer(private val srcFile: SrcFile) {
 			return
 		}
 
-		pos++
 		var count = 1
 
 		while(count > 0) {
@@ -178,17 +188,9 @@ class Lexer(private val srcFile: SrcFile) {
 				count--
 				pos++
 			} else if(char == '\n') {
-				handleNewline()
-				pos++
+				onNewline()
 			}
 		}
-	}
-
-
-
-	private fun handleNewline() {
-		newlines.set(tokens.size)
-		lineNumbers.add(tokens.size)
 	}
 
 
@@ -246,7 +248,7 @@ class Lexer(private val srcFile: SrcFile) {
 		private operator fun<T> Array<T>.set(char: Char, value: T) = set(char.code, value)
 
 		init {
-			charMap['\n'] = Lexer::handleNewline
+			charMap['\n'] = Lexer::onNewline
 			charMap[' ']  = { }
 			charMap['\t'] = { }
 			charMap['\r'] = { }

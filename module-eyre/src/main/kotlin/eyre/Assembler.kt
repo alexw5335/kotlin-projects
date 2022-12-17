@@ -29,7 +29,7 @@ class Assembler(private val srcSet: SrcSet) {
 
 
 	fun assemble(): AssemblerOutput {
-		for(srcFile in srcSet.files)
+		for(srcFile in srcSet.srcFiles)
 			assemble(srcFile.nodes)
 
 		return AssemblerOutput(

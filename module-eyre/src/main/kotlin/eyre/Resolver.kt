@@ -9,7 +9,7 @@ class Resolver(private val srcSet: SrcSet, private val globalNamespace: Namespac
 
 	fun resolve() {
 		stack.push(globalNamespace.symbols)
-		for(file in srcSet.files)
+		for(file in srcSet.srcFiles)
 			resolveFile(file)
 		stack.pop()
 	}
@@ -18,7 +18,7 @@ class Resolver(private val srcSet: SrcSet, private val globalNamespace: Namespac
 
 	private fun resolveFile(srcFile: SrcFile) {
 		if(srcFile.resolving)
-			error("Circular dependency found. Currently resolving files: ${srcSet.files.filter { it.resolving }}")
+			error("Circular dependency found. Currently resolving files: ${srcSet.srcFiles.filter { it.resolving }}")
 		else if(srcFile.resolved)
 			return
 

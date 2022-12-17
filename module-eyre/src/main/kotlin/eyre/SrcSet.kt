@@ -1,45 +1,40 @@
 package eyre
 
+import core.Core
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 import kotlin.io.path.extension
 import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.relativeTo
 
-class SrcSet(val root: Path) {
+class SrcSet(val srcFiles: List<SrcFile>) {
 
 
-	val files: List<SrcFile> = Files
-		.walk(root)
-		.filter { it.extension == "eyre" }
-		.map(::createSrcFile)
-		.toList()
+	companion object {
 
-	val map = files.associateBy { it.relParts }
+		fun create(root: Path) = Files
+			.walk(root)
+			.filter { it.extension == "eyre" }
+			.map { createSrcFile(root, it) }
+			.toList()
+			.let(::SrcSet)
 
+		fun create(root: String) = create(Paths.get(root))
 
+		fun create(root: Path, vararg filePaths: String) = filePaths
+			.map { createSrcFile(root, root.resolve(it)) }
+			.let(::SrcSet)
 
-	private fun createSrcFile(path: Path): SrcFile {
-		val name = Interner.add(path.nameWithoutExtension)
-		val relPath = path.relativeTo(root)
-		val relNames = relPath.toList()
-
-		val relParts = IntArray(relNames.size) {
-			if(it == relNames.size - 1)
-				name.id
-			else
-				Interner.add(relNames[it].name).id
+		fun createSrcFile(root: Path, path: Path): SrcFile {
+			val relPath     = path.relativeTo(root)
+			val rawContents = Files.readString(path)
+			val contents    = CharArray(rawContents.length + 4).also(rawContents::toCharArray)
+			return SrcFile(path, relPath, contents)
 		}
 
-		val rawContents = Files.readString(path)
-		val contents = CharArray(rawContents.length + 4).also(rawContents::toCharArray)
-		return SrcFile(name, path, relPath, InternArray(relParts), contents)
 	}
-
-
-
-	operator fun get(relParts: InternArray) = map[relParts]
 
 
 }

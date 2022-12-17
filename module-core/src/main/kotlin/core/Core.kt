@@ -48,12 +48,24 @@ object Core {
 
 
 
+	fun getResourcePath(path: String) = this::class.java
+		.getResource(path)
+		?.toURI()
+		?.let(Paths::get)
+		?: error("Resource not found '$path'")
+
+
+
 	fun resourceBufferedReader(path: String) = this::class.java.getResourceAsStream(path)!!.bufferedReader()
+
+
 
 	fun readResourceText(path: String) = this::class.java
 		.getResourceAsStream(path)!!
 		.reader()
 		.readText()
+
+
 
 	fun readResourceChars(path: String) = this::class.java
 		.getResourceAsStream(path)!!
