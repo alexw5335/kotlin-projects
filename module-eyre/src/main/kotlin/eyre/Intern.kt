@@ -18,6 +18,7 @@ class InternArray(val array: IntArray) {
 	constructor(strings: List<String>) : this(IntArray(strings.size) { Interner.add(strings[it]).id })
 	override fun equals(other: Any?) = other is InternArray && array.contentEquals(other.array)
 	override fun hashCode() = array.contentHashCode()
+	val last get() = array[array.size - 1]
 }
 
 
@@ -95,5 +96,6 @@ object Interns {
 	val ENDP   = "endp"  .intern
 	val SIZEOF = "sizeof".intern
 	val REL    = "rel"   .intern
+	val INT    = "int"   .intern
 
 }

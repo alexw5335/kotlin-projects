@@ -19,13 +19,6 @@ class Compiler(private val srcSet: SrcSet) {
 
 
 
-	fun run() {
-		compile()
-		Core.runPrint("./test.exe")
-	}
-
-
-
 	fun compile() {
 		for(s in srcSet.srcFiles) {
 			Lexer(s).lex()
@@ -33,16 +26,28 @@ class Compiler(private val srcSet: SrcSet) {
 		}
 
 		printAst()
-		return
 
 		Resolver(srcSet, globalNamespace).resolve()
 
 		val assemblerOutput = Assembler(srcSet).assemble()
 
 		val linkerOutput = Linker(this, assemblerOutput).link()
-
+		
 		Files.write(Paths.get("test.bin"), assemblerOutput.text)
 		Files.write(Paths.get("test.exe"), linkerOutput)
+	}
+
+
+
+	fun run() {
+		Core.runPrint("./test.exe")
+	}
+
+
+
+	fun compileAndRun() {
+		compile()
+		run()
 	}
 
 
@@ -56,9 +61,11 @@ class Compiler(private val srcSet: SrcSet) {
 	}
 
 
+
 	companion object {
 		fun createFromResources(root: String, vararg files: String) =
 			Compiler(SrcSet.create(Core.getResourcePath(root), *files))
 	}
+
 
 }
