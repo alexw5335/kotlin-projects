@@ -46,7 +46,7 @@ class Parser(
 	private fun error(numTokens: Int, message: String) {
 		if(srcFile.lineNumbers == null) PosLexer(srcFile).lex()
 		val lineNumber = srcFile.lineNumbers!![pos - numTokens]
-		System.err.println("Error on line $lineNumber of ${srcFile.path}:\n\t$message\n")
+		System.err.println("Error on line $lineNumber of ${srcFile.relPath}:\n\t$message\n")
 		error("Parsing error")
 	}
 
@@ -140,9 +140,9 @@ class Parser(
 
 
 	private fun parseProc() {
-		val name = id()
+		val name    = id()
 		val symbols = SymTable()
-		val symbol = ProcSymbol(name, Section.TEXT, 0, symbols).add()
+		val symbol  = ProcSymbol(name, Section.TEXT, 0, symbols).add()
 		ProcNode(symbol).add()
 		parseScopeBraced(symbols)
 		ScopeEndNode.add()
@@ -343,6 +343,22 @@ class Parser(
 			if(intern in Interner.registers)
 				return RegNode(Interner.registers[intern])
 
+			if(tokens[pos] == SymToken.LEFT_PAREN) {
+				if(intern == Interns.SIZEOF) {
+					pos++
+					val node = SizeofNode(readExpression())
+					expect(SymToken.RIGHT_PAREN)
+					return node
+				} else if(intern == Interns.REL) {
+					pos++
+					val left = readExpression()
+					expect(SymToken.COMMA)
+					val right = readExpression()
+					expect(SymToken.COMMA)
+					var divisor = 1
+				}
+			}
+
 			if(intern == Interns.SIZEOF && tokens[pos] == SymToken.LEFT_PAREN) {
 				pos++
 				val node = SizeofNode(readExpression())
@@ -382,10 +398,23 @@ class Parser(
 			if(op.precedence < precedence) break
 			pos++
 
-			atom = if(op != BinaryOp.DOT)
-				BinaryNode(op, atom, readExpression(op.precedence + 1))
-			else
+			atom = if(op == BinaryOp.DOT)
 				DotNode(atom, readExpression(op.precedence + 1) as? SymNode ?: error("Invalid node"))
+			else
+				BinaryNode(op, atom, readExpression(op.precedence + 1))
+
+			if(tokens[pos] == SymToken.LEFT_PAREN) {
+				pos++
+				val args = ArrayList<AstNode>()
+				while(true) {
+					if(tokens[pos] == SymToken.RIGHT_PAREN) break
+					args.add(readExpression())
+					if(tokens[pos] != SymToken.COMMA) break
+					pos++
+				}
+				pos++
+				atom = InvokeNode(atom as? SymProvider ?: error("Invalid invoker"), args)
+			}
 		}
 
 		return atom
@@ -421,7 +450,7 @@ class Parser(
 			pos += 2
 			val dllName = Interner.add(token.value.string.lowercase())
 			val symbol = compiler.dllImports.add(dllName, id())
-			return MemNode(Width.BIT64, SymNode(symbol.name, symbol))
+			return MemNode(Width.BIT64, SymNode(symbol.name, symbol.symbol))
 		}
 
 		return when(val node = readExpression()) {

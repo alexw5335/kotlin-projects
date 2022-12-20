@@ -1,0 +1,1 @@
+mov rax, vk.error(1, "msg") + 1

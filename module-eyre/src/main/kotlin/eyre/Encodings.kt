@@ -169,6 +169,16 @@ private enum class CompoundOperands(vararg val components: Operands) {
 
 private const val ENCODINGS_STRING = """
 
+83/0  ADD8  RM_I8  NO8
+83/1  OR8   RM_I8  NO8
+83/2  ADC8  RM_I8  NO8
+83/3  SBB8  RM_I8  NO8
+83/4  AND8  RM_I8  NO8
+83/5  SUB8  RM_I8  NO8
+83/6  XOR8  RM_I8  NO8
+83/7  CMP8  RM_I8  NO8
+EB    JMP8  REL8
+
 04    ADD  A_I    ALL
 80/0  ADD  RM_I   ALL
 83/0  ADD  RM_I8  NO8

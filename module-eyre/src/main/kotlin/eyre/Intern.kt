@@ -94,5 +94,6 @@ object Interns {
 	val MAIN   = "main"  .intern
 	val ENDP   = "endp"  .intern
 	val SIZEOF = "sizeof".intern
+	val REL    = "rel"   .intern
 
 }

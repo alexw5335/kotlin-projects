@@ -209,7 +209,7 @@ class Linker(
 
 
 	private fun writeImports() {
-		val dlls = compiler.dllImports.imports
+		val dlls = compiler.dllImports.dllMap.values
 
 		if(dlls.isEmpty()) return
 
@@ -226,13 +226,13 @@ class Linker(
 		writer.zero(idtsSize)
 
 		for((dllIndex, dll) in dlls.withIndex()) {
-			val imports = dll.symbols
+			val imports = dll.map.values
 
 			val idtPos = idtsPos + dllIndex * 20
 
 			val dllNamePos = writer.pos
 
-			writer.asciiNT("${dll.dll.string}.dll")
+			writer.asciiNT("${dll.name.string}.dll")
 			writer.align8()
 
 			val iltPos = writer.pos
@@ -243,13 +243,13 @@ class Linker(
 
 			writer.zero(imports.size * 8 + 8)
 
-			for((importIndex, import) in imports.values.withIndex()) {
+			for((importIndex, import) in imports.withIndex()) {
 				writer.i32(iltPos + importIndex * 8, writer.pos - offset)
 				writer.i32(iatPos + importIndex * 8, writer.pos - offset)
 				writer.i16(0)
 				writer.asciiNT(import.name.string)
 				writer.alignEven()
-				import.pos = iatPos + importIndex * 8 - idtsPos
+				import.symbol.pos = iatPos + importIndex * 8 - idtsPos
 			}
 
 			writer.i32(idtPos, iltPos - offset)

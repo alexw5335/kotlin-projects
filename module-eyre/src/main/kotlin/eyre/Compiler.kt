@@ -32,6 +32,9 @@ class Compiler(private val srcSet: SrcSet) {
 			Parser(this, s).parse()
 		}
 
+		printAst()
+		return
+
 		Resolver(srcSet, globalNamespace).resolve()
 
 		val assemblerOutput = Assembler(srcSet).assemble()
@@ -46,7 +49,7 @@ class Compiler(private val srcSet: SrcSet) {
 
 	fun printAst() {
 		for(s in srcSet.srcFiles) {
-			println("AST for file: ${s.path}")
+			println("AST for file: ${s.relPath}")
 			for(n in s.nodes)
 				println(n.printableString)
 		}

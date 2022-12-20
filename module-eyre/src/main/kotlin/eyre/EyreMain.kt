@@ -1,5 +1,6 @@
 package eyre
 
 fun main() {
-	Compiler.createFromResources("/samples", "window.eyre").run()
+	val compiler = Compiler.createFromResources("/samples", "main.eyre")
+	compiler.compile()
 }
