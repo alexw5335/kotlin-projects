@@ -13,6 +13,8 @@ class Lexer(private val srcFile: SrcFile) {
 
 	private val newlines = BitList()
 
+	private val terminators = BitList() // newline, end-of-file, or any symbol
+
 	private val stringBuilder = StringBuilder()
 
 	private val Char.isIdentifierPart get() = isLetterOrDigit() || this == '_'
@@ -38,10 +40,15 @@ class Lexer(private val srcFile: SrcFile) {
 			charMap[char.code]!!()
 		}
 
-		for(i in 0 until 4) tokens.add(EndToken)
+		for(i in 0 until 4) {
+			terminators.set(tokens.size)
+			tokens.add(EndToken)
+		}
+
 		newlines.ensureBitCapacity(tokens.size)
 		srcFile.tokens = tokens
 		srcFile.newlines = newlines
+		srcFile.terminators = terminators
 	}
 
 
@@ -49,6 +56,7 @@ class Lexer(private val srcFile: SrcFile) {
 	private fun onNewline() {
 		lineNumber++
 		newlines.set(tokens.size)
+		terminators.set(tokens.size)
 	}
 
 
@@ -122,6 +130,7 @@ class Lexer(private val srcFile: SrcFile) {
 	private fun digit() {
 		pos--
 		tokens.add(IntToken(readDecimal()))
+		if(chars[pos].isLetterOrDigit()) error("Invalid char in number literal: '${chars[pos]}'")
 	}
 
 
@@ -222,7 +231,7 @@ class Lexer(private val srcFile: SrcFile) {
 			}
 		}
 
-		tokens.add(StringToken(Interner.add(stringBuilder.toString())))
+		tokens.add(StringToken(stringBuilder.toString()))
 	}
 
 
@@ -257,7 +266,10 @@ class Lexer(private val srcFile: SrcFile) {
 				val firstChar = s.string[0]
 
 				if(s.string.length == 1) {
-					charMap[firstChar] = { tokens.add(s)}
+					charMap[firstChar] = {
+						terminators.set(tokens.size)
+						tokens.add(s)
+					}
 					continue
 				}
 
@@ -265,6 +277,7 @@ class Lexer(private val srcFile: SrcFile) {
 				val secondChar = s.string[1]
 
 				charMap[firstChar] = {
+					terminators.set(tokens.size)
 					if(chars[pos] == secondChar) {
 						tokens.add(s)
 						pos++
@@ -276,19 +289,11 @@ class Lexer(private val srcFile: SrcFile) {
 			charMap['"']  = Lexer::resolveDoubleApostrophe
 			charMap['\''] = Lexer::resolveSingleApostrophe
 			charMap['/']  = Lexer::resolveSlash
-
-			for(i in 65..90)
-				charMap[i] = Lexer::idStart
-
-			for(i in 97..122)
-				charMap[i] = Lexer::idStart
-
-			charMap['_'] = Lexer::idStart
-
-			charMap['0'] = Lexer::zero
-
-			for(i in 49..57)
-				charMap[i] = Lexer::digit
+			charMap['_']  = Lexer::idStart
+			charMap['0']  = Lexer::zero
+			for(i in 65..90)  charMap[i] = Lexer::idStart
+			for(i in 97..122) charMap[i] = Lexer::idStart
+			for(i in 49..57)  charMap[i] = Lexer::digit
 
 			for(i in charMap.indices)
 				if(charMap[i] == null)

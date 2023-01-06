@@ -205,7 +205,6 @@ private fun play(action: Action) = when(action) {
 	is MoveAction       -> sendMouseInput(action.dx, action.dy, 0, MouseEvent.MOVE.value)
 	is ScrollAction     -> sendMouseInput(0, 0, action.dy, MouseEvent.SCROLL.value)
 	is MouseAction      -> sendMouseInput(0, 0, 0, action.event.value)
-
 }
 
 

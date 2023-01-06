@@ -75,6 +75,16 @@ object Core {
 
 
 
+	fun readResourceChars(path: Path, nullPadding: Int = 0): CharArray {
+		if(nullPadding < 0) error("null padding ($nullPadding) must be positive")
+		val rawChars = Files.readString(path)
+		val chars = CharArray(rawChars.length + nullPadding)
+		rawChars.toCharArray(chars)
+		return chars
+	}
+
+
+
 	fun readResourceLines(path: String) = this::class.java
 		.getResourceAsStream(path)!!
 		.bufferedReader()

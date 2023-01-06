@@ -1,123 +1,83 @@
 package eyre
 
-
-
 sealed interface AstNode
 
-class ImportNode(val parts: List<Intern>) : AstNode
+object ScopeEndNode : AstNode
+
+class NamespaceNode(val symbol: Namespace) : AstNode
 
 class IntNode(val value: Long) : AstNode
+
+class RegNode(val value: Register) : AstNode
 
 class UnaryNode(val op: UnaryOp, val node: AstNode) : AstNode
 
 class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstNode
 
-class StringNode(val value: Intern) : AstNode
+class StringNode(val value: String) : AstNode
 
-class ConstNode(val symbol: Symbol, val value: AstNode) : AstNode
+class SymNode(val name: Intern, var symbol: Symbol? = null): AstNode
 
-class ResNode(val symbol: ResSymbol, val size: AstNode) : AstNode
+class DotNode(val left: AstNode, val right: SymNode) : AstNode
 
-class VarNode(val symbol: VarSymbol, val parts: List<VarPart>) : AstNode
+class InvokeNode(val invoker: AstNode, val args: List<AstNode>) : AstNode
 
-class VarPart(val width: Width, val values: List<AstNode>)
+class StructNode(val symbol: StructSymbol) : AstNode
 
-class LabelNode(val symbol: LabelSymbol) : AstNode
+class ConstNode(val symbol: ConstSymbol, val value: AstNode) : AstNode
 
-class SizeofNode(val value: AstNode, var size: Long = 0) : AstNode
+class ResNode(val symbol: ResSymbol, val value: AstNode) : AstNode
 
-class RelNode(val left: AstNode, val right: AstNode, val divisor: Int) : AstNode
-
-class InvokeNode(val invoker: SymProvider, val args: List<AstNode>) : AstNode
-
-open class SymNode(val name: Intern, override var symbol: Symbol? = null) : SymProvider
-
-class DotNode(val left: AstNode, val right: SymNode) : SymProvider by right
-
-interface SymProvider : AstNode {
-	val symbol: Symbol?
-}
+class VarNode(val symbol: VarSymbol, val value: AstNode) : AstNode
 
 
 
 /*
-Scope
+Formatting
  */
 
 
 
-class NamespaceNode(val symbol: Namespace) : AstNode
-
-class ProcNode(val symbol: ProcSymbol) : AstNode
-
-class EnumNode(val symbol: Namespace, val entries: List<EnumEntryNode>) : AstNode
-
-class EnumEntryNode(val symbol: IntSymbol, val value: AstNode) : AstNode
-
-object ScopeEndNode : AstNode
-
-
-
-/*
-Instruction
- */
-
-
-
-class RegNode(val value: Register) : AstNode
-
-class ImmNode(val value: AstNode) : AstNode
-
-class MemNode(val width: Width?, val value: AstNode) : AstNode
-
-class DllRefNode(val symbol: DllSymbol) : AstNode
-
-class InsNode(
-	val mnemonic : Mnemonic,
-	val prefix   : Prefix?,
-	val shortImm : Boolean,
-	val op1      : AstNode?,
-	val op2      : AstNode?,
-	val op3      : AstNode?,
-	val op4      : AstNode?
-) : AstNode
-
-
-
-/*
-toString
- */
-
-
-
-val AstNode.printableString: String get() = when(this) {
-	is LabelNode     -> "label ${symbol.name}"
-	is StringNode    -> value.toString()
+val AstNode.printString: String get() = when(this) {
+	//is LabelNode     -> "label ${symbol.name}"
+	is StringNode    -> value
 	is IntNode       -> value.toString()
-	is UnaryNode     -> "${op.symbol}${node.printableString}"
-	is BinaryNode    -> "(${left.printableString} ${op.symbol} ${right.printableString})"
-	is DotNode       -> "(${left.printableString}.${right.printableString})"
+	is UnaryNode     -> "${op.symbol}${node.printString}"
+	is BinaryNode    -> "(${left.printString} ${op.symbol} ${right.printString})"
+	is DotNode       -> "(${left.printString}.${right.printString})"
 	is RegNode       -> value.string
-	is ImmNode       -> value.printableString
-	is MemNode       -> "${width?.string} [${value.printableString}]"
+	//is ImmNode       -> value.printString
+	//is MemNode       -> "${width?.string} [${value.printString}]"
 	is SymNode       -> "$name"
-	is ResNode       -> "var ${symbol.name} res ${size.printableString}"
-	is ConstNode     -> "const ${symbol.name} = ${value.printableString}"
-	is DllRefNode    -> "${symbol.dll}::${symbol.name}"
-	is ProcNode      -> "proc ${symbol.name}"
-	is SizeofNode    -> "sizeof(${value.printableString})"
+	is ResNode       -> "var ${symbol.name} res ${value.printString}"
+	is ConstNode     -> "const ${symbol.name} = ${value.printString}"
+	//is DllRefNode    -> "${symbol.dll}::${symbol.name}"
+	//is ProcNode      -> "proc ${symbol.name}"
+	//is SizeofNode    -> "sizeof(${value.printString})"
+	is NamespaceNode -> "namespace ${symbol.name}"
+	is ScopeEndNode  -> "SCOPE END"
+	is VarNode       -> "var ${symbol.name} = ${value.printString}"
+
+	is StructNode -> buildString {
+		append("struct ")
+		append(symbol.name)
+		append(" {\n")
+		for(member in symbol.members)
+			append("\t${member.typeName} ${member.name}\n")
+		append("}\n")
+	}
 
 	is InvokeNode    -> buildString {
-		append(invoker.printableString)
+		append(invoker.printString)
 		append('(')
 		for(i in args.indices) {
-			append(args[i].printableString)
+			append(args[i].printString)
 			if(i != args.size - 1) append(", ")
 		}
 		append(')')
 	}
 
-	is ImportNode -> buildString {
+/*	is ImportNode -> buildString {
 		append("import ")
 		for(i in parts.indices) {
 			append(parts[i])
@@ -133,7 +93,7 @@ val AstNode.printableString: String get() = when(this) {
 			append(part.width.varString)
 			append(' ')
 			for((i, c) in part.values.withIndex()) {
-				append(c.printableString)
+				append(c.printString)
 				if(i < part.values.size - 1) append(", ")
 			}
 		}
@@ -145,27 +105,24 @@ val AstNode.printableString: String get() = when(this) {
 		if(shortImm) append(" short")
 		if(op1 == null) return@buildString
 		append(' ')
-		append(op1.printableString)
+		append(op1.printString)
 		if(op2 == null) return@buildString
 		append(", ")
-		append(op2.printableString)
+		append(op2.printString)
 		if(op3 == null) return@buildString
 		append(", ")
-		append(op3.printableString)
+		append(op3.printString)
 		if(op4 == null) return@buildString
 		append(", ")
-		append(op4.printableString)
+		append(op4.printString)
 	}
-
-	is NamespaceNode -> "namespace ${symbol.name}"
-	is ScopeEndNode -> "SCOPE END"
 
 	is EnumNode -> buildString {
 		appendLine("enum ${symbol.name} {")
 		for(e in entries)
-			appendLine("\t${e.symbol.name} = ${e.value.printableString},")
+			appendLine("\t${e.symbol.name} = ${e.value.printString},")
 		append('}')
-	}
+	}*/
 
 	else -> toString()
 }

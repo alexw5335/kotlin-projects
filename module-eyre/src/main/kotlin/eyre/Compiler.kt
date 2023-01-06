@@ -1,70 +1,50 @@
 package eyre
 
-import core.Core
-import java.nio.file.Files
-import java.nio.file.Paths
-
-class Compiler(private val srcSet: SrcSet) {
+class Compiler(private val srcFiles: List<SrcFile>) {
 
 
-	constructor(singleDirPath: String) : this(SrcSet.create(Paths.get(singleDirPath)))
-
-
-
-	val globalNamespace = Namespace(Interns.GLOBAL, SymTable())
-
-	val dllImports = DllImports()
-
-	var entryPoint: LabelSymbol? = null
+	private val globalNamespace = Namespace(Interns.GLOBAL, SymTable())
 
 
 
 	fun compile() {
-		for(s in srcSet.srcFiles) {
-			Lexer(s).lex()
-			Parser(this, s).parse()
-		}
+		globalNamespace.symbols.addGlobalTypes()
 
-		printAst()
+		for(srcFile in srcFiles)
+			Lexer(srcFile).lex()
 
-		Resolver(srcSet, globalNamespace).resolve()
+		for(srcFile in srcFiles)
+			Parser(globalNamespace, srcFile).parse()
 
-		val assemblerOutput = Assembler(srcSet).assemble()
-
-		val linkerOutput = Linker(this, assemblerOutput).link()
-		
-		Files.write(Paths.get("test.bin"), assemblerOutput.text)
-		Files.write(Paths.get("test.exe"), linkerOutput)
+		Resolver(globalNamespace, srcFiles).resolve()
 	}
 
 
 
-	fun run() {
-		Core.runPrint("./test.exe")
-	}
-
-
-
-	fun compileAndRun() {
-		compile()
-		run()
+	private fun SymTable.addGlobalTypes() {
+		add(VoidType)
+		add(ByteType)
+		add(WordType)
+		add(DWordType)
+		add(QWordType)
+		add(Interner["i8"], ByteType)
+		add(Interner["i16"], WordType)
+		add(Interner["i32"], DWordType)
+		add(Interner["i64"], QWordType)
 	}
 
 
 
 	fun printAst() {
-		for(s in srcSet.srcFiles) {
-			println("AST for file: ${s.relPath}")
-			for(n in s.nodes)
-				println(n.printableString)
+		for((i, file) in srcFiles.withIndex()) {
+			println("Ast for file: ${file.relPath}:")
+
+			for(node in file.nodes)
+				println(node.printString)
+
+			if(i != srcFiles.size - 1)
+				println()
 		}
-	}
-
-
-
-	companion object {
-		fun createFromResources(root: String, vararg files: String) =
-			Compiler(SrcSet.create(Core.getResourcePath(root), *files))
 	}
 
 

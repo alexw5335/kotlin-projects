@@ -42,19 +42,17 @@ object Interner {
 
 
 
-	val keywords     = createRange(Keyword.values, Keyword::string)
+	val keywords     = createRange(Keyword.values(), Keyword::string)
 
-	val widths       = createRange(Width.values, Width::string)
+	val widths       = createRange(Width.values(), Width::string)
 
-	val varWidths    = createRange(Width.values, Width::varString)
+	val varWidths    = createRange(Width.values(), Width::varString)
 
-	val registers    = createRange(Register.values, Register::string)
+	val registers    = createRange(Register.values(), Register::string)
 
-	val prefixes     = createRange(Prefix.values, Prefix::string)
-
-	val visibilities = createRange(Visibility.values, Visibility::string)
+	val prefixes     = createRange(Prefix.values(), Prefix::string)
 	
-	val mnemonics    = createRange(Mnemonic.values, Mnemonic::string)
+	val mnemonics    = createRange(Mnemonic.values(), Mnemonic::string)
 
 
 	
@@ -78,6 +76,8 @@ object Interner {
 
 	operator fun get(id: Int) = list[id]
 
+	operator fun get(name: String) = add(name)
+
 
 }
 
@@ -88,7 +88,7 @@ object Interns {
 	private val String.intern get() = Interner.add(this)
 
 	val RES    = "res"   .intern
-	val SHORT  = "short" .intern
+	val RESB   = "resb"  .intern
 	val NULL   = "null"  .intern
 	val EMPTY  = ""      .intern
 	val GLOBAL = "global".intern
@@ -97,5 +97,7 @@ object Interns {
 	val SIZEOF = "sizeof".intern
 	val REL    = "rel"   .intern
 	val INT    = "int"   .intern
+	val VOID   = "void"  .intern
+	val ABS    = "abs"   .intern
 
 }
