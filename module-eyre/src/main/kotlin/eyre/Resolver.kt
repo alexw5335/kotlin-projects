@@ -26,10 +26,16 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 
 		srcFile.resolving = true
 
-		val pos = stack.pos
-		for(node in srcFile.nodes)
-			resolveNode(node)
-		stack.pos = pos
+		for(node in srcFile.nodes) {
+			when(node) {
+				is NamespaceNode -> stack.push(node.symbol.symbols)
+				is ScopeEndNode  -> stack.pop()
+				is StructNode    -> resolveStruct(node.symbol)
+				is VarNode       -> resolveVar(node)
+				is ConstNode     -> resolveConstNode(node)
+				else             -> continue
+			}
+		}
 
 		srcFile.resolving = false
 		srcFile.resolved = true
@@ -37,23 +43,13 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 
 
 
-	private fun resolveNode(node: AstNode) {
+	/**
+	 * Fills in any [SymNode] nodes in an expression.
+	 */
+	private fun resolveExpressionSymbols(node: AstNode) {
 		when(node) {
-			is NamespaceNode -> stack.push(node.symbol.symbols)
-			is ScopeEndNode  -> stack.pop()
-			is StructNode    -> resolveStruct(node.symbol)
-			is VarNode       -> resolveVar(node)
-			is ConstNode     -> resolveConstNode(node)
-			else             -> return
-		}
-	}
-
-
-
-	private fun resolveExpression(node: AstNode) {
-		when(node) {
-			is BinaryNode -> { resolveExpression(node.left); resolveExpression(node.right) }
-			is UnaryNode  -> resolveExpression(node)
+			is BinaryNode -> { resolveExpressionSymbols(node.left); resolveExpressionSymbols(node.right) }
+			is UnaryNode  -> resolveExpressionSymbols(node)
 			is DotNode    -> resolveDot(node)
 			is SymNode    -> resolveSymNode(node)
 			else          -> return
@@ -70,16 +66,6 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 
 
 
-	private fun resolveConstSymbol(symbol: Symbol?): Long {
-		if(symbol !is ConstSymbol) error("Expecting constant integer symbol, found: ${symbol?.name}")
-		if(symbol.resolved) return symbol.value
-		if(symbol.srcFile.resolving) error("Constant not yet initialised: ${symbol.name}")
-		resolveFile(symbol.srcFile)
-		return symbol.value
-	}
-
-
-
 	private fun AstNode.resolveInt(): Long = when(this) {
 		is IntNode    -> value
 		is UnaryNode  -> op.calculate(node.resolveInt())
@@ -88,6 +74,17 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 		is DotNode    -> resolveConstSymbol(resolveDot(this))
 		else          -> error("Invalid node: $this")
 	}
+
+
+
+	private fun resolveConstSymbol(symbol: Symbol?): Long {
+		if(symbol !is ConstSymbol) error("Expecting constant integer symbol, found: ${symbol?.name}")
+		if(symbol.resolved) return symbol.value
+		if(symbol.srcFile.resolving) error("Constant not yet initialised: ${symbol.name}")
+		resolveFile(symbol.srcFile)
+		return symbol.value
+	}
+
 
 
 
@@ -139,9 +136,9 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 	private fun resolveVar(node: VarNode) {
 		if(node.value is InvokeNode) {
 			val invoker = resolveSymbol(node.value.invoker)
-			node.symbol.type = invoker as? StructSymbol ?: error("Invalid invoker symbol: $invoker")
+			node.symbol.type = invoker as? Type ?: error("Invalid invoker symbol: $invoker")
 		} else {
-			resolveExpression(node.value)
+			resolveExpressionSymbols(node.value)
 		}
 	}
 
@@ -159,14 +156,17 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 
 		for(member in symbol.members) {
 			val type = member.type.checkResolved()
-			val alignment = type.size
+			val size = type.size
+			val alignment = size.coerceAtMost(8)
 			maxAlignment = max(alignment, maxAlignment)
 			offset = (offset + alignment - 1) and -alignment
 			member.offset = offset
-			offset += alignment
+			offset += size
 		}
 
+		symbol.resolved = true
 		symbol.size = (offset + maxAlignment - 1) and -maxAlignment
+		println("${symbol.name} ${symbol.size}")
 	}
 
 
@@ -182,5 +182,6 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 
 		return this
 	}
+
 
 }

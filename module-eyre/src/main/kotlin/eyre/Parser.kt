@@ -194,6 +194,18 @@ class Parser(private val globalNamespace: Namespace, private val srcFile: SrcFil
 
 
 
+	private fun parseEnum(isBitmask: Boolean) {
+		val symbols = SymTable()
+		var current = if(isBitmask) 1L else 0L
+		val enumName = id()
+
+		expect(SymToken.LEFT_BRACE)
+		if(tokens[pos] == SymToken.RIGHT_BRACE) { pos++; return }
+		val entries = ArrayList<EnumEntryNode>()
+	}
+
+
+
 	/*
 	Expression Parsing
 	 */

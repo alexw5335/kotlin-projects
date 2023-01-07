@@ -30,6 +30,11 @@ class ResNode(val symbol: ResSymbol, val value: AstNode) : AstNode
 
 class VarNode(val symbol: VarSymbol, val value: AstNode) : AstNode
 
+class EnumNode(val symbol: Namespace, val entries: List<EnumEntryNode>) : AstNode
+
+class EnumEntryNode(val symbol: ConstSymbol, val value: AstNode) : AstNode
+
+
 
 
 /*

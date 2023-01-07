@@ -174,3 +174,16 @@ class ConstSymbol(
 	var value         : Long = 0,
 	var resolved      : Boolean = false
 ) : Symbol
+
+class EnumSymbol(
+	override val name: Intern,
+	override val symbols: SymTable
+) : ScopedSymbol
+
+class EnumEntrySymbol(
+	override val name: Intern,
+	var value: AstNode,
+	var resolved: Boolean = false
+) : TypedSymbol {
+	lateinit var parent: EnumSymbol
+}

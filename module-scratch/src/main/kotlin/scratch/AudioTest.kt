@@ -2,20 +2,16 @@ package scratch
 
 import java.awt.Robot
 import java.awt.event.InputEvent
-import java.io.ByteArrayOutputStream
-import java.io.File
+import java.awt.event.KeyEvent
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.TargetDataLine
 import javax.swing.JOptionPane
-import kotlin.io.path.exists
 import kotlin.io.path.name
 import kotlin.math.absoluteValue
-import kotlin.system.measureTimeMillis
 
 
 
@@ -38,7 +34,6 @@ private fun testing() {
 	val mixers = AudioSystem.getMixerInfo().map(AudioSystem::getMixer)
 	val mixer = mixers.first { it.mixerInfo.name.startsWith("CABLE Output") }
 	val format = AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 1000F, 16, 2, 4, 1000F, false)
-	//val format = AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 1000F, 8, 1, 1, 1000F, false)
 	val lineInfo = DataLine.Info(TargetDataLine::class.java, format)
 	val line = mixer.getLine(lineInfo) as TargetDataLine
 
@@ -47,57 +42,54 @@ private fun testing() {
 	line.open()
 	line.start()
 
-	var running = true
-
 	val thread = Thread {
 		line.open()
 		line.start()
 
-		var segmentCount = 0
-		var time = 0L
+		var segment = false
 		val robot = Robot()
-		var pressed = false
-		var pressedTime = 0L
+		var last = 0L
 
-		while(running) {
-			measureTimeMillis { line.read(bytes, 0, bytes.size) }
-
+		while(true) {
+			line.read(bytes, 0, bytes.size)
 			val average = bytes.sumOf { it.toInt().absoluteValue } / bytes.size
 			val current = System.currentTimeMillis()
 
-			if(pressed) {
-				if(System.currentTimeMillis() - pressedTime < 1000) {
-					robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
-					pressed = false
-				} else {
-					continue
+			if(average < 3) {
+				if(segment) {
+					println("Segment end: ${current - last}")
+
+					if(current - last < 600) {
+						println("Fishing")
+						robot.mousePress(InputEvent.BUTTON1_DOWN_MASK)
+						Thread.sleep(100)
+						robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
+						Thread.sleep(100)
+
+						robot.mousePress(InputEvent.BUTTON1_DOWN_MASK)
+						Thread.sleep(100)
+						robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
+						Thread.sleep(100)
+
+						robot.keyPress(KeyEvent.VK_B)
+						Thread.sleep(100)
+						robot.keyRelease(KeyEvent.VK_B)
+						Thread.sleep(1000)
+					}
+
+					last = current
+					segment = false
 				}
+				continue
 			}
 
-			if(average < 2) {
-				if(segmentCount > 0)
-					time = current
-
-				segmentCount = 0
-			} else {
-				segmentCount++
-				if(current - time < 400) {
-					robot.mousePress(InputEvent.BUTTON1_DOWN_MASK)
-					pressed = true
-					pressedTime = System.currentTimeMillis()
-					println("FISHING")
-				}
-			}
+			segment = true
 		}
-
-		line.stop()
-		line.close()
 	}
 
 	thread.start()
-	JOptionPane.showMessageDialog(null, "Stop recording")
-	running = false
 }
+
 
 
 

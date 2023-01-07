@@ -204,7 +204,7 @@ private fun play(action: Action) = when(action) {
 	is KeyReleaseAction -> sendKeyboardInput(Natives.mapVirtualCodeToScanCode(action.key.code), true)
 	is MoveAction       -> sendMouseInput(action.dx, action.dy, 0, MouseEvent.MOVE.value)
 	is ScrollAction     -> sendMouseInput(0, 0, action.dy, MouseEvent.SCROLL.value)
-	is MouseAction      -> sendMouseInput(0, 0, 0, action.event.value)
+	is MouseAction      -> sendMouseInput(0, 0, 0, action.event.value)bb
 }
 
 

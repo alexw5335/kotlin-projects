@@ -13,12 +13,14 @@ var testing1 = StructNode(10, 10)
 var testing2 res 1
 
 struct StructNode2 {
+	byte testing1
 	StructNode node
+	qword testing
 }
 
 struct StructNode {
-	qword symbol
-	dword members
+	i64 symbol
+	i32 members
 }
 
 const TEST = 1 + 2
