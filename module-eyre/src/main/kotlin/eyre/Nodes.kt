@@ -1,6 +1,10 @@
 package eyre
 
+
+
 sealed interface AstNode
+
+object NullNode : AstNode
 
 object ScopeEndNode : AstNode
 
@@ -22,7 +26,9 @@ class DotNode(val left: AstNode, val right: SymNode) : AstNode
 
 class InvokeNode(val invoker: AstNode, val args: List<AstNode>) : AstNode
 
-class StructNode(val symbol: StructSymbol) : AstNode
+class StructMemberNode(val symbol: StructMemberSymbol, val type: Intern)
+
+class StructNode(val symbol: StructSymbol, val members: List<StructMemberNode>) : AstNode
 
 class ConstNode(val symbol: ConstSymbol, val value: AstNode) : AstNode
 
@@ -30,10 +36,9 @@ class ResNode(val symbol: ResSymbol, val value: AstNode) : AstNode
 
 class VarNode(val symbol: VarSymbol, val value: AstNode) : AstNode
 
-class EnumNode(val symbol: Namespace, val entries: List<EnumEntryNode>) : AstNode
+class EnumEntryNode(val symbol: EnumEntrySymbol, val value: AstNode)
 
-class EnumEntryNode(val symbol: ConstSymbol, val value: AstNode) : AstNode
-
+class EnumNode(val symbol: EnumSymbol, val entries: List<EnumEntryNode>) : AstNode
 
 
 
@@ -67,8 +72,8 @@ val AstNode.printString: String get() = when(this) {
 		append("struct ")
 		append(symbol.name)
 		append(" {\n")
-		for(member in symbol.members)
-			append("\t${member.typeName} ${member.name}\n")
+		for(member in members)
+			append("\t${member.type} ${member.symbol.name}\n")
 		append("}\n")
 	}
 
@@ -121,13 +126,14 @@ val AstNode.printString: String get() = when(this) {
 		append(", ")
 		append(op4.printString)
 	}
+	*/
 
 	is EnumNode -> buildString {
 		appendLine("enum ${symbol.name} {")
 		for(e in entries)
-			appendLine("\t${e.symbol.name} = ${e.value.printString},")
+			appendLine("\t${e.symbol.name} = ${e.value.printString}")
 		append('}')
-	}*/
+	}
 
 	else -> toString()
 }

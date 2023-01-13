@@ -1,6 +1,6 @@
 package eyre
 
-class Parser(private val globalNamespace: Namespace, private val srcFile: SrcFile) {
+class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 
 
 	private var pos = 0
@@ -13,7 +13,7 @@ class Parser(private val globalNamespace: Namespace, private val srcFile: SrcFil
 
 	private val terminators = srcFile.terminators
 
-	private var symbols = globalNamespace.symbols
+	private var symbols = context.globalNamespace.symbols
 
 	private var currentNamespace: Namespace? = null // single-line namespace declaration
 
@@ -42,6 +42,8 @@ class Parser(private val globalNamespace: Namespace, private val srcFile: SrcFil
 	private fun SymTable.addChecked(symbol: Symbol) = add(symbol)?.let { error("Symbol redefinition: $symbol") }
 
 	private fun<T : AstNode> T.add(): T { nodes.add(this); return this }
+
+	private fun<T : Type> T.add(): T { symbols.addChecked(this); context.types.add(this); return this }
 
 	private fun<T : Symbol> T.add(): T { symbols.addChecked(this); return this }
 
@@ -108,6 +110,8 @@ class Parser(private val globalNamespace: Namespace, private val srcFile: SrcFil
 				Keyword.VAR       -> parseVar()
 				Keyword.STRUCT    -> parseStruct()
 				Keyword.CONST     -> parseConst()
+				Keyword.ENUM      -> parseEnum(false)
+				Keyword.BITMASK   -> parseEnum(true)
 				else -> error("Invalid keyword: $intern")
 			}
 			return
@@ -148,22 +152,25 @@ class Parser(private val globalNamespace: Namespace, private val srcFile: SrcFil
 	private fun parseStruct() {
 		val structName = id()
 		expect(SymToken.LEFT_BRACE)
-		val structSymbols = SymTable()
+		val symbols = SymTable()
 		val memberSymbols = ArrayList<StructMemberSymbol>()
+		val members = ArrayList<StructMemberNode>()
 
 		while(true) {
 			if(tokens[pos] == SymToken.RIGHT_BRACE) break
 			val type = id()
 			val name = id()
-			val memberSymbol = StructMemberSymbol(name, type)
-			structSymbols += memberSymbol
-			memberSymbols += memberSymbol
+			val symbol = StructMemberSymbol(name)
+			members.add(StructMemberNode(symbol, type))
+			symbols.add(symbol)
+			memberSymbols.add(symbol)
 			expectTerminator()
 		}
 
 		pos++
 
-		StructNode(StructSymbol(structName, structSymbols, memberSymbols).add()).add()
+		val symbol = StructSymbol(structName, symbols, memberSymbols).add()
+		StructNode(symbol, members).add()
 	}
 
 
@@ -200,8 +207,44 @@ class Parser(private val globalNamespace: Namespace, private val srcFile: SrcFil
 		val enumName = id()
 
 		expect(SymToken.LEFT_BRACE)
-		if(tokens[pos] == SymToken.RIGHT_BRACE) { pos++; return }
+
+		if(tokens[pos] == SymToken.RIGHT_BRACE) {
+			pos++
+			EnumNode(EnumSymbol(enumName, EmptySymTable, emptyList()).add(), emptyList()).add()
+			return
+		}
+
 		val entries = ArrayList<EnumEntryNode>()
+		val entrySymbols = ArrayList<EnumEntrySymbol>()
+
+		while(true) {
+			if(tokens[pos] == SymToken.RIGHT_BRACE)
+				break
+
+			val name = id()
+
+			val symbol: EnumEntrySymbol
+			val entry: EnumEntryNode
+
+			if(tokens[pos] == SymToken.EQUALS) {
+				pos++
+				symbol = EnumEntrySymbol(name, 0)
+				entry = EnumEntryNode(symbol, readExpression())
+			} else {
+				symbol = EnumEntrySymbol(name, current)
+				entry = EnumEntryNode(symbol, NullNode)
+				current += if(isBitmask) current else 1
+			}
+
+			symbols.add(symbol)
+			entrySymbols.add(symbol)
+			entries.add(entry)
+
+			if(!atNewline() && (tokens[pos] != SymToken.COMMA || tokens[++pos] !is IdToken)) break
+		}
+
+		expect(SymToken.RIGHT_BRACE)
+		EnumNode(EnumSymbol(enumName, symbols, entrySymbols).add(), entries).add()
 	}
 
 

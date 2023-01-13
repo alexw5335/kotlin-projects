@@ -1,27 +1,7 @@
 namespace main
 
-// type = StructNode
-// Empty struct, .bss
-var testing = StructNode()
+const one = TestEnum.FIRST
 
-// type = StructNode
-// Initialised struct, .data
-var testing1 = StructNode(10, 10)
-
-// type = void
-// arbitrary uninitialised data, placed in .bss
-var testing2 res 1
-
-struct StructNode2 {
-	byte testing1
-	StructNode node
-	qword testing
+bitmask TestEnum {
+	FIRST = one
 }
-
-struct StructNode {
-	i64 symbol
-	i32 members
-}
-
-const TEST = 1 + 2
-const TEST2 = TEST + 1

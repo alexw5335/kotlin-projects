@@ -1,48 +1,29 @@
 package eyre
 
-class Compiler(private val srcFiles: List<SrcFile>) {
-
-
-	private val globalNamespace = Namespace(Interns.GLOBAL, SymTable())
-
+class Compiler(private val context: EyreContext) {
 
 
 	fun compile() {
-		globalNamespace.symbols.addGlobalTypes()
-
-		for(srcFile in srcFiles)
+		for(srcFile in context.srcFiles)
 			Lexer(srcFile).lex()
 
-		for(srcFile in srcFiles)
-			Parser(globalNamespace, srcFile).parse()
+		for(srcFile in context.srcFiles)
+			Parser(context, srcFile).parse()
 
-		Resolver(globalNamespace, srcFiles).resolve()
-	}
-
-
-
-	private fun SymTable.addGlobalTypes() {
-		add(VoidType)
-		add(ByteType)
-		add(WordType)
-		add(DWordType)
-		add(QWordType)
-		add(Interner["i8"], ByteType)
-		add(Interner["i16"], WordType)
-		add(Interner["i32"], DWordType)
-		add(Interner["i64"], QWordType)
+		//Resolver(context).resolve()
+		//context.types.forEach(::println)
 	}
 
 
 
 	fun printAst() {
-		for((i, file) in srcFiles.withIndex()) {
-			println("Ast for file: ${file.relPath}:")
+		for((i, file) in context.srcFiles.withIndex()) {
+			println("\u001B[32mFILE AST (${file.relPath})\u001B[0m\n")
 
 			for(node in file.nodes)
-				println(node.printString)
+				println(node.printString + "\n")
 
-			if(i != srcFiles.size - 1)
+			if(i != context.srcFiles.size - 1)
 				println()
 		}
 	}

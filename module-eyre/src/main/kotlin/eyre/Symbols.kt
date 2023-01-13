@@ -77,20 +77,15 @@ Symbol interfaces
 
 
 
+
 interface Symbol {
 	val name: Intern
 }
 
 
 
-interface Pos {
-	var pos: Int
-}
-
-
-
 interface TypedSymbol : Symbol {
-	var type: Type
+	val type: Type
 }
 
 
@@ -103,7 +98,13 @@ interface ScopedSymbol : Symbol {
 
 interface Type : ScopedSymbol {
 	val size: Int
-	var resolved: Boolean
+	var isSizeResolved: Boolean
+}
+
+
+
+interface IntProvider : Symbol {
+	val intValue: Long
 }
 
 
@@ -117,20 +118,20 @@ Symbol instances
 abstract class PrimitiveType(override val name: Intern, override val size: Int) : Type {
 	override val symbols = EmptySymTable
 	override fun toString() = name.string
-	override var resolved = true
+	override var isSizeResolved = true
 }
 
 
 
-object VoidType : PrimitiveType(Interner["void"], 0)
+object VoidType : PrimitiveType(Interns.VOID, 0)
 
-object ByteType : PrimitiveType(Interner["byte"], 1)
+object ByteType : PrimitiveType(Interns.BYTE, 1)
 
-object WordType : PrimitiveType(Interner["word"], 2)
+object WordType : PrimitiveType(Interns.WORD, 2)
 
-object DWordType : PrimitiveType(Interner["dword"], 4)
+object DWordType : PrimitiveType(Interns.DWORD, 4)
 
-object QWordType : PrimitiveType(Interner["qword"], 8)
+object QWordType : PrimitiveType(Interns.QWORD, 8)
 
 
 
@@ -143,19 +144,16 @@ class ResSymbol(
 	override val name : Intern,
 	override var type : Type = VoidType,
 	var size          : Int = 0,
-	override var pos  : Int = 0
-) : TypedSymbol, Pos
+) : TypedSymbol
 
 class VarSymbol(
 	override val name : Intern,
 	override var type : Type = VoidType,
-	var size          : Int = 0,
-	override var pos  : Int = 0
-) : TypedSymbol, Pos
+	var size          : Int = 0
+) : TypedSymbol
 
 class StructMemberSymbol(
 	override val name : Intern,
-	val typeName      : Intern,
 	override var type : Type = VoidType,
 	var offset        : Int = 0
 ) : TypedSymbol
@@ -163,27 +161,35 @@ class StructMemberSymbol(
 class StructSymbol(
 	override val name     : Intern,
 	override val symbols  : SymTable,
-	val members           : List<StructMemberSymbol>,
-	override var size     : Int = 0,
-	override var resolved : Boolean = false
-) : Type
+	val members           : List<StructMemberSymbol>
+) : Type {
+	override var size = 0
+	override var isSizeResolved = false
+}
 
 class ConstSymbol(
 	override val name : Intern,
 	val srcFile       : SrcFile,
 	var value         : Long = 0,
 	var resolved      : Boolean = false
-) : Symbol
+) : IntProvider {
+	override val intValue get() = value
+}
 
 class EnumSymbol(
-	override val name: Intern,
-	override val symbols: SymTable
-) : ScopedSymbol
+	override val name     : Intern,
+	override val symbols  : SymTable,
+	val entries           : List<EnumEntrySymbol>
+) : Type {
+	override var size = 4
+	override var isSizeResolved = true
+}
 
 class EnumEntrySymbol(
 	override val name: Intern,
-	var value: AstNode,
-	var resolved: Boolean = false
-) : TypedSymbol {
+	var value: Long = 0
+) : TypedSymbol, IntProvider {
 	lateinit var parent: EnumSymbol
+	override val type get() = parent
+	override val intValue get() = value
 }

@@ -25,5 +25,5 @@ private fun Compiler(directory: String, vararg files: String): Compiler {
 		SrcFile(root, path, relPath, contents)
 	}
 
-	return Compiler(srcFiles)
+	return Compiler(EyreContext(srcFiles))
 }

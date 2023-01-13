@@ -2,16 +2,17 @@ package eyre
 
 import kotlin.math.max
 
-class Resolver(private val globalNamespace: Namespace, private val srcFiles: List<SrcFile>) {
+class Resolver(private val context: EyreContext) {
 
 
+	private val srcFiles = context.srcFiles
 
 	private val stack = SymStack()
 
 
 
 	fun resolve() {
-		stack.push(globalNamespace.symbols)
+		stack.push(context.globalNamespace.symbols)
 		srcFiles.forEach(::resolveFile)
 		stack.pop()
 	}
@@ -30,9 +31,10 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 			when(node) {
 				is NamespaceNode -> stack.push(node.symbol.symbols)
 				is ScopeEndNode  -> stack.pop()
-				is StructNode    -> resolveStruct(node.symbol)
+				is StructNode    -> resolveStruct(node)
 				is VarNode       -> resolveVar(node)
 				is ConstNode     -> resolveConstNode(node)
+				is EnumNode      -> resolveEnum(node)
 				else             -> continue
 			}
 		}
@@ -54,6 +56,14 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 			is SymNode    -> resolveSymNode(node)
 			else          -> return
 		}
+	}
+
+
+
+	private fun resolveEnum(node: EnumNode) {
+		for(entry in node.entries)
+			if(entry.value != NullNode)
+				entry.symbol.value = entry.value.resolveInt()
 	}
 
 
@@ -92,7 +102,8 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 		val name = node.right.name
 
 		if(node.left is SymNode) {
-			val scope = stack[node.left.name] as? ScopedSymbol ?: error("Expecting scoped symb")
+			val scope = stack[node.left.name]
+			if(scope !is ScopedSymbol) error("expecting scoped symbol, found: $scope, ${node.left.name}")
 			node.left.symbol = scope
 			val symbol = scope.symbols[name] ?: error("Missing symbol: $name")
 			node.right.symbol = symbol
@@ -144,18 +155,36 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 
 
 
-	private fun resolveStruct(symbol: StructSymbol) {
-		if(symbol.resolved) return
+	private fun getType(name: Intern) = stack[name] as? Type ?: error("Invalid type: ${name}")
 
-		for(member in symbol.members)
-			member.type = stack[member.typeName] as? Type
-				?: error("Invalid type: ${member.typeName}")
+
+
+	private fun resolveStruct(node: StructNode) {
+		for(member in node.members)
+			member.symbol.type = getType(member.type)
+	}
+
+
+
+	private fun resolveTypeSize(type: Type) {
+		if(type is StructSymbol) {
+			resolveStructSize(type)
+		} else {
+			error("Invalid type")
+		}
+	}
+
+
+
+	private fun resolveStructSize(symbol: StructSymbol) {
+		if(symbol.isSizeResolved) return
 
 		var offset = 0
 		var maxAlignment = 0
 
 		for(member in symbol.members) {
-			val type = member.type.checkResolved()
+			val type = member.type
+			if(!type.isSizeResolved) resolveTypeSize(type)
 			val size = type.size
 			val alignment = size.coerceAtMost(8)
 			maxAlignment = max(alignment, maxAlignment)
@@ -164,24 +193,12 @@ class Resolver(private val globalNamespace: Namespace, private val srcFiles: Lis
 			offset += size
 		}
 
-		symbol.resolved = true
+		symbol.isSizeResolved = true
 		symbol.size = (offset + maxAlignment - 1) and -maxAlignment
 		println("${symbol.name} ${symbol.size}")
 	}
 
 
-
-	private fun Type.checkResolved(): Type {
-		if(resolved) return this
-
-		if(this is StructSymbol) {
-			resolveStruct(this)
-		} else {
-			error("Invalid type: $this")
-		}
-
-		return this
-	}
 
 
 }
