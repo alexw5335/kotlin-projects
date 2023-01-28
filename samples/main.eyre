@@ -1,7 +1,6 @@
 namespace main
 
-const one = TestEnum.FIRST
-
-bitmask TestEnum {
-	FIRST = one
+struct TestStruct {
+	byte size
+	byte pos
 }

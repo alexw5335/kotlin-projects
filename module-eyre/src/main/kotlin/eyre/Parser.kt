@@ -165,6 +165,7 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 			symbols.add(symbol)
 			memberSymbols.add(symbol)
 			expectTerminator()
+			if(tokens[pos] == SymToken.SEMICOLON) pos++
 		}
 
 		pos++
