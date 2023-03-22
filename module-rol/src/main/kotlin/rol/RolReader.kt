@@ -1,12 +1,14 @@
 package rol
 
+import core.Core
 import xml.XmlParser
 import xml.XmlWriter
+import java.nio.file.Path
 
-class RolReader(path: String) {
+class RolReader(resourcePath: String) {
 
 
-	val root = XmlParser.parse(path)
+	val root = XmlParser(Core.readResourceChars(resourcePath)).parse()
 
 	val units = root.children("UNIT").map(::Unit)
 

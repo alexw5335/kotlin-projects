@@ -1,16 +1,17 @@
 package rol
 
 fun main() {
-	val unitReader = RolReader("unitrules.xml")
-	val buildingReader = RolReader("buildingrules.xml")
+	val unitReader = RolReader("/unitrules.xml")
+	val buildingReader = RolReader("/buildingrules.xml")
 
 	//unitReader.units.filter { it.name.contains("Rukh") }.forEach(::println)
 	buildingReader.buildings.filter { it.name.contains("Glass Citadel") }.forEach(::println)
 
 	unitMods.forEach(unitReader::applyMod)
 	buildingMods.forEach(buildingReader::applyMod)
-	unitReader.write("modified/unitrules.xml")
-	buildingReader.write("modified/buildingrules.xml")
+	val modifiedRoot = "module-rol/src/main/resources"
+	unitReader.write("$modifiedRoot/unitrules.xml")
+	buildingReader.write("$modifiedRoot/buildingrules.xml")
 }
 
 

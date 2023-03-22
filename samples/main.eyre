@@ -1,6 +1,0 @@
-namespace main
-
-struct TestStruct {
-	byte size
-	byte pos
-}

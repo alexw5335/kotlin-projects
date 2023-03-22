@@ -1,20 +1,13 @@
 package xml
 
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
  * A simple XML parser for parsing the vk.xml registry file.
  */
 class XmlParser(private val chars: CharArray) {
-
-
-	companion object {
-
-		fun parse(file: String) = XmlParser(Files.readString(Paths.get(file), Charsets.UTF_8).toCharArray()).parse()
-
-	}
-
 
 
 	private var pos = 0
