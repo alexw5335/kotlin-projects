@@ -1,4 +1,4 @@
-package codegen.procedural
+package core.gen.procedural
 
 class CFunction(
 	val name             : String,

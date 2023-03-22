@@ -1,6 +1,6 @@
-package codegen
+package core.gen
 
-import codegen.procedural.KFunction
+import core.gen.procedural.KFunction
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path

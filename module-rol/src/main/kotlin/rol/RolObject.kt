@@ -1,9 +1,9 @@
 package rol
 
-import xml.XmlElement
+import core.xml.XmlElement
 import kotlin.reflect.KProperty
 
-abstract class RolObject(val element: XmlElement) {
+abstract class RolObject(var element: XmlElement) {
 
 
 	inner class StringProperty(private val propertyName: String) {

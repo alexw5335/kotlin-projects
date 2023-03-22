@@ -1,7 +1,6 @@
-package xml
+package core.xml
 
-import codegen.CodeWriter
-import codegen.KWriter
+import core.gen.CodeWriter
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path

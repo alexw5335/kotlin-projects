@@ -1,4 +1,4 @@
-package codegen
+package core.gen
 
 import java.io.Writer
 import java.nio.file.Files

@@ -4,7 +4,7 @@ class XmlElement(
 	val type     : String,
 	val attribs  : Map<String, String>,
 	val children : List<XmlElement>,
-	val text     : String?
+	var text     : String?
 ): Iterable<XmlElement> by children {
 
 

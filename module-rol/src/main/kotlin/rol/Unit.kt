@@ -1,6 +1,6 @@
 package rol
 
-import xml.XmlElement
+import core.xml.XmlElement
 
 class Unit(element: XmlElement) : RolObject(element) {
 

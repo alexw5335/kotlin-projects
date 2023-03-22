@@ -9,7 +9,7 @@ fun main() {
 
 	unitMods.forEach(unitReader::applyMod)
 	buildingMods.forEach(buildingReader::applyMod)
-	val modifiedRoot = "module-rol/src/main/resources"
+	val modifiedRoot = "module-rol/src/main/resources/modified"
 	unitReader.write("$modifiedRoot/unitrules.xml")
 	buildingReader.write("$modifiedRoot/buildingrules.xml")
 }

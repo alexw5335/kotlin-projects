@@ -1,9 +1,8 @@
 package rol
 
 import core.Core
-import xml.XmlParser
-import xml.XmlWriter
-import java.nio.file.Path
+import core.xml.XmlParser
+import core.xml.XmlWriter
 
 class RolReader(resourcePath: String) {
 
