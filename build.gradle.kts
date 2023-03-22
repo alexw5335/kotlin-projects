@@ -1,7 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-
-
 plugins {
     kotlin("jvm") version "1.8.0"
 }
@@ -28,11 +24,11 @@ allprojects {
 	}
 
 	apply {
-		tasks.withType<KotlinCompile> {
-			kotlinOptions.jvmTarget = "18"
-		}
-
 		plugin("org.jetbrains.kotlin.jvm")
+	}
+
+	kotlin {
+		jvmToolchain(18)
 	}
 
 	dependencies {

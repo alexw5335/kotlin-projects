@@ -1,27 +1,42 @@
 package eyre
 
-
-
-/*
-Symbol Table
- */
+import java.util.LinkedList
 
 
 
-open class SymTable(private val map: MutableMap<Intern, Symbol> = HashMap()) {
-	operator fun get(intern: Intern) = map[intern]
-	operator fun contains(intern: Intern) = map.contains(intern)
+interface MutableScope : Scope {
+	fun add(symbol: Symbol): Symbol?
 	operator fun plusAssign(symbol: Symbol) { add(symbol) }
-	open fun add(symbol: Symbol) = map.put(symbol.name, symbol)
-	open fun add(name: Intern, symbol: Symbol) = map.put(name, symbol)
-	operator fun set(name: Intern, symbol: Symbol) = add(name, symbol)
 }
 
 
 
-object EmptySymTable : SymTable(HashMap()) {
-	override fun add(symbol: Symbol) = error("Tried to add a symbol ($symbol) to an the singleton empty symbol table")
-	override fun add(name: Intern, symbol: Symbol) = add(symbol)
+interface Scope {
+	operator fun get(intern: Intern): Symbol?
+	fun isEmpty(): Boolean
+}
+
+
+
+object EmptyScope : Scope {
+	override operator fun get(intern: Intern) = null
+	override fun isEmpty() = true
+}
+
+
+
+class SymTable(val map: MutableMap<Intern, Symbol> = HashMap()) : MutableScope {
+
+	override fun get(intern: Intern) = map[intern]
+
+	override fun add(symbol: Symbol) = map.put(symbol.name, symbol)
+
+	override fun isEmpty() = map.isEmpty()
+
+	override fun toString() = map.toString()
+
+	operator fun contains(intern: Intern) = map.contains(intern)
+
 }
 
 
@@ -71,125 +86,94 @@ class SymStack {
 
 
 
-/*
-Symbol interfaces
- */
-
-
-
-
-interface Symbol {
+sealed interface Symbol {
 	val name: Intern
 }
 
 
 
-interface TypedSymbol : Symbol {
-	val type: Type
+sealed interface Ref {
+	var pos: Int
+	var section: Section
 }
 
 
 
-interface ScopedSymbol : Symbol {
-	val symbols: SymTable
+private data class RefImpl(
+	override var section : Section,
+	override var pos     : Int
+) : Ref
+
+
+
+fun Ref(section: Section, pos: Int): Ref = RefImpl(section, pos)
+
+
+
+data class Namespace(
+	override val name : Intern,
+	val symbols       : SymTable
+) : Symbol
+
+
+
+data class DllSymbol(
+	val dll              : Intern,
+	override val name    : Intern,
+	override var section : Section,
+	override var pos     : Int = 0
+) : Symbol, Ref {
+
+	override fun equals(other: Any?) = other is DllSymbol && other.dll === dll && other.name === name
+	override fun hashCode() = name.hashCode()
 }
 
 
 
-interface Type : ScopedSymbol {
-	val size: Int
-	var isSizeResolved: Boolean
-}
+data class VarSymbol(
+	override val name    : Intern,
+	override var section : Section,
+	override var pos     : Int = 0,
+	val size             : Int
+) : Symbol, Ref
 
 
 
-interface IntProvider : Symbol {
-	val intValue: Long
-}
+data class ResSymbol(
+	override val name    : Intern,
+	override var section : Section,
+	override var pos     : Int = 0,
+	var size             : Int = 0
+) : Symbol, Ref
+
+
+
+data class LabelSymbol(
+	override val name    : Intern,
+	override var section : Section,
+	override var pos     : Int = 0
+) : Symbol, Ref
+
+
+
+data class ProcSymbol(
+	override val name    : Intern,
+	override var section : Section,
+	override var pos     : Int = 0,
+	val symbols          : SymTable
+) : Symbol, Ref
 
 
 
 /*
-Symbol instances
+Const
  */
 
 
 
-abstract class PrimitiveType(override val name: Intern, override val size: Int) : Type {
-	override val symbols = EmptySymTable
-	override fun toString() = name.string
-	override var isSizeResolved = true
-}
-
-
-
-object VoidType : PrimitiveType(Interns.VOID, 0)
-
-object ByteType : PrimitiveType(Interns.BYTE, 1)
-
-object WordType : PrimitiveType(Interns.WORD, 2)
-
-object DWordType : PrimitiveType(Interns.DWORD, 4)
-
-object QWordType : PrimitiveType(Interns.QWORD, 8)
-
-
-
-class Namespace(
-	override val name: Intern,
-	override val symbols: SymTable
-) : ScopedSymbol
-
-class ResSymbol(
-	override val name : Intern,
-	override var type : Type = VoidType,
-	var size          : Int = 0,
-) : TypedSymbol
-
-class VarSymbol(
-	override val name : Intern,
-	override var type : Type = VoidType,
-	var size          : Int = 0
-) : TypedSymbol
-
-class StructMemberSymbol(
-	override val name : Intern,
-	override var type : Type = VoidType,
-	var offset        : Int = 0
-) : TypedSymbol
-
-class StructSymbol(
-	override val name     : Intern,
-	override val symbols  : SymTable,
-	val members           : List<StructMemberSymbol>
-) : Type {
-	override var size = 0
-	override var isSizeResolved = false
-}
-
-class ConstSymbol(
-	override val name : Intern,
-	val srcFile       : SrcFile,
-	var value         : Long = 0,
-	var resolved      : Boolean = false
-) : IntProvider {
-	override val intValue get() = value
-}
-
-class EnumSymbol(
-	override val name     : Intern,
-	override val symbols  : SymTable,
-	val entries           : List<EnumEntrySymbol>
-) : Type {
-	override var size = 4
-	override var isSizeResolved = true
-}
-
-class EnumEntrySymbol(
-	override val name: Intern,
-	var value: Long = 0
-) : TypedSymbol, IntProvider {
-	lateinit var parent: EnumSymbol
-	override val type get() = parent
-	override val intValue get() = value
-}
+data class IntSymbol(
+	override val name       : Intern,
+	val file                : SrcFile,
+	var value               : Long = 0,
+	var resolved            : Boolean = false
+) : Symbol

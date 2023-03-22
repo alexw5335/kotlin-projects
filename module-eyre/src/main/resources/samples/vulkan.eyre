@@ -1,0 +1,24 @@
+namespace vk
+
+flags QueueFlags {
+	GRAPHICS
+	COMPUTE
+	TRANSFER
+	SPARSE_BINDING
+	PROTECTED
+}
+
+enum PhysicalDeviceType {
+	OTHER
+	INTEGRATED
+	DISCRETE
+	VIRTUAL
+	CPU
+}
+
+struct Test {
+	0  type
+	8  pointer
+	8  values
+	16
+}

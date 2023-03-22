@@ -4,90 +4,120 @@ package eyre
 
 sealed interface AstNode
 
-object NullNode : AstNode
-
-object ScopeEndNode : AstNode
-
-class NamespaceNode(val symbol: Namespace) : AstNode
+class ImportNode(val parts: List<Intern>) : AstNode
 
 class IntNode(val value: Long) : AstNode
-
-class RegNode(val value: Register) : AstNode
 
 class UnaryNode(val op: UnaryOp, val node: AstNode) : AstNode
 
 class BinaryNode(val op: BinaryOp, val left: AstNode, val right: AstNode) : AstNode
 
-class StringNode(val value: String) : AstNode
+class StringNode(val value: Intern) : AstNode
 
-class SymNode(val name: Intern, var symbol: Symbol? = null): AstNode
+class ConstNode(val symbol: Symbol, val value: AstNode) : AstNode
 
-class DotNode(val left: AstNode, val right: SymNode) : AstNode
+class ResNode(val symbol: ResSymbol, val size: AstNode) : AstNode
 
-class InvokeNode(val invoker: AstNode, val args: List<AstNode>) : AstNode
+class VarNode(val symbol: VarSymbol, val parts: List<VarPart>) : AstNode
 
-class StructMemberNode(val symbol: StructMemberSymbol, val type: Intern)
+class VarPart(val width: Width, val values: List<AstNode>)
 
-class StructNode(val symbol: StructSymbol, val members: List<StructMemberNode>) : AstNode
+class LabelNode(val symbol: LabelSymbol) : AstNode
 
-class ConstNode(val symbol: ConstSymbol, val value: AstNode) : AstNode
+class SizeofNode(val value: AstNode, var size: Long = 0) : AstNode
 
-class ResNode(val symbol: ResSymbol, val value: AstNode) : AstNode
+class RelNode(val left: AstNode, val right: AstNode, val divisor: Int) : AstNode
 
-class VarNode(val symbol: VarSymbol, val value: AstNode) : AstNode
+class InvokeNode(val invoker: SymProvider, val args: List<AstNode>) : AstNode
 
-class EnumEntryNode(val symbol: EnumEntrySymbol, val value: AstNode)
+open class SymNode(val name: Intern, override var symbol: Symbol? = null) : SymProvider
 
-class EnumNode(val symbol: EnumSymbol, val entries: List<EnumEntryNode>) : AstNode
+class DotNode(val left: AstNode, val right: SymNode) : SymProvider by right
+
+interface SymProvider : AstNode {
+	val symbol: Symbol?
+}
 
 
 
 /*
-Formatting
+Scope
  */
 
 
 
-val AstNode.printString: String get() = when(this) {
-	//is LabelNode     -> "label ${symbol.name}"
-	is StringNode    -> value
-	is IntNode       -> value.toString()
-	is UnaryNode     -> "${op.symbol}${node.printString}"
-	is BinaryNode    -> "(${left.printString} ${op.symbol} ${right.printString})"
-	is DotNode       -> "(${left.printString}.${right.printString})"
-	is RegNode       -> value.string
-	//is ImmNode       -> value.printString
-	//is MemNode       -> "${width?.string} [${value.printString}]"
-	is SymNode       -> "$name"
-	is ResNode       -> "var ${symbol.name} res ${value.printString}"
-	is ConstNode     -> "const ${symbol.name} = ${value.printString}"
-	//is DllRefNode    -> "${symbol.dll}::${symbol.name}"
-	//is ProcNode      -> "proc ${symbol.name}"
-	//is SizeofNode    -> "sizeof(${value.printString})"
-	is NamespaceNode -> "namespace ${symbol.name}"
-	is ScopeEndNode  -> "SCOPE END"
-	is VarNode       -> "var ${symbol.name} = ${value.printString}"
+class NamespaceNode(val symbol: Namespace) : AstNode
 
-	is StructNode -> buildString {
-		append("struct ")
-		append(symbol.name)
-		append(" {\n")
-		for(member in members)
-			append("\t${member.type} ${member.symbol.name}\n")
-		append("}\n")
-	}
+class ProcNode(val symbol: ProcSymbol) : AstNode
+
+class EnumNode(val symbol: Namespace, val entries: List<EnumEntryNode>) : AstNode
+
+class EnumEntryNode(val symbol: IntSymbol, val value: AstNode) : AstNode
+
+object ScopeEndNode : AstNode
+
+
+
+/*
+Instruction
+ */
+
+
+
+class RegNode(val value: Register) : AstNode
+
+class ImmNode(val value: AstNode) : AstNode
+
+class MemNode(val width: Width?, val value: AstNode) : AstNode
+
+class DllRefNode(val symbol: DllSymbol) : AstNode
+
+class InsNode(
+	val mnemonic : Mnemonic,
+	val prefix   : Prefix?,
+	val shortImm : Boolean,
+	val op1      : AstNode?,
+	val op2      : AstNode?,
+	val op3      : AstNode?,
+	val op4      : AstNode?
+) : AstNode
+
+
+
+/*
+toString
+ */
+
+
+
+val AstNode.printableString: String get() = when(this) {
+	is LabelNode     -> "label ${symbol.name}"
+	is StringNode    -> value.toString()
+	is IntNode       -> value.toString()
+	is UnaryNode     -> "${op.symbol}${node.printableString}"
+	is BinaryNode    -> "(${left.printableString} ${op.symbol} ${right.printableString})"
+	is DotNode       -> "(${left.printableString}.${right.printableString})"
+	is RegNode       -> value.string
+	is ImmNode       -> value.printableString
+	is MemNode       -> "${width?.string} [${value.printableString}]"
+	is SymNode       -> "$name"
+	is ResNode       -> "var ${symbol.name} res ${size.printableString}"
+	is ConstNode     -> "const ${symbol.name} = ${value.printableString}"
+	is DllRefNode    -> "${symbol.dll}::${symbol.name}"
+	is ProcNode      -> "proc ${symbol.name}"
+	is SizeofNode    -> "sizeof(${value.printableString})"
 
 	is InvokeNode    -> buildString {
-		append(invoker.printString)
+		append(invoker.printableString)
 		append('(')
 		for(i in args.indices) {
-			append(args[i].printString)
+			append(args[i].printableString)
 			if(i != args.size - 1) append(", ")
 		}
 		append(')')
 	}
 
-/*	is ImportNode -> buildString {
+	is ImportNode -> buildString {
 		append("import ")
 		for(i in parts.indices) {
 			append(parts[i])
@@ -103,7 +133,7 @@ val AstNode.printString: String get() = when(this) {
 			append(part.width.varString)
 			append(' ')
 			for((i, c) in part.values.withIndex()) {
-				append(c.printString)
+				append(c.printableString)
 				if(i < part.values.size - 1) append(", ")
 			}
 		}
@@ -115,23 +145,25 @@ val AstNode.printString: String get() = when(this) {
 		if(shortImm) append(" short")
 		if(op1 == null) return@buildString
 		append(' ')
-		append(op1.printString)
+		append(op1.printableString)
 		if(op2 == null) return@buildString
 		append(", ")
-		append(op2.printString)
+		append(op2.printableString)
 		if(op3 == null) return@buildString
 		append(", ")
-		append(op3.printString)
+		append(op3.printableString)
 		if(op4 == null) return@buildString
 		append(", ")
-		append(op4.printString)
+		append(op4.printableString)
 	}
-	*/
+
+	is NamespaceNode -> "namespace ${symbol.name}"
+	is ScopeEndNode -> "SCOPE END"
 
 	is EnumNode -> buildString {
 		appendLine("enum ${symbol.name} {")
 		for(e in entries)
-			appendLine("\t${e.symbol.name} = ${e.value.printString}")
+			appendLine("\t${e.symbol.name} = ${e.value.printableString},")
 		append('}')
 	}
 

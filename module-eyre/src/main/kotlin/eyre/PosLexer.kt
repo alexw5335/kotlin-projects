@@ -36,6 +36,9 @@ class PosLexer(private val srcFile: SrcFile) {
 
 
 
+	/**
+	 * Skips identifiers and number literals
+	 */
 	private fun letterOrDigit() {
 		while(true) {
 			val char = chars[pos]
@@ -126,11 +129,19 @@ class PosLexer(private val srcFile: SrcFile) {
 			charMap['"']  = PosLexer::resolveDoubleApostrophe
 			charMap['\''] = PosLexer::resolveSingleApostrophe
 			charMap['/']  = PosLexer::resolveSlash
-			charMap['_']  = PosLexer::letterOrDigit
-			charMap['0']  = PosLexer::letterOrDigit
-			for(i in 65..90)  charMap[i] = PosLexer::letterOrDigit
-			for(i in 97..122) charMap[i] = PosLexer::letterOrDigit
-			for(i in 49..57)  charMap[i] = PosLexer::letterOrDigit
+
+			for(i in 65..90)
+				charMap[i] = PosLexer::letterOrDigit
+
+			for(i in 97..122)
+				charMap[i] = PosLexer::letterOrDigit
+
+			charMap['_'] = PosLexer::letterOrDigit
+
+			charMap['0'] = PosLexer::letterOrDigit
+
+			for(i in 49..57)
+				charMap[i] = PosLexer::letterOrDigit
 
 			for(i in charMap.indices)
 				if(charMap[i] == null)

@@ -1,4 +1,4 @@
-package eyre
+package testing
 
 class EyreContext(val srcFiles: List<SrcFile>) {
 

@@ -1,59 +1,53 @@
 package eyre
 
-class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
+class Parser(
+	private val compiler : Compiler,
+	private val srcFile  : SrcFile
+) {
 
 
 	private var pos = 0
-
-	private val nodes = ArrayList<AstNode>()
 
 	private val tokens = srcFile.tokens
 
 	private val newlines = srcFile.newlines
 
-	private val terminators = srcFile.terminators
+	private val nodes = ArrayList<AstNode>()
 
-	private var symbols = context.globalNamespace.symbols
+	private var symbols = compiler.globalNamespace.symbols
 
-	private var currentNamespace: Namespace? = null // single-line namespace declaration
+	private var currentNamespace: Namespace? = null // Current single-line namespace declaration
 
 
 
 	/*
-	Parsing utils
+	parsing utils
 	 */
 
 
 
-	private val next get() = tokens[pos]
-
-	private val prev get() = tokens[pos - 1]
-
 	private fun atNewline() = newlines[pos]
 
-	private fun atTerminator() = terminators[pos]
+	private fun atStatementEnd() = tokens[pos] == EndToken || newlines[pos] || tokens[pos] is SymToken
 
-	private fun expectTerminator() { if(!atTerminator()) error("Expecting terminator") }
+	private fun expectStatementEnd() { if(!atStatementEnd()) error("Expecting statement end") }
 
-	private fun expect(symbol: SymToken) { if(tokens[pos++] != symbol) error(1, "Expecting '${symbol.string}', found: $prev") }
+	private fun id() = (tokens[pos++] as? IdToken)?.value ?: error("Expecting identifier")
 
-	private fun id() = (tokens[pos++] as? IdToken)?.value ?: error(2, "Expecting identifier, found: $prev")
-
-	private fun SymTable.addChecked(symbol: Symbol) = add(symbol)?.let { error("Symbol redefinition: $symbol") }
+	private fun expect(token: Token) { if(tokens[pos++] != token) error("Expecting $token") }
 
 	private fun<T : AstNode> T.add(): T { nodes.add(this); return this }
 
-	private fun<T : Type> T.add(): T { symbols.addChecked(this); context.types.add(this); return this }
+	private fun<T : Symbol> T.add(): T {
+		if(symbols.add(this) != null) error("Symbol already defined: ${this.name}")
+		return this
+	}
 
-	private fun<T : Symbol> T.add(): T { symbols.addChecked(this); return this }
-
-	private fun error(message: String): Nothing = error(0, message)
-
-	private fun error(numTokens: Int, message: String): Nothing {
+	private fun error(numTokens: Int, message: String) {
 		if(srcFile.lineNumbers == null) PosLexer(srcFile).lex()
 		val lineNumber = srcFile.lineNumbers!![pos - numTokens]
-		System.err.println("error on line $lineNumber of ${srcFile.relPath}:\n\t$message\n")
-		kotlin.error("Parsing error")
+		System.err.println("Error on line $lineNumber of ${srcFile.relPath}:\n\t$message\n")
+		error("Parsing error")
 	}
 
 
@@ -65,22 +59,9 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 
 
 	fun parse() {
-		parseTopLevel()
+		parseScope(symbols)
 		if(currentNamespace != null) nodes.add(ScopeEndNode)
 		srcFile.nodes = nodes
-	}
-
-
-
-	private fun parseTopLevel() {
-		while(true) {
-			when(val token = tokens[pos++]) {
-				is IdToken  -> parseId(token.value)
-				EndToken    -> break
-				is SymToken -> if(token != SymToken.SEMICOLON) error(1, "Invalid symbol: ${token.string}")
-				else        -> error(1, "Invalid token: $token")
-			}
-		}
 	}
 
 
@@ -92,9 +73,11 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 		while(true) {
 			when(val token = tokens[pos++]) {
 				is IdToken           -> parseId(token.value)
-				SymToken.RIGHT_BRACE -> break
-				is SymToken          -> if(token != SymToken.SEMICOLON) error(1, "Invalid symbol: ${token.string}")
-				else                 -> error(1, "Invalid token: $token")
+				SymToken.RIGHT_BRACE -> { pos--; break }
+				SymToken.SEMICOLON   -> continue
+				EndToken             -> break
+				is SymToken          -> error(1, "Invalid symbol: '${token.string}'")
+				else                 -> error(1, "Invalid token '$token'")
 			}
 		}
 
@@ -103,19 +86,158 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 
 
 
+	private fun parseScopeBraced(symbols: SymTable) {
+		expect(SymToken.LEFT_BRACE)
+		parseScope(symbols)
+		expect(SymToken.RIGHT_BRACE)
+	}
+
+
+
 	private fun parseId(intern: Intern) {
+		if(tokens[pos] == SymToken.COLON) {
+			pos++
+			val symbol = LabelSymbol(intern, Section.TEXT).add()
+			if(intern == Interns.MAIN) {
+				if(compiler.entryPoint != null)
+					error(2, "Multiple entry points (labels named 'main')")
+				compiler.entryPoint = symbol
+			}
+			LabelNode(symbol).add()
+			return
+		}
+
 		if(intern in Interner.keywords) {
 			when(Interner.keywords[intern]) {
+				Keyword.IMPORT    -> parseImport()
+				Keyword.CONST     -> parseConst()
 				Keyword.NAMESPACE -> parseNamespace()
 				Keyword.VAR       -> parseVar()
-				Keyword.STRUCT    -> parseStruct()
-				Keyword.CONST     -> parseConst()
 				Keyword.ENUM      -> parseEnum(false)
-				Keyword.BITMASK   -> parseEnum(true)
-				else -> error("Invalid keyword: $intern")
+				Keyword.FLAGS     -> parseEnum(true)
+				Keyword.STRUCT    -> parseStruct()
+				Keyword.PROC      -> parseProc()
+				//else              -> error("Unexpected keyword: $intern")
 			}
 			return
 		}
+
+		if(intern in Interner.prefixes) {
+			val prefix = Interner.prefixes[intern]
+			val mnemonic = Interner.mnemonics[id()]
+			parseInstruction(mnemonic, prefix).add()
+			return
+		}
+
+		if(intern in Interner.mnemonics) {
+			parseInstruction(Interner.mnemonics[intern], null).add()
+			return
+		}
+
+		error(1, "Unexpected identifier '$intern'")
+	}
+
+
+
+	private fun parseProc() {
+		val name    = id()
+		val symbols = SymTable()
+		val symbol  = ProcSymbol(name, Section.TEXT, 0, symbols).add()
+		ProcNode(symbol).add()
+		parseScopeBraced(symbols)
+		ScopeEndNode.add()
+	}
+
+
+
+	private fun parseStruct() {
+		val structName = id()
+		val symbols = SymTable()
+		var size = -1L
+
+		expect(SymToken.LEFT_BRACE)
+
+		while(true) {
+			val token = tokens[pos++]
+			if(token == SymToken.RIGHT_BRACE) break
+			if(token !is IntToken) error("Expecting offset")
+			val offset = token.value
+			if(tokens[pos] !is IdToken) {
+				size = offset
+				break
+			}
+			val name = id()
+			val symbol = IntSymbol(name, srcFile, offset, true)
+			symbols.add(symbol)
+		}
+
+		if(size < 0L)
+			error("Invalid or unspecified size")
+
+		if(Interns.SIZEOF in symbols)
+			error("Cannot have struct member named sizeof")
+
+		symbols.add(IntSymbol(Interns.SIZEOF, srcFile, size, true))
+
+		Namespace(structName, symbols).add()
+	}
+
+
+
+	private fun parseEnum(isBitmask: Boolean) {
+		val symbols = SymTable()
+		var current = if(isBitmask) 1L else 0L
+
+		val enumName = id()
+
+		expect(SymToken.LEFT_BRACE)
+
+		if(tokens[pos] == SymToken.RIGHT_BRACE) {
+			pos++
+			return
+		}
+
+		val entries = ArrayList<EnumEntryNode>()
+
+		while(true) {
+			if(tokens[pos] == SymToken.RIGHT_BRACE) break
+
+			val name = id()
+
+			val value = if(tokens[pos] == SymToken.EQUALS) {
+				pos++
+				readExpression()
+			} else {
+				val value = current
+				current += if(isBitmask) current else 1
+				IntNode(value)
+			}
+
+			val symbol = IntSymbol(name, srcFile)
+			symbols += symbol
+			entries += EnumEntryNode(symbol, value)
+
+			if(!atNewline() && (tokens[pos] != SymToken.COMMA || tokens[++pos] !is IdToken)) break
+		}
+
+		expect(SymToken.RIGHT_BRACE)
+
+		EnumNode(Namespace(enumName, symbols).add(), entries).add()
+	}
+
+
+
+	private fun parseImport() {
+		val parts = ArrayList<Intern>()
+
+		while(true) {
+			parts.add(id())
+			if(tokens[pos] != SymToken.PERIOD) break
+			pos++
+		}
+
+		expectStatementEnd()
+		ImportNode(parts).add()
 	}
 
 
@@ -124,54 +246,8 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 		val name = id()
 		expect(SymToken.EQUALS)
 		val value = readExpression()
-		ConstNode(ConstSymbol(name, srcFile).add(), value).add()
-	}
-
-
-
-	private fun parseVar() {
-		val name = id()
-
-		if(tokens[pos] == SymToken.EQUALS) {
-			pos++
-			VarNode(VarSymbol(name, VoidType).add(), readExpression()).add()
-			return
-		}
-
-		val initialiser = id()
-
-		if(initialiser == Interns.RES) {
-			ResNode(ResSymbol(name, VoidType).add(), readExpression()).add()
-		} else {
-			error(1, "Unexpected initialiser: $initialiser")
-		}
-	}
-
-
-
-	private fun parseStruct() {
-		val structName = id()
-		expect(SymToken.LEFT_BRACE)
-		val symbols = SymTable()
-		val memberSymbols = ArrayList<StructMemberSymbol>()
-		val members = ArrayList<StructMemberNode>()
-
-		while(true) {
-			if(tokens[pos] == SymToken.RIGHT_BRACE) break
-			val type = id()
-			val name = id()
-			val symbol = StructMemberSymbol(name)
-			members.add(StructMemberNode(symbol, type))
-			symbols.add(symbol)
-			memberSymbols.add(symbol)
-			expectTerminator()
-			if(tokens[pos] == SymToken.SEMICOLON) pos++
-		}
-
-		pos++
-
-		val symbol = StructSymbol(structName, symbols, memberSymbols).add()
-		StructNode(symbol, members).add()
+		val symbol = IntSymbol(name, srcFile, 0, false).add()
+		ConstNode(symbol, value).add()
 	}
 
 
@@ -182,12 +258,11 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 		val existing = symbols[name]
 
 		val namespace = if(existing != null)
-			existing as? Namespace ?: error(1, "Namespace naming conflict '$name'")
+			existing as? Namespace ?: error("Symbol naming conflict")
 		else
 			Namespace(name, SymTable()).add()
 
-		if(next != SymToken.LEFT_BRACE) {
-			expectTerminator()
+		if(tokens[pos] != SymToken.LEFT_BRACE) {
 			if(currentNamespace != null) ScopeEndNode.add()
 			currentNamespace = namespace
 			NamespaceNode(namespace).add()
@@ -195,63 +270,60 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 		} else {
 			pos++
 			NamespaceNode(namespace).add()
-			parseScope(symbols)
+			parseScopeBraced(symbols)
 			ScopeEndNode.add()
 		}
 	}
 
 
 
-	private fun parseEnum(isBitmask: Boolean) {
-		val symbols = SymTable()
-		var current = if(isBitmask) 1L else 0L
-		val enumName = id()
+	private fun parseVar() {
+		val name = id()
+		var initialiser = id()
 
-		expect(SymToken.LEFT_BRACE)
-
-		if(tokens[pos] == SymToken.RIGHT_BRACE) {
-			pos++
-			EnumNode(EnumSymbol(enumName, EmptySymTable, emptyList()).add(), emptyList()).add()
+		if(initialiser == Interns.RES) {
+			val size = readExpression()
+			ResNode(ResSymbol(name, Section.BSS).add(), size).add()
 			return
 		}
 
-		val entries = ArrayList<EnumEntryNode>()
-		val entrySymbols = ArrayList<EnumEntrySymbol>()
+		val parts = ArrayList<VarPart>()
+
+		var size = 0
 
 		while(true) {
-			if(tokens[pos] == SymToken.RIGHT_BRACE)
-				break
+			if(initialiser !in Interner.varWidths) break
+			val width = Interner.varWidths[initialiser]
+			val values = ArrayList<AstNode>()
 
-			val name = id()
+			while(true) {
+				val component = readExpression()
+				values.add(component)
 
-			val symbol: EnumEntrySymbol
-			val entry: EnumEntryNode
+				size += if(component is StringNode)
+					width.bytes * component.value.string.length
+				else
+					width.bytes
 
-			if(tokens[pos] == SymToken.EQUALS) {
+				if(tokens[pos] != SymToken.COMMA) break
 				pos++
-				symbol = EnumEntrySymbol(name, 0)
-				entry = EnumEntryNode(symbol, readExpression())
-			} else {
-				symbol = EnumEntrySymbol(name, current)
-				entry = EnumEntryNode(symbol, NullNode)
-				current += if(isBitmask) current else 1
 			}
 
-			symbols.add(symbol)
-			entrySymbols.add(symbol)
-			entries.add(entry)
-
-			if(!atNewline() && (tokens[pos] != SymToken.COMMA || tokens[++pos] !is IdToken)) break
+			parts.add(VarPart(width, values))
+			initialiser = (tokens[pos++] as? IdToken)?.value ?: break
 		}
 
-		expect(SymToken.RIGHT_BRACE)
-		EnumNode(EnumSymbol(enumName, symbols, entrySymbols).add(), entries).add()
+		pos--
+
+		if(parts.isEmpty()) error("Expecting variable initialiser")
+
+		VarNode(VarSymbol(name, Section.DATA, 0, size).add(), parts).add()
 	}
 
 
 
 	/*
-	Expression Parsing
+	Expressions
 	 */
 
 
@@ -267,17 +339,42 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 
 		if(token is IdToken) {
 			val intern = token.value
+
 			if(intern in Interner.registers)
 				return RegNode(Interner.registers[intern])
+
+			if(tokens[pos] == SymToken.LEFT_PAREN) {
+				if(intern == Interns.SIZEOF) {
+					pos++
+					val node = SizeofNode(readExpression())
+					expect(SymToken.RIGHT_PAREN)
+					return node
+				} else if(intern == Interns.REL) {
+					pos++
+					val left = readExpression()
+					expect(SymToken.COMMA)
+					val right = readExpression()
+					expect(SymToken.COMMA)
+					var divisor = 1
+				}
+			}
+
+			if(intern == Interns.SIZEOF && tokens[pos] == SymToken.LEFT_PAREN) {
+				pos++
+				val node = SizeofNode(readExpression())
+				expect(SymToken.RIGHT_PAREN)
+				return node
+			}
+
 			return SymNode(intern)
 		}
 
 		return when(token) {
-			is SymToken    -> UnaryNode(token.unaryOp ?: error(1, "Unexpected symbol: $token"), readAtom())
+			is SymToken    -> UnaryNode(token.unaryOp ?: error("Unexpected symbol: $token"), readAtom())
 			is IntToken    -> IntNode(token.value)
 			is StringToken -> StringNode(token.value)
 			is CharToken   -> IntNode(token.value.code.toLong())
-			else           -> error(1, "Invalid token: $token")
+			else           -> error("Invalid token: $token")
 		}
 	}
 
@@ -290,7 +387,7 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 			val token = tokens[pos]
 
 			if(token !is SymToken)
-				if(!atTerminator())
+				if(!atStatementEnd())
 					error("Use a semicolon to separate expressions that are on the same line")
 				else
 					break
@@ -302,11 +399,22 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 			pos++
 
 			atom = if(op == BinaryOp.DOT)
-				DotNode(atom, readExpression(op.precedence + 1) as? SymNode ?: kotlin.error("Invalid node"))
-			else if(op == BinaryOp.FUN)
-				InvokeNode(atom, readArgs())
+				DotNode(atom, readExpression(op.precedence + 1) as? SymNode ?: error("Invalid node"))
 			else
 				BinaryNode(op, atom, readExpression(op.precedence + 1))
+
+			if(tokens[pos] == SymToken.LEFT_PAREN) {
+				pos++
+				val args = ArrayList<AstNode>()
+				while(true) {
+					if(tokens[pos] == SymToken.RIGHT_PAREN) break
+					args.add(readExpression())
+					if(tokens[pos] != SymToken.COMMA) break
+					pos++
+				}
+				pos++
+				atom = InvokeNode(atom as? SymProvider ?: error("Invalid invoker"), args)
+			}
 		}
 
 		return atom
@@ -314,18 +422,76 @@ class Parser(private val context: EyreContext, private val srcFile: SrcFile) {
 
 
 
-	private fun readArgs(): List<AstNode> {
-		val args = ArrayList<AstNode>()
-		while(true) {
-			if(tokens[pos] == SymToken.RIGHT_PAREN) break
-			args.add(readExpression())
-			if(tokens[pos] != SymToken.COMMA) break
-			pos++
+	/*
+	Instruction
+	 */
+
+
+
+	private fun parseOperand(): AstNode {
+		var token = tokens[pos]
+		var width: Width? = null
+
+		if(token is IdToken && token.value in Interner.widths) {
+			width = Interner.widths[token.value]
+			if(tokens[pos + 1] == SymToken.LEFT_BRACKET)
+				token = tokens[++pos]
 		}
-		expect(SymToken.RIGHT_PAREN)
-		return args
+
+		if(token == SymToken.LEFT_BRACKET) {
+			pos++
+			val value = readExpression()
+			if(tokens[pos++] != SymToken.RIGHT_BRACKET)
+				error("Expecting ']'")
+			return MemNode(width, value)
+		}
+
+		if(token is IdToken && tokens[pos + 1] == SymToken.REFERENCE) {
+			pos += 2
+			val dllName = Interner.add(token.value.string.lowercase())
+			val symbol = compiler.dllImports.add(dllName, id())
+			return MemNode(Width.BIT64, SymNode(symbol.name, symbol.symbol))
+		}
+
+		return when(val node = readExpression()) {
+			is RegNode -> node
+			else       -> ImmNode(node)
+		}
 	}
 
+
+
+	private fun parseInstruction(mnemonic: Mnemonic, prefix: Prefix?): InsNode {
+		val token = tokens[pos]
+		var shortImm = false
+
+		if(token is IdToken && token.value == Interns.SHORT) {
+			shortImm = true
+			pos++
+		}
+
+		if(newlines[pos] || tokens[pos] == EndToken)
+			return InsNode(mnemonic, prefix, shortImm, null, null, null, null)
+
+		val op1 = parseOperand()
+		if(tokens[pos] != SymToken.COMMA)
+			return InsNode(mnemonic, prefix, shortImm, op1, null, null, null)
+		pos++
+
+		val op2 = parseOperand()
+		if(tokens[pos] != SymToken.COMMA)
+			return InsNode(mnemonic, prefix, shortImm, op1, op2, null, null)
+		pos++
+
+		val op3 = parseOperand()
+		if(tokens[pos] != SymToken.COMMA)
+			return InsNode(mnemonic, prefix, shortImm, op1, op2, op3, null)
+		pos++
+
+		val op4 = parseOperand()
+		expectStatementEnd()
+		return InsNode(mnemonic, prefix, shortImm, op1, op2, op3, op4)
+	}
 
 
 }

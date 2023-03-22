@@ -1,32 +1,64 @@
 package eyre
 
-class Compiler(private val context: EyreContext) {
+import core.Core
+import java.nio.file.Files
+import java.nio.file.Paths
+
+class Compiler(private val srcSet: SrcSet) {
+
+
+	constructor(singleDirPath: String) : this(SrcSet.create(Paths.get(singleDirPath)))
+
+
+
+	val globalNamespace = Namespace(Interns.GLOBAL, SymTable())
+
+	val dllImports = DllImports()
+
+	var entryPoint: LabelSymbol? = null
+
+
+
+	fun run() {
+		compile()
+		Core.runPrint("./test.exe")
+	}
+
 
 
 	fun compile() {
-		for(srcFile in context.srcFiles)
-			Lexer(srcFile).lex()
+		for(s in srcSet.srcFiles) {
+			Lexer(s).lex()
+			Parser(this, s).parse()
+		}
 
-		for(srcFile in context.srcFiles)
-			Parser(context, srcFile).parse()
+		printAst()
+		return
 
-		//Resolver(context).resolve()
-		//context.types.forEach(::println)
+		Resolver(srcSet, globalNamespace).resolve()
+
+		val assemblerOutput = Assembler(srcSet).assemble()
+
+		val linkerOutput = Linker(this, assemblerOutput).link()
+
+		Files.write(Paths.get("test.bin"), assemblerOutput.text)
+		Files.write(Paths.get("test.exe"), linkerOutput)
 	}
 
 
 
 	fun printAst() {
-		for((i, file) in context.srcFiles.withIndex()) {
-			println("\u001B[32mFILE AST (${file.relPath})\u001B[0m\n")
-
-			for(node in file.nodes)
-				println(node.printString + "\n")
-
-			if(i != context.srcFiles.size - 1)
-				println()
+		for(s in srcSet.srcFiles) {
+			println("AST for file: ${s.relPath}")
+			for(n in s.nodes)
+				println(n.printableString)
 		}
 	}
 
+
+	companion object {
+		fun createFromResources(root: String, vararg files: String) =
+			Compiler(SrcSet.create(Core.getResourcePath(root), *files))
+	}
 
 }

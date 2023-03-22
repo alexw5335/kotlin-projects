@@ -4,15 +4,15 @@ package eyre
 
 sealed interface Token
 
-object EndToken : Token { override fun toString() = "EndToken" }
+object EndToken : Token
 
-data class IntToken(val value: Long) : Token
+class IntToken(val value: Long) : Token
 
-data class CharToken(val value: Char) : Token
+class CharToken(val value: Char) : Token
 
-data class StringToken(val value: String) : Token
+class StringToken(val value: Intern) : Token
 
-data class IdToken(val value: Intern) : Token
+class IdToken(val value: Intern) : Token
 
 
 
@@ -23,7 +23,7 @@ enum class SymToken(
 	val firstSymbol : SymToken? = null
 ) : Token {
 
-	LEFT_PAREN    ("(", binaryOp = BinaryOp.FUN),
+	LEFT_PAREN    ("("),
 	RIGHT_PAREN   (")"),
 	PLUS          ("+", binaryOp = BinaryOp.ADD, unaryOp = UnaryOp.POS),
 	MINUS         ("-", binaryOp = BinaryOp.SUB, unaryOp = UnaryOp.NEG),
