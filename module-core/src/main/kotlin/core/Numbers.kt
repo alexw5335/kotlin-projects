@@ -84,6 +84,12 @@ val Int.hex16Full get() = "0x$hex16"
 
 val Int.hex32Full get() = "0x$hex32"
 
+val Int.hex8c get() = hex8.uppercase()
+
+val Int.hex16c get() = hex16.uppercase()
+
+val Int.hex32c get() = hex32.uppercase()
+
 
 
 val Long.hex get() = java.lang.Long.toHexString(this)

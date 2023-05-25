@@ -1,8 +1,8 @@
-package rome2
-
+package rome2.previous
+/*
 import rome2.TrainingLevel.*
 
-object CurrentMod {
+object Mod9 {
 
 
 	fun mod() {
@@ -898,10 +898,10 @@ object CurrentMod {
 			if(!t.name.startsWith("rom_roman"))
 				t.mod { cost = 0 }
 			else
-				t.mod { cost = 0 }
+				t.mod { cost /= 2 }
 
-		//Techs.PROFESSIONAL_SOLDIERY.mod { cost *= 2 }
-		//Techs.CULTISM.mod { cost = Techs.NATURAL_PHILOSOPHY.cost }
+		Techs.PROFESSIONAL_SOLDIERY.mod { cost *= 2 }
+		Techs.CULTISM.mod { cost = Techs.NATURAL_PHILOSOPHY.cost }
 
 		Techs.TRAINING_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
 		Techs.REMUNERATION_REFORMS.effect(TechEffectType.ROME_UNIT_UPKEEP_MOD, -5)
@@ -925,18 +925,18 @@ object CurrentMod {
 		Techs.CONSENSUAL_CONTRACTS.effect(TechEffectType.ROME_TAX_MOD, 5) // 6
 
 		Techs.PHILOSOPHERS.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 10)
-		Techs.ASTRONOMY.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 15)
-		Techs.NATURAL_PHILOSOPHY.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 20)
-		Techs.CULTISM.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 25)
+		Techs.ASTRONOMY.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 10)
+		Techs.NATURAL_PHILOSOPHY.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 10)
+		Techs.CULTISM.effect(TechEffectType.ROME_CULTURE_GDP_MOD, 20)
 
 		Techs.COMMON_WEIGHTS_AND_MEASURES.effect(TechEffectType.ROME_TRADE_GDP_MOD, 5)
 		Techs.COMMON_WEIGHTS_AND_MEASURES.effect(TechEffectType.ROME_TARIFF_MOD, 5)
-		Techs.COMMON_CURRENCY.effect(TechEffectType.ROME_TRADE_GDP_MOD, 10)
-		Techs.COMMON_CURRENCY.effect(TechEffectType.ROME_TARIFF_MOD, 10)
-		Techs.DENOMINATIONAL_SYSTEM.effect(TechEffectType.ROME_TRADE_GDP_MOD, 15)
-		Techs.DENOMINATIONAL_SYSTEM.effect(TechEffectType.ROME_TARIFF_MOD, 15)
-		Techs.PRODUCTION_LINES.effect(TechEffectType.ROME_TRADE_GDP_MOD, 20)
-		Techs.PRODUCTION_LINES.effect(TechEffectType.ROME_TARIFF_MOD, 20)
+		Techs.COMMON_CURRENCY.effect(TechEffectType.ROME_TRADE_GDP_MOD, 5)
+		Techs.COMMON_CURRENCY.effect(TechEffectType.ROME_TARIFF_MOD, 5)
+		Techs.DENOMINATIONAL_SYSTEM.effect(TechEffectType.ROME_TRADE_GDP_MOD, 10)
+		Techs.DENOMINATIONAL_SYSTEM.effect(TechEffectType.ROME_TARIFF_MOD, 10)
+		Techs.PRODUCTION_LINES.effect(TechEffectType.ROME_TRADE_GDP_MOD, 15)
+		Techs.PRODUCTION_LINES.effect(TechEffectType.ROME_TARIFF_MOD, 15)
 
 		Techs.TAX_LABOUR.effect(TechEffectType.ROME_GROWTH_PROVINCE, 4) // 1
 		Techs.WATER_SLUICING.effect(TechEffectType.ROME_GROWTH_PROVINCE, 4) // 3
@@ -948,8 +948,8 @@ object CurrentMod {
 
 
 	private fun modSkills() {
-		fun agentXp(i: Int) = i * 4 + 3 * i * (i + 1) / 2
-		fun armyXp(i: Int) = i * 8 + 3 * i * (i + 1) / 2
+		fun agentXp(i: Int) = i * 6 + 4 * i * (i + 1) / 2
+		fun armyXp(i: Int) = i * 10 + 4 * i * (i + 1) / 2
 
 		for(tier in experienceTiers) tier.mod {
 			skillPoints = 2
@@ -978,4 +978,4 @@ object CurrentMod {
 	}
 
 
-}
+}*/

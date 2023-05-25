@@ -5,6 +5,8 @@ import core.memory.Unsafe
 import core.memory.Unsafe.calloc
 import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.exists
 
 
 
@@ -164,7 +166,7 @@ private fun playContinualThreaded() = Thread {
 		println("Playback start")
 		play(actions)
 		println("Playback end")
-		Thread.sleep(3000)
+		Thread.sleep(10000)
 	}
 	println("Continual playback end")
 }.start()
@@ -254,8 +256,9 @@ private fun loadFromFile() = Files.lines(Paths.get("output.txt")).toList().map {
 
 
 private fun saveToFile() {
-	Files.delete(Paths.get("output.txt"))
-	Files.write(Paths.get("output.txt"), actions.map {
+	val file = Paths.get("output.txt")
+	file.deleteIfExists()
+	Files.write(file, actions.map {
 		when(it) {
 			is KeyPressAction   -> "PRESS ${it.key} ${it.time}"
 			is KeyReleaseAction -> "RELEASE ${it.key} ${it.time}"
