@@ -5,7 +5,8 @@ package encoding
 enum class Operands(
 	val parts: Array<OpClass>? = null,
 	val sm: Boolean = false,
-	val sm2: Boolean = false
+	val sm2: Boolean = false,
+	val sm3: Boolean = false,
 ) {
 	NONE,
 	A(arrayOf(OperandType.A)),
@@ -38,6 +39,11 @@ enum class Operands(
 	R_R_I(arrayOf(OperandType.R, OperandType.R, OperandType.I), sm = true),
 	R_M_I(arrayOf(OperandType.R, OperandType.M, OperandType.I), sm = true),
 	M_R_I(arrayOf(OperandType.M, OperandType.R, OperandType.I), sm = true),
+
+	S_M32_I8(arrayOf(OperandType.S, Operand.M32, Operand.I8)),
+	S_S_S_I8(arrayOf(OperandType.S, OperandType.S, OperandType.S, Operand.I8), sm3 = true),
+	S_S_M64_I8(arrayOf(OperandType.S, OperandType.S, Operand.M64, Operand.I8), sm2 = true),
+	K_X_X_I8(arrayOf(OperandType.K, OperandType.S, OperandType.S, Operand.I8), sm3 = true),
 
 	// Custom
 	A_I8,

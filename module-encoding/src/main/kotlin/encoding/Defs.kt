@@ -93,10 +93,10 @@ class Line(val raw: RawLine) {
 	var compound: Operand? = null
 
 	val ops = ArrayList<Operand>()
-	var op1: Operand? = null
-	var op2: Operand? = null
-	var op3: Operand? = null
-	var op4: Operand? = null
+	val op1 get() = ops.getOrNull(0)
+	val op2 get() = ops.getOrNull(1)
+	val op3 get() = ops.getOrNull(2)
+	val op4 get() = ops.getOrNull(3)
 
 	var operands: Operands? = null
 	var width: Width? = null
@@ -111,15 +111,7 @@ class Line(val raw: RawLine) {
 			compound = operand
 			compoundIndex = ops.size
 		}
-
 		ops += operand
-
-		when {
-			op1 == null -> op1 = operand
-			op2 == null -> op2 = operand
-			op3 == null -> op3 = operand
-			else        -> op4 = operand
-		}
 	}
 
 	fun addOpcode(value: Int) {
@@ -181,6 +173,49 @@ fun printUnique(key: String, value: String, print: String) {
 fun printUnique(key: String, value: String) = printUnique(key, value, value)
 
 fun printUnique(value: String) = printUnique("misc", value)
+
+
+
+enum class RegType {
+	R8,
+	R16,
+	R32,
+	R64,
+	ST,
+	Y,
+	Z,
+	X,
+	MM,
+	K,
+	SEG;
+	val bit = 1 shl ordinal
+}
+
+
+
+@JvmInline
+value class OpMask(val value: Int) {
+	operator fun contains(type: RegType) = type.bit and value != 0
+	//operator fun contains(reg: Reg) = reg.type.bit and value != 0
+	//operator fun contains(width: Width) = width.bit and value != 0
+	companion object {
+		val BYTE     = OpMask(0b0001)
+		val WORD     = OpMask(0b0010)
+		val DWORD    = OpMask(0b0100)
+		val QWORD    = OpMask(0b1000)
+		val TWORD    = OpMask(0b0001_0000)
+		val XWORD    = OpMask(0b0010_0000)
+		val YWORD    = OpMask(0b0100_0000)
+		val ZWORD    = OpMask(0b1000_0000)
+		val GP       = OpMask(0b1111)
+		val GP816    = OpMask(0b0011)
+		val GP81632  = OpMask(0b0111)
+		val GP1664   = OpMask(0b1010)
+		val GP163264 = OpMask(0b1110)
+		val FPU      = OpMask(0b0001_0000)
+		val SSE      = OpMask(0b1110_0000)
+	}
+}
 
 
 

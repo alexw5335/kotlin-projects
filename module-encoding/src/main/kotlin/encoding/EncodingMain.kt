@@ -31,7 +31,7 @@ private fun Line.error(message: String = "Misc. error"): Nothing {
 
 
 
-private fun Line.toEncoding(operands: Operands, width: Width?) = Encoding(
+private fun Line.toEncoding(mnemonic: String, opcode: Int, operands: Operands, width: Width?) = Encoding(
 	this,
 	mnemonic,
 	opcodeExt,
@@ -48,36 +48,21 @@ private fun Line.toEncoding(operands: Operands, width: Width?) = Encoding(
 private fun convertLine(line: Line): List<Encoding> {
 	val list = ArrayList<Encoding>()
 
-	var op1 = line.ops.getOrNull(0)
-	var op2 = line.ops.getOrNull(1)
-	var op3 = line.ops.getOrNull(2)
-	var op4 = line.ops.getOrNull(3)
-
 	fun add() {
-		val encoding = combineOperands(line, op1, op2, op3, op4).let { line.toEncoding(it.first, it.second) }
-		if(line.cc) {
-			for((mnemonic, opcode) in Maps.ccList) {
-				list.add(encoding.copy(
-					mnemonic = encoding.mnemonic.dropLast(2) + mnemonic,
-					opcode = encoding.opcode + opcode
-				))
-			}
-		} else {
-			list.add(encoding)
-		}
+		val (operands, width) = combineOperands(line)
+		if(line.cc)
+			for((mnemonic, opcode) in Maps.ccList)
+				list += line.toEncoding(line.mnemonic.dropLast(2) + mnemonic, opcode, operands, width)
+		else
+			list += line.toEncoding(line.mnemonic, line.opcode, operands, width)
 	}
 
 	if(line.compound != null) {
 		for(operand in line.compound!!.parts) {
-			when(line.compoundIndex) {
-				0 -> op1 = operand
-				1 -> op2 = operand
-				2 -> op3 = operand
-				3 -> op4 = operand
-			}
-
+			line.ops[line.compoundIndex] = operand
 			add()
 		}
+		line.ops[line.compoundIndex] = line.compound!!
 	} else {
 		add()
 	}
@@ -87,134 +72,67 @@ private fun convertLine(line: Line): List<Encoding> {
 
 
 
-
-private fun combineOperands(
-	line : Line,
-	op1  : Operand?,
-	op2  : Operand?,
-	op3  : Operand?,
-	op4  : Operand?
-) : Pair<Operands, Width?> {
-
+private fun combineOperands(line: Line) : Pair<Operands, Width?> {
 	var sm = false
 	var sm2 = false
+	var sm3 = false
+
+	val op1 = line.op1
+	val op2 = line.op2
+	val op3 = line.op3
+	val op4 = line.op4
+
+	fun error(): Nothing = line.error("Invalid operands: ${line.ops.joinToString()}    $sm $sm2 $sm3")
 
 	when {
 		op1 == null -> return Operands.NONE to null
 		op2 == null -> { }
 		op3 == null -> {
 			sm = op1.width != null && (op1.width == op2.width) || (op2 == Operand.I32 && op1.width == Width.QWORD)
-			combineOperands2(line, op1, op2)
 		}
 		op4 == null -> {
 			sm2 = op1.width != null && op1.width == op2.width
 			sm = sm2 && ((op1.width == op3.width) || (op3 == Operand.I32 && op1.width == Width.QWORD))
-			combineOperands3(line, op1, op2, op3)
 		}
-		else -> combineOperands4(line, op1, op2, op3, op4)
+		else -> {
+			sm2 = op1.width != null && op1.width == op2.width
+			sm3 = sm2 && op1.width == op3.width
+			sm = sm3 && op1.width == op4.width
+		}
 	}
 
-	for(operands in Operands.values) {
+	outer@ for(operands in Operands.values) {
 		if(operands.parts == null) continue
 		if(line.ops.size != operands.parts.size) continue
-		for(i in operands.parts.indices)
-			if(line.ops[i] !in operands.parts[i])
-				continue
-		if(operands.sm && !sm) continue
-		if(operands.sm2 && !sm2) continue
-		return operands to op1.width
-	}
+		//for(i in operands.parts.indices)
+		//	if(line.ops[i] !in operands.parts[i])
+		//		continue
+		//if(operands.sm && !sm) continue
+		//if(operands.sm2 && !sm2) continue
+		//if(operands.sm3 && !sm3) continue
 
-	line.error("Invalid operands: ${line.ops.joinToString()}")
-}
+		var width: Width? = null
 
-
-
-private fun combineOperands1(line: Line, op1: Operand): Pair<Operands, Width?> {
-	for(operands in Operands.values)
-		if(operands.parts != null && operands.parts.size == 1 && op1 in operands.parts[0])
-			return operands to op1.width
-	line.error("Invalid operands: $op1")
-}
-
-
-
-private fun combineOperands2(line: Line, op1: Operand, op2: Operand): Pair<Operands, Width?> {
-	val sm = op1.width != null && (op1.width == op2.width) || (op2 == Operand.I32 && op1.width == Width.QWORD)
-
-	for(operands in Operands.values) {
-		if( operands.parts != null &&
-			operands.parts.size == 2 &&
-			op1 in operands.parts[0] &&
-			op2 in operands.parts[1] &&
-			(!operands.sm || sm)
-		) {
-			return operands to op1.width
+		for((i, opClass) in operands.parts.withIndex()) {
+			val operand = line.ops[i]
+			when(opClass) {
+				is OperandType ->
+					if(operand.type != opClass)
+						continue@outer
+					else if(width == null)
+						width = operand.width
+					else if(operand.width != width && !(operand == Operand.I32 && width == Width.QWORD))
+						continue@outer
+				is Operand ->
+					if(operand != opClass)
+						continue@outer
+			}
 		}
+
+		return operands to width
 	}
 
-	line.error("Invalid operands: $op1, $op2")
-
-/*	return when {
-		op1.type.isR && op2 == Operand.I8 && op1 != Operand.R8 -> Operands.R_I8 to op1.width
-		op1.type.isM && op2 == Operand.I8 && op1 != Operand.M8 -> Operands.M_I8 to op1.width
-		op1 == Operand.REL8 && op2.type.isC -> Operands.REL8_C to op2.width
-		op1.type.isR && op2 == Operand.ONE -> Operands.R_1 to op2.width
-		op1.type.isM && op2 == Operand.ONE -> Operands.M_1 to op2.width
-		op1.type.isR && op2 == Operand.CL -> Operands.R_CL to op1.width
-		op1.type.isM && op2 == Operand.CL -> Operands.M_CL to op1.width
-		!sm -> line.error("Invalid operands: $op1, $op2")
-		op1.type.isR && op2.type.isR -> Operands.R_R to op1.width
-		op1.type.isR && op2.type.isM -> Operands.R_M to op1.width
-		op1.type.isM && op2.type.isR -> Operands.M_R to op1.width
-		op1.type.isA && op2.type.isI -> Operands.A_I to op1.width
-		op1.type.isR && op2.type.isI -> Operands.R_I to op1.width
-		op1.type.isM && op2.type.isI -> Operands.M_I to op1.width
-		op1 == Operand.ST && op2 == Operand.ST0 -> Operands.ST_ST0 to null
-		op1 == Operand.ST0 && op2 == Operand.ST -> Operands.ST0_ST to null
-		else -> line.error("Invalid operands: $op1, $op2")
-	}*/
-}
-
-
-
-private fun combineOperands3(line: Line, op1: Operand, op2: Operand, op3: Operand): Pair<Operands, Width?> {
-	val sm2 = op1.width != null && op1.width == op2.width
-	val sm = sm2 && ((op1.width == op3.width) || (op3 == Operand.I32 && op1.width == Width.QWORD))
-
-	for(operands in Operands.values) {
-		if( operands.parts != null &&
-			operands.parts.size == 3 &&
-			op1 in operands.parts[0] &&
-			op2 in operands.parts[1] &&
-			op3 in operands.parts[2] &&
-			(!operands.sm || sm) &&
-			(!operands.sm2 || sm2)
-		) {
-			return operands to op1.width
-		}
-	}
-
-	line.error("Invalid operands: $op1, $op2, $op3")
-/*	return when {
-		!sm2 -> line.error("Invalid operands: $op1, $op2, $op3")
-		op1.type.isR && op2.type.isR && op3 == Operand.I8 -> Operands.R_R_I8 to op1.width
-		op1.type.isR && op2.type.isM && op3 == Operand.I8 -> Operands.R_M_I8 to op1.width
-		op1.type.isM && op2.type.isR && op3 == Operand.I8 -> Operands.M_R_I8 to op1.width
-		op1.type.isR && op2.type.isR && op3 == Operand.CL -> Operands.R_R_CL to op1.width
-		op1.type.isM && op2.type.isR && op3 == Operand.CL -> Operands.M_R_CL to op1.width
-		!sm3 -> line.error("Invalid operands: $op1, $op2, $op3")
-		op1.type.isR && op2.type.isR && op3.type.isI -> Operands.R_R_I to op1.width
-		op1.type.isR && op2.type.isM && op3.type.isI -> Operands.R_M_I to op1.width
-		op1.type.isM && op2.type.isR && op3.type.isI -> Operands.M_R_I to op1.width
-		else -> line.error("Invalid operands: $op1, $op2, $op3")
-	}*/
-}
-
-
-
-private fun combineOperands4(line: Line, op1: Operand, op2: Operand, op3: Operand, op4: Operand): Pair<Operands, Width?> {
-	line.error("Invalid operands: $op1, $op2, $op3, $op4")
+	error()
 }
 
 
@@ -422,7 +340,7 @@ private fun readLines(lines: List<String>): List<RawLine> {
 				.split(',')
 				.filter(String::isNotEmpty)
 
-			nasmLines.add(RawLine(index, mnemonic, operands, parts, extras))
+			nasmLines.add(RawLine(index + 1, mnemonic, operands, parts, extras))
 		} catch(e: Exception) {
 			System.err.println("Error on line ${index + 1}: $line")
 			e.printStackTrace()
