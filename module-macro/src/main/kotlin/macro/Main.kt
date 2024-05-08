@@ -6,8 +6,6 @@ import core.memory.Unsafe.calloc
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.deleteIfExists
-import kotlin.io.path.exists
-
 
 
 private val rawInput = RawInputHeader(calloc(SIZEOF_RAWINPUT))

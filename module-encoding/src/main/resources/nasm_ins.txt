@@ -142,7 +142,7 @@ BSR		reg64,mem			[rm:	o64 nof3 0f bd /r]			X86_64,LONG,SM
 BSR		reg64,reg64			[rm:	o64 nof3 0f bd /r]			X86_64,LONG
 BSWAP		reg32				[r:	o32 0f c8+r]				486
 BSWAP		reg64				[r:	o64 0f c8+r]				X86_64,LONG
-BT		mem,reg16			[mr:	o16 0f a3 /r]				386,SM
+aw		mem,reg16			[mr:	o16 0f a3 /r]				386,SM
 BT		reg16,reg16			[mr:	o16 0f a3 /r]				386
 BT		mem,reg32			[mr:	o32 0f a3 /r]				386,SM
 BT		reg32,reg32			[mr:	o32 0f a3 /r]				386

@@ -1,6 +1,7 @@
 .gradle/
 build/
-.idea/
+.idea/shelf/
+.idea/workspace.xml
 out/
 run/
 /test.*
@@ -8,6 +9,8 @@ run/
 prev/
 *.dll
 /temp/
+/temp.*
+/natives/
 
 /module-macro/src/main/resources/output.txt
 /module-vkgen/src/main/resources/

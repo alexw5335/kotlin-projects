@@ -17,7 +17,8 @@ data class Encoding(
 	val prefix    : Int,
 	val rexw      : Boolean,
 	val operands  : Operands,
-	val width     : Width?
+	val width     : Width?,
+	val ops       : List<Operand>
 ) {
 
 	override fun toString() = buildString {
@@ -58,7 +59,7 @@ class Line(val raw: RawLine) {
 
 	val mnemonic = raw.mnemonic
 	var arch = Arch.NONE
-	var extension = Extension.NONE
+	val extensions = ArrayList<Extension>()
 	var opSize: Width? = null
 	var sm = false
 	var ar = -1
@@ -72,7 +73,8 @@ class Line(val raw: RawLine) {
 	var opcodeExt = -1
 	var hasModRM = false
 	var is4 = false
-	var encodingCode = ""
+	var opEnc = OpEnc.NONE
+	var tupleType: TupleType? = null
 	var postModRM = -1
 	var vsib = VSib.NONE
 	val opParts = ArrayList<OpPart>()
@@ -89,29 +91,26 @@ class Line(val raw: RawLine) {
 	var rs4 = false
 	var star = false
 
+	var vexl = VexL.NONE
+	var vexw = VexW.NONE
+	var vexPrefix = VexPrefix.NP
+	var vexExt = VexExt.E0F
+	var map5 = false
+	var map6 = false
+
 	var compoundIndex = -1
 	var compound: Operand? = null
 
-	val ops = ArrayList<Operand>()
-	val op1 get() = ops.getOrNull(0)
-	val op2 get() = ops.getOrNull(1)
-	val op3 get() = ops.getOrNull(2)
-	val op4 get() = ops.getOrNull(3)
+	val operands = ArrayList<Operand>()
 
-	var operands: Operands? = null
-	var width: Width? = null
-
-	fun set(operands: Operands, width: Width? = null) {
-		this.operands = operands
-		this.width = width
-	}
+	fun addedOpcode(value: Int) = opcode + (value shl ((oplen - 1) shl 3))
 
 	fun addOperand(operand: Operand) {
 		if(operand.parts.isNotEmpty()) {
 			compound = operand
-			compoundIndex = ops.size
+			compoundIndex = operands.size
 		}
-		ops += operand
+		operands += operand
 	}
 
 	fun addOpcode(value: Int) {
@@ -125,6 +124,45 @@ class Line(val raw: RawLine) {
 
 
 
+enum class VexExt {
+	E0F,
+	E38,
+	E3A;
+}
+
+
+
+enum class VexPrefix {
+	NP,
+	P66,
+	PF2,
+	PF3;
+}
+
+
+
+enum class VexL {
+	NONE,
+	L128,
+	L256,
+	L512,
+	L0,
+	LZ,
+	L1,
+	LIG;
+}
+
+
+
+enum class VexW {
+	NONE,
+	W0,
+	W1,
+	WIG;
+}
+
+
+
 object Maps {
 	val arches     = Arch.values().associateBy { it.name.trimStart('_') }
 	val extensions = Extension.values().associateBy { it.name.trimStart('_') }
@@ -133,11 +171,8 @@ object Maps {
 	val operands   = Operand.values().associateBy { it.string }
 	val opWidths   = Width.values().associateBy { it.sizeString }
 	val immTypes   = ImmType.values().associateBy { it.name.lowercase().replace('_', ',') }
-
-	val enabledExtensions = setOf(
-		Extension.NONE,
-		Extension.FPU
-	)
+	val tupleTypes = TupleType.values().associateBy { it.name.lowercase() }
+	val opEncs     = OpEnc.values().associateBy { it.string }
 
 	val ccList = arrayOf(
 		"O" to 0,
@@ -173,6 +208,59 @@ fun printUnique(key: String, value: String, print: String) {
 fun printUnique(key: String, value: String) = printUnique(key, value, value)
 
 fun printUnique(value: String) = printUnique("misc", value)
+
+
+
+enum class OpEnc(val string: String?) {
+	NONE(null),
+	N("-"),
+	NI("-i"),
+	RN("r-"),
+	NR("-r"),
+	IN("i-"),
+	MN("m-"),
+	MRN("mr-"),
+	MR("mr"),
+	RM("rm"),
+	MI("mi"),
+	M("m"),
+	R("r"),
+	RMI("rmi"),
+	I("i"),
+	MRI("mri"),
+	RVM("rvm"),
+	RVMI("rvmi"),
+	RVMS("rvms"),
+	MVR("mvr"),
+	VMI("vmi"),
+	RMV("rmv"),
+	VM("vm"),
+	RMX("rmx"),
+	MXR("mxr"),
+	MRX("mrx"),
+	RMVI("rmvi");
+}
+
+
+
+enum class TupleType {
+	FV,
+	T1S,
+	T2,
+	T4,
+	T8,
+	HV,
+	HVM,
+	T1F64,
+	T1F32,
+	FVM,
+	DUP,
+	T1S8,
+	T1S16,
+	QVM,
+	OVM,
+	M128;
+}
 
 
 
@@ -293,7 +381,8 @@ val ignoredExtras = setOf(
 	"SIZE",
 	"ANYSIZE",
 	"ND",
-	"SX"
+	"SX",
+	"AMD"
 )
 
 
@@ -371,7 +460,8 @@ val invalidExtras = setOf(
 	"CYRIX",
 	"LATEVEX",
 	"OPT",
-	"3DNOW"
+	"3DNOW",
+	"TBM"
 )
 
 

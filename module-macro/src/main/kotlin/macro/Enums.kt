@@ -26,7 +26,6 @@ enum class MouseEvent(val value: Int) {
 	SCROLL(0x800);
 
 	companion object {
-		val values = values()
-		val nameMap = values.associateBy { it.name }
+		val nameMap = entries.associateBy { it.name }
 	}
 }

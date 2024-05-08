@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 
 fun main() {
-	CurrentMod.mod(); applyMods(); runRome2()
+	CurrentMod.mod(); applyMods()
 }
 
 
@@ -190,9 +190,9 @@ private const val ROME_2_PATH = "C:/Program Files (x86)/Steam/steamapps/common/T
 
 private const val ROME_2_DATA_PATH = "$ROME_2_PATH/data"
 
-private const val MOD_NAME = "roman_improvements_v6"
+private const val MOD_NAME = "roman_improvements_v7"
 
-private const val MOD_PREFIX = "R1V6_"
+private const val MOD_PREFIX = "R1V7_"
 
 
 private fun applyMods() {

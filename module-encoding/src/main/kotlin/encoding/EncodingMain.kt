@@ -4,13 +4,13 @@ import core.Core
 import java.nio.file.Files
 
 
-
 fun main() {
 	val rawLines = readLines(Files.readAllLines(Core.getResourcePath("/nasm_ins.txt")))
+	for(l in rawLines)
+		if(l.extras.contains("AMD"))
+			println(l)
 	val filteredLines = filterLines(rawLines)
-	val lines = filteredLines.map(::scrapeLine).filter { it.extension in Maps.enabledExtensions }
-	lines.forEach(::determineOperands)
-	lines.forEach(::convertLine)
+	val lines = filteredLines.map(::scrapeLine)
 }
 
 
@@ -40,7 +40,8 @@ private fun Line.toEncoding(mnemonic: String, opcode: Int, operands: Operands, w
 	prefix,
 	rexw,
 	operands,
-	width
+	width,
+	this.operands
 )
 
 
@@ -52,17 +53,17 @@ private fun convertLine(line: Line): List<Encoding> {
 		val (operands, width) = combineOperands(line)
 		if(line.cc)
 			for((mnemonic, opcode) in Maps.ccList)
-				list += line.toEncoding(line.mnemonic.dropLast(2) + mnemonic, opcode, operands, width)
+				list += line.toEncoding(line.mnemonic.dropLast(2) + mnemonic, line.addedOpcode(opcode), operands, width)
 		else
 			list += line.toEncoding(line.mnemonic, line.opcode, operands, width)
 	}
 
 	if(line.compound != null) {
 		for(operand in line.compound!!.parts) {
-			line.ops[line.compoundIndex] = operand
+			line.operands[line.compoundIndex] = operand
 			add()
 		}
-		line.ops[line.compoundIndex] = line.compound!!
+		line.operands[line.compoundIndex] = line.compound!!
 	} else {
 		add()
 	}
@@ -73,48 +74,13 @@ private fun convertLine(line: Line): List<Encoding> {
 
 
 private fun combineOperands(line: Line) : Pair<Operands, Width?> {
-	var sm = false
-	var sm2 = false
-	var sm3 = false
-
-	val op1 = line.op1
-	val op2 = line.op2
-	val op3 = line.op3
-	val op4 = line.op4
-
-	fun error(): Nothing = line.error("Invalid operands: ${line.ops.joinToString()}    $sm $sm2 $sm3")
-
-	when {
-		op1 == null -> return Operands.NONE to null
-		op2 == null -> { }
-		op3 == null -> {
-			sm = op1.width != null && (op1.width == op2.width) || (op2 == Operand.I32 && op1.width == Width.QWORD)
-		}
-		op4 == null -> {
-			sm2 = op1.width != null && op1.width == op2.width
-			sm = sm2 && ((op1.width == op3.width) || (op3 == Operand.I32 && op1.width == Width.QWORD))
-		}
-		else -> {
-			sm2 = op1.width != null && op1.width == op2.width
-			sm3 = sm2 && op1.width == op3.width
-			sm = sm3 && op1.width == op4.width
-		}
-	}
-
 	outer@ for(operands in Operands.values) {
-		if(operands.parts == null) continue
-		if(line.ops.size != operands.parts.size) continue
-		//for(i in operands.parts.indices)
-		//	if(line.ops[i] !in operands.parts[i])
-		//		continue
-		//if(operands.sm && !sm) continue
-		//if(operands.sm2 && !sm2) continue
-		//if(operands.sm3 && !sm3) continue
+		if(line.operands.size != operands.parts.size) continue
 
 		var width: Width? = null
 
 		for((i, opClass) in operands.parts.withIndex()) {
-			val operand = line.ops[i]
+			val operand = line.operands[i]
 			when(opClass) {
 				is OperandType ->
 					if(operand.type != opClass)
@@ -132,7 +98,8 @@ private fun combineOperands(line: Line) : Pair<Operands, Width?> {
 		return operands to width
 	}
 
-	error()
+	//printUnique(line.operands.joinToString("_")); return Operands.M to null
+	line.error("Invalid operands: ${line.operands.joinToString()}")
 }
 
 
@@ -231,7 +198,7 @@ private fun scrapeLine(raw: RawLine): Line {
 
 	for(extra in raw.extras) when(extra) {
 		in Maps.arches     -> line.arch = Maps.arches[extra]!!
-		in Maps.extensions -> line.extension = Maps.extensions[extra]!!
+		in Maps.extensions -> line.extensions += Maps.extensions[extra]!!
 		in Maps.opWidths   -> line.opSize = Maps.opWidths[extra]!!
 		in ignoredExtras   -> continue
 		"SM"  -> line.sm = true
@@ -256,11 +223,19 @@ private fun scrapeLine(raw: RawLine): Line {
 		part == "f3i"           -> line.prefix == 0xF3
 		part == "wait"          -> line.addOpcode(0x9B)
 		part[0] == '/'          -> line.opcodeExt = part[1].digitToInt(10)
-		part.endsWith(':')      -> line.encodingCode = part.dropLast(1)
 		part in Maps.immTypes   -> line.immType = Maps.immTypes[part]!!
 		part in Maps.opParts    -> line.opParts += Maps.opParts[part]!!
 		part in Maps.vsibs      -> line.vsib = Maps.vsibs[part]!!
 		part in ignoredParts    -> continue
+
+		part.contains(':') -> {
+			val array = part.split(':').filter { it.isNotEmpty() }
+			line.opEnc = Maps.opEncs[array[0]] ?: line.error("Invalid ops: ${array[0]}")
+			if(array.size > 1)
+				line.tupleType = Maps.tupleTypes[array[1]] ?: line.error("Invalid tuple type")
+			if(array.size == 3)
+				line.evex = array[2]
+		}
 
 		part.length == 2 && part[0].isHex && part[1].isHex -> {
 			if(line.hasModRM) {
@@ -279,11 +254,41 @@ private fun scrapeLine(raw: RawLine): Line {
 			}
 		}
 
-		else -> if(!part.endsWith("w0") && !part.endsWith("w1")) error("Unrecognised opcode part: $part")
+		else -> line.error("Unrecognised opcode part: $part")
 	}
 
-	if(line.arch == Arch.FUTURE && line.extension == Extension.NONE)
-		line.extension = Extension.NOT_GIVEN
+	if(line.arch == Arch.FUTURE && line.extensions.isEmpty())
+		line.extensions += Extension.NOT_GIVEN
+
+	val parts = (line.vex ?: line.evex ?: return line).split('.')
+
+	for(part in parts) when(part) {
+		"nds",
+		"ndd",
+		"dds",
+		"vex",
+		"evex" -> continue
+		"lz"   -> line.vexl = VexL.LZ
+		"l0"   -> line.vexl = VexL.L0
+		"l1"   -> line.vexl = VexL.L1
+		"lig"  -> line.vexl = VexL.LIG
+		"128"  -> line.vexl = VexL.L128
+		"256"  -> line.vexl = VexL.L256
+		"512"  -> line.vexl = VexL.L512
+		"wig"  -> line.vexw = VexW.WIG
+		"w0"   -> line.vexw = VexW.W0
+		"w1"   -> line.vexw = VexW.W1
+		"0f"   -> line.vexExt = VexExt.E0F
+		"0f38" -> line.vexExt = VexExt.E38
+		"0f3a" -> line.vexExt = VexExt.E3A
+		"66"   -> line.vexPrefix = VexPrefix.P66
+		"f2"   -> line.vexPrefix = VexPrefix.PF2
+		"f3"   -> line.vexPrefix = VexPrefix.PF3
+		"np"   -> line.vexPrefix = VexPrefix.NP
+		"map5" -> line.map5 = true
+		"map6" -> line.map6 = true
+		else   -> line.error("Invalid vex part: $part")
+	}
 
 	return line
 }
@@ -294,18 +299,17 @@ private fun filterLines(lines: List<RawLine>): List<RawLine> {
 	val filtered = ArrayList<RawLine>()
 
 	for(line in lines) {
-		if(line.mnemonic in customMnemonics)
+		if(line.mnemonic == "SYSCALL" || line.mnemonic == "SYSRET" || line.mnemonic == "LZCNT" || line.mnemonic == "PREFETCHW") {
+			filtered.add(line)
 			continue
+		}
 
-		if("ND" in line.extras && line.operands != "void")
-			continue
-
-		if(invalidExtras.any(line.extras::contains))
-			continue
-
-		if(invalidOperands.any(line.operands::contains))
-			continue
-
+		if(line.mnemonic == "aw") continue
+		if(line.mnemonic in customMnemonics) continue
+		if("ND" in line.extras && line.operands != "void") continue
+		if(invalidExtras.any(line.extras::contains)) continue
+		if(invalidOperands.any(line.operands::contains)) continue
+		if("r+mi:" in line.parts) continue
 		filtered.add(line)
 	}
 

@@ -1,0 +1,226 @@
+package rome2
+
+import rome2.TrainingLevel.*
+
+object CurrentMod {
+
+
+	fun mod() {
+		modOthers()
+		modBuildings()
+		modSkills()
+		modTechs()
+		modGarrisons()
+		modUnits()
+	}
+
+
+
+	private fun modOthers() {
+		campaignVariables["trade_route_value_combined_gdp_proportion"]!!.value = 2.5F
+
+		for(incident in incidents.values)
+			incident.mod { enabled = false; prioritised = false }
+
+		for(dilemma in dilemmas.values)
+			if(!dilemma.name.startsWith("female_leader"))
+				dilemma.mod { enabled = false; prioritised = false }
+
+		for(mission in missions.values)
+			if(mission.name.startsWith("senate") || mission.name.startsWith("diplomatic"))
+				mission.mod { enabled = false; prioritised = false }
+
+		fun String.disable() = messageEvent(this).mod { instantOpen = false }
+
+		"agent_discovered_yours".disable()
+		"character_gains_level".disable()
+		"character_gains_level_female".disable()
+		"politics_character_diplomatic_mission_ended".disable()
+		"politics_character_mission_ended".disable()
+		"politics_character_released_from_prison".disable()
+		"your_army_gains_level".disable()
+		"your_region_raided".disable()
+		"your_trade_route_raided".disable()
+		"your_fleet_gains_level".disable()
+		"military_tech_advance".disable()
+		"trespass_foreign_land".disable()
+		"faction_destroyed".disable()
+		"faction_destroyed_minor".disable()
+		"campmap_your_general_returns_to_capital".disable()
+		"campmap_you_secession_or_civil_war_protection_expired".disable()
+		"campmap_you_secession_or_civil_war_protection_will_expire".disable()
+		"FT_birth".disable()
+		"FT_child_dead".disable()
+		"FT_female_leader".disable()
+		"campmap_your_general_available".disable()
+		"campmap_your_general_disbanded_ready".disable()
+
+		for(b in budgetAllocations.values) b.mod {
+			b.agentFundingCap = 0
+			b.agentFundingAllocationPercentage = 0
+			b.agentTurnOfInactivityUntilCap = 0
+			b.agentPercentageOfPoolToSaveOnFail = 0
+		}
+
+		effectBundle("govt_type_republic").effect("rom_faction_political_party_loyalty", 100)
+		effectBundle("govt_type_empire").effect("rom_faction_political_party_loyalty", 100)
+		effectBundle("rom_stance_army_forced_march").effect("rom_force_campaign_mod_movement_range", 0)
+		effectBundle("rom_stance_navy_double_time").effect("rom_force_campaign_mod_movement_range", 0)
+
+		for(d in difficulties.values)
+			d.addEffect("rom_payload_food", EffectScope.ALL_PROVINCES, 1000F)
+	}
+
+
+
+	private fun modUnits() {
+
+		Units.LEVES.mod {
+			reload   = 10  // 8
+			accuracy = 10  // 5
+			ammo     = 15  // 7
+
+			newProjectile {
+				damage   = 20 // 20
+				apDamage = 10 // 9
+				range    = 80 // 80
+			}
+		}
+
+		Units.VELITES.mod {
+			reload   = 15  // 13
+			accuracy = 20  // 5
+			ammo     = 25  // 7
+			cost     = 350 // 340
+			upkeep   = 60 // 80
+			level    = TRAINED
+
+			newProjectile {
+				damage   = 20 // 20
+				apDamage = 10 // 12
+				range    = 90 // 80
+			}
+		}
+
+		Units.AUX_PELTASTS.mod {
+			reload   = 40   // 28
+			accuracy = 40   // 5
+			ammo     = 40   // 7
+			cost     = 1500 // 420
+			upkeep   = 150  // 90
+			level    = ELITE // poorly_trained
+
+			newProjectile {
+				damage   = 20 // 20
+				apDamage = 10 // 12
+				range    = 100 // 80
+			}
+		}
+
+		Units.AUX_CRETAN_ARCHERS.mod {
+			reload   = 50    // 28
+			ammo     = 50    // 15
+			accuracy = 40    // 5
+			cost     = 1500  // 600
+			upkeep   = 150   // 130
+			level    = ELITE // poorly_trained
+
+			newProjectile {
+				damage   = 35 // 36
+				apDamage = 5 // 4
+				range    = 175 // 150
+			}
+		}
+	}
+
+
+
+	private fun modSkills() {
+		val agentTiers = intArrayOf(
+			50,  // 8
+			100, // 24
+			150, // 48
+			225, // 80
+			300, // 120
+			375, // 168
+			450, // 224
+			525, // 288
+			600  // 360
+		)
+
+		val armyTiers = intArrayOf(
+			100, // 20
+ 			200, // 60
+			300, // 120
+			400, // 200
+			500, // 300
+			600, // 420
+			700, // 560
+			800, // 720
+			900  // 900
+		)
+
+		for(tier in experienceTiers) tier.mod {
+			skillPoints = 2
+			experience = if(tier.agent.isNotEmpty()) agentTiers[rank] else armyTiers[rank]
+		}
+	}
+
+
+
+	private fun modTechs() {
+		for(t in techs.values)
+			if(!t.name.startsWith("rom_roman"))
+				t.mod { cost = 0 }
+
+		Techs.PROFESSIONAL_SOLDIERY.mod { cost *= 2 }
+		Techs.CULTISM.mod { cost = Techs.NATURAL_PHILOSOPHY.cost }
+		Techs.TAX_LABOUR.effect(TechEffectType.ROME_GROWTH_PROVINCE, 4) // 1
+		Techs.WATER_SLUICING.effect(TechEffectType.ROME_GROWTH_PROVINCE, 4) // 3
+	}
+
+
+
+	private fun modGarrisons() {
+		Buildings.ROMAN_CITY_CIVIL_2.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 1, GarrisonGroups.ROMAN_MEDIUM_RANGED to 1)
+		Buildings.ROMAN_CITY_CIVIL_3.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 2, GarrisonGroups.ROMAN_MEDIUM_RANGED to 1)
+		Buildings.ROMAN_CITY_CIVIL_4.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 3, GarrisonGroups.ROMAN_MEDIUM_RANGED to 2)
+		Buildings.ROMAN_CITY_GARRISON_2.addGarrison(GarrisonGroups.ROMAN_STRONG_MELEE to 2, GarrisonGroups.ROMAN_MEDIUM_RANGED to 2)
+		Buildings.ROMAN_CITY_GARRISON_3.addGarrison(GarrisonGroups.ROMAN_STRONG_MELEE to 3, GarrisonGroups.ROMAN_MEDIUM_RANGED to 2)
+		Buildings.ROMAN_CITY_GARRISON_4.addGarrison(GarrisonGroups.ROMAN_STRONG_MELEE to 4, GarrisonGroups.ROMAN_MEDIUM_RANGED to 3)
+
+		Buildings.ROMAN_TOWN_FARM_2.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 1)
+		Buildings.ROMAN_TOWN_FARM_3.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 2)
+		Buildings.ROMAN_TOWN_FARM_4.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 3)
+		Buildings.ROMAN_TOWN_CIVIL_2.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 1)
+		Buildings.ROMAN_TOWN_CIVIL_3.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 2)
+		Buildings.ROMAN_TOWN_CIVIL_4.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 3)
+		Buildings.ROMAN_TOWN_TRADE_2.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 1)
+		Buildings.ROMAN_TOWN_TRADE_3.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 2)
+		Buildings.ROMAN_TOWN_TRADE_4.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 3)
+
+		for(building in Buildings.ROMAN_RESOURCE_TOWNS) {
+			when(building.adjustedLevel) {
+				2 -> building.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 1)
+				3 -> building.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 2)
+				4 -> building.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 3)
+			}
+		}
+
+		Buildings.ROMAN_TOWN_IRON_1.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 1)
+		Buildings.ROMAN_TOWN_ARMOUR_2.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 2)
+		Buildings.ROMAN_TOWN_ARMOUR_3.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 3)
+		Buildings.ROMAN_TOWN_WEAPON_2.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 2)
+		Buildings.ROMAN_TOWN_WEAPON_3.addGarrison(GarrisonGroups.ROMAN_MEDIUM_MELEE to 3)
+	}
+
+
+
+	private fun modBuildings() {
+		for(b in Buildings.ALL) b.mod {
+			b.turns = 1
+		}
+	}
+
+
+}

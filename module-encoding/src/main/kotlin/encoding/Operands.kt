@@ -2,57 +2,108 @@ package encoding
 
 
 
-enum class Operands(
-	val parts: Array<OpClass>? = null,
-	val sm: Boolean = false,
-	val sm2: Boolean = false,
-	val sm3: Boolean = false,
-) {
+enum class Operands(vararg val parts: OpClass) {
 	NONE,
-	A(arrayOf(OperandType.A)),
-	R(arrayOf(OperandType.R)),
-	M(arrayOf(OperandType.M)),
-	I(arrayOf(OperandType.I)),
-	ST(arrayOf(OperandType.ST)),
-	REL(arrayOf(OperandType.REL)),
 
-	R_R(arrayOf(OperandType.R, OperandType.R), sm = true),
-	R_M(arrayOf(OperandType.R, OperandType.M), sm = true),
-	M_R(arrayOf(OperandType.M, OperandType.R), sm = true),
-	R_I(arrayOf(OperandType.R, OperandType.I), sm = true),
-	A_I(arrayOf(OperandType.A, OperandType.I), sm = true),
-	M_I(arrayOf(OperandType.M, OperandType.I), sm = true),
-	R_I8(arrayOf(OperandType.R, Operand.I8)),
-	M_I8(arrayOf(OperandType.M, Operand.I8)),
-	R_1(arrayOf(OperandType.R, Operand.ONE)),
-	M_1(arrayOf(OperandType.M, Operand.ONE)),
-	ST_ST0(arrayOf(Operand.ST, Operand.ST0)),
-	ST0_ST(arrayOf(Operand.ST0, Operand.ST)),
-	R_CL(arrayOf(OperandType.R, Operand.CL)),
-	M_CL(arrayOf(OperandType.M, Operand.CL)),
+	MEM(Operand.MEM),
+	A(OperandType.A),
+	R(OperandType.R),
+	M(OperandType.M),
+	I(OperandType.I),
+	ST(OperandType.ST),
+	REL(OperandType.REL),
 
-	R_R_I8(arrayOf(OperandType.R, OperandType.R, Operand.I8), sm2 = true),
-	R_M_I8(arrayOf(OperandType.R, OperandType.M, Operand.I8), sm2 = true),
-	M_R_I8(arrayOf(OperandType.M, OperandType.R, Operand.I8), sm2 = true),
-	R_R_CL(arrayOf(OperandType.R, OperandType.R, Operand.CL), sm2 = true),
-	M_R_CL(arrayOf(OperandType.M, OperandType.R, Operand.CL), sm2 = true),
-	R_R_I(arrayOf(OperandType.R, OperandType.R, OperandType.I), sm = true),
-	R_M_I(arrayOf(OperandType.R, OperandType.M, OperandType.I), sm = true),
-	M_R_I(arrayOf(OperandType.M, OperandType.R, OperandType.I), sm = true),
+	R_R(OperandType.R, OperandType.R),
+	R_M(OperandType.R, OperandType.M),
+	M_R(OperandType.M, OperandType.R),
+	R_I(OperandType.R, OperandType.I),
+	A_I(OperandType.A, OperandType.I),
+	M_I(OperandType.M, OperandType.I),
+	R_I8(OperandType.R, Operand.I8),
+	M_I8(OperandType.M, Operand.I8),
+	R_1(OperandType.R, Operand.ONE),
+	M_1(OperandType.M, Operand.ONE),
+	ST_ST0(Operand.ST, Operand.ST0),
+	ST0_ST(Operand.ST0, Operand.ST),
+	R_CL(OperandType.R, Operand.CL),
+	M_CL(OperandType.M, Operand.CL),
 
-	S_M32_I8(arrayOf(OperandType.S, Operand.M32, Operand.I8)),
-	S_S_S_I8(arrayOf(OperandType.S, OperandType.S, OperandType.S, Operand.I8), sm3 = true),
-	S_S_M64_I8(arrayOf(OperandType.S, OperandType.S, Operand.M64, Operand.I8), sm2 = true),
-	K_X_X_I8(arrayOf(OperandType.K, OperandType.S, OperandType.S, Operand.I8), sm3 = true),
+	R_R_I8(OperandType.R, OperandType.R, Operand.I8),
+	R_M_I8(OperandType.R, OperandType.M, Operand.I8),
+	M_R_I8(OperandType.M, OperandType.R, Operand.I8),
+	R_R_CL(OperandType.R, OperandType.R, Operand.CL),
+	M_R_CL(OperandType.M, OperandType.R, Operand.CL),
+	R_R_I(OperandType.R, OperandType.R, OperandType.I),
+	R_M_I(OperandType.R, OperandType.M, OperandType.I),
+	M_R_I(OperandType.M, OperandType.R, OperandType.I),
+
+	S_M32_I8(OperandType.S, Operand.M32, Operand.I8),
+	S_S_S_I8(OperandType.S, OperandType.S, OperandType.S, Operand.I8),
+	S_S_M64_I8(OperandType.S, OperandType.S, Operand.M64, Operand.I8),
+	K_X_X_I8(OperandType.K, OperandType.S, OperandType.S, Operand.I8),
+
+	R64_M128(Operand.R64, Operand.M128),
+	MM_R(Operand.MM, OperandType.R),
+	MM_M(Operand.MM, OperandType.M),
+	R_MM(OperandType.R, Operand.MM),
+	M_MM(OperandType.M, Operand.MM),
+	MM_MM(Operand.MM, Operand.MM),
+	MM_I8(Operand.MM, Operand.I8),
+	S_S(OperandType.S, OperandType.S),
+	R_X(OperandType.R, Operand.X),
+
+	MM_R_I8(Operand.MM, OperandType.R, Operand.I8),
+	MM_M_I8(Operand.MM, OperandType.M, Operand.I8),
+
+	VM32S_S(OperandType.VM32S, OperandType.S),
+	VM64S_S(OperandType.VM64S, OperandType.S),
+	S_VM32S(OperandType.S, OperandType.VM32S),
+	S_VM64S(OperandType.S, OperandType.VM64S),
+	R_R_R(OperandType.R, OperandType.R, OperandType.R),
+	R_R_M(OperandType.R, OperandType.R, OperandType.M),
+	R_M_R(OperandType.R, OperandType.M, OperandType.R),
+	S_S_S_S(OperandType.S, OperandType.S, OperandType.S, OperandType.S),
+	S_S_M32(OperandType.S, OperandType.S, Operand.M32),
+	S_S_S(OperandType.S, OperandType.S, OperandType.S),
+
+	S_M(OperandType.S, OperandType.M),
+	M_S(OperandType.M, OperandType.S),
+
+	S_M16(OperandType.S, Operand.M16),
+	S_M32(OperandType.S, Operand.M32),
+	S_M64(OperandType.S, Operand.M64),
+	S_M128(OperandType.S, Operand.M128),
+
+	X_R(Operand.X, OperandType.R),
+
+	X_Y(Operand.X, Operand.Y),
+	Y_X(Operand.Y, Operand.X),
+	Y_Z(Operand.Y, Operand.Z),
+	Z_Y(Operand.Z, Operand.Y),
+	Z_X(Operand.Z, Operand.X),
+	X_Z(Operand.X, Operand.Z),
+	K_S(Operand.K, OperandType.S),
+	K_K(Operand.K, Operand.K),
+	K_K_K(Operand.K, Operand.K, Operand.K),
+
+	K_S_S(Operand.K, OperandType.S, OperandType.S),
+	K_S_M(Operand.K, OperandType.S, OperandType.M),
+
+
+
+	T(Operand.T),
+	T_MEM(Operand.T, Operand.MEM),
+	MEM_T(Operand.MEM, Operand.T),
+	T_T_T(Operand.T, Operand.T, Operand.T),
 
 	// Custom
-	A_I8,
-	I8_A,
-	A_DX,
-	DX_A,
-	I16_I8,
-	REL8_ECX(arrayOf(Operand.REL8, Operand.ECX)),
-	REL8_RCX(arrayOf(Operand.REL8, Operand.RCX));
+	A_I8(OperandType.A, Operand.I8),
+	I8_A(Operand.I8, OperandType.A),
+	A_DX(OperandType.A, Operand.DX),
+	DX_A(Operand.DX, OperandType.A),
+	I16_I8(Operand.I16, Operand.I8),
+	REL8_ECX(Operand.REL8, Operand.ECX),
+	REL8_RCX(Operand.REL8, Operand.RCX);
 
 	companion object {
 		val values = values()
@@ -84,7 +135,9 @@ enum class OperandType : OpClass {
 	REL,
 	COMPOUND,
 	ONE,
-	MISC;
+	MISC,
+	VM32S,
+	VM64S;
 
 	val isR get() = this == R
 	val isM get() = this == M
@@ -141,12 +194,12 @@ enum class Operand(
 	X0(OperandType.S, "xmm0", Width.XWORD),
 	Y(OperandType.S, "ymmreg", Width.YWORD),
 	Z(OperandType.S, "zmmreg", Width.ZWORD),
-	VM32X(OperandType.MISC, "xmem32"),
-	VM64X(OperandType.MISC, "xmem64"),
-	VM32Y(OperandType.MISC, "ymem32"),
-	VM64Y(OperandType.MISC, "ymem64"),
-	VM32Z(OperandType.MISC, "zmem32"),
-	VM64Z(OperandType.MISC, "zmem64"),
+	VM32X(OperandType.VM32S, "xmem32", Width.XWORD),
+	VM64X(OperandType.VM64S, "xmem64", Width.XWORD),
+	VM32Y(OperandType.VM32S, "ymem32", Width.YWORD),
+	VM64Y(OperandType.VM64S, "ymem64", Width.YWORD),
+	VM32Z(OperandType.VM32S, "zmem32", Width.ZWORD),
+	VM64Z(OperandType.VM64S, "zmem64", Width.ZWORD),
 	K(OperandType.K, "kreg"),
 	BND(OperandType.MISC, "bndreg"),
 	T(OperandType.MISC, "tmmreg"),

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="18" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/module-asm" />
+            <option value="$PROJECT_DIR$/module-core" />
+            <option value="$PROJECT_DIR$/module-encoding" />
+            <option value="$PROJECT_DIR$/module-eyre" />
+            <option value="$PROJECT_DIR$/module-macro" />
+            <option value="$PROJECT_DIR$/module-rol" />
+            <option value="$PROJECT_DIR$/module-rome2" />
+            <option value="$PROJECT_DIR$/module-scratch" />
+            <option value="$PROJECT_DIR$/module-terraria" />
+            <option value="$PROJECT_DIR$/module-vkgen" />
+          </set>
+        </option>
+        <option name="resolveExternalAnnotations" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
