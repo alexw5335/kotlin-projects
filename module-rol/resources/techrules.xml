@@ -1,0 +1,6845 @@
+<?xml version="1.0"?>
+<!--==================================================================-->
+<!---->
+<!--TECHRULES.XML - Rise of Legends - Copyright (c) 2006 Big Huge Games Inc.-->
+<!---->
+<!--==================================================================-->
+<ROOT xml:space="preserve">
+  <TECHS>
+    <COMMENTS>
+      <TRIBE_MASKS>
+        <!--0001 = Alin-->
+        <!--0100 = Cuotl-->
+        <!--1000 = Vinci-->
+      </TRIBE_MASKS>
+      <FLAGS>
+        <!--FLAGS = Mask values for flags for techs (lower case a-z)-->
+        <!--  a = This tech ramps the cost of other techs with this flag-->
+        <!--  b = This tech is automatically researched when the game is started.-->
+        <!--  c = This tech is automatically researched when the prerequisites are met.-->
+        <!--  d = This tech can never be lost.-->
+        <!--  e = This tech will show up on the main research menu-->
+        <!--  f = The prerequisites for this tech will be ored instead of anded together-->
+        <!--  h = after tech is researched it sticks around in its original option grid spot but disabled-->
+        <!--  i = This tech forces the use of its ICON_GRAFT to be its icon-->
+      </FLAGS>
+      <Miscellaneous>
+        <!--NAME = Localized/Display name of tech-->
+        <!--TYPENAME = Internal (unlocalized) lookup name for tech-->
+        <!--HELP = Help text lookup-->
+        <!--CODETAG = Code lookup-->
+        <!--COST = Resource cost to research-->
+        <!--EXCLUSIVE = Two techs that are mutually exclusive to one another. Example: If Type1 has it's EXCLUSIVE column set to Type2, then Type2 must have it's EXCLUSIVE column set to Type1-->
+        <!--PREQ0-2 = Prerequisites before this tech can be researched-->
+        <!--TIME = Research time in 1/15 sec-->
+        <!--GRAFT = A secret tech from which we inherit some of our properties in order to make things more exciting-->
+        <!--WHERE = Where this tech can be researched (a building, a unit, or "leader" for the main Research screen)-->
+        <!--SHOW = Buttons to research this tech don't appear until techs listed in SHOW are researched.-->
+        <!--GRID_X, GRID_Y = Where this tech likes to appear in the option grid-->
+      </Miscellaneous>
+    </COMMENTS>
+    <TECH class="other">
+      <NAME>Sand Bite</NAME>
+      <TYPENAME>Sand Weapon</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SANDWEAPON</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Stone Bite</NAME>
+      <TYPENAME>Stone Weapon</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SANDWEAPON</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Rock Bite</NAME>
+      <TYPENAME>Rock Weapon</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>200m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Stone Weapon</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SANDWEAPON</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Tough as Sand</NAME>
+      <TYPENAME>Sand Body</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SANDBODY</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Tough as Stone</NAME>
+      <TYPENAME>Stone Body</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SANDBODY</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Tough as Rock</NAME>
+      <TYPENAME>Rock Body</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>200m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Stone Body</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SANDBODY</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Lush Circle of Sand</NAME>
+      <TYPENAME>Lush Sand Upgrade</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>LUSHSAND</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Glass Bolts</NAME>
+      <TYPENAME>Infantry Upgrade</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>125m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>WALKERTECH</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>One with the Sand</NAME>
+      <TYPENAME>Infantry Upgrade 2</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>125m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Infantry Upgrade</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>WALKERTECH2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Mystic Mines</NAME>
+      <TYPENAME>Sandtough</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>SANDTOUGH</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Enchanted Mines</NAME>
+      <TYPENAME>Stonetough</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>150w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>Sandtough</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>SANDTOUGH2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Spirit Mines</NAME>
+      <TYPENAME>Rocktough</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>300w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Stonetough</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>SANDTOUGH3</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Earth Guide</NAME>
+      <TYPENAME>Earthguide</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>25m/25w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>EARTHGUIDE</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Earth Finder</NAME>
+      <TYPENAME>Earthfinder</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m/50w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>Earthguide</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>EARTHGUIDE2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Unerring Earth</NAME>
+      <TYPENAME>Unerringearth</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>200m/150w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Earthfinder</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>EARTHGUIDE3</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Shifting Sand</NAME>
+      <TYPENAME>Shifting Sand Tech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>75m/100w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>SHIFTSAND</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Flowing Sand</NAME>
+      <TYPENAME>Shifting Sand Tech 2</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>150m/200w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Shifting Sand Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Sand Spire</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>FLOWSAND</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Fiery Weapon</NAME>
+      <TYPENAME>Firehit</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50m/25w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Flaming Weapon</NAME>
+      <TYPENAME>Firepunch</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>75m/75w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Blazing Weapon</NAME>
+      <TYPENAME>Firekick</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>125m/125w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Firepunch</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Armor of Fire</NAME>
+      <TYPENAME>Firequick</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>25w/50m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREQUICK</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Armor of Flame</NAME>
+      <TYPENAME>Firefast</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>70m/70w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREQUICK</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Armor of Inferno</NAME>
+      <TYPENAME>Firespeed</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m/100w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Firefast</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREQUICK</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Flame Spells</NAME>
+      <TYPENAME>Scout Upgrade</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SCOUTFIGHT</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Fire Spells</NAME>
+      <TYPENAME>Fire Spells</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Scout Upgrade</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>SCOUTTECH</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Adult Salamander</NAME>
+      <TYPENAME>Salamander Tech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50m/50w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ASALAMANDER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Elder Salamander</NAME>
+      <TYPENAME>Elder Tech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m/100w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Salamander Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ESALAMANDER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Call the Fire</NAME>
+      <TYPENAME>Alin Unit Creation 1</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50m/25w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>FIREDEF</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Call the Flame</NAME>
+      <TYPENAME>Alin Unit Creation 2</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m/75w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>Alin Unit Creation 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>FIREDEF</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Call the Inferno</NAME>
+      <TYPENAME>Alin Unit Creation 3</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>200m/175w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Alin Unit Creation 2</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>FIREDEF</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Blow from Above</NAME>
+      <TYPENAME>Airbolt</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50m/25w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>AIRBOLT</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Bolt from Above</NAME>
+      <TYPENAME>Airstrike</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100m/75w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>Airbolt</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>AIRBOLT</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Blast from Above</NAME>
+      <TYPENAME>Airblast</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>200m/150w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Airstrike</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Eternal Flame</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>AIRBOLT</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Sharp Glass</NAME>
+      <TYPENAME>Glasshit</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>25m/50w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Needle-Sharp Glass</NAME>
+      <TYPENAME>Glasspunch</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>75m/75w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Jagged Glass</NAME>
+      <TYPENAME>Glasskick</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>125m/125w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Glasspunch</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Thick Glass</NAME>
+      <TYPENAME>Glasshard</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>25m/50w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Armored Glass</NAME>
+      <TYPENAME>Glasstough</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>75m/75w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Impervious Glass</NAME>
+      <TYPENAME>Glassarmor</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>125m/125w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Glasstough</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FIREPOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Dark Glass</NAME>
+      <TYPENAME>Poisontech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100w/100m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>DARKGLASS</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Elder Dragon Upgrade</NAME>
+      <TYPENAME>Dragon Tech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1600w/600m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ELDERDRAGON</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Dark Glass Protection</NAME>
+      <TYPENAME>Glass Building 1</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>50w/25m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>GLASSBUILDING</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Dark Glass Defense</NAME>
+      <TYPENAME>Glass Building 2</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>100w/100m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Glass Building 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>GLASSBUILDING</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Dark Glass Armor</NAME>
+      <TYPENAME>Glass Building 3</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>200w/150m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>Glass Building 2</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>GLASSBUILDING</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Glass Magic</NAME>
+      <TYPENAME>Glass Magic</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>250m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Great City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Glass Citadel</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>GLASSFORAGE</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Tougher Miners Actual</NAME>
+      <TYPENAME>Tougher Miners Actual</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Tougher Miners</PREQ0>
+      <PREQ1>Mechanization</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>0</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>None</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+    </TECH>
+    <TECH class="other">
+      <NAME>Mechanization</NAME>
+      <TYPENAME>Mechanization Actual</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 6</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>Mechanization</PREQ2>
+      <TIME>0</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>None</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+    </TECH>
+    <TECH class="other">
+      <NAME>Trade Mission Tech Level 1</NAME>
+      <TYPENAME>Trade Mission Tech Level 1</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Tougher Miners</PREQ0>
+      <PREQ1>FreeScout1</PREQ1>
+      <PREQ2>FreeMiner1</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>NYI</HELP>
+      <CODETAG>TRADE_MISSION_TECH_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Trade Mission Tech Level 2</NAME>
+      <TYPENAME>Trade Mission Tech Level 2</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>FreeFlyer</PREQ0>
+      <PREQ1>Attack Upgrade 1</PREQ1>
+      <PREQ2>FreeMiner2</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>NYI</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Trade Mission Tech Level 3</NAME>
+      <TYPENAME>Trade Mission Tech Level 3</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>FreeSpider1</PREQ0>
+      <PREQ1>LOSBonus</PREQ1>
+      <PREQ2>FreeMiner3</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>NYI</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Trade Mission Tech Level 4</NAME>
+      <TYPENAME>Trade Mission Tech Level 4</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Fast Capture</PREQ0>
+      <PREQ1>Recruit Zeke</PREQ1>
+      <PREQ2>FreeMiner4</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>NYI</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Trade Mission Tech Level 5</NAME>
+      <TYPENAME>Trade Mission Tech Level 5</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Get Neutrals</PREQ0>
+      <PREQ1>FreeFlyer2</PREQ1>
+      <PREQ2>FreeForeman1</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>NYI</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Trade Mission Tech Level 6</NAME>
+      <TYPENAME>Trade Mission Tech Level 6</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Stimdust</PREQ0>
+      <PREQ1>FreeBlimp1</PREQ1>
+      <PREQ2>Improved Mines 2</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>NYI</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Trade Mission Tech Level 7</NAME>
+      <TYPENAME>Trade Mission Tech Level 7</TYPENAME>
+      <FLAGS>cf</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Improved Towers</PREQ0>
+      <PREQ1>FreeDestroyer1</PREQ1>
+      <PREQ2>Mechanization</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>NYI</HELP>
+      <CODETAG>TRADE_MISSION_TECH_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Armed Civilians</NAME>
+      <TYPENAME>Tougher Miners</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeScout1</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>TOUGHMINER</HELP>
+      <CODETAG>ARMED_CIVILIANS</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>1 Spy Scout Flyer</NAME>
+      <TYPENAME>FreeScout1</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeMiner1</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREESCOUT1</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Clockwork Mining</NAME>
+      <TYPENAME>FreeMiner1</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Tougher Miners</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>CLOCKWORKMINING</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Superior Training</NAME>
+      <TYPENAME>Attack Upgrade 1</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeFlyer</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 1</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 1</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ATTACKUPGRADE</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>1 Clockwork Sniper</NAME>
+      <TYPENAME>FreeFlyer</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeMiner2</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 1</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>200</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 1</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEMEN</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>2 Clockwork Miners</NAME>
+      <TYPENAME>FreeMiner2</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Attack Upgrade 1</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 1</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>100</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 1</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEMINER2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Monoculars</NAME>
+      <TYPENAME>LOSBonus</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeSpider1</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 2</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>115</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 2</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>LOSBONUS</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>1 Burrowing Spider</NAME>
+      <TYPENAME>FreeSpider1</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeMiner3</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 2</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>225</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 2</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREESPIDER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>3 Clockwork Miners</NAME>
+      <TYPENAME>FreeMiner3</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>LOSBonus</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 2</PREQ0>
+      <PREQ1>none</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>115</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 2</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEMINER3</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Infiltration Tactics</NAME>
+      <TYPENAME>Fast Capture</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Recruit Zeke</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 3</PREQ0>
+      <PREQ1>Large City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>130</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 3</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FASTCAPTURE</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Recruit Zeke</NAME>
+      <TYPENAME>Recruit Zeke</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeMiner4</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 3</PREQ0>
+      <PREQ1>Large City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>250</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 3</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEZEKE</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>4 Clockwork Miners</NAME>
+      <TYPENAME>FreeMiner4</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Fast Capture</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 3</PREQ0>
+      <PREQ1>Large City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>130</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 3</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEMINER4</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Giacomo's Gift</NAME>
+      <TYPENAME>Get Neutrals</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeFlyer2</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 4</PREQ0>
+      <PREQ1>Large City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>145</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 4</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>GIACOMOSGIFT</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>2 Gun Flyers</NAME>
+      <TYPENAME>FreeFlyer2</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeForeman1</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 4</PREQ0>
+      <PREQ1>Large City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>275</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 4</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEFLYER1</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Clockwork Foreman</NAME>
+      <TYPENAME>FreeForeman1</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Get Neutrals</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 4</PREQ0>
+      <PREQ1>Large City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>145</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 4</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEFOREMAN</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Med Packs</NAME>
+      <TYPENAME>Stimdust</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeBlimp1</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 5</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>160</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 5</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>STIMDUST</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>1 Siege Zeppelin</NAME>
+      <TYPENAME>FreeBlimp1</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Improved Mines 2</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 5</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>300</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 5</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEBLIMP1</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Improved Mines</NAME>
+      <TYPENAME>Improved Mines</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>160</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>IMPROVEDMINES</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Improved Mines</NAME>
+      <TYPENAME>Improved Mines 2</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Stimdust</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 5</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>160</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 5</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>IMPROVEDMINES2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Improved Military Buildings</NAME>
+      <TYPENAME>Improved Towers</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>FreeDestroyer1</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 6</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>175</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 6</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>TOUGHTOWER</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>1 Destroyer Transport</NAME>
+      <TYPENAME>FreeDestroyer1</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Mechanization</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 6</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>325</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 6</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>FREEDESTROYER1</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Mechanization</NAME>
+      <TYPENAME>Mechanization</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1v</COST>
+      <EXCLUSIVE>Improved Towers</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 6</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>175</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 6</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>Trade Mission</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ALLMINERS</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Lead into Gold</NAME>
+      <TYPENAME>Gift Resources</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>2v</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 7</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>190</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 7</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>None</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>GIFT</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Increased Production</NAME>
+      <TYPENAME>Double Production</TYPENAME>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>2v</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 7</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>190</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 7</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>None</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>DOUBLEPROD</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Free Juggernauts</NAME>
+      <TYPENAME>FreeJuggernauts</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>2v</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Trade Mission Tech Level 7</PREQ0>
+      <PREQ1>Great City Tech</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>350</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>Trade Mission Tech Level 7</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>None</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>JUGGERS</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Politics 1</NAME>
+      <TYPENAME>Territory 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ATTRITIONUPGRADE1</HELP>
+      <CODETAG>TERRITORY_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Politics 2</NAME>
+      <TYPENAME>Territory 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Territory 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Territory 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ATTRITIONUPGRADE2</HELP>
+      <CODETAG>TERRITORY_1</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Politics 3</NAME>
+      <TYPENAME>Territory 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Territory 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Territory 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ATTRITIONUPGRADE3</HELP>
+      <CODETAG>TERRITORY_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Politics 4</NAME>
+      <TYPENAME>Territory 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Territory 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Territory 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>ATTRITIONUPGRADE4</HELP>
+      <CODETAG>TERRITORY_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Land Lore 1</NAME>
+      <TYPENAME>Territory 1 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>LANDLORE1</HELP>
+      <CODETAG>ALIM_TERRITORY_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Land Lore 2</NAME>
+      <TYPENAME>Territory 2 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Territory 1 Alim</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Territory 1 Alim</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>LANDLORE2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Land Lore 3</NAME>
+      <TYPENAME>Territory 3 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Territory 2 Alim</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Territory 2 Alim</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>LANDLORE3</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Land Lore 4</NAME>
+      <TYPENAME>Territory 4 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Territory 3 Alim</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Territory 3 Alim</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>LANDLORE4</HELP>
+      <CODETAG>ALIM_TERRITORY_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Prosperity 1</NAME>
+      <TYPENAME>Prosperity 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>HEALING1</HELP>
+      <CODETAG>HEALING_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Prosperity 2</NAME>
+      <TYPENAME>Prosperity 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Prosperity 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Prosperity 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>HEALING2</HELP>
+      <CODETAG>HEALING_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Prosperity 3</NAME>
+      <TYPENAME>Prosperity 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Prosperity 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Prosperity 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>HEALING3</HELP>
+      <CODETAG>HEALING_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Prosperity 4</NAME>
+      <TYPENAME>Prosperity 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Prosperity 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>1010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Prosperity 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>HEALING4</HELP>
+      <CODETAG>HEALING_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Vigor 1</NAME>
+      <TYPENAME>Prosperity 1 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>VIGOR1</HELP>
+      <CODETAG>VIGOR_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Vigor 2</NAME>
+      <TYPENAME>Prosperity 2 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Prosperity 1 Alim</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Prosperity 1 Alim</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>VIGOR2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Vigor 3</NAME>
+      <TYPENAME>Prosperity 3 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Prosperity 2 Alim</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Prosperity 2 Alim</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>VIGOR3</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Vigor 4</NAME>
+      <TYPENAME>Prosperity 4 Alim</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Prosperity 3 Alim</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Prosperity 3 Alim</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>VIGOR4</HELP>
+      <CODETAG>VIGOR_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Evocation 1</NAME>
+      <TYPENAME>Evocation 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>EVOCATION1</HELP>
+      <CODETAG>EVOCATION_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Evocation 2</NAME>
+      <TYPENAME>Evocation 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Evocation 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Evocation 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>EVOCATION2</HELP>
+      <CODETAG>EVOCATION_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Evocation 3</NAME>
+      <TYPENAME>Evocation 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Evocation 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Evocation 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>EVOCATION3</HELP>
+      <CODETAG>EVOCATION_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Evocation 4</NAME>
+      <TYPENAME>Evocation 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Evocation 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Evocation 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>EVOCATION4</HELP>
+      <CODETAG>EVOCATION_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Loot 1</NAME>
+      <TYPENAME>Loot 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>LOOT</HELP>
+      <CODETAG>LOOT_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Loot 2</NAME>
+      <TYPENAME>Loot 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Loot 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Loot 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>LOOT</HELP>
+      <CODETAG>TECH_LOOT_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Loot 3</NAME>
+      <TYPENAME>Loot 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Loot 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>0010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Loot 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>LOOT</HELP>
+      <CODETAG>TECH_LOOT_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Loot 4</NAME>
+      <TYPENAME>Loot 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Loot 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>0010</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Loot 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>LOOT</HELP>
+      <CODETAG>LOOT_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Judgement 1</NAME>
+      <TYPENAME>Shields 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>250</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SHIELDS1</HELP>
+      <CODETAG>SHIELDS_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Judgement 2</NAME>
+      <TYPENAME>Shields 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Shields 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>350</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Shields 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SHIELDS2</HELP>
+      <CODETAG>SHIELDS_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Judgement 3</NAME>
+      <TYPENAME>Shields 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Shields 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Shields 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SHIELDS3</HELP>
+      <CODETAG>SHIELDS_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Judgement 4</NAME>
+      <TYPENAME>Shields 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Shields 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Shields 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SHIELDS4</HELP>
+      <CODETAG>SHIELDS_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Worship 1</NAME>
+      <TYPENAME>Power 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>250</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>POWER1</HELP>
+      <CODETAG>POWER_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Worship 2</NAME>
+      <TYPENAME>Power 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Power 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>350</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Power 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>POWER2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Worship 3</NAME>
+      <TYPENAME>Power 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Power 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Power 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>POWER3</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Worship 4</NAME>
+      <TYPENAME>Power 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Power 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Power 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>0</GRID_Y>
+      <HELP>POWER4</HELP>
+      <CODETAG>POWER_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Zeal 1</NAME>
+      <TYPENAME>Weapons 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>250</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>WEAPONS1</HELP>
+      <CODETAG>WEAPONS_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Zeal 2</NAME>
+      <TYPENAME>Weapons 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Weapons 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>350</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Weapons 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>WEAPONS2</HELP>
+      <CODETAG>WEAPONS_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Zeal 3</NAME>
+      <TYPENAME>Weapons 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Weapons 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Weapons 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>WEAPONS3</HELP>
+      <CODETAG>WEAPONS_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Zeal 4</NAME>
+      <TYPENAME>Weapons 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Weapons 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Weapons 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>WEAPONS4</HELP>
+      <CODETAG>WEAPONS_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Industry 1</NAME>
+      <TYPENAME>Industry 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>MASONRY1</HELP>
+      <CODETAG>INDUSTRY_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Industry 2</NAME>
+      <TYPENAME>Industry 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Industry 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Industry 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>MASONRY2</HELP>
+      <CODETAG>INDUSTRY_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Industry 3</NAME>
+      <TYPENAME>Industry 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Industry 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>0000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Industry 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>MASONRY3</HELP>
+      <CODETAG>INDUSTRY_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Industry 4</NAME>
+      <TYPENAME>Industry 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Industry 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>0000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Industry 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>MASONRY4</HELP>
+      <CODETAG>INDUSTRY_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Scavenge 1</NAME>
+      <TYPENAME>Scavenge 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SCAVENGE_START</HELP>
+      <CODETAG>SCAVENGE_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Scavenge 2</NAME>
+      <TYPENAME>Scavenge 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Scavenge 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Industry 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SCAVENGE_2</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Scavenge 3</NAME>
+      <TYPENAME>Scavenge 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Scavenge 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Industry 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SCAVENGE_3</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Scavenge 4</NAME>
+      <TYPENAME>Scavenge 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Scavenge 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Industry 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SCAVENGE_END</HELP>
+      <CODETAG>SCAVENGE_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Divine Power 1</NAME>
+      <TYPENAME>Reactor Power 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>250</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>REACTORPOWER1</HELP>
+      <CODETAG>REACTOR_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Divine Power 2</NAME>
+      <TYPENAME>Reactor Power 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Reactor Power 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>350</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Reactor Power 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>REACTORPOWER2</HELP>
+      <CODETAG>REACTOR_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Divine Power 3</NAME>
+      <TYPENAME>Reactor Power 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Reactor Power 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Reactor Power 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>REACTORPOWER3</HELP>
+      <CODETAG>REACTOR_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Divine Power 4</NAME>
+      <TYPENAME>Reactor Power 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Reactor Power 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Reactor Power 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>REACTORPOWER4</HELP>
+      <CODETAG>REACTOR_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Mining 1</NAME>
+      <TYPENAME>Mining 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>MINING1</HELP>
+      <CODETAG>MINING_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Mining 2</NAME>
+      <TYPENAME>Mining 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Mining 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Mining 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>MINING2</HELP>
+      <CODETAG>MINING_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Mining 3</NAME>
+      <TYPENAME>Mining 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Mining 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Mining 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>MINING3</HELP>
+      <CODETAG>MINING_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Mining 4</NAME>
+      <TYPENAME>Mining 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Mining 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1500</TIME>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Mining 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>3</GRID_Y>
+      <HELP>MINING4</HELP>
+      <CODETAG>MINING_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Treasure 1</NAME>
+      <TYPENAME>Spirit Binding 1</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>1r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>500</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>none</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SPELLUPGRADE1</HELP>
+      <CODETAG>SPIRIT_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Treasure 2</NAME>
+      <TYPENAME>Spirit Binding 2</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>1</AGE>
+      <XP>0</XP>
+      <COST>2r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Spirit Binding 1</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>750</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Spirit Binding 1</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>1</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SPELLUPGRADE2</HELP>
+      <CODETAG>SPIRIT_2</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Treasure 3</NAME>
+      <TYPENAME>Spirit Binding 3</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>2</AGE>
+      <XP>0</XP>
+      <COST>4r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Spirit Binding 2</PREQ1>
+      <PREQ2>Large City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Spirit Binding 2</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SPELLUPGRADE3</HELP>
+      <CODETAG>SPIRIT_3</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Treasure 4</NAME>
+      <TYPENAME>Spirit Binding 4</TYPENAME>
+      <FLAGS>e</FLAGS>
+      <AGE>3</AGE>
+      <XP>0</XP>
+      <COST>7r</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>Spirit Binding 3</PREQ1>
+      <PREQ2>Great City Tech</PREQ2>
+      <TIME>1000</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>Spirit Binding 3</SHOW1>
+      <WHERE>leader</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>2</GRID_Y>
+      <HELP>SPELLUPGRADE4</HELP>
+      <CODETAG>SPIRIT_END</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Dragon Healing</NAME>
+      <TYPENAME>Dragonhealtech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>150w/150m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>2</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>HEALTECH</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Dragon Fury</NAME>
+      <TYPENAME>Dragonfurytech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>200w/200m</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>3</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>FURYTECH</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>Glass Shock</NAME>
+      <TYPENAME>Golembombtech</TYPENAME>
+      <FLAGS/>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>150w</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>None</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>450</TIME>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>none</SHOW0>
+      <SHOW1>None</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>BOMBTECH</HELP>
+    </TECH>
+    <TECH class="other">
+      <NAME>City</NAME>
+      <TYPENAME>City Tech</TYPENAME>
+      <FLAGS>cd</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>none</PREQ0>
+      <PREQ1>City</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>None</SHOW0>
+      <SHOW1>City</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>CITYTECH_START</HELP>
+      <CODETAG>CITYTECH_START</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Large City</NAME>
+      <TYPENAME>Large City Tech</TYPENAME>
+      <FLAGS>cd</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>City Tech</PREQ0>
+      <PREQ1>Large City</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>None</SHOW0>
+      <SHOW1>Large City</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>CITYTECH_1</HELP>
+      <CODETAG>CITYTECH_1</CODETAG>
+    </TECH>
+    <TECH class="other">
+      <NAME>Great City</NAME>
+      <TYPENAME>Great City Tech</TYPENAME>
+      <FLAGS>cd</FLAGS>
+      <AGE>0</AGE>
+      <XP>0</XP>
+      <COST>0</COST>
+      <EXCLUSIVE>none</EXCLUSIVE>
+      <PREQ0>Large City Tech</PREQ0>
+      <PREQ1>Great City</PREQ1>
+      <PREQ2>none</PREQ2>
+      <TIME>600</TIME>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <GRAFT>none</GRAFT>
+      <SHOW0>None</SHOW0>
+      <SHOW1>Great City</SHOW1>
+      <WHERE>none</WHERE>
+      <GRID_X>0</GRID_X>
+      <GRID_Y>1</GRID_Y>
+      <HELP>CITYTECH_END</HELP>
+      <CODETAG>CITYTECH_END</CODETAG>
+    </TECH>
+  </TECHS>
+  <BONUSES>
+    <COMMENTS>
+      <FLAGS>
+        <!--FLAGS = Mask values for flags for bonuses (lower case a-z)-->
+        <!--  a = This bonus casts a spell specified in DATA0 when it is first turned on.-->
+        <!--  b = This bonus is a stats bouns.  See Stats Bonus for details.-->
+        <!--  c = This bonus is a object specific stats bouns.  See Stats Bonus for details.-->
+        <!--  d = When combined with "b" or "c" this makes the values specified in DATA1 actual numbers and not percentages-->
+        <!--  e = This bonus is applied when the Hero specified in "HERO" exists.  It is removed when the Hero dies-->
+        <!--  f = Enable strict type checking on Hero bonuses.  Only valid when "e" is specified.-->
+        <!--  g = This bonus gives resources of type specified in DATA0 and amount specified in DATA1-->
+      </FLAGS>
+      <STATS_BONUS>
+        <!--STATS BONUSES are special bonuses that affect all units built at a specified building-->
+        <!--DATA0 = Stats to affect.  Valid stats GM, GA, AA, TRAMPLE, SPIKY, HITS, SPEED, LOS, GR, AR, BR, MANA.  For GM, GA, AA, SPIKY, and TRAMPLE the only part affected is the actual damge.-->
+        <!--DATA1 = Percentages to affect the stats listed from DATA0   OR   Values to affect the stats listed (FLAGS "d")-->
+        <!--DATA2 = Mask values for flags for bonuses (lower case a-z)-->
+        <!--  a = Stats Bonus affects Military Air Units-->
+        <!--  b = Stats Bonus affects Military Ground Units-->
+        <!--  c = Stats Bonus affects All Civilian Units-->
+        <!--  d = Stats Bonus affects Units with a Ranged Attack-->
+        <!--  e = Stats Bonus affects Units with a Melee Attack-->
+        <!--  f = Stats Bonus affects Units with a Trample Attack-->
+        <!--DATA3-->
+        <!--When "b" is set in flags, DATA3 is a list of buildings.  All units created from these buildings will receive the Stats Bonus.-->
+        <!--When "c" or "e" is set in flags, DATA3 is a list of units.  All units of this type will receive the Stats Bonus. If empty all units will receive the Stats Bonus-->
+        <!--HERO - See FLAGS "e"-->
+        <!--Help text and parsing for Stats Bonuses-->
+        <!--Bonuses are stored in a certain order, therefore you MUST follow the rules listed-->
+        <!--$NUM3  = GM-->
+        <!--$NUM4  = GA-->
+        <!--$NUM5  = AA-->
+        <!--$NUM6  = AM-->
+        <!--$NUM7  = BA-->
+        <!--$NUM8  = Trample-->
+        <!--$NUM9  = HITS-->
+        <!--$NUM10 = SPEED-->
+        <!--$NUM11 = LOS-->
+        <!--$NUM12 = GR-->
+        <!--$NUM13 = AR-->
+        <!--$NUM14 = BR-->
+        <!--$NUM15 = MANA-->
+        <!--$NUM16 = SPIKY-->
+      </STATS_BONUS>
+    </COMMENTS>
+    <BONUS>
+      <TYPENAME>Army Dominance Advantage</TYPENAME>
+      <CODETAG>DOMINANCEBONUSARMY</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>1 to gain dominance</DATA0>
+      <DATA1> </DATA1>
+      <DATA2> </DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSARMY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tactical Dominance Advantage</TYPENAME>
+      <CODETAG>DOMINANCEBONUSTACTICAL</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>2 to gain dominance</DATA0>
+      <DATA1> </DATA1>
+      <DATA2> </DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSTACTICAL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Craft Dominance Advantage</TYPENAME>
+      <CODETAG>DOMINANCEBONUSTERRITORY</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>1 to gain dominance</DATA0>
+      <DATA1> </DATA1>
+      <DATA2> </DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>0000</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSTERRITORY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Resource Dominance Advantage</TYPENAME>
+      <CODETAG>DOMINANCEBONUSRESOURCE</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>100 to gain dominance</DATA0>
+      <DATA1> </DATA1>
+      <DATA2> </DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSRESOURCE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Army Dominance Enhancement</TYPENAME>
+      <CODETAG>DOMINANCEENHANCEARMY</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>2 to radius</DATA0>
+      <DATA1>0 to max units converted</DATA1>
+      <DATA2>-0 to cooldown</DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSARMY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tactical Dominance Enhancement</TYPENAME>
+      <CODETAG>DOMINANCEENHANCETACTICAL</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>5 seconds to duration</DATA0>
+      <DATA1>0% to duration</DATA1>
+      <DATA2>-60 to cooldown</DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>0000</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSTACTICAL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Dominance Enhancement</TYPENAME>
+      <CODETAG>DOMINANCEENHANCETERRITORY</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>1 to summoned units</DATA0>
+      <DATA1>0% to summoned units</DATA1>
+      <DATA2>-0 to cooldown</DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSTERRITORY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Resource Dominance Enhancement</TYPENAME>
+      <CODETAG>DOMINANCEENHANCERESOURCE</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>3 to radius</DATA0>
+      <DATA1>20% to points healed</DATA1>
+      <DATA2>-0 to cooldown</DATA2>
+      <DATA3> </DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>DOMINANCEBONUSRESOURCE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo Clockwork Buff 1</TYPENAME>
+      <CODETAG>GIACOMO_CLOCKWORK_BUFF</CODETAG>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>3%</DATA1>
+      <DATA2/>
+      <DATA3>Clockwork Man; Clockwork Spider; Clockwork Miner</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Giacomo, Inventor of Miana</HERO>
+      <HELP>GIACOMOLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo Clockwork Buff 2</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>6%</DATA1>
+      <DATA2/>
+      <DATA3>Clockwork Man; Clockwork Spider; Clockwork Miner</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Giacomo, Inventor of Miana L2</HERO>
+      <HELP>GIACOMOLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo Clockwork Buff 3</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>9%</DATA1>
+      <DATA2/>
+      <DATA3>Clockwork Man; Clockwork Spider; Clockwork Miner</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Giacomo, Inventor of Miana L3</HERO>
+      <HELP>GIACOMOLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo Clockwork Buff 4</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>12%</DATA1>
+      <DATA2/>
+      <DATA3>Clockwork Man; Clockwork Spider; Clockwork Miner</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Giacomo, Inventor of Miana L4</HERO>
+      <HELP>GIACOMOLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo Clockwork Buff 5</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>15%</DATA1>
+      <DATA2/>
+      <DATA3>Clockwork Man; Clockwork Spider; Clockwork Miner</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Giacomo, Inventor of Miana L5</HERO>
+      <HELP>GIACOMOLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Doge Siege Buff 1</TYPENAME>
+      <CODETAG>DOGE_SIEGE_BUFF</CODETAG>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>5%;5%;5%</DATA1>
+      <DATA2/>
+      <DATA3>Rocket Launcher; Doge Guard MP; Doge Walker MP; Juggernaut</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>The Doge, Alessadri of Venucci</HERO>
+      <HELP>DOGELEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Doge Siege Buff 2</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>10%;10%;10%</DATA1>
+      <DATA2/>
+      <DATA3>Rocket Launcher; Doge Guard MP; Doge Walker MP; Juggernaut</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>The Doge, Alessadri of Venucci L2</HERO>
+      <HELP>DOGELEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Doge Siege Buff 3</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>15%;15%;15%</DATA1>
+      <DATA2/>
+      <DATA3>Rocket Launcher; Doge Guard MP; Doge Walker MP; Juggernaut</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>The Doge, Alessadri of Venucci L3</HERO>
+      <HELP>DOGELEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Doge Siege Buff 4</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>20%;20%;20%</DATA1>
+      <DATA2/>
+      <DATA3>Rocket Launcher; Doge Guard MP; Doge Walker MP; Juggernaut</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>The Doge, Alessadri of Venucci L4</HERO>
+      <HELP>DOGELEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Doge Siege Buff 5</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>25%;25%;25%</DATA1>
+      <DATA2/>
+      <DATA3>Rocket Launcher; Doge Guard MP; Doge Walker MP; Juggernaut</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>The Doge, Alessadri of Venucci L5</HERO>
+      <HELP>DOGELEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lenora Air Buff 1</TYPENAME>
+      <CODETAG>LENORA_AIR_BUFF</CODETAG>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GR;AR;BR;LOS</DATA0>
+      <DATA1>10%;10%;10%;10%</DATA1>
+      <DATA2/>
+      <DATA3>Pirata Flyer; Air Destroyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Lenora, Pirata Princess</HERO>
+      <HELP>LENORALEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lenora Air Buff 2</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GR;AR;BR;LOS</DATA0>
+      <DATA1>15%;15%;15%;15%</DATA1>
+      <DATA2/>
+      <DATA3>Pirata Flyer; Air Destroyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Lenora, Pirata Princess L2</HERO>
+      <HELP>LENORALEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lenora Air Buff 3</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GR;AR;BR;LOS</DATA0>
+      <DATA1>20%;20%;20%;20%</DATA1>
+      <DATA2/>
+      <DATA3>Pirata Flyer; Air Destroyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Lenora, Pirata Princess L3</HERO>
+      <HELP>LENORALEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lenora Air Buff 4</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GR;AR;BR;LOS</DATA0>
+      <DATA1>25%;25%;25%;25%</DATA1>
+      <DATA2/>
+      <DATA3>Pirata Flyer; Air Destroyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Lenora, Pirata Princess L4</HERO>
+      <HELP>LENORALEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lenora Air Buff 5</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>GR;AR;BR;LOS</DATA0>
+      <DATA1>30%;30%;30%;30%</DATA1>
+      <DATA2/>
+      <DATA3>Pirata Flyer; Air Destroyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HERO>Lenora, Pirata Princess L5</HERO>
+      <HELP>LENORALEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Sun Buff 1</TYPENAME>
+      <CODETAG>XIL_SUN_BUFF</CODETAG>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS;GA;AA;BA</DATA0>
+      <DATA1>4%;1%;1%;1%</DATA1>
+      <DATA2/>
+      <DATA3>Sun Jaguar; Greater Idol; Sun Cannon</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Xil, the Sun God</HERO>
+      <HELP>XILLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Sun Buff 2</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS;GA;AA;BA</DATA0>
+      <DATA1>8%;2%;2%;2%</DATA1>
+      <DATA2/>
+      <DATA3>Sun Jaguar; Greater Idol; Sun Cannon</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Xil, the Sun God L2</HERO>
+      <HELP>XILLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Sun Buff 3</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS;GA;AA;BA</DATA0>
+      <DATA1>12%;3%;3%;3%</DATA1>
+      <DATA2/>
+      <DATA3>Sun Jaguar; Greater Idol; Sun Cannon</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Xil, the Sun God L3</HERO>
+      <HELP>XILLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Sun Buff 4</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS;GA;AA;BA</DATA0>
+      <DATA1>16%;4%;4%;4%</DATA1>
+      <DATA2/>
+      <DATA3>Sun Jaguar; Greater Idol; Sun Cannon</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Xil, the Sun God L4</HERO>
+      <HELP>XILLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Sun Buff 5</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>HITS;GA;AA;BA</DATA0>
+      <DATA1>20%;5%;5%;5%</DATA1>
+      <DATA2/>
+      <DATA3>Sun Jaguar; Greater Idol; Sun Cannon</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Xil, the Sun God L5</HERO>
+      <HELP>XILLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Death Buff 1</TYPENAME>
+      <CODETAG>CZIN_DEATH_BUFF</CODETAG>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>TRAMPLE;GM</DATA0>
+      <DATA1>5%;5%</DATA1>
+      <DATA2/>
+      <DATA3>Death Sphere; Death Snake</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Czin, God of Death</HERO>
+      <HELP>CZINLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Death Buff 2</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>TRAMPLE;GM</DATA0>
+      <DATA1>10%;10%</DATA1>
+      <DATA2/>
+      <DATA3>Death Sphere; Death Snake</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Czin, God of Death L2</HERO>
+      <HELP>CZINLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Death Buff 3</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>TRAMPLE;GM</DATA0>
+      <DATA1>15%;15%</DATA1>
+      <DATA2/>
+      <DATA3>Death Sphere; Death Snake</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Czin, God of Death L3</HERO>
+      <HELP>CZINLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Death Buff 4</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>TRAMPLE;GM</DATA0>
+      <DATA1>20%;20%</DATA1>
+      <DATA2/>
+      <DATA3>Death Sphere; Death Snake</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Czin, God of Death L4</HERO>
+      <HELP>CZINLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Death Buff 5</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>TRAMPLE;GM</DATA0>
+      <DATA1>25%;25%</DATA1>
+      <DATA2/>
+      <DATA3>Death Sphere; Death Snake</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Czin, God of Death L5</HERO>
+      <HELP>CZINLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Storm Buff 1</TYPENAME>
+      <CODETAG>SHOK_STORM_BUFF</CODETAG>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>SPEED</DATA0>
+      <DATA1>2%</DATA1>
+      <DATA2/>
+      <DATA3>Storm Disk; Quetzal; Storm Eagle</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Shok, Goddess of storm</HERO>
+      <HELP>SHOKLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Storm Buff 2</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>SPEED</DATA0>
+      <DATA1>4%</DATA1>
+      <DATA2/>
+      <DATA3>Storm Disk; Quetzal; Storm Eagle</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Shok, Goddess of storm L2</HERO>
+      <HELP>SHOKLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Storm Buff 3</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>SPEED</DATA0>
+      <DATA1>6%</DATA1>
+      <DATA2/>
+      <DATA3>Storm Disk; Quetzal; Storm Eagle</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Shok, Goddess of storm L3</HERO>
+      <HELP>SHOKLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Storm Buff 4</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>SPEED</DATA0>
+      <DATA1>8%</DATA1>
+      <DATA2/>
+      <DATA3>Storm Disk; Quetzal; Storm Eagle</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Shok, Goddess of storm L4</HERO>
+      <HELP>SHOKLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Storm Buff 5</TYPENAME>
+      <FLAGS>ef</FLAGS>
+      <PREQ0>none</PREQ0>
+      <DATA0>SPEED</DATA0>
+      <DATA1>10%</DATA1>
+      <DATA2/>
+      <DATA3>Storm Disk; Quetzal; Storm Eagle</DATA3>
+      <TRIBE_MASK>0100</TRIBE_MASK>
+      <HERO>Shok, Goddess of storm L5</HERO>
+      <HELP>SHOKLEVELBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Battery Fane Bonus</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>HITS;GM;AA;BA;GA</DATA0>
+      <DATA1>5%;5%;5%;5%;5%</DATA1>
+      <DATA3>Fane</DATA3>
+      <TRIBE_MASK>0000</TRIBE_MASK>
+      <HELP/>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Sand Weapon</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Sand Weapon</PREQ0>
+      <DATA0>GM;TRAMPLE;GA;AA;BA</DATA0>
+      <DATA1>15%;15%;10%;10%;10%</DATA1>
+      <DATA2>def</DATA2>
+      <DATA3>Sand Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDWEAPON</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Stone Weapon</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Stone Weapon</PREQ0>
+      <DATA0>GM;TRAMPLE;GA;AA;BA</DATA0>
+      <DATA1>20%;20%;15%;15%;15%</DATA1>
+      <DATA2>def</DATA2>
+      <DATA3>Sand Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDWEAPON</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Rock Weapon</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Rock Weapon</PREQ0>
+      <DATA0>GM;TRAMPLE;GA;AA;BA</DATA0>
+      <DATA1>20%;20%;20%;20%;20%</DATA1>
+      <DATA2>def</DATA2>
+      <DATA3>Sand Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDWEAPON</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Sand Body</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Sand Body</PREQ0>
+      <DATA0>HITS;SPEED</DATA0>
+      <DATA1>10%;5%</DATA1>
+      <DATA2>ab</DATA2>
+      <DATA3>Sand Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDMAGIC</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Stone Body</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Stone Body</PREQ0>
+      <DATA0>HITS;SPEED</DATA0>
+      <DATA1>10%;5%</DATA1>
+      <DATA2>ab</DATA2>
+      <DATA3>Sand Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDMAGIC</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Rock Body</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Rock Body</PREQ0>
+      <DATA0>HITS;SPEED</DATA0>
+      <DATA1>15%;5%</DATA1>
+      <DATA2>ab</DATA2>
+      <DATA3>Sand Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDMAGIC</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Grit 1</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Sandtough</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>5%</DATA1>
+      <DATA2>c</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle;City; Alim Mine</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDTOUGH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Grit 2</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Stonetough</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>10%</DATA1>
+      <DATA2>c</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle;City; Alim Mine</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDTOUGH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Grit 3</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Rocktough</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>15%</DATA1>
+      <DATA2>c</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle;City; Alim Mine</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDTOUGH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Earth Guide</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Earthguide</PREQ0>
+      <DATA0>SPEED;LOS</DATA0>
+      <DATA1>5%;5%</DATA1>
+      <DATA2>ab</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>EARTHGUIDE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Earth Finder</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Earthfinder</PREQ0>
+      <DATA0>SPEED;LOS</DATA0>
+      <DATA1>5%;5%</DATA1>
+      <DATA2>ab</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>EARTHFINDER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Unerring Earth</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Unerringearth</PREQ0>
+      <DATA0>SPEED;LOS</DATA0>
+      <DATA1>5%;5%</DATA1>
+      <DATA2>ab</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>UNERRINGEARTH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shifting Sand</TYPENAME>
+      <CODETAG>SHIFTING_SAND_BONUS_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shifting Sand Tech</PREQ0>
+      <DATA0>5%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDPRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shifting Sand 2</TYPENAME>
+      <CODETAG>SHIFTING_SAND_BONUS_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shifting Sand Tech 2</PREQ0>
+      <DATA0>15%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>SANDPRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fire Hit</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Firehit</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>20%;20%;20%;20%</DATA1>
+      <DATA3>Fire Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREHIT</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fire Punch</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Firepunch</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>25%;25%;25%;25%</DATA1>
+      <DATA3>Fire Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREPUNCH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fire Kick</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Firekick</PREQ0>
+      <DATA0>GM;GA;AA;BA</DATA0>
+      <DATA1>35%;35%;35%;35%</DATA1>
+      <DATA3>Fire Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREKICK</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fire Quick</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Firequick</PREQ0>
+      <DATA0>SPEED;LOS;HITS</DATA0>
+      <DATA1>10%;10%;10%</DATA1>
+      <DATA3>Fire Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREQUICK</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fire Fast</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Firefast</PREQ0>
+      <DATA0>SPEED;LOS;HITS</DATA0>
+      <DATA1>10%;10%;10%</DATA1>
+      <DATA3>Fire Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREFAST</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fire Speed</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Firespeed</PREQ0>
+      <DATA0>SPEED;LOS;HITS</DATA0>
+      <DATA1>10%;10%;10%</DATA1>
+      <DATA3>Fire Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIRESPEED</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Alin Build Units Faster 1</TYPENAME>
+      <CODETAG>ALIN_CREATEUNITSFAST_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Alin Unit Creation 1</PREQ0>
+      <DATA0>10</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREDEFENSE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Alin Build Units Faster 2</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Alin Unit Creation 2</PREQ0>
+      <DATA0>20</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREDEFENSE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Alin Build Units Faster 3</TYPENAME>
+      <CODETAG>ALIN_CREATEUNITSFAST_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Alin Unit Creation 3</PREQ0>
+      <DATA0>30</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>FIREDEFENSE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Air Bolt</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Airbolt</PREQ0>
+      <DATA0>GA;AA;BA</DATA0>
+      <DATA1>5%;5%;5%</DATA1>
+      <DATA2>d</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>AIRBOLT</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Air Strike</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Airstrike</PREQ0>
+      <DATA0>GA;AA;BA</DATA0>
+      <DATA1>10%;10%;10%</DATA1>
+      <DATA2>d</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>AIRSTRIKE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Air Blast</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Airblast</PREQ0>
+      <DATA0>GA;AA;BA</DATA0>
+      <DATA1>15%;15%;15%</DATA1>
+      <DATA2>d</DATA2>
+      <DATA3>Sand Circle;Fire Circle; Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>AIRBLAST</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Glass Hit</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Glasshit</PREQ0>
+      <DATA0>GM;TRAMPLE;GA;AA;BA</DATA0>
+      <DATA1>10%;10%;10%;10%;10%</DATA1>
+      <DATA3>Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>GLASSHIT</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Glass Punch</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Glasspunch</PREQ0>
+      <DATA0>GM;TRAMPLE;GA;AA;BA</DATA0>
+      <DATA1>15%;15%;15%;15%;15%</DATA1>
+      <DATA3>Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>GLASSHIT</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Glass Kick</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Glasskick</PREQ0>
+      <DATA0>GM;TRAMPLE;GA;AA;BA</DATA0>
+      <DATA1>25%;25%;25%;25%;25%</DATA1>
+      <DATA3>Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>GLASSHIT</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Glass Hard</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Glasshard</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>10%</DATA1>
+      <DATA3>Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>GLASSHARD</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Glass Tough</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Glasstough</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>10%</DATA1>
+      <DATA3>Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>GLASSTOUGH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Glass Armor</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Glassarmor</PREQ0>
+      <DATA0>HITS</DATA0>
+      <DATA1>20%</DATA1>
+      <DATA3>Glass Circle</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>GLASSARMOR</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Alin Building 1</TYPENAME>
+      <CODETAG>BUILDINGS_HP_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Glass Building 1</PREQ0>
+      <DATA0>5%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>BUILDINGSHP</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Alin Building 2</TYPENAME>
+      <CODETAG>BUILDINGS_HP_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Glass Building 2</PREQ0>
+      <DATA0>10%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>BUILDINGSHP</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Alin Building 3</TYPENAME>
+      <CODETAG>BUILDINGS_HP_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Glass Building 3</PREQ0>
+      <DATA0>15%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>BUILDINGSHP</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Alin Less Attrition</TYPENAME>
+      <CODETAG>ALIN_LESS_ATTRITION</CODETAG>
+      <FLAGS/>
+      <PREQ0>Glass Magic</PREQ0>
+      <DATA0>75%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>0001</TRIBE_MASK>
+      <HELP>LOWERATTRITION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Free Scout 1</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeScout1</PREQ0>
+      <DATA0>Trade Scout 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>FREESCOUT1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scout Buff</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <PREQ0>FreeScout1</PREQ0>
+      <DATA0>HITS;SPEED</DATA0>
+      <DATA1>20%;10%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Scout Flyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>SCOUTBUFF</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Free Miner 1</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeMiner1</PREQ0>
+      <DATA0>Trade Miners 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>FREEMINER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Clockwork Mining Bonus</TYPENAME>
+      <CODETAG>CLOCKWORK_MINING</CODETAG>
+      <FLAGS/>
+      <PREQ0>FreeMiner1</PREQ0>
+      <DATA0>2 clockwork miner bonus</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>CLOCKWORKMINING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Zeke</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>Recruit Zeke</PREQ0>
+      <DATA0>Trade Zeke 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSZEKE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Zeke Building HP</TYPENAME>
+      <CODETAG>ZEKE_BUILDINGS_HP</CODETAG>
+      <FLAGS/>
+      <PREQ0>Recruit Zeke</PREQ0>
+      <DATA0>10%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>ZEKEBUILDINGSHP</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Clockwork Man</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeFlyer</PREQ0>
+      <DATA0>Trade Men 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSCLOCKWORKMAN</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Clockwork Man Buff</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <PREQ0>FreeFlyer</PREQ0>
+      <DATA0>GM;HITS</DATA0>
+      <DATA1>10%;5%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Clockwork Man</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>CLOCKMANBUFF</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Clockwork Spider</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeSpider1</PREQ0>
+      <DATA0>Trade Spider 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSSPIDER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Clockwork Spider Buff</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <PREQ0>FreeSpider1</PREQ0>
+      <DATA0>AA;TRAMPLE</DATA0>
+      <DATA1>10%;10%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Clockwork Spider</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>CLOCKSPIDERBUFF</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Pirata Flyer</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeFlyer2</PREQ0>
+      <DATA0>Trade Pirata 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSPIRATAFLYER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Pirata Flyer Buff</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <PREQ0>FreeFlyer2</PREQ0>
+      <DATA0>AA;SPEED</DATA0>
+      <DATA1>10%;5%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Pirata Flyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>PIRATAFLYERBUFF</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Air Destroyer</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeDestroyer1</PREQ0>
+      <DATA0>Trade Destroyer 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSDESTROYER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Air Destroyer Buff</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <PREQ0>FreeDestroyer1</PREQ0>
+      <DATA0>GA;HITS</DATA0>
+      <DATA1>15%;5%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Air Destroyer</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>AIRDESTROYERBUFF</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Siege Zeppelin</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeBlimp1</PREQ0>
+      <DATA0>Trade Blimp 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSBLIMP</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Siege Buff</TYPENAME>
+      <FLAGS>c</FLAGS>
+      <PREQ0>FreeBlimp1</PREQ0>
+      <DATA0>BA</DATA0>
+      <DATA1>25%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Rocket Launcher</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>SIEGEBUFF</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Juggernauts</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeJuggernauts</PREQ0>
+      <DATA0>Trade Jugger 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSULTRAJUGGERNAUTS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Training Bonus</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Attack Upgrade 1</PREQ0>
+      <DATA0>GM;GA;AA;TRAMPLE</DATA0>
+      <DATA1>10%;10%;10%;10%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Barracks;Aerodrome;Steam Fortress;Timonium Smelter 2;Doge Statue</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>GROUNDATTACKBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Ground Attack Bonus 1</TYPENAME>
+      <CODETAG>GROUND_ATTACK_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>1 Trample Attack Bonus</DATA0>
+      <DATA1>1 Ground Attack Bonus (melee and ranged)</DATA1>
+      <DATA2>1 Air Attack Bonus (melee and ranged) </DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>GROUNDATTACKBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Ground Attack Bonus 2</TYPENAME>
+      <CODETAG>GROUND_ATTACK_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>GROUNDATTACKBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Ground Attack Bonus 3</TYPENAME>
+      <CODETAG>GROUND_ATTACK_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>GROUNDATTACKBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Clockwork Miners 1</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeMiner2</PREQ0>
+      <DATA0>Trade Miners 2</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSCLOCKWORKMINERS1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Villages Friendly Bonus</TYPENAME>
+      <CODETAG>VILLAGES_FRIENDLY_BONUS</CODETAG>
+      <FLAGS>a</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>Trade Neutrals 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>VILLAGESFRIENDLYBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Vinci Building Heal</TYPENAME>
+      <CODETAG>VINCI_BUILD_HEAL</CODETAG>
+      <FLAGS/>
+      <PREQ0>Improved Towers</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BUILDINGSHEAL1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Clockwork Miners 2</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeMiner3</PREQ0>
+      <DATA0>Trade Miners 3</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSCLOCKWORKMINERS2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Faster City Capture</TYPENAME>
+      <CODETAG>FASTER_CITY_CAPTURE</CODETAG>
+      <FLAGS/>
+      <PREQ0>Fast Capture</PREQ0>
+      <DATA0>50% of capture time</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>FASTERCITYCAPTURE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus LOS</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>LOSBonus</PREQ0>
+      <DATA0>GA;AA;LOS;SPEED</DATA0>
+      <DATA1>10%;10%;20%;10%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Barracks;Aerodrome;Steam Fortress;Timonium Smelter 2;Doge Statue</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSLOS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Stimdust Bonus</TYPENAME>
+      <FLAGS>b</FLAGS>
+      <PREQ0>Stimdust</PREQ0>
+      <DATA0>HITS;GM;GA;AM;AA;BA;TRAMPLE</DATA0>
+      <DATA1>10%;5%;5%;5%;5%;5%;5%</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>Barracks;Aerodrome;Steam Fortress;Timonium Smelter 2;Doge Statue</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>STIMDUST</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Clockwork Miners 3</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeMiner4</PREQ0>
+      <DATA0>Trade Miners 4</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSCLOCKWORKMINERS2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Clockwork Miners 4</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>Trade Miners 5</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSCLOCKWORKMINERS2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Clockwork Foreman</TYPENAME>
+      <CODETAG>FOREMAN_BONUS_START</CODETAG>
+      <FLAGS>a</FLAGS>
+      <PREQ0>FreeForeman1</PREQ0>
+      <DATA0>Trade Foreman 1</DATA0>
+      <DATA1>15</DATA1>
+      <DATA2>7</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSFOREMAN</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Improved Mines</TYPENAME>
+      <CODETAG>IMPROVED_MINES_BONUS_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Improved Mines</PREQ0>
+      <DATA0>2 output-per-head increase</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>IMPROVED_MINES_BONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Bonus Improved Mines End</TYPENAME>
+      <CODETAG>IMPROVED_MINES_BONUS_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Improved Mines 2</PREQ0>
+      <DATA0>2 output-per-head increase</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>IMPROVED_MINES_BONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lead into Gold</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>Gift Resources</PREQ0>
+      <DATA0>Give Resources</DATA0>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BONUSRESOURCES</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Peace Neutrals Bonus</TYPENAME>
+      <CODETAG/>
+      <FLAGS>a</FLAGS>
+      <PREQ0>Territory 2 Alim</PREQ0>
+      <DATA0>Peace Neutrals 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PEACENEUTRALS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Explore Map Bonus</TYPENAME>
+      <CODETAG>EXPLORE_MAP_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 1 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EXPLOREMAPBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Active Ping Bonus</TYPENAME>
+      <CODETAG>ACTIVE_PING_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 3 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>ACTIVEPINGBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Reveal Relics Bonus</TYPENAME>
+      <CODETAG>REVEAL_GOODY_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>REVEALRELICSBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Reveal Neutrals Bonus</TYPENAME>
+      <CODETAG>REVEAL_NEUTRAL_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>REVEALNEUTRALSBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Reveal Building Bonus</TYPENAME>
+      <CODETAG>REVEAL_BUILDING_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>REVEALBUILDINGBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Reveal Hero Bonus</TYPENAME>
+      <CODETAG>REVEAL_HERO_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>REVEALHEROBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Caravan Attack Bonus</TYPENAME>
+      <CODETAG>CARAVAN_ATTACK_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>CARAVANATTACKBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Ally LOS</TYPENAME>
+      <CODETAG>ALLY_LOS</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>ALLYLOS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>See Enemy</TYPENAME>
+      <CODETAG>SEE_ENEMY_BORDERS</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SEEENEMY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Reveal Enemy</TYPENAME>
+      <CODETAG>REVEAL_ENEMY_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>REVEALENEMY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Sun Jaguar</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>Poof a Sun Jaguar</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>POOFSUNJAGUAR</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Death Snake</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>Poof a Death Snake</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>POOFDEATHSNAKE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Sun Idol</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>Poof a Sun Idol</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>POOFSUNIDOL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Sentinels 1</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>Weapons 1</PREQ0>
+      <DATA0>Proselytize Sentinels 1</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZE1SENTINELS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Sentinels 2</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>Weapons 2</PREQ0>
+      <DATA0>Proselytize Sentinels 2</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZESENTINELS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Sentinels 3</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>Weapons 3</PREQ0>
+      <DATA0>Proselytize Sentinels 3</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZESENTINELS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Sentinels 4</TYPENAME>
+      <FLAGS>a</FLAGS>
+      <PREQ0>Weapons 4</PREQ0>
+      <DATA0>Proselytize Sentinels 4</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZESENTINELS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Timonium 1</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>Shields 2</PREQ0>
+      <DATA0>Timonium</DATA0>
+      <DATA1>50</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZETIMONIUM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Timonium 2</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>Shields 3</PREQ0>
+      <DATA0>Timonium</DATA0>
+      <DATA1>150</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZETIMONIUM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Timonium 3</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>Shields 4</PREQ0>
+      <DATA0>Timonium</DATA0>
+      <DATA1>400</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZETIMONIUM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Timonium 4</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>Timonium</DATA0>
+      <DATA1>1000</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZETIMONIUM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Energy 1</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>Reactor Power 2</PREQ0>
+      <DATA0>Energy</DATA0>
+      <DATA1>50</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>MAKESENERGY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Energy 2</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>Reactor Power 3</PREQ0>
+      <DATA0>Energy</DATA0>
+      <DATA1>150</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>MAKESENERGY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Energy 3</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>Reactor Power 4</PREQ0>
+      <DATA0>Energy</DATA0>
+      <DATA1>400</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>MAKESENERGY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Makes Energy 4</TYPENAME>
+      <FLAGS>g</FLAGS>
+      <PREQ0>disable</PREQ0>
+      <DATA0>Energy</DATA0>
+      <DATA1>1000</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>MAKESENERGY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Subjugation 0</TYPENAME>
+      <CODETAG>PROSELYTIZE_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>90% unit damage sustained</DATA0>
+      <DATA1>25% building health remaining</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Subjugation 1</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 1</PREQ0>
+      <DATA0>75% unit damage sustained</DATA0>
+      <DATA1>50% building health remaining</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Subjugation 2</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 2</PREQ0>
+      <DATA0>50% unit damage sustained</DATA0>
+      <DATA1>75% building health remaining</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Subjugation 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 3</PREQ0>
+      <DATA0>25% unit damage sustained</DATA0>
+      <DATA1>100% building health remaining</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Subjugation 4</TYPENAME>
+      <CODETAG>PROSELYTIZE_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 4</PREQ0>
+      <DATA0>0% unit damage sustained</DATA0>
+      <DATA1>100% building health remaining</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Subjugate Cost 0</TYPENAME>
+      <CODETAG>SUBJUGATE_COST_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>10% reduction from Purchase price</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUBJUCOMBO</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Subjugate Cost 1</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 1</PREQ0>
+      <DATA0>15% reduction from Purchase price</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUBJUCOMBO</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Subjugate Cost 2</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 2</PREQ0>
+      <DATA0>20% reduction from Purchase price</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUBJUCOMBO2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Subjugate Cost 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 3</PREQ0>
+      <DATA0>25% reduction from Purchase price</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUBJUCOMBO3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Subjugate Cost 4</TYPENAME>
+      <CODETAG>SUBJUGATE_COST_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 4</PREQ0>
+      <DATA0>40% reduction from Purchase price</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUBJUCOMBO4</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tell Shield Spell Active</TYPENAME>
+      <CODETAG/>
+      <FLAGS/>
+      <PREQ0>Shields 1</PREQ0>
+      <DATA0>0 - Does nothing except make help text</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHIELDSACTIVEBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tell Cloak Spell Active</TYPENAME>
+      <CODETAG/>
+      <FLAGS/>
+      <PREQ0>Weapons 2</PREQ0>
+      <DATA0>0 - Does nothing except make help text</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>CLOAKACTIVEBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Grunts Faster 1</TYPENAME>
+      <CODETAG>GRUNTS_FASTER_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>0% faster</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZEGRUNTS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Grunts Faster 2</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Weapons 1</PREQ0>
+      <DATA0>5% faster</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZEGRUNTS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Grunts Faster 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Weapons 2</PREQ0>
+      <DATA0>10% faster</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZEGRUNTS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Grunts Faster 4</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Weapons 3</PREQ0>
+      <DATA0>20% faster</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZEGRUNTS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Proselytism Grunts Faster 5</TYPENAME>
+      <CODETAG>GRUNTS_FASTER_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 4</PREQ0>
+      <DATA0>35% faster</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PROSELYTIZEGRUNTS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fane Carry 0</TYPENAME>
+      <CODETAG>FANE_CARRY_0</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>1 total fane carry capacity</DATA0>
+      <DATA1>30 fane fly speed</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FANECARRY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fane Carry 1</TYPENAME>
+      <CODETAG>FANE_CARRY_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Power 1</PREQ0>
+      <DATA0>2 total fane carry capacity</DATA0>
+      <DATA1>35 fane fly speed</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FANECARRY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fane Carry 2</TYPENAME>
+      <CODETAG>FANE_CARRY_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Power 2</PREQ0>
+      <DATA0>8 total fane carry capacity</DATA0>
+      <DATA1>40 fane fly speed</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FANECARRY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fane Carry 3</TYPENAME>
+      <CODETAG>FANE_CARRY_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Power 3</PREQ0>
+      <DATA0>15 total fane carry capacity</DATA0>
+      <DATA1>50 fane fly speed</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FANECARRY2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Fane Carry 4</TYPENAME>
+      <CODETAG>FANE_CARRY_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Power 4</PREQ0>
+      <DATA0>30 total fane carry capacity</DATA0>
+      <DATA1>60 fane fly speed</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FANECARRY3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 1</TYPENAME>
+      <CODETAG>BORDERS_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 1</PREQ0>
+      <DATA0>2 factor increase</DATA0>
+      <DATA1>8 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 2</TYPENAME>
+      <CODETAG>BORDERS_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2</PREQ0>
+      <DATA0>5 factor increase</DATA0>
+      <DATA1>20 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 3</TYPENAME>
+      <CODETAG>BORDERS_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 3</PREQ0>
+      <DATA0>10 factor increase</DATA0>
+      <DATA1>36 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 4</TYPENAME>
+      <CODETAG>BORDERS_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4</PREQ0>
+      <DATA0>18 factor increase</DATA0>
+      <DATA1>56 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 1 Alim</TYPENAME>
+      <CODETAG>BORDERS_ALIM_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 1 Alim</PREQ0>
+      <DATA0>2 factor increase</DATA0>
+      <DATA1>8 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 2 Alim</TYPENAME>
+      <CODETAG>BORDERS_ALIM_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2 Alim</PREQ0>
+      <DATA0>5 factor increase</DATA0>
+      <DATA1>20 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 3 Alim</TYPENAME>
+      <CODETAG>BORDERS_ALIM_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 3 Alim</PREQ0>
+      <DATA0>10 factor increase</DATA0>
+      <DATA1>36 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Borders 4 Alim</TYPENAME>
+      <CODETAG>BORDERS_ALIM_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4 Alim</PREQ0>
+      <DATA0>18 factor increase</DATA0>
+      <DATA1>56 limit increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BORDERS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 1</TYPENAME>
+      <CODETAG>ATTRITION_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 1</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 2</TYPENAME>
+      <CODETAG>ATTRITION_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 3</TYPENAME>
+      <CODETAG>ATTRITION_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 3</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 4</TYPENAME>
+      <CODETAG>ATTRITION_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 1 Alim</TYPENAME>
+      <CODETAG>ATTRITION_ALIM_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 1 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 2 Alim</TYPENAME>
+      <CODETAG>ATTRITION_ALIM_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 3 Alim</TYPENAME>
+      <CODETAG>ATTRITION_ALIM_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 3 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Territory Attrition 4 Alim</TYPENAME>
+      <CODETAG>ATTRITION_ALIM_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TERRITORYATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Attrition 1</TYPENAME>
+      <CODETAG>ATTRITION1</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>ATTRITION1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Attrition 2</TYPENAME>
+      <CODETAG>ATTRITION2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>ATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Attrition 3</TYPENAME>
+      <CODETAG>ATTRITION3</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>ATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Attrition 4</TYPENAME>
+      <CODETAG>ATTRITION4</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>ATTRITION2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Loot 1</TYPENAME>
+      <CODETAG>LOOT_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 1</PREQ0>
+      <DATA0>3</DATA0>
+      <DATA1>1 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LOOT</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Loot 2</TYPENAME>
+      <CODETAG>LOOT_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 2</PREQ0>
+      <DATA0>5</DATA0>
+      <DATA1>1 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LOOT2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Loot 3</TYPENAME>
+      <CODETAG>LOOT_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 3</PREQ0>
+      <DATA0>7</DATA0>
+      <DATA1>1 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LOOT2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Loot 4</TYPENAME>
+      <CODETAG>LOOT_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 4</PREQ0>
+      <DATA0>9</DATA0>
+      <DATA1>1 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LOOT2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scavenge Bonus 1</TYPENAME>
+      <CODETAG>SCAVENGE_BONUS_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 1</PREQ0>
+      <DATA0>3</DATA0>
+      <DATA1>0 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCAVENGEBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scavenge Bonus 2</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Scavenge 2</PREQ0>
+      <DATA0>5</DATA0>
+      <DATA1>0 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCAVENGEBONUS2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scavenge Bonus 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Scavenge 3</PREQ0>
+      <DATA0>7</DATA0>
+      <DATA1>0 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCAVENGEBONUS2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scavenge Bonus 4</TYPENAME>
+      <CODETAG>SCAVENGE_BONUS_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 4</PREQ0>
+      <DATA0>9</DATA0>
+      <DATA1>0 (0 = Timonium, 1 = Wealth)</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCAVENGEBONUS2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scorched Earth 1</TYPENAME>
+      <CODETAG>SCORCHED_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>25%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCORCHED</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scorched Earth 2</TYPENAME>
+      <CODETAG>SCORCHED_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>50%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCORCHED</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scorched Earth 3</TYPENAME>
+      <CODETAG>SCORCHED_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>75%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCORCHED</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Scorched Earth 4</TYPENAME>
+      <CODETAG>SCORCHED_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 1</PREQ0>
+      <DATA0>100%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SCORCHED</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Sand 1</TYPENAME>
+      <CODETAG>EVOKE_SAND_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Evocation 1</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKESAND1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Sand 2</TYPENAME>
+      <CODETAG>EVOKE_SAND_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Evocation 3</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKESAND2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Sand 3</TYPENAME>
+      <CODETAG>EVOKE_SAND_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Evocation 4</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKESAND3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Sand 4</TYPENAME>
+      <CODETAG>EVOKE_SAND_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKESAND4</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Fire 1</TYPENAME>
+      <CODETAG>EVOKE_FIRE_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Evocation 2</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKEFIRE1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Fire 2</TYPENAME>
+      <CODETAG>EVOKE_FIRE_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Evocation 4</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKEFIRE2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Fire 3</TYPENAME>
+      <CODETAG>EVOKE_FIRE_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKEFIRE3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Glass 1</TYPENAME>
+      <CODETAG>EVOKE_GLASS_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Evocation 3</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKEGLASS1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Evoke Glass 2</TYPENAME>
+      <CODETAG>EVOKE_GLASS_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Evocation 4</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>EVOKEGLASS2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Troops Faster 1</TYPENAME>
+      <CODETAG>TROOPS_FASTER_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Industry 1</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TROOPSFASTER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Troops Faster 2</TYPENAME>
+      <CODETAG>TROOPS_FASTER_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Industry 2</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TROOPSFASTER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Troops Faster 3</TYPENAME>
+      <CODETAG>TROOPS_FASTER_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Industry 3</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TROOPSFASTER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Troops Faster 4</TYPENAME>
+      <CODETAG>TROOPS_FASTER_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Industry 4</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TROOPSFASTER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 1</TYPENAME>
+      <CODETAG>HEAL_BETTER_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 1</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 2</TYPENAME>
+      <CODETAG>HEAL_BETTER_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 2</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 3</TYPENAME>
+      <CODETAG>HEAL_BETTER_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 3</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 4</TYPENAME>
+      <CODETAG>HEAL_BETTER_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 4</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal No Delay</TYPENAME>
+      <CODETAG>HEAL_NO_DELAY</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 2</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALNODELAY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 1</TYPENAME>
+      <CODETAG>HEAL_BETTER_ALIM_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 1 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 2</TYPENAME>
+      <CODETAG>HEAL_BETTER_ALIM_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 2 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 3</TYPENAME>
+      <CODETAG>HEAL_BETTER_ALIM_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 3 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Better 4</TYPENAME>
+      <CODETAG>HEAL_BETTER_ALIM_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 4 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALBETTER2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal No Delay</TYPENAME>
+      <CODETAG>HEAL_NO_DELAY_ALIM</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 2 Alim</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALNODELAY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Moving</TYPENAME>
+      <CODETAG>HEAL_MOVING</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALMOVING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Neutral</TYPENAME>
+      <CODETAG>HEAL_NEUTRAL</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALNEUTRAL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal In Supply</TYPENAME>
+      <CODETAG>HEAL_IN_SUPPLY</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALINSUPPLY</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Heal Health Bonus</TYPENAME>
+      <CODETAG>HEAL_HEALTH_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>25%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALHEALTHBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Heal 1</TYPENAME>
+      <CODETAG>BUILDINGS_HEAL_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1000</TRIBE_MASK>
+      <HELP>BUILDINGSHEAL1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Heal 2</TYPENAME>
+      <CODETAG>BUILDINGS_HEAL_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSHEAL2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Heal 3</TYPENAME>
+      <CODETAG>BUILDINGS_HEAL_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSHEAL2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Heal 4</TYPENAME>
+      <CODETAG>BUILDINGS_HEAL_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSHEAL2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Faster 1</TYPENAME>
+      <CODETAG>BUILDINGS_FASTER_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 1 Alim</PREQ0>
+      <DATA0>5%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Faster 2</TYPENAME>
+      <CODETAG>BUILDINGS_FASTER_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 2 Alim</PREQ0>
+      <DATA0>10%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Faster 3</TYPENAME>
+      <CODETAG>BUILDINGS_FASTER_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 3 Alim</PREQ0>
+      <DATA0>15%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Faster 4</TYPENAME>
+      <CODETAG>BUILDINGS_FASTER_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 4 Alim</PREQ0>
+      <DATA0>20%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Vehicles Faster 1</TYPENAME>
+      <CODETAG>VEHICLES_FASTER_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>VEHICLESFASTER1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Vehicles Faster 2</TYPENAME>
+      <CODETAG>VEHICLES_FASTER_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>VEHICLESFASTER2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Vehicles Faster 3</TYPENAME>
+      <CODETAG>VEHICLES_FASTER_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>VEHICLESFASTER3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Supply Wagons 1</TYPENAME>
+      <CODETAG>SUPPLY_WAGONS_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUPPLYWAGONS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Supply Wagons 2</TYPENAME>
+      <CODETAG>SUPPLY_WAGONS_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUPPLYWAGONS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Supply Wagons 3</TYPENAME>
+      <CODETAG>SUPPLY_WAGONS_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUPPLYWAGONS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Supply Radius 1</TYPENAME>
+      <CODETAG>SUPPLY_RADIUS_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 2</PREQ0>
+      <DATA0>3</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUPPLYRADIUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Supply Radius 2</TYPENAME>
+      <CODETAG>SUPPLY_RADIUS_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 3</PREQ0>
+      <DATA0>3</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUPPLYRADIUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Supply Radius 3</TYPENAME>
+      <CODETAG>SUPPLY_RADIUS_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 4</PREQ0>
+      <DATA0>3</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUPPLYRADIUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Supply Radius 4</TYPENAME>
+      <CODETAG>SUPPLY_RADIUS_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>3</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUPPLYRADIUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>No Attrition When Idle</TYPENAME>
+      <CODETAG>NO_ATTRITION_WHEN_IDLE</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 3</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>NOATTRITIONWHENIDLE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Foraging 1</TYPENAME>
+      <CODETAG>FORAGING_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 1</PREQ0>
+      <DATA0>10%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FORAGING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Foraging 2</TYPENAME>
+      <CODETAG>FORAGING_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 2</PREQ0>
+      <DATA0>20%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FORAGING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Foraging 3</TYPENAME>
+      <CODETAG>FORAGING_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 3</PREQ0>
+      <DATA0>35%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FORAGING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Foraging 4</TYPENAME>
+      <CODETAG>FORAGING_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Scavenge 4</PREQ0>
+      <DATA0>50%</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FORAGING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Intrigue 1</TYPENAME>
+      <CODETAG>INTRIGUE_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 1</PREQ0>
+      <DATA0>5% purchase</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>INTRIGUE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Intrigue 2</TYPENAME>
+      <CODETAG>INTRIGUE_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2</PREQ0>
+      <DATA0>10% purchase</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>INTRIGUE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Intrigue 3</TYPENAME>
+      <CODETAG>INTRIGUE_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 3</PREQ0>
+      <DATA0>20% purchase</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>INTRIGUE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Intrigue 4</TYPENAME>
+      <CODETAG>INTRIGUE_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4</PREQ0>
+      <DATA0>50% purchase</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>INTRIGUE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Infiltration Intrigue</TYPENAME>
+      <CODETAG>INFILTRATION_INTRIGUE</CODETAG>
+      <FLAGS/>
+      <PREQ0>Fast Capture</PREQ0>
+      <DATA0>10% purchase</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>INFILPRICE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Infiltration Storming</TYPENAME>
+      <CODETAG>INFILTRATION_STORMING</CODETAG>
+      <FLAGS/>
+      <PREQ0>Fast Capture</PREQ0>
+      <DATA0>35% decrease in storm numbers</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>INFILSTORM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Storming 1</TYPENAME>
+      <CODETAG>STORM_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 1</PREQ0>
+      <DATA0>5% storm speed</DATA0>
+      <DATA1>25% storm health</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>STORMING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Storming 2</TYPENAME>
+      <CODETAG>STORM_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 2</PREQ0>
+      <DATA0>10% storm speed</DATA0>
+      <DATA1>50% storm health</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>STORMING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Storming 3</TYPENAME>
+      <CODETAG>STORM_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 3</PREQ0>
+      <DATA0>15% storm speed</DATA0>
+      <DATA1>75% storm health</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>STORMING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Storming 4</TYPENAME>
+      <CODETAG>STORM_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Territory 4</PREQ0>
+      <DATA0>20% storm speed</DATA0>
+      <DATA1>100% storm health</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>STORMING</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Health 1</TYPENAME>
+      <CODETAG>HEALTH_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 1 Alim</PREQ0>
+      <DATA0>5% health bonus</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALTH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Health 2</TYPENAME>
+      <CODETAG>HEALTH_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 2 Alim</PREQ0>
+      <DATA0>10% health bonus</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALTH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Health 3</TYPENAME>
+      <CODETAG>HEALTH_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 3 Alim</PREQ0>
+      <DATA0>15% health bonus</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALTH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Health 4</TYPENAME>
+      <CODETAG>HEALTH_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 4 Alim</PREQ0>
+      <DATA0>20% health bonus</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEALTH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 1</TYPENAME>
+      <CODETAG>TAX_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 1</PREQ0>
+      <DATA0>10</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 2</TYPENAME>
+      <CODETAG>TAX_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 2</PREQ0>
+      <DATA0>20</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 3</TYPENAME>
+      <CODETAG>TAX_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 3</PREQ0>
+      <DATA0>40</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 4</TYPENAME>
+      <CODETAG>TAX_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Prosperity 4</PREQ0>
+      <DATA0>80</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 1 Alim</TYPENAME>
+      <CODETAG>TAX_ALIM_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 1</PREQ0>
+      <DATA0>10</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 2 Alim</TYPENAME>
+      <CODETAG>TAX_ALIM_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 2</PREQ0>
+      <DATA0>25</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 3 Alim</TYPENAME>
+      <CODETAG>TAX_ALIM_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 3</PREQ0>
+      <DATA0>60</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 4 Alim</TYPENAME>
+      <CODETAG>TAX_ALIM_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 4</PREQ0>
+      <DATA0>150</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAX</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 1 Cuotl</TYPENAME>
+      <CODETAG>TAX_CUOTL_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Reactor Power 1</PREQ0>
+      <DATA0>10</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAXCUOTL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 2 Cuotl</TYPENAME>
+      <CODETAG>TAX_CUOTL_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Reactor Power 2</PREQ0>
+      <DATA0>20</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAXCUOTL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 3 Cuotl</TYPENAME>
+      <CODETAG>TAX_CUOTL_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Reactor Power 3</PREQ0>
+      <DATA0>30</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAXCUOTL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tax 4 Cuotl</TYPENAME>
+      <CODETAG>TAX_CUOTL_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Reactor Power 4</PREQ0>
+      <DATA0>40</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TAXCUOTL</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 1</TYPENAME>
+      <CODETAG>PRODUCTION_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Mining 1</PREQ0>
+      <DATA0>10</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 2</TYPENAME>
+      <CODETAG>PRODUCTION_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Mining 2</PREQ0>
+      <DATA0>20</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 3</TYPENAME>
+      <CODETAG>PRODUCTION_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Mining 3</PREQ0>
+      <DATA0>40</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 4</TYPENAME>
+      <CODETAG>PRODUCTION_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Mining 4</PREQ0>
+      <DATA0>80</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 1 Alim</TYPENAME>
+      <CODETAG>PRODUCTION_ALIM_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 1</PREQ0>
+      <DATA0>10</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 2 Alim</TYPENAME>
+      <CODETAG>PRODUCTION_ALIM_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 2</PREQ0>
+      <DATA0>25</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 3 Alim</TYPENAME>
+      <CODETAG>PRODUCTION_ALIM_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 3</PREQ0>
+      <DATA0>60</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 4 Alim</TYPENAME>
+      <CODETAG>PRODUCTION_ALIM_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Spirit Binding 4</PREQ0>
+      <DATA0>150</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 1 Cuotl</TYPENAME>
+      <CODETAG>PRODUCTION_CUOTL_1</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 1</PREQ0>
+      <DATA0>10</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 2 Cuotl</TYPENAME>
+      <CODETAG>PRODUCTION_CUOTL_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 2</PREQ0>
+      <DATA0>20</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 3 Cuotl</TYPENAME>
+      <CODETAG>PRODUCTION_CUOTL_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 3</PREQ0>
+      <DATA0>30</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Production 4 Cuotl</TYPENAME>
+      <CODETAG>PRODUCTION_CUOTL_4</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 4</PREQ0>
+      <DATA0>40</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>PRODUCTION</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Civilians Created Faster</TYPENAME>
+      <CODETAG>CIVILIANS_CREATED_FASTER</CODETAG>
+      <FLAGS/>
+      <PREQ0>Tougher Miners</PREQ0>
+      <DATA0>50% faster</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>CIVILIANSCREATEDFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buildings Created Faster</TYPENAME>
+      <CODETAG>BUILDINGS_CREATED_FASTER</CODETAG>
+      <FLAGS/>
+      <PREQ0>Disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUILDINGSCREATEDFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Research Faster</TYPENAME>
+      <CODETAG>RESEARCH_FASTER</CODETAG>
+      <FLAGS/>
+      <PREQ0>Disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>RESEARCHFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Troops Faster</TYPENAME>
+      <CODETAG>TROOPS_FASTER</CODETAG>
+      <FLAGS/>
+      <PREQ0>Disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TROOPSFASTER</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Stealth Stuff</TYPENAME>
+      <CODETAG>STEALTH_STUFF</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>STEALTHSTUFF</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo's Gift Techs</TYPENAME>
+      <CODETAG>GIACOMO_FAST_RESEARCH</CODETAG>
+      <FLAGS/>
+      <PREQ0>Get Neutrals</PREQ0>
+      <DATA0>100% research speed</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>GIACOMO_FAST_RESEARCH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo's Gift Prototypes</TYPENAME>
+      <CODETAG>GIACOMO_FAST_PROTOTYPES</CODETAG>
+      <FLAGS/>
+      <PREQ0>Get Neutrals</PREQ0>
+      <DATA0>100% research speed</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>GIACOMO_FAST_PROTOTYPES</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo's Gift Upgrades</TYPENAME>
+      <CODETAG>GIACOMO_FAST_UPGRADES</CODETAG>
+      <FLAGS/>
+      <PREQ0>Get Neutrals</PREQ0>
+      <DATA0>100% research speed</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>GIACOMO_FAST_UPGRADES</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Giacomo's Gift Spells</TYPENAME>
+      <CODETAG>GIACOMO_FAST_SPELLS</CODETAG>
+      <FLAGS/>
+      <PREQ0>Get Neutrals</PREQ0>
+      <DATA0>50% research speed</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>GIACOMO_FAST_SPELLS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tell Hero Hit Points 1</TYPENAME>
+      <CODETAG/>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0 - Does nothing except make help text</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEROHITPOINTSBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tell Hero Hit Points 2</TYPENAME>
+      <CODETAG/>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0 - Does nothing except make help text</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEROHITPOINTSBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tell Hero Hit Points 3</TYPENAME>
+      <CODETAG/>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0 - Does nothing except make help text</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEROHITPOINTSBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Tell Hero Hit Points 4</TYPENAME>
+      <CODETAG/>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>0 - Does nothing except make help text</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>HEROHITPOINTSBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Upgrade 1</TYPENAME>
+      <CODETAG>XIL_HERO_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>50 HP increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>XILUPGRADE1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Upgrade 2</TYPENAME>
+      <CODETAG>XIL_HERO_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>150 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>XILUPGRADE2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Upgrade 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>350 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>XILUPGRADE3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Xil Upgrade 4</TYPENAME>
+      <CODETAG>XIL_HERO_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>600 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>XILUPGRADE4</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Upgrade 1</TYPENAME>
+      <CODETAG>SHOK_HERO_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>50 HP increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHOKUPGRADE1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Upgrade 2</TYPENAME>
+      <CODETAG>SHOK_HERO_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>150 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHOKUPGRADE2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Upgrade 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>350 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHOKUPGRADE3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shok Upgrade 4</TYPENAME>
+      <CODETAG>SHOK_HERO_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>600 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHOKUPGRADE4</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Upgrade 1</TYPENAME>
+      <CODETAG>ZIN_HERO_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>50 HP increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>CZINUPGRADE1</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Upgrade 2</TYPENAME>
+      <CODETAG>ZIN_HERO_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>150 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>CZINUPGRADE2</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Upgrade 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>450 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>CZINUPGRADE3</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Czin Upgrade 4</TYPENAME>
+      <CODETAG>ZIN_HERO_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>disable</PREQ0>
+      <DATA0>800 HP  increase</DATA0>
+      <DATA1>0 speed increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>CZINUPGRADE4</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Death Bird 1</TYPENAME>
+      <CODETAG>ZIN_DEATH_BIRD_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 1</PREQ0>
+      <DATA0>1 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>DEATHBIRD</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Death Bird 2</TYPENAME>
+      <CODETAG>ZIN_DEATH_BIRD_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 2</PREQ0>
+      <DATA0>2 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>DEATHBIRD</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Death Bird 3</TYPENAME>
+      <CODETAG>ZIN_DEATH_BIRD_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 3</PREQ0>
+      <DATA0>4 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>DEATHBIRD</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Death Bird 4</TYPENAME>
+      <CODETAG>ZIN_DEATH_BIRD_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 4</PREQ0>
+      <DATA0>8 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>DEATHBIRD</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Sun Beam 1</TYPENAME>
+      <CODETAG>XIL_SUN_BEAM_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 1</PREQ0>
+      <DATA0>1 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUNBEAM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Sun Beam 2</TYPENAME>
+      <CODETAG>XIL_SUN_BEAM_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 2</PREQ0>
+      <DATA0>2 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUNBEAM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Sun Beam 3</TYPENAME>
+      <CODETAG>XIL_SUN_BEAM_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 3</PREQ0>
+      <DATA0>4 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUNBEAM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Sun Beam 4</TYPENAME>
+      <CODETAG>XIL_SUN_BEAM_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 4</PREQ0>
+      <DATA0>6 attack increase</DATA0>
+      <DATA1>0 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SUNBEAM</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lightning Wand 1</TYPENAME>
+      <CODETAG>SHOK_LIGHTNING_WAND_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 1</PREQ0>
+      <DATA0>1 attack increase</DATA0>
+      <DATA1>1 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LIGHTNINGWAND</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lightning Wand 2</TYPENAME>
+      <CODETAG>SHOK_LIGHTNING_WAND_2</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 2</PREQ0>
+      <DATA0>2 attack increase</DATA0>
+      <DATA1>2 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LIGHTNINGWAND</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lightning Wand 3</TYPENAME>
+      <CODETAG>SHOK_LIGHTNING_WAND_3</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 3</PREQ0>
+      <DATA0>3 attack increase</DATA0>
+      <DATA1>3 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LIGHTNINGWAND</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Lightning Wand 4</TYPENAME>
+      <CODETAG>SHOK_LIGHTNING_WAND_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Weapons 4</PREQ0>
+      <DATA0>4 attack increase</DATA0>
+      <DATA1>4 splash radius (ranged) increase</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>LIGHTNINGWAND</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shield Bonus 1</TYPENAME>
+      <CODETAG>BUILDING_SHIELD_BONUS_START</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 1</PREQ0>
+      <DATA0>100% shield hits increase</DATA0>
+      <DATA1>20% shield regen time reduction</DATA1>
+      <DATA2>100% shield hits are at this percentage of the maximum when units are in the queue</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHIELDBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shield Bonus 2</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 2</PREQ0>
+      <DATA0>200% shield hits increase</DATA0>
+      <DATA1>40% shield regen time reduction</DATA1>
+      <DATA2>100% shield hits are at this percentage of the maximum when units are in the queue</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHIELDBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shield Bonus 3</TYPENAME>
+      <FLAGS/>
+      <PREQ0>Shields 3</PREQ0>
+      <DATA0>300% shield hits increase</DATA0>
+      <DATA1>60% shield regen time reduction</DATA1>
+      <DATA2>100% shield hits are at this percentage of the maximum when units are in the queue</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHIELDBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Shield Bonus 4</TYPENAME>
+      <CODETAG>BUILDING_SHIELD_BONUS_END</CODETAG>
+      <FLAGS/>
+      <PREQ0>Shields 4</PREQ0>
+      <DATA0>400% shield hits increase</DATA0>
+      <DATA1>80% shield regen time reduction</DATA1>
+      <DATA2>100% shield hits are at this percentage of the maximum when units are in the queue</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>SHIELDBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Foreign Trade</TYPENAME>
+      <CODETAG>FOREIGN_TRADE</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>FOREIGNTRADE</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Buy Sell Tech</TYPENAME>
+      <CODETAG>BUY_SELL</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>BUYSELLTECH</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Transport Bonus</TYPENAME>
+      <CODETAG>TRANSPORT_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>TRANSPORTBONUS</HELP>
+    </BONUS>
+    <BONUS>
+      <TYPENAME>Colonize Bonus</TYPENAME>
+      <CODETAG>COLONIZE_BONUS</CODETAG>
+      <FLAGS/>
+      <PREQ0>none</PREQ0>
+      <DATA0>0</DATA0>
+      <DATA1>0</DATA1>
+      <DATA2>0</DATA2>
+      <DATA3>0</DATA3>
+      <TRIBE_MASK>1111</TRIBE_MASK>
+      <HELP>COLONIZEBONUS</HELP>
+    </BONUS>
+  </BONUSES>
+</ROOT>

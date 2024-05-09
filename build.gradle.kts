@@ -17,7 +17,7 @@ allprojects {
 
 	dependencies { if(name != "module-core") implementation(project(":module-core")) }
 
-	sourceSets { main { kotlin { srcDir("src") } } }
+	sourceSets { main { kotlin { srcDir("src") }; resources { srcDir("resources") } } }
 
 	// Fat jar creation
 	tasks.withType(Jar::class) {

@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!--=====================================================================-->
+<!---->
+<!--RESOURCERULES.XML - Rise of Legends - Copyright (c) 2006 Big Huge Games Inc.-->
+<!---->
+<!--=====================================================================-->
+<ROOT>
+  <Comments>
+    <!---->
+    <!---->
+    <!--RESOURCES-->
+    <!---->
+    <!--BASIC RESOURCES:-->
+    <!--Name, Abbrev, Description, Textures, Help-->
+    <!---->
+    <TRIBE_MASKS----Which-races-or-tribes-can-use-this-object>
+      <!--0001 = Alin-->
+      <!--0010 = Kahan-->
+      <!--0100 = Cuotl-->
+      <!--1000 = Vinci-->
+    </TRIBE_MASKS----Which-races-or-tribes-can-use-this-object>
+  </Comments>
+  <RESOURCE>
+    <NAME>Timonium</NAME>
+    <CODETAG>TIMONIUM</CODETAG>
+    <ABBREV>t</ABBREV>
+    <TRIBE_MASK>1111</TRIBE_MASK>
+    <DESC>
+      Basic Resource
+    </DESC>
+    <TEX_ID>TEX_SPECIAL_RESOURCES</TEX_ID>
+    <TEX_COL>2</TEX_COL>
+    <TEX_ROW>4</TEX_ROW>
+    <TEX_CLIP>0</TEX_CLIP>
+    <TEX2_ID>CRAP</TEX2_ID>
+    <TEX2_X>1</TEX2_X>
+    <TEX2_Y>1</TEX2_Y>
+    <TEX2_XS>30</TEX2_XS>
+    <TEX2_YS>30</TEX2_YS>
+    <HELP>TIMONIUM</HELP>
+  </RESOURCE>
+  <RESOURCE>
+    <NAME>Wealth</NAME>
+    <CODETAG>WEALTH</CODETAG>
+    <ABBREV>w</ABBREV>
+    <TRIBE_MASK>1011</TRIBE_MASK>
+    <DESC>
+      Basic Resource
+    </DESC>
+    <TEX_ID>TEX_SPECIAL_RESOURCES</TEX_ID>
+    <TEX_COL>1</TEX_COL>
+    <TEX_ROW>4</TEX_ROW>
+    <TEX_CLIP>0</TEX_CLIP>
+    <TEX2_ID>CRAP</TEX2_ID>
+    <TEX2_X>0</TEX2_X>
+    <TEX2_Y>0</TEX2_Y>
+    <TEX2_XS>30</TEX2_XS>
+    <TEX2_YS>30</TEX2_YS>
+    <HELP>WEALTH</HELP>
+  </RESOURCE>
+  <RESOURCE>
+    <NAME>Research Points</NAME>
+    <CODETAG>RESEARCH_POINTS</CODETAG>
+    <ABBREV>r</ABBREV>
+    <TRIBE_MASK>1111</TRIBE_MASK>
+    <DESC>
+      Basic Resource
+    </DESC>
+    <TEX_ID>TEX_SPECIAL_RESOURCES</TEX_ID>
+    <TEX_COL>3</TEX_COL>
+    <TEX_ROW>4</TEX_ROW>
+    <TEX_CLIP>0</TEX_CLIP>
+    <TEX2_ID>CRAP</TEX2_ID>
+    <TEX2_X>2</TEX2_X>
+    <TEX2_Y>2</TEX2_Y>
+    <TEX2_XS>30</TEX2_XS>
+    <TEX2_YS>30</TEX2_YS>
+    <HELP>RESEARCH_POINTS</HELP>
+  </RESOURCE>
+  <RESOURCE>
+    <NAME>Energy</NAME>
+    <CODETAG>ENERGY</CODETAG>
+    <ABBREV>e</ABBREV>
+    <TRIBE_MASK>0100</TRIBE_MASK>
+    <DESC>
+      Basic Resource
+    </DESC>
+    <TEX_ID>TEX_SPECIAL_RESOURCES</TEX_ID>
+    <TEX_COL>4</TEX_COL>
+    <TEX_ROW>4</TEX_ROW>
+    <TEX_CLIP>0</TEX_CLIP>
+    <TEX2_ID>CRAP</TEX2_ID>
+    <TEX2_X>3</TEX2_X>
+    <TEX2_Y>3</TEX2_Y>
+    <TEX2_XS>30</TEX2_XS>
+    <TEX2_YS>30</TEX2_YS>
+    <HELP>ENERGY</HELP>
+  </RESOURCE>
+  <RESOURCE>
+    <NAME>Prototypes</NAME>
+    <CODETAG>PROTOTYPE_VISIT</CODETAG>
+    <ABBREV>v</ABBREV>
+    <TRIBE_MASK>1000</TRIBE_MASK>
+    <DESC>
+      Basic Resource
+    </DESC>
+    <TEX_ID>TEX_SPECIAL_RESOURCES</TEX_ID>
+    <TEX_COL>4</TEX_COL>
+    <TEX_ROW>4</TEX_ROW>
+    <TEX_CLIP>0</TEX_CLIP>
+    <TEX2_ID>CRAP</TEX2_ID>
+    <TEX2_X>3</TEX2_X>
+    <TEX2_Y>3</TEX2_Y>
+    <TEX2_XS>30</TEX2_XS>
+    <TEX2_YS>30</TEX2_YS>
+    <HELP>PROTOTYPE_VISIT</HELP>
+  </RESOURCE>
+</ROOT>
