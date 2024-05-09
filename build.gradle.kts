@@ -5,26 +5,19 @@ plugins {
 group = "placeholder"
 version = "1.0"
 
-val mainClasses = mapOf(
-	"module-eyre" to "eyre.EyreMainKt"
-)
+val mainClasses = mapOf("module-eyre" to "eyre.EyreMainKt")
 
 allprojects {
 	group = project.group
 	version = project.version
 
-	repositories {
-		mavenCentral()
-	}
+	repositories { mavenCentral() }
 
-	apply {
-		plugin("org.jetbrains.kotlin.jvm")
-	}
+	apply { plugin("org.jetbrains.kotlin.jvm") }
 
-	dependencies {
-		if(name != "module-core")
-			implementation(project(":module-core"))
-	}
+	dependencies { if(name != "module-core") implementation(project(":module-core")) }
+
+	sourceSets { main { kotlin { srcDir("src") } } }
 
 	// Fat jar creation
 	tasks.withType(Jar::class) {

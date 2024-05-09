@@ -9,15 +9,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/module-asm" />
             <option value="$PROJECT_DIR$/module-core" />
-            <option value="$PROJECT_DIR$/module-encoding" />
-            <option value="$PROJECT_DIR$/module-eyre" />
             <option value="$PROJECT_DIR$/module-macro" />
             <option value="$PROJECT_DIR$/module-rol" />
             <option value="$PROJECT_DIR$/module-rome2" />
             <option value="$PROJECT_DIR$/module-scratch" />
-            <option value="$PROJECT_DIR$/module-terraria" />
             <option value="$PROJECT_DIR$/module-vkgen" />
           </set>
         </option>
