@@ -1,6 +1,6 @@
 package macro
 
-import core.memory.Unsafe
+import core.mem.Unsafe
 import kotlin.reflect.KProperty
 
 interface Struct {

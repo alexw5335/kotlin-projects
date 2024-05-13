@@ -1,8 +1,8 @@
 package macro
 
 import core.Core
-import core.memory.Unsafe
-import core.memory.Unsafe.calloc
+import core.mem.Unsafe
+import core.mem.Unsafe.calloc
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.deleteIfExists

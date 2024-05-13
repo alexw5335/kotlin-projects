@@ -33,9 +33,7 @@ class CWriter(writer: Writer) : CodeWriter(writer) {
 
 
 
-	/*
-	Preprocessor declarations
-	 */
+	// PREPROCESSOR
 
 
 
@@ -44,26 +42,18 @@ class CWriter(writer: Writer) : CodeWriter(writer) {
 			writeln("#include <$i>")
 	}
 
-
-
 	fun includes(vararg includes: String) = declaration {
 		for(i in includes)
 			writeln("#include <$i>")
 	}
 
-
-
 	fun define(string: String) {
 		declaration("#define $string")
 	}
 
-
-
 	fun ifdef(string: String) {
 		declaration("#ifdef $string")
 	}
-
-
 
 	fun endif() {
 		declaration("#endif")
@@ -71,17 +61,24 @@ class CWriter(writer: Writer) : CodeWriter(writer) {
 
 
 
-	/*
-	Comments
-	 */
+	// BLOCK DECLARATIONS
+
+
+
+	inline fun function(signature: String, block: () -> Unit) = declaration(noStyle) {
+		write(signature)
+		braced(block)
+	}
+
+
+
+	// COMMENTS
 
 
 
 	override fun comment(comment: String) {
 		declaration("// $comment")
 	}
-
-
 
 	override fun multilineComment(lines: List<String>) {
 		declaration {
@@ -90,8 +87,6 @@ class CWriter(writer: Writer) : CodeWriter(writer) {
 			writeln(" */")
 		}
 	}
-
-
 
 	override fun doc(lines: List<String>) {
 		declaration {
@@ -105,45 +100,44 @@ class CWriter(writer: Writer) : CodeWriter(writer) {
 
 
 
-	/*
-	Procedural declarations
-	 */
+	// PROCEDURAL DECLARATIONS
 
 
 
-	fun function(function: CFunction) = declaration(noStyle) {
-		with(function) {
-			for(m in modifiers) {
-				write(m)
-				write(' ')
-			}
+	fun function(function: CFunction, block: () -> Unit) = declaration(noStyle) {
+		function.writeHeader()
+		braced(block)
+	}
 
-			write(returnType ?: "void")
-			write(' ')
-
-			for(m in modifiers2) {
-				write(m)
-				write(' ')
-			}
-
-			write(name)
-			write('(')
-
-			for((index, param) in params.withIndex()) {
-				write(param.second)
-				write(' ')
-				write(param.first)
-				if(index != params.lastIndex) write(", ")
-			}
-
-			write(')')
-
-			if(contents != null) braced {
-				writeMultiline(contents)
-			} else {
-				newline()
+	fun functionCall(name: String, args: Iterable<String>, ret: Boolean = false) = declaration(noStyle) {
+		if(ret) write("return ")
+		write(name)
+		write('(')
+		val iterator = args.iterator()
+		if(iterator.hasNext()) {
+			while(true) {
+				write(iterator.next())
+				if(iterator.hasNext()) write(", ") else break
 			}
 		}
+		writeln(");")
+	}
+
+	private fun CFunction.writeHeader() {
+		for(m in modifiers) { write(m); write(' ') }
+		write(retType ?: "void"); write(' ')
+		for(m in modifiers2) { write(m); write(' ') }
+		write(name); write('(')
+		for((index, param) in params.withIndex()) {
+			write(param.second); write(' '); write(param.first)
+			if(index != params.lastIndex) write(", ")
+		}
+		write(')')
+	}
+
+	fun function(function: CFunction) = declaration(noStyle) {
+		function.writeHeader()
+		if(function.contents != null) braced { writeMultiline(function.contents) } else { newline() }
 	}
 
 

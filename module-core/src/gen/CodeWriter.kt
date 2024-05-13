@@ -196,6 +196,13 @@ open class CodeWriter(private val writer: Writer) : AutoCloseable by writer {
 
 
 	/**
+	 * Writes a single newline
+	 */
+	fun writeln() = newline()
+
+
+
+	/**
 	 * Writes a multi-line string literal. The string is trimmed by its smallest indent. All of the lines in the string
 	 * are also indented by the current [indent].
 	 */
@@ -276,18 +283,12 @@ open class CodeWriter(private val writer: Writer) : AutoCloseable by writer {
 	/**
 	 * Single-line version of [declaration].
 	 */
-	fun declaration(line: String) = declaration {
-		writeln(line)
-	}
-
-
+	fun declaration(line: String) = declaration { writeln(line) }
 
 	/**
 	 * Multiple-line string version of [declaration].
 	 */
-	fun multilineDeclaration(lines: String) = declaration {
-		writeMultiline(lines)
-	}
+	fun multilineDeclaration(lines: String) = declaration { writeMultiline(lines) }
 
 
 

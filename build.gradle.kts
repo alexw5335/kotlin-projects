@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version "2.0.0-RC2"
 }
@@ -18,6 +20,8 @@ allprojects {
 	dependencies { if(name != "module-core") implementation(project(":module-core")) }
 
 	sourceSets { main { kotlin { srcDir("src") }; resources { srcDir("resources") } } }
+
+	kotlin { compilerOptions { freeCompilerArgs.add("-Xcontext-receivers") } }
 
 	// Fat jar creation
 	tasks.withType(Jar::class) {

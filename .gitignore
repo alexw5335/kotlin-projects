@@ -1,18 +1,12 @@
 .gradle/
+.kotlin/
 build/
 .idea/shelf/
 .idea/workspace.xml
 out/
-run/
-/test.*
-/test/
-prev/
 *.dll
-/temp/
-/temp.*
-/natives/
+/gen/
+/_prev/
 
-/module-macro/src/main/resources/output.txt
-/module-vkgen/src/main/resources/
-/module-rol/src/main/resources/
-/module-encoding/src/main/resources/ins.txt
+vk.xml
+/module-macro/resources/output.txt

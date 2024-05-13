@@ -1,7 +1,7 @@
 package rome2
 
-import core.binary.BinaryReader
-import core.binary.BinaryWriter
+import core.mem.BinReader
+import core.mem.BinWriter
 import core.xml.XmlParser
 import java.nio.file.Files
 import java.nio.file.Path
@@ -21,8 +21,7 @@ enum class SchemaFieldType(val string: String) {
 	INT("int");
 
 	companion object {
-		val values = values()
-		val map = values.associateBy { it.string }
+		val map = entries.associateBy { it.string }
 	}
 
 }
@@ -37,8 +36,8 @@ data class Schema(val tables: Map<String, SchemaTable>)
 
 
 
-fun readSchema(reader: BinaryReader): Schema {
-	val tableCount = reader.u32()
+fun readSchema(reader: BinReader): Schema {
+	val tableCount = reader.i32()
 
 	val tables = List(tableCount) {
 		val tableNameLength = reader.u8()
@@ -52,7 +51,7 @@ fun readSchema(reader: BinaryReader): Schema {
 			val fieldNameLength = reader.u8()
 			val fieldName = reader.ascii(fieldNameLength)
 			val fieldTypeByte = reader.u8()
-			val fieldType = SchemaFieldType.values[fieldTypeByte and 0b01111111]
+			val fieldType = SchemaFieldType.entries[fieldTypeByte and 0b01111111]
 			val isKey = fieldTypeByte and 0b10000000 != 0
 
 			SchemaField(fieldName, fieldType, isKey)
@@ -67,25 +66,25 @@ fun readSchema(reader: BinaryReader): Schema {
 
 
 fun writeSchema(path: Path, schema: Schema) {
-	val writer = BinaryWriter()
-	writer.u32(schema.tables.size)
+	val writer = BinWriter()
+	writer.i32(schema.tables.size)
 
 	for(table in schema.tables.values) {
-		writer.u8(table.name.length)
+		writer.i8(table.name.length)
 		writer.ascii(table.name)
-		writer.u8(table.version)
-		writer.u8(table.guid?.length ?: 0)
+		writer.i8(table.version)
+		writer.i8(table.guid?.length ?: 0)
 		table.guid?.let { writer.ascii(it) }
-		writer.u8(table.fields.size)
+		writer.i8(table.fields.size)
 
 		for(field in table.fields) {
-			writer.u8(field.name.length)
+			writer.i8(field.name.length)
 			writer.ascii(field.name)
-			writer.u8(field.type.ordinal or ((if(field.isKey) 1 else 0) shl 7))
+			writer.i8(field.type.ordinal or ((if(field.isKey) 1 else 0) shl 7))
 		}
 	}
 
-	Files.write(path, writer.trimmedBytes())
+	Files.write(path, writer.copy())
 }
 
 
@@ -115,12 +114,12 @@ fun readRome2Schemas(
 	rome2DataPath: Path = Paths.get(ROME_2_DATA_PACK_PATH),
 	masterSchemaPath: Path = Paths.get(MASTER_SCHEMA_PATH)
 ): Schema {
-	val reader = BinaryReader(rome2DataPath)
+	val reader = BinReader(rome2DataPath)
 	reader.pos += 16
-	val packedFileCount = reader.u32()
+	val packedFileCount = reader.i32()
 	reader.pos += 8
 
-	val indices = List(packedFileCount) { Pair(reader.u32(), reader.asciiNt()) }
+	val indices = List(packedFileCount) { Pair(reader.i32(), reader.asciiNt()) }
 
 	var dataPos = reader.pos
 
@@ -148,7 +147,7 @@ fun readRome2Schemas(
 				}
 				0xFC -> {
 					reader.pos += 3
-					version = reader.u32()
+					version = reader.i32()
 				}
 			}
 		}
@@ -178,13 +177,10 @@ fun readRome2Schemas(
 
 		if(name == "cdir_configs_tables" && fields[1].type != SchemaFieldType.ASCII_OPTIONAL)
 			continue
-
 		if(name == "diplomatic_relations_religion_tables" && fields[0].type != SchemaFieldType.ASCII)
 			continue
-
 		if(tableMap.containsKey(name) && SCHEMA_VERSION_OVERRIDES.contains(name))
 			continue
-
 		tableMap[name] = SchemaTable(name, version, info.guid, fields)
 	}
 

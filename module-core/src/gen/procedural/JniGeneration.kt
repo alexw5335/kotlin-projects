@@ -26,7 +26,7 @@ object JniGeneration {
 		contents     : String?
 	) = CFunction(
 		modifiers  = MODIFIERS,
-		returnType = returnType,
+		retType = returnType,
 		modifiers2 = MODIFIERS2,
 		name       = functionName(packageName, className, functionName),
 		params     = DEFAULT_ARGS + params,

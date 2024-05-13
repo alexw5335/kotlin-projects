@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/module-rome2" />
             <option value="$PROJECT_DIR$/module-scratch" />
             <option value="$PROJECT_DIR$/module-vkgen" />
+            <option value="$PROJECT_DIR$/module-vulkan" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

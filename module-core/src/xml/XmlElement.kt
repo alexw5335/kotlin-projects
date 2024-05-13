@@ -34,6 +34,8 @@ class XmlElement(
 
 	operator fun get(key: String) = attribs[key]
 
+	operator fun contains(key: String) = key in attribs
+
 
 
 	/*

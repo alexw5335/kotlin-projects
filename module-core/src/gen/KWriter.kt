@@ -19,18 +19,14 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 
 
 	companion object {
-
 		inline fun write(directory: Path, fileName: String, block: KWriter.() -> Unit) {
 			KWriter(directory / "$fileName.kt").use(block)
 		}
-
 	}
 
 
 
-	/*
-	Styles
-	 */
+	// STYLES
 
 
 
@@ -46,9 +42,7 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 
 
 
-	/*
-	Block declarations
-	 */
+	// BLOCK DECLARATIONS
 
 
 
@@ -57,21 +51,20 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 		braced(block)
 	}
 
-
+	inline fun object_(signature: String, style: Style = classStyle, block: () -> Unit) = declaration(style) {
+		write(signature)
+		braced(block)
+	}
 
 	inline fun companion_(style: Style = companionStyle, block: () -> Unit) = declaration(style) {
 		write("companion object")
 		braced(block)
 	}
 
-
-
 	inline fun companion_(signature: String, style: Style = companionStyle, block: () -> Unit) = declaration(style) {
 		write(signature)
 		braced(block)
 	}
-
-
 
 	inline fun function(signature: String, block: () -> Unit) = declaration(noStyle) {
 		write(signature)
@@ -80,9 +73,7 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 
 
 
-	/*
-	Non-block declarations
-	 */
+	// NON-BLOCK DECLARATIONS
 
 
 
@@ -90,8 +81,6 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 		declaration("package $packageName")
 		spacing = 1
 	}
-
-
 
 	fun imports(vararg imports: String?) {
 		declaration {
@@ -102,8 +91,6 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 		spacing = 1
 	}
 
-
-
 	fun qualifiedImports(vararg imports: KClass<*>) {
 		declaration {
 			for(i in imports)
@@ -112,8 +99,6 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 
 		spacing = 1
 	}
-
-
 
 	fun enums(enums: List<String>) = declaration(enumsStyle) {
 		for(i in 0 until enums.size - 1)
@@ -125,14 +110,10 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 			declaration(enums.last() + ';')
 	}
 
-
-
 	fun annotation(annotation: String) {
 		declaration("@$annotation")
 		spacing = 0
 	}
-
-
 
 	fun suppress(vararg suppressions: String) {
 		declaration {
@@ -147,21 +128,17 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 		spacing = 0
 	}
 
-
+	fun fileSuppressUnused() = declaration("@file:Suppress(\"unused\")")
 
 	fun function(signature: String, multilineContents: String) = declaration(noStyle) {
 		write(signature)
 		braced { writeMultiline(multilineContents) }
 	}
 
-
-
 	inline fun init_(style: Style = initStyle, block: () -> Unit) = declaration(style) {
 		write("init")
 		braced(block)
 	}
-
-
 
 	inline fun start(style: Style = startStyle, block: () -> Unit) {
 		declaration(style, block)
@@ -170,17 +147,13 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 
 
 
-	/*
-	Comments
-	 */
+	// COMMENTS
 
 
 
 	override fun comment(comment: String) {
 		declaration("// $comment")
 	}
-
-
 
 	override fun multilineComment(lines: List<String>) {
 		declaration {
@@ -189,8 +162,6 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 			writeln(" */")
 		}
 	}
-
-
 
 	override fun doc(lines: List<String>) {
 		declaration {
@@ -204,9 +175,7 @@ class KWriter(writer: Writer) : CodeWriter(writer) {
 
 
 
-	/*
-	Procedural declarations
-	 */
+	// PROCEDURAL DECLARATIONS
 
 
 
